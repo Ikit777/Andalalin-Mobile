@@ -1,0 +1,288 @@
+import React, { useEffect, useContext, useState } from "react";
+import { StyleSheet, View, Image, BackHandler } from "react-native";
+import AScreen from "../component/utility/AScreen";
+import ABackButton from "../component/utility/ABackButton";
+import AText from "../component/utility/AText";
+import color from "../constants/color";
+import { UserContext } from "../context/UserContext";
+import ASettingItem from "../component/utility/ASettingItem";
+import AButton from "../component/utility/AButton";
+import { useStateToggler } from "../hooks/useUtility";
+import AConfirmationDialog from "../component/utility/AConfirmationDialog";
+import { authLogout, authForgotPassword, authRefreshToken } from "../api/auth";
+import ADialog from "../component/utility/ADialog";
+import ALoading from "../component/utility/ALoading";
+import { remove, store } from "../utils/local-storage";
+import * as ImagePicker from "expo-image-picker";
+import { userUpdatePhoto } from "../api/user";
+
+function SettingScreen({ navigation }) {
+  const context = useContext(UserContext);
+  const [konfirmasi, toggleKonfirmasi] = useStateToggler();
+  const [gagal, toggleGagal] = useStateToggler();
+  const [loading, toggleLoading] = useStateToggler();
+  const [fotoBerhasil, toggleFotoBerhasil] = useStateToggler();
+  const [fotoGagal, toggleFotoGagal] = useStateToggler();
+  const [permission, togglePermission] = useStateToggler();
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      BackHandler.addEventListener("hardwareBackPress", () => {
+        navigation.goBack();
+        return true;
+      });
+
+      return BackHandler.removeEventListener("hardwareBackPress", () => {
+        navigation.goBack();
+        return true;
+      });
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
+  const logout = () => {
+    authLogout(context.getUser().access_token, (response) => {
+      switch (response.status) {
+        case 200:
+          toggleLoading();
+          remove("authState");
+          navigation.replace("Login");
+          break;
+        case 424:
+          authRefreshToken(context, (response) => {
+            if (response.status === 200) {
+              logout();
+            } else {
+              toggleLoading();
+            }
+          });
+          break;
+        default:
+          toggleLoading();
+          toggleGagal();
+          break;
+      }
+    });
+  };
+
+  const forgot = (email) => {
+    toggleLoading();
+    authForgotPassword(email, (response) => {
+      if (response.status === 200) {
+        toggleLoading();
+        navigation.navigate("Reset", { email: email });
+      }
+    });
+  };
+
+  const change = (uri) => {
+    userUpdatePhoto(uri, context.getUser().access_token, (response) => {
+      switch (response.status) {
+        case 200:
+          toggleLoading();
+          (async () => {
+            const result = await response.json();
+            const newAuthState = {
+              access_token: context.getUser().access_token,
+              refresh_token: context.getUser().refresh_token,
+              id: context.getUser().id,
+              nama: context.getUser().nama,
+              email: context.getUser().email,
+              role: context.getUser().role,
+              photo: result.photo,
+            };
+            Object.assign(context.user, newAuthState);
+            context.setUser(newAuthState);
+            store("authState", newAuthState);
+            toggleFotoBerhasil();
+          })();
+          break;
+        case 400:
+          toggleLoading();
+          toggleFotoGagal();
+          break;
+        case 424:
+          authRefreshToken(context, (response) => {
+            if (response.status === 200) {
+              change();
+            } else {
+              toggleLoading();
+            }
+          });
+          break;
+        default:
+          toggleLoading();
+          toggleFotoGagal();
+          break;
+      }
+    });
+  };
+
+  const profile = async () => {
+    const permissionResult =
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (permissionResult.granted === false) {
+      togglePermission();
+      return;
+    }
+
+    const imagePickerResult = await ImagePicker.launchImageLibraryAsync();
+
+    if (!imagePickerResult.canceled) {
+      toggleLoading();
+      change(imagePickerResult.assets[0].uri);
+    }
+  };
+
+  return (
+    <AScreen>
+      <View style={styles.header}>
+        <View
+          style={{ flexDirection: "row", alignItems: "center" }}
+        >
+          <ABackButton
+            onPress={() => {
+              navigation.goBack();
+            }}
+          />
+          <AText
+            style={{ paddingLeft: 8 }}
+            size={24}
+            color={color.neutral.neutral900}
+            weight="normal"
+          >
+            Pengaturan
+          </AText>
+        </View>
+      </View>
+      <View style={styles.content}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            marginTop: 16,
+          }}
+        >
+          <Image
+            style={{
+              width: 64,
+              height: 64,
+              borderRadius: 150 / 2,
+              overflow: "hidden",
+            }} // Set your desired dimensions
+            source={{ uri: `data:image/png;base64,${context.getUser().photo}` }}
+          />
+          <View style={{ marginLeft: 16 }}>
+            <AText size={16} color={color.neutral.neutral900} weight="normal">
+              {context.getUser().nama}
+            </AText>
+            <AText size={12} color={color.neutral.neutral900} weight="normal">
+              {context.getUser().email}
+            </AText>
+          </View>
+        </View>
+
+        <View style={{ paddingTop: 32 }}>
+          <ASettingItem
+            onPress={() => forgot(context.getUser().email)}
+            icon={"lock"}
+            title={"Reset password"}
+          />
+          <ASettingItem
+            icon={"image"}
+            title={"Ubah foto profil"}
+            onPress={() => {
+              profile();
+            }}
+          />
+          <ASettingItem
+            icon={"info"}
+            title={"Tentang"}
+            onPress={() => {
+              navigation.navigate("Tentang");
+            }}
+          />
+        </View>
+
+        <AButton
+          style={{ marginTop: 32 }}
+          title={"Keluar"}
+          mode="contained"
+          onPress={() => {
+            toggleKonfirmasi();
+          }}
+        />
+      </View>
+      <AConfirmationDialog
+        title={"Keluar"}
+        desc={"Apakah Anda yakin ingin keluar?"}
+        visibleModal={konfirmasi}
+        btnOK={"Keluar"}
+        btnBATAL={"Batal"}
+        onPressBATALButton={() => {
+          toggleKonfirmasi();
+        }}
+        onPressOKButton={() => {
+          toggleKonfirmasi();
+          toggleLoading();
+          logout();
+        }}
+      />
+      <ADialog
+        title={"Keluar gagal"}
+        desc={"Telah terjadi sesuatu yang menyebabkan Anda tidak dapat keluar"}
+        visibleModal={gagal}
+        btnOK={"OK"}
+        onPressOKButton={() => {
+          toggleGagal();
+        }}
+      />
+
+      <ADialog
+        title={"Ubah foto berhasil"}
+        desc={"Ubah foto profil berhasil"}
+        visibleModal={fotoBerhasil}
+        btnOK={"OK"}
+        onPressOKButton={() => {
+          toggleFotoBerhasil();
+        }}
+      />
+
+      <ADialog
+        title={"Ubah foto gagal"}
+        desc={
+          "Ubah foto profil gagal, telah terjadi sesuatu yang buruk pada sistem kami"
+        }
+        visibleModal={fotoGagal}
+        btnOK={"OK"}
+        onPressOKButton={() => {
+          toggleFotoGagal();
+        }}
+      />
+
+      <ADialog
+        title={"Izin"}
+        desc={"Izin untuk mengakses galeri belum diberikan"}
+        visibleModal={permission}
+        btnOK={"OK"}
+        onPressOKButton={() => {
+          togglePermission();
+        }}
+      />
+      <ALoading visibleModal={loading} />
+    </AScreen>
+  );
+}
+
+const styles = StyleSheet.create({
+  header: {
+    paddingTop: 16,
+    height: 64,
+  },
+  content: {
+    padding: 16,
+  },
+});
+
+export default SettingScreen;

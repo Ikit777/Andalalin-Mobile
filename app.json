@@ -4,12 +4,12 @@
     "slug": "Andalalin",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./app/assets/image/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./app/assets/image/splashscreen.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#F5F5FF"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -18,13 +18,25 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.andalalin",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./app/assets/image/icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.DOWNLOAD_WITHOUT_NOTIFICATION",
+        "android.permission.ACCESS_NETWORK_STATE"
+      ]
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./app/assets/image/icon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "2b044a40-5746-4ede-8008-ca66914cc9c6"
+      }
     }
   }
 }
