@@ -19,6 +19,7 @@
     },
     "android": {
       "package": "com.andalalin",
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./app/assets/image/icon.png",
         "backgroundColor": "#ffffff"
