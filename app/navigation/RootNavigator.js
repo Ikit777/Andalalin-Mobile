@@ -14,3 +14,9 @@ export function push(...args) {
     navigationRef.dispatch(StackActions.push(...args));
   }
 }
+
+export function replace(...args) {
+  if (navigationRef.isReady()) {
+    navigationRef.dispatch(StackActions.replace(...args));
+  }
+}

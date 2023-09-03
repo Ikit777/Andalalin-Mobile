@@ -49,6 +49,9 @@ function Kegiatan({onPress}) {
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate;
     setTanggal(formatDate(currentDate));
+    {
+      tanggalError ? toggleTanggalError() : "";
+    }
   };
 
   const showMode = (currentMode) => {

@@ -1,11 +1,10 @@
-import React, { useState, Fragment } from "react";
-import { StyleSheet, View, Pressable, Text } from "react-native";
+import React, { useState, Fragment, useEffect } from "react";
+import { StyleSheet, View, Pressable, Text, BackHandler } from "react-native";
 import AScreen from "../component/utility/AScreen";
 import AText from "../component/utility/AText";
 import AButton from "../component/utility/AButton";
 import color from "../constants/color";
 import { poppins } from "../constants/font";
-import ALoading from "../component/utility/ALoading";
 import ADialog from "../component/utility/ADialog";
 import { useStateToggler } from "../hooks/useUtility";
 import { authVerification, authResendVerication } from "../api/auth";
@@ -26,12 +25,37 @@ function VerifikasiScreen({ navigation, route }) {
     setValue,
   });
   const [isFull, setIsFull] = useState(false);
-  const [loading, toggleLoading] = useStateToggler();
   const [berhasil, toggleBerhasil] = useStateToggler();
   const [gagal, toggleGagal] = useStateToggler();
   const [code, toggleCode] = useStateToggler();
   const [resendBerhasil, toggleResendBerhasil] = useStateToggler();
   const [resendGagal, toggleResendGagal] = useStateToggler();
+
+  useEffect(() => {
+    navigation.addListener("beforeRemove", (e) => {
+      e.preventDefault();
+    });
+
+    return () => {
+      navigation.removeListener("beforeRemove", (e) => {
+        e.preventDefault();
+      });
+    };
+  }, [navigation]);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      BackHandler.addEventListener("hardwareBackPress", () => {
+        return true;
+      });
+
+      return BackHandler.removeEventListener("hardwareBackPress", () => {
+        return true;
+      });
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   const handleFulfill = (code) => {
     if (code.length === CELL_COUNT) {
@@ -40,27 +64,27 @@ function VerifikasiScreen({ navigation, route }) {
   };
 
   const verification = (code) => {
-    toggleLoading();
+    context.toggleLoading(true);
 
     authVerification(code, (response) => {
       if (response.status === 200) {
-        toggleLoading();
+        context.toggleLoading(false);
         toggleBerhasil();
       } else {
-        toggleLoading();
+        context.toggleLoading(false);
         toggleGagal();
       }
     });
   };
 
   const resend = (email) => {
-    toggleLoading();
+    context.toggleLoading(true);
     authResendVerication(email, (response) => {
       if (response.status === 201) {
-        toggleLoading();
+        context.toggleLoading(false);
         toggleResendBerhasil();
       } else {
-        toggleLoading();
+        context.toggleLoading(false);
         toggleResendGagal();
       }
     });
@@ -199,7 +223,6 @@ function VerifikasiScreen({ navigation, route }) {
           toggleResendGagal();
         }}
       />
-      <ALoading visibleModal={loading} />
     </AScreen>
   );
 }

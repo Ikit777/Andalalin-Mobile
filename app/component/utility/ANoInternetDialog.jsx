@@ -1,9 +1,11 @@
-import React from "react";
+import React, {useContext} from "react";
 import { StyleSheet, View, Modal, Animated } from "react-native";
 import color from "../../constants/color";
 import AText from "../utility/AText";
+import { UserContext } from "../../context/UserContext";
 
 function ANoInternetDialog({ visibleModal = false, }) {
+  const context = useContext(UserContext);
   const [visible, setVisible] = React.useState(visibleModal);
   const scaleValue = React.useRef(new Animated.Value(0)).current;
   React.useEffect(() => {
@@ -11,6 +13,9 @@ function ANoInternetDialog({ visibleModal = false, }) {
   }, [visibleModal]);
   const toggleModal = () => {
     if (visibleModal) {
+      if(context.loading == true){
+        context.toggleLoading(false);
+      }
       setVisible(true);
       Animated.spring(scaleValue, {
         toValue: 1,

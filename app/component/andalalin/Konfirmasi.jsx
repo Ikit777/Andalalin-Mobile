@@ -7,18 +7,17 @@ import { useStateToggler } from "../../hooks/useUtility";
 import AButton from "../utility/AButton";
 import AConfirmationDialog from "../utility/AConfirmationDialog";
 import { andalalinPengajuan } from "../../api/andalalin";
-import ALoading from "../utility/ALoading";
 import { authRefreshToken } from "../../api/auth";
 import ADialog from "../utility/ADialog";
 
 function Konfirmasi({ navigation }) {
-  const [loading, toggleLoading] = useStateToggler();
   const [confirm, toggleComfirm] = useStateToggler();
   const [kirimGagal, toggleKirimGagal] = useStateToggler();
 
   const {
     permohonan: {
       jenis,
+      rencana_pembangunan,
       lokasi_pengambilan,
       nik_pemohon,
       nama_pemohon,
@@ -64,7 +63,8 @@ function Konfirmasi({ navigation }) {
       surat: berkas_surat,
     };
     const pengajuan = {
-      jenis: jenis,
+      kategori: jenis,
+      jenis_rencana_pembangunan: rencana_pembangunan,
       lokasi_pengambilan: lokasi_pengambilan,
       nik_pemohon: nik_pemohon,
       nama_pemohon: nama_pemohon,
@@ -98,12 +98,10 @@ function Konfirmasi({ navigation }) {
     andalalinPengajuan(user.access_token, pengajuan, file, (response) => {
       switch (response.status) {
         case 200:
-          clear();
           (async () => {
             const result = await response.json();
             clear();
             setIndex(1);
-            toggleLoading();
 
             navigation.replace("Detail", { id: result.data.id_andalalin });
           })();
@@ -113,13 +111,13 @@ function Konfirmasi({ navigation }) {
             if (response.status === 200) {
               kirim();
             } else {
-              toggleLoading();
+              context.toggleLoading(false);
               toggleKirimGagal();
             }
           });
           break;
         default:
-          toggleLoading();
+          context.toggleLoading(false);
           toggleKirimGagal();
       }
     });
@@ -166,7 +164,7 @@ function Konfirmasi({ navigation }) {
         }}
         onPressOKButton={() => {
           toggleComfirm();
-          toggleLoading();
+          context.toggleLoading(true);
           kirim();
         }}
       />
@@ -179,7 +177,6 @@ function Konfirmasi({ navigation }) {
           toggleKirimGagal();
         }}
       />
-      <ALoading visibleModal={loading} />
     </ScrollView>
   );
 }

@@ -6,11 +6,8 @@ import AText from "./AText";
 import color from "../../constants/color";
 import { Feather } from "@expo/vector-icons";
 
-function ADropDown({ judul, hint, data, saved, selected, padding }) {
+function ADropDown({ judul, hint, data, saved, selected, padding, bdColor, max }) {
 
-  const def = () => {
-    
-  }
   return (
     <View style={{ paddingTop: padding }}>
       <AText
@@ -26,11 +23,12 @@ function ADropDown({ judul, hint, data, saved, selected, padding }) {
         fontFamily={poppins.normal}
         inputStyles={{ fontSize: 19 }}
         dropdownTextStyles={{ fontSize: 19 }}
-        boxStyles={{ backgroundColor: color.text.white }}
+        boxStyles={{ backgroundColor: color.text.white, borderColor: bdColor}}
         dropdownStyles={{
           backgroundColor: color.text.white,
           borderColor: color.neutral.neutral300,
         }}
+        maxHeight={max}
         placeholder={hint}
         search={false}
         data={data}

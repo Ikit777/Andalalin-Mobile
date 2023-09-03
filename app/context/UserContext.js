@@ -8,6 +8,7 @@ import React, {
 import { get } from "../utils/local-storage";
 
 import * as Notifications from "expo-notifications";
+import { masterAndalalin } from "../api/master";
 
 export const UserContext = createContext();
 
@@ -17,6 +18,7 @@ function reducer(state, action) {
 
 const initialState = {
   jenis: "",
+  rencana_pembangunan: "",
   lokasi_pengambilan: "",
   nik_pemohon: "",
   nama_pemohon: "",
@@ -53,17 +55,37 @@ const initialState = {
   nama_surat: "",
 };
 
+const surveiInit = {
+  foto1: "Kosong",
+  namaFoto1: "",
+  foto2: "Kosong",
+  namaFoto2: "",
+  foto3: "Kosong",
+  namaFoto3: "",
+  lat: "",
+  long: "",
+  lokasi: "",
+  keterangan: "",
+};
+
 export function UserProvider({ children }) {
+  const [loading, toggleLoading] = useState(false);
+
   const [user, setUser] = useState("user");
   const [session, setSession] = useState(false);
 
   const [index, setIndex] = useState(1);
   const [permohonan, dispatch] = useReducer(reducer, initialState);
 
+  const [indexSurvei, setIndexSurvei] = useState(1);
+  const [survei, setSurvei] = useReducer(reducer, surveiInit);
+
   const notificationListener = useRef();
   const responseListener = useRef();
   const lastNotificationResponse = Notifications.useLastNotificationResponse();
   const [notification, setNotification] = useState(false);
+
+  const [dataMaster, setDataMaster] = useState("master");
 
   Notifications.setNotificationHandler({
     handleNotification: async () => ({
@@ -76,12 +98,12 @@ export function UserProvider({ children }) {
   useEffect(() => {
     notificationListener.current =
       Notifications.addNotificationReceivedListener((notification) => {
-        setNotification(true)
+        setNotification(true);
       });
 
     responseListener.current =
       Notifications.addNotificationResponseReceivedListener((response) => {
-        setNotification(true)
+        setNotification(true);
       });
 
     return () => {
@@ -94,6 +116,10 @@ export function UserProvider({ children }) {
 
   const clear = () => {
     dispatch(initialState);
+  };
+
+  const clearSurvei = () => {
+    setSurvei(surveiInit);
   };
 
   const getUser = () => {
@@ -111,15 +137,35 @@ export function UserProvider({ children }) {
 
   useEffect(() => {
     loadUser();
+    masterData();
   }, []);
 
   const getSession = () => {
     return session;
   };
 
+  const getLoading = () => {
+    return loading;
+  };
+
+  const masterData = () => {
+    masterAndalalin((response) => {
+      if (response.status === 200) {
+        (async () => {
+          const result = await response.json();
+          setDataMaster(result.data);
+        })();
+      } else {
+      }
+    });
+  };
+
   return (
     <UserContext.Provider
       value={{
+        loading,
+        toggleLoading,
+        getLoading,
         user,
         setUser,
         getUser,
@@ -133,6 +179,12 @@ export function UserProvider({ children }) {
         clear,
         notification,
         setNotification,
+        dataMaster,
+        indexSurvei,
+        setIndexSurvei,
+        survei,
+        setSurvei,
+        clearSurvei,
       }}
     >
       {children}

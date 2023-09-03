@@ -14,12 +14,15 @@ const ATextInputIcon = React.forwardRef((props, ref) => {
       <Pressable onPress={props.onPress} style={[styles.border, { borderColor: props.bdColor }]}>
         <TextInput
           editable={false}
-          style={styles.input}
+          style={[styles.input, {maxHeight: props.maxHeight}]}
+          numberOfLines={props.max}
           placeholderTextColor={color.neutral.neutral500}
           onChangeText={props.onChangeText}
           allowFontScaling={false}
           value={props.value}
+          multiline={props.mult}
           placeholder={props.hint}
+          textAlignVertical="top"
           autoComplete="off"
           ref={ref}
         />

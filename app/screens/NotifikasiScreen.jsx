@@ -5,6 +5,7 @@ import {
   FlatList,
   BackHandler,
   Pressable,
+  RefreshControl,
 } from "react-native";
 import AText from "../component/utility/AText";
 import color from "../constants/color";
@@ -14,7 +15,6 @@ import ANotificationCard from "../component/utility/ANotificationCard";
 import { Feather } from "@expo/vector-icons";
 import { clearnotifikasiByIdUser, notifikasiByIdUser } from "../api/user";
 import { UserContext } from "../context/UserContext";
-import ALoading from "../component/utility/ALoading";
 import { authRefreshToken } from "../api/auth";
 import { useStateToggler } from "../hooks/useUtility";
 import ADialog from "../component/utility/ADialog";
@@ -23,20 +23,24 @@ import AConfirmationDialog from "../component/utility/AConfirmationDialog";
 
 function NotifikasiScreen({ navigation }) {
   const [notification, setNotification] = useState("notifikasi");
-  const [loading, toggleLoading] = useState(true);
   const context = useContext(UserContext);
   const [gagal, toggleGagal] = useStateToggler();
   const [dataOn, setDataOn] = useState(false);
   const [confirmasi, toggleComfirmasi] = useStateToggler();
   const [hapusGagal, toggleHapusGagal] = useStateToggler();
 
+  const [refreshing, setRefreshing] = useState(false);
+  const [progressViewOffset, setProgressViewOffset] = useState(20);
+
   useEffect(() => {
     BackHandler.addEventListener("hardwareBackPress", () => {
+      setProgressViewOffset(-1000);
       navigation.goBack();
       return true;
     });
 
     return BackHandler.removeEventListener("hardwareBackPress", () => {
+      setProgressViewOffset(-1000);
       navigation.goBack();
       return true;
     });
@@ -50,11 +54,11 @@ function NotifikasiScreen({ navigation }) {
             const result = await response.json();
             if (result.results == 0) {
               setDataOn(true);
-              toggleLoading(false);
+              context.toggleLoading(false);
             } else {
               setNotification(result.data);
               setDataOn(false);
-              toggleLoading(false);
+              context.toggleLoading(false);
             }
           })();
           break;
@@ -63,12 +67,12 @@ function NotifikasiScreen({ navigation }) {
             if (response.status === 200) {
               loadNotif();
             } else {
-              toggleLoading(false);
+              context.toggleLoading(false);
             }
           });
           break;
         default:
-          toggleLoading(false);
+          context.toggleLoading(false);
           toggleGagal();
           break;
       }
@@ -76,6 +80,7 @@ function NotifikasiScreen({ navigation }) {
   };
 
   useEffect(() => {
+    context.toggleLoading(true);
     loadNotif();
   }, []);
 
@@ -91,17 +96,26 @@ function NotifikasiScreen({ navigation }) {
             if (response.status === 200) {
               clear();
             } else {
-              toggleLoading(false);
+              context.toggleLoading(false);
             }
           });
           break;
         default:
-          toggleLoading(false);
+          context.toggleLoading(false);
           toggleHapusGagal();
           break;
       }
     });
   };
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    setRefreshing(false);
+    setTimeout(() => {
+      context.toggleLoading(true);
+      loadNotif();
+    }, 50);
+  }, []);
 
   return (
     <AScreen>
@@ -109,6 +123,7 @@ function NotifikasiScreen({ navigation }) {
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <ABackButton
             onPress={() => {
+              setProgressViewOffset(-1000);
               navigation.goBack();
             }}
           />
@@ -121,18 +136,22 @@ function NotifikasiScreen({ navigation }) {
             Notifikasi
           </AText>
         </View>
-        { notification != "notifikasi" ? (<Pressable
-          style={{ marginRight: 8, padding: 8 }}
-          onPress={() => {
-            toggleComfirmasi();
-          }}
-        >
-          <MaterialIcons
-            name="clear"
-            size={28}
-            color={color.neutral.neutral900}
-          />
-        </Pressable>) : ("")}
+        {notification != "notifikasi" ? (
+          <Pressable
+            style={{ marginRight: 8, padding: 8 }}
+            onPress={() => {
+              toggleComfirmasi();
+            }}
+          >
+            <MaterialIcons
+              name="clear"
+              size={28}
+              color={color.neutral.neutral900}
+            />
+          </Pressable>
+        ) : (
+          ""
+        )}
       </View>
       <View style={styles.content}>
         {notification != "notifikasi" ? (
@@ -143,6 +162,14 @@ function NotifikasiScreen({ navigation }) {
             showsHorizontalScrollIndicator={false}
             showsVerticalScrollIndicator={false}
             vertical
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+                colors={[color.primary.primary500]}
+                progressViewOffset={progressViewOffset}
+              />
+            }
             renderItem={({ item }) => (
               <ANotificationCard
                 style={{ marginBottom: 16 }}
@@ -196,7 +223,7 @@ function NotifikasiScreen({ navigation }) {
       </View>
       <ADialog
         title={"Memuat notifikasi gagal"}
-        desc={"Notifikasi gagal diload, silahkan coba lagi"}
+        desc={"Notifikasi gagal dimuat, silahkan coba lagi"}
         visibleModal={gagal}
         btnOK={"OK"}
         onPressOKButton={() => {
@@ -223,12 +250,11 @@ function NotifikasiScreen({ navigation }) {
           toggleComfirmasi();
         }}
         onPressOKButton={() => {
-          toggleLoading(true);
+          context.toggleLoading(true);
           clear();
           toggleComfirmasi();
         }}
       />
-      <ALoading visibleModal={loading} />
     </AScreen>
   );
 }
@@ -242,8 +268,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   content: {
-    padding: 16,
-    marginBottom: 50,
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    flex: 1,
   },
 });
 

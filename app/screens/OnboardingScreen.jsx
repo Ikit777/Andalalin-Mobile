@@ -11,7 +11,7 @@ function OnBoardingscreen({ navigation }) {
       <View style={styles.content}>
         <View style={{ marginBottom: 128 }}>
           <Image
-            source={require("../assets/image/icon.png")}
+            source={require("../assets/image/icon_app.png")}
             style={styles.stretch}
           />
         </View>

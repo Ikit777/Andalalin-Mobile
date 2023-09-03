@@ -50,7 +50,7 @@ function TentangScreen({ navigation }) {
         >
           <Image
             style={{ width: 64, height: 64 }}
-            source={require("../assets/image/icon.png")}
+            source={require("../assets/image/icon_app.png")}
           />
           <View style={{ paddingLeft: 16 }}>
             <AText size={16} color={color.neutral.neutral900} weight="semibold">

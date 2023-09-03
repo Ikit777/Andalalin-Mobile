@@ -11,7 +11,6 @@ import { useStateToggler } from "../hooks/useUtility";
 import AConfirmationDialog from "../component/utility/AConfirmationDialog";
 import { authLogout, authForgotPassword, authRefreshToken } from "../api/auth";
 import ADialog from "../component/utility/ADialog";
-import ALoading from "../component/utility/ALoading";
 import { remove, store } from "../utils/local-storage";
 import * as ImagePicker from "expo-image-picker";
 import { userUpdatePhoto } from "../api/user";
@@ -20,7 +19,6 @@ function SettingScreen({ navigation }) {
   const context = useContext(UserContext);
   const [konfirmasi, toggleKonfirmasi] = useStateToggler();
   const [gagal, toggleGagal] = useStateToggler();
-  const [loading, toggleLoading] = useStateToggler();
   const [fotoBerhasil, toggleFotoBerhasil] = useStateToggler();
   const [fotoGagal, toggleFotoGagal] = useStateToggler();
   const [permission, togglePermission] = useStateToggler();
@@ -45,7 +43,7 @@ function SettingScreen({ navigation }) {
     authLogout(context.getUser().access_token, (response) => {
       switch (response.status) {
         case 200:
-          toggleLoading();
+          context.toggleLoading(false);
           remove("authState");
           navigation.replace("Login");
           break;
@@ -54,12 +52,12 @@ function SettingScreen({ navigation }) {
             if (response.status === 200) {
               logout();
             } else {
-              toggleLoading();
+              context.toggleLoading(false);
             }
           });
           break;
         default:
-          toggleLoading();
+          context.toggleLoading(false);
           toggleGagal();
           break;
       }
@@ -67,10 +65,10 @@ function SettingScreen({ navigation }) {
   };
 
   const forgot = (email) => {
-    toggleLoading();
+    context.toggleLoading(true);
     authForgotPassword(email, (response) => {
       if (response.status === 200) {
-        toggleLoading();
+        context.toggleLoading(false);
         navigation.navigate("Reset", { email: email });
       }
     });
@@ -80,7 +78,7 @@ function SettingScreen({ navigation }) {
     userUpdatePhoto(uri, context.getUser().access_token, (response) => {
       switch (response.status) {
         case 200:
-          toggleLoading();
+          context.toggleLoading(false);
           (async () => {
             const result = await response.json();
             const newAuthState = {
@@ -99,7 +97,7 @@ function SettingScreen({ navigation }) {
           })();
           break;
         case 400:
-          toggleLoading();
+          context.toggleLoading(false);
           toggleFotoGagal();
           break;
         case 424:
@@ -107,12 +105,12 @@ function SettingScreen({ navigation }) {
             if (response.status === 200) {
               change();
             } else {
-              toggleLoading();
+              context.toggleLoading(false);
             }
           });
           break;
         default:
-          toggleLoading();
+          context.toggleLoading(false);
           toggleFotoGagal();
           break;
       }
@@ -130,7 +128,7 @@ function SettingScreen({ navigation }) {
     const imagePickerResult = await ImagePicker.launchImageLibraryAsync();
 
     if (!imagePickerResult.canceled) {
-      toggleLoading();
+      context.toggleLoading(true);
       change(imagePickerResult.assets[0].uri);
     }
   };
@@ -225,7 +223,7 @@ function SettingScreen({ navigation }) {
         }}
         onPressOKButton={() => {
           toggleKonfirmasi();
-          toggleLoading();
+          context.toggleLoading(true);
           logout();
         }}
       />
@@ -270,7 +268,6 @@ function SettingScreen({ navigation }) {
           togglePermission();
         }}
       />
-      <ALoading visibleModal={loading} />
     </AScreen>
   );
 }

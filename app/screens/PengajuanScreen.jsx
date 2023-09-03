@@ -9,36 +9,24 @@ import AConfirmationDialog from "../component/utility/AConfirmationDialog";
 import { useStateToggler } from "../hooks/useUtility";
 import AndalalinNavigator from "../component/andalalin/AndalalinNavigator";
 import { UserContext } from "../context/UserContext";
-import { get, remove } from "../utils/local-storage";
 
-function PengajuanAndalalinScreen({ navigation }) {
+function PengajuanScreen({ navigation }) {
   const [confirm, toggleComfirm] = useStateToggler();
   const context = useContext(UserContext);
 
   useEffect(() => {
     BackHandler.addEventListener("hardwareBackPress", () => {
+      navigation.setOptions({ animation: "slide_from_right" });
       back();
       return true;
     });
 
     return BackHandler.removeEventListener("hardwareBackPress", () => {
+      navigation.setOptions({ animation: "slide_from_right" });
       back();
       return true;
     });
   }, [context.index]);
-
-  const loadPermohonan = async () => {
-    try {
-      const data = await get("permohonan");
-      if (data !== null) {
-        remove("permohonan");
-      }
-    } catch (e) {}
-  };
-
-  useEffect(() => {
-    loadPermohonan();
-  }, []);
 
   const back = () => {
     if (context.index == 1) {
@@ -58,20 +46,18 @@ function PengajuanAndalalinScreen({ navigation }) {
       case 1:
         return "Permohonan";
       case 2:
-        return "Pemohon";
+        return "Permohonan";
       case 3:
-        return "Perusahaan";
+        return "Pemohon";
       case 4:
         return "Perusahaan";
       case 5:
-        return "Kegiatan";
+        return "Perusahaan";
       case 6:
-        return "Persyaratan";
+        return "Kegiatan";
       case 7:
         return "Persyaratan";
       case 8:
-        return "Persyaratan";
-      case 9:
         return "Konfirmasi";
     }
   };
@@ -83,6 +69,7 @@ function PengajuanAndalalinScreen({ navigation }) {
           <ABackButton
             onPress={() => {
               if (context.index == 1) {
+                navigation.setOptions({ animation: "slide_from_right" });
                 toggleComfirm();
               } else {
                 const newIndex = context.index - 1;
@@ -103,7 +90,13 @@ function PengajuanAndalalinScreen({ navigation }) {
             {judul()}
           </AText>
         </View>
-        <AProgressBar progress={Math.floor((context.index * 100) / 9)} />
+        {context.index == 1 ? (
+          ""
+        ) : (
+          <AProgressBar
+            progress={Math.floor(((context.index - 1) * 100) / 7)}
+          />
+        )}
       </View>
 
       <View style={styles.content}>
@@ -136,9 +129,9 @@ const styles = StyleSheet.create({
     height: 64,
   },
   content: {
-    marginTop: 32,
+    marginTop: 16,
     flex: 1,
   },
 });
 
-export default PengajuanAndalalinScreen;
+export default PengajuanScreen;

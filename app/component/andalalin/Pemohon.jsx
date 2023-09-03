@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { StyleSheet, ScrollView } from "react-native";
 import AText from "../../component/utility/AText";
 import color from "../../constants/color";
@@ -10,8 +10,21 @@ import ATextInputIcon from "../utility/ATextInputIcon";
 import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 import AButton from "../utility/AButton";
 
-function Pemohon({onPress}) {
-  const { permohonan: { nik_pemohon, nama_pemohon, jabatan_pemohon, jenis_kelamin_pemohon, tempat_lahir_pemohon, tanggal_lahir_pemohon, alamat_pemohon, nomer_pemohon, nomer_seluler_pemohon }, dispatch } = useContext(UserContext);
+function Pemohon({ onPress }) {
+  const {
+    permohonan: {
+      nik_pemohon,
+      nama_pemohon,
+      jabatan_pemohon,
+      jenis_kelamin_pemohon,
+      tempat_lahir_pemohon,
+      tanggal_lahir_pemohon,
+      alamat_pemohon,
+      nomer_pemohon,
+      nomer_seluler_pemohon,
+    },
+    dispatch,
+  } = useContext(UserContext);
 
   const nikInput = React.createRef();
   const namaInput = React.createRef();
@@ -42,14 +55,14 @@ function Pemohon({onPress}) {
   const [nomerError, togglenomerError] = useStateToggler();
   const [nomerSelulerError, togglenomerSelulerError] = useStateToggler();
 
-  const jenis_kelamin = [
-    { value: "Laki-laki" },
-    { value: "Perempuan" },
-  ];
+  const jenis_kelamin = [{ value: "Laki-laki" }, { value: "Perempuan" }];
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate;
     setTanggal(formatDate(currentDate));
+    {
+      tanggalError ? toggletanggalError() : "";
+    }
   };
 
   const showMode = (currentMode) => {
@@ -69,30 +82,95 @@ function Pemohon({onPress}) {
   };
 
   const press = () => {
-    if(nik != "" && nama != "" && jabatan != "" && jenis != "" && tempat != "" && tanggal != "" && alamat != "" && nomer != "" && nomerSeluler != ""){
-      {nikError ? togglenikError() : "" };
-      {namaError ? togglenamaError() : "" };
-      {jabatanError ? togglejabatanError() : "" };
-      {jenisError ? togglejenisError() : "" };
-      {tempatError ? toggletempatError() : "" };
-      {tanggalError ? toggletanggalError() : "" };
-      {alamatError ? togglealamatError() : "" };
-      {nomerError ? togglenomerError() : "" };
-      {nomerSelulerError ? togglenomerSelulerError() : "" };
-      dispatch({ nik_pemohon: nik, nama_pemohon: nama, jabatan_pemohon: jabatan, jenis_kelamin_pemohon: jenis, tempat_lahir_pemohon: tempat, tanggal_lahir_pemohon: tanggal, alamat_pemohon: alamat, nomer_pemohon: nomer, nomer_seluler_pemohon: nomerSeluler });
+    if (
+      nik != "" &&
+      nama != "" &&
+      jabatan != "" &&
+      jenis != "" &&
+      tempat != "" &&
+      tanggal != "" &&
+      alamat != "" &&
+      nomer != "" &&
+      nomerSeluler != ""
+    ) {
+      {
+        nikError ? togglenikError() : "";
+      }
+      {
+        namaError ? togglenamaError() : "";
+      }
+      {
+        jabatanError ? togglejabatanError() : "";
+      }
+      {
+        tempatError ? toggletempatError() : "";
+      }
+      {
+        tanggalError ? toggletanggalError() : "";
+      }
+      {
+        alamatError ? togglealamatError() : "";
+      }
+      {
+        nomerError ? togglenomerError() : "";
+      }
+      {
+        nomerSelulerError ? togglenomerSelulerError() : "";
+      }
+      dispatch({
+        nik_pemohon: nik,
+        nama_pemohon: nama,
+        jabatan_pemohon: jabatan,
+        jenis_kelamin_pemohon: jenis,
+        tempat_lahir_pemohon: tempat,
+        tanggal_lahir_pemohon: tanggal,
+        alamat_pemohon: alamat,
+        nomer_pemohon: nomer,
+        nomer_seluler_pemohon: nomerSeluler,
+      });
       onPress();
-    }else{
-      {nik == "" ? (nikError ? "" : togglenikError()) : ""};
-      {nama == "" ? (namaError ? "" : togglenamaError()) : ""};
-      {jabatan == "" ? (jabatanError ? "" : togglejabatanError()) : ""};
-      {jenis == "" ? (jenisError ? "" : togglejenisError()) : ""};
-      {tempat == "" ? (tempatError ? "" : toggletempatError()) : ""};
-      {tanggal == "" ? (tempatError ? "" : toggletanggalError()) : ""};
-      {alamat == "" ? (alamatError ? "" : togglealamatError()) : ""};
-      {nomer == "" ? (nomerError ? "" : togglenomerError()) : ""};
-      {nomerSeluler == "" ? (nomerSelulerError ? "" : togglenomerSelulerError()) : ""};
+    } else {
+      {
+        nik == "" ? (nikError ? "" : togglenikError()) : "";
+      }
+      {
+        nama == "" ? (namaError ? "" : togglenamaError()) : "";
+      }
+      {
+        jabatan == "" ? (jabatanError ? "" : togglejabatanError()) : "";
+      }
+      {
+        jenis == "" ? (jenisError ? "" : togglejenisError()) : "";
+      }
+      {
+        tempat == "" ? (tempatError ? "" : toggletempatError()) : "";
+      }
+      {
+        tanggal == "" ? (tempatError ? "" : toggletanggalError()) : "";
+      }
+      {
+        alamat == "" ? (alamatError ? "" : togglealamatError()) : "";
+      }
+      {
+        nomer == "" ? (nomerError ? "" : togglenomerError()) : "";
+      }
+      {
+        nomerSeluler == ""
+          ? nomerSelulerError
+            ? ""
+            : togglenomerSelulerError()
+          : "";
+      }
     }
-  }
+  };
+
+  useEffect(() => {
+    {
+      {
+        jenisError ? togglejenisError() : "";
+      }
+    }
+  }, [jenis]);
 
   return (
     <ScrollView
@@ -202,6 +280,7 @@ function Pemohon({onPress}) {
       )}
 
       <ADropDown
+        bdColor={jenisError ? color.error.error300 : color.neutral.neutral300}
         judul={"Jenis kelamin"}
         hint={"Pilih jenis kelamin"}
         data={jenis_kelamin}
@@ -333,7 +412,7 @@ function Pemohon({onPress}) {
         size={14}
         weight="normal"
       >
-      Contoh: 08••••••••••••
+        Contoh: 08••••••••••••
       </AText>
 
       {nomerError ? (
@@ -388,7 +467,9 @@ function Pemohon({onPress}) {
         style={{ marginTop: 32, marginBottom: 50 }}
         title={"Lanjut"}
         mode="contained"
-        onPress={() => {press();}}
+        onPress={() => {
+          press();
+        }}
       />
     </ScrollView>
   );

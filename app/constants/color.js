@@ -1,6 +1,7 @@
 export default Colors = {
     text: {
         white: "#FFFFFF",
+        trans: "#00000000",
     },
     primary: {
         main: "#30318B",

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { StyleSheet, View, Pressable, BackHandler, ScrollView } from "react-native";
 import AScreen from "../component/utility/AScreen";
 import BackButton from "../component/utility/ABackButton";
@@ -8,20 +8,20 @@ import ATextInput from "../component/utility/ATextInput";
 import APasswordInput from "../component/utility/APasswordInput";
 import { usePasswordVisibility } from "../hooks/usePasswordVisibility";
 import AButton from "../component/utility/AButton";
-import ALoading from "../component/utility/ALoading";
 import { useStateToggler } from "../hooks/useUtility";
 import AConfirmationDialog from "../component/utility/AConfirmationDialog";
 import { authRegister } from "../api/auth";
 import ADialog from "../component/utility/ADialog";
+import { UserContext } from "../context/UserContext";
 
 function RegisterScreen({ navigation }) {
   const emailInput = React.createRef();
   const passwordInput = React.createRef();
   const comfirmInput = React.createRef();
+  const context = useContext(UserContext);
 
   const { passwordVisibility, rightIcon, handlePasswordVisibility } =
     usePasswordVisibility();
-  const [loading, toggleLoading] = useStateToggler();
   const [confirm, toggleComfirm] = useStateToggler();
   const [emailExist, toggleEmailExist] = useStateToggler();
   const [something, toggleSomething] = useStateToggler();
@@ -49,24 +49,24 @@ function RegisterScreen({ navigation }) {
   }, []);
 
   const register = (name, email, password, confirmPassword) => {
-    toggleLoading();
+    context.toggleLoading(true);
 
     authRegister(name, email, password, confirmPassword, (response) => {
       switch (response.status) {
         case 201:
-          toggleLoading();
+          context.toggleLoading(false);
           navigation.navigate("Verifikasi", { email: email });
           break;
         case 409:
-          toggleLoading();
+          context.toggleLoading(false);
           toggleEmailExist();
           break;
         case 502:
-          toggleLoading();
+          context.toggleLoading(false);
           togglePassNotSame();
           break;
         default:
-          toggleLoading();
+          context.toggleLoading(false);
           toggleSomething();
           break;
       }
@@ -319,7 +319,6 @@ function RegisterScreen({ navigation }) {
           toggleSomething();
         }}
       />
-      <ALoading visibleModal={loading} />
     </AScreen>
   );
 }

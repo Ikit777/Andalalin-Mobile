@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { StyleSheet, View, Pressable, BackHandler, ScrollView } from "react-native";
 import AScreen from "../component/utility/AScreen";
 import BackButton from "../component/utility/ABackButton";
@@ -11,11 +11,13 @@ import { authForgotPassword, authResetPassword } from "../api/auth";
 import ALoading from "../component/utility/ALoading";
 import ADialog from "../component/utility/ADialog";
 import { remove } from "../utils/local-storage";
+import { UserContext } from "../context/UserContext";
 
 function ResetPasswordScreen({ navigation, route }) {
   const passwordBaruInput = React.createRef();
   const konfirmasiPassword = React.createRef();
   const codeInput = React.createRef();
+  const context = useContext(UserContext);
 
   const [baru, setBaru] = useState("");
   const [konfirmasi, setKonfirmasi] = useState("");
@@ -23,8 +25,7 @@ function ResetPasswordScreen({ navigation, route }) {
 
   let [count, setTimer] = useState(5 * 60);
   let [isStarted, setIsStarted] = useState(true);
-
-  const [loading, toggleLoading] = useStateToggler();
+  
   const [resendBerhasil, toggleResendBerhasil] = useStateToggler();
   const [resendGagal, toggleResendGagal] = useStateToggler();
   const [resetBerhasil, toggleResetBerhasil] = useStateToggler();
@@ -73,32 +74,32 @@ function ResetPasswordScreen({ navigation, route }) {
   }
 
   const resend = (email) => {
-    toggleLoading();
+    context.toggleLoading(true);
     authForgotPassword(email, (response) => {
       if (response.status === 200) {
-        toggleLoading();
+        context.toggleLoading(false);
         toggleResendBerhasil();
       } else {
-        toggleLoading();
+        context.toggleLoading(false);
         toggleResendGagal();
       }
     });
   };
 
   const reset = (password, passwordConfirm, code) => {
-    toggleLoading();
+    context.toggleLoading(true);
     authResetPassword(password, passwordConfirm, code, (response) => {
       switch (response.status) {
         case 200:
-          toggleLoading();
+          context.toggleLoading(false);
           toggleResetBerhasil();
           break;
         case 400:
-          toggleLoading();
+          context.toggleLoading(false);
           togglePassNotSame();
           break;
         case 502:
-          toggleLoading();
+          context.toggleLoading(false);
           toggleExpired();
           break;
       }
@@ -327,7 +328,6 @@ function ResetPasswordScreen({ navigation, route }) {
           toggleExpired();
         }}
       />
-      <ALoading visibleModal={loading} />
     </AScreen>
   );
 }

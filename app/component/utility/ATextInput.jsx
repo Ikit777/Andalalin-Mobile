@@ -4,16 +4,21 @@ import { poppins } from "../../constants/font";
 import AText from "../utility/AText";
 import color from "../../constants/color";
 
-const ATextInput = React.forwardRef((props, ref) =>
-{
+const ATextInput = React.forwardRef((props, ref) => {
   return (
-    <View style={{ flexDirection: "column", paddingTop: props.padding, paddingBottom: props.bottom }}>
+    <View
+      style={{
+        flexDirection: "column",
+        paddingTop: props.padding,
+        paddingBottom: props.bottom,
+      }}
+    >
       <AText color={color.neutral.neutral700} size={14}>
         {props.title}
       </AText>
-      <View style={[styles.border, {borderColor: props.bdColor}]}>
+      <View style={[styles.border, { borderColor: props.bdColor }]}>
         <TextInput
-          style={styles.input}
+          style={[styles.input, {maxHeight: props.maxHeight}]}
           placeholderTextColor={color.neutral.neutral500}
           onChangeText={props.onChangeText}
           allowFontScaling={false}
@@ -23,17 +28,17 @@ const ATextInput = React.forwardRef((props, ref) =>
           selectionColor={color.neutral.neutral400}
           autoComplete="off"
           multiline={props.multi}
+          numberOfLines={props.max}
           textAlignVertical="top"
           returnKeyType={props.rtype}
           onSubmitEditing={props.submit}
           ref={ref}
           blurOnSubmit={props.blur}
-        >
-        </TextInput>
+        ></TextInput>
       </View>
     </View>
   );
-})
+});
 
 const styles = StyleSheet.create({
   border: {

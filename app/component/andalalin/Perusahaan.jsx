@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { StyleSheet, ScrollView } from "react-native";
 import AText from "../../component/utility/AText";
 import color from "../../constants/color";
@@ -8,7 +8,7 @@ import { UserContext } from "../../context/UserContext";
 import { useStateToggler } from "../../hooks/useUtility";
 import AButton from "../utility/AButton";
 
-function Perusahaan({onPress}) {
+function Perusahaan({ onPress }) {
   const {
     permohonan: {
       nama_perusahaan,
@@ -48,26 +48,75 @@ function Perusahaan({onPress}) {
   const jenis_kelamin = [{ value: "Laki-laki" }, { value: "Perempuan" }];
 
   const press = () => {
-    if(nama != "" && alamat != "" && nomer != "" && email != "" && pimpinan != "" && jabatan != "" && jenis != ""){
-      {namaError ? toggleNamaError() : "" };
-      {alamatError ? toggleAlamatError() : "" };
-      {nomerError ? toggleNomerError() : "" };
-      {emailError ? toggleEmailError() : "" };
-      {pimpinanError ? togglePimpinanError() : "" };
-      {jabatanError ? toggleJabatanError() : "" };
-      {jenisError ? toggleJenisError() : "" };
-      dispatch({ nama_perusahaan: nama, alamat_perusahaan: alamat, nomer_perusahaan: nomer, email_perusahaan: email, nama_pimpinan: pimpinan, jabatan_pimpinan: jabatan, jenis_kelamin_pimpinan: jenis });
+    if (
+      nama != "" &&
+      alamat != "" &&
+      nomer != "" &&
+      email != "" &&
+      pimpinan != "" &&
+      jabatan != "" &&
+      jenis != ""
+    ) {
+      {
+        namaError ? toggleNamaError() : "";
+      }
+      {
+        alamatError ? toggleAlamatError() : "";
+      }
+      {
+        nomerError ? toggleNomerError() : "";
+      }
+      {
+        emailError ? toggleEmailError() : "";
+      }
+      {
+        pimpinanError ? togglePimpinanError() : "";
+      }
+      {
+        jabatanError ? toggleJabatanError() : "";
+      }
+      dispatch({
+        nama_perusahaan: nama,
+        alamat_perusahaan: alamat,
+        nomer_perusahaan: nomer,
+        email_perusahaan: email,
+        nama_pimpinan: pimpinan,
+        jabatan_pimpinan: jabatan,
+        jenis_kelamin_pimpinan: jenis,
+      });
       onPress();
-    }else{
-      {nama == "" ? (namaError ? "" : toggleNamaError()) : ""};
-      {alamat == "" ? (alamatError ? "" : toggleAlamatError()) : ""};
-      {nomer == "" ? (nomerError ? "" : toggleNomerError()) : ""};
-      {email == "" ? (emailError ? "" : toggleEmailError()) : ""};
-      {pimpinan == "" ? (pimpinanError ? "" : togglePimpinanError()) : ""};
-      {jabatan == "" ? (jabatanError ? "" : toggleJabatanError()) : ""};
-      {jenis == "" ? (jenisError ? "" : toggleJenisError()) : ""};
+    } else {
+      {
+        nama == "" ? (namaError ? "" : toggleNamaError()) : "";
+      }
+      {
+        alamat == "" ? (alamatError ? "" : toggleAlamatError()) : "";
+      }
+      {
+        nomer == "" ? (nomerError ? "" : toggleNomerError()) : "";
+      }
+      {
+        email == "" ? (emailError ? "" : toggleEmailError()) : "";
+      }
+      {
+        pimpinan == "" ? (pimpinanError ? "" : togglePimpinanError()) : "";
+      }
+      {
+        jabatan == "" ? (jabatanError ? "" : toggleJabatanError()) : "";
+      }
+      {
+        jenis == "" ? (jenisError ? "" : toggleJenisError()) : "";
+      }
     }
-  }
+  };
+
+  useEffect(() => {
+    {
+      {
+        jenisError ? toggleJenisError() : "";
+      }
+    }
+  }, [jenis]);
 
   return (
     <ScrollView
@@ -164,7 +213,7 @@ function Perusahaan({onPress}) {
         size={14}
         weight="normal"
       >
-      Contoh: 08••••••••••••
+        Contoh: 08••••••••••••
       </AText>
 
       {nomerError ? (
@@ -286,6 +335,7 @@ function Perusahaan({onPress}) {
       )}
 
       <ADropDown
+        bdColor={jenisError ? color.error.error300 : color.neutral.neutral300}
         judul={"Jenis kelamin pimpinan"}
         hint={"Pilih jenis kelamin"}
         data={jenis_kelamin}
@@ -310,7 +360,9 @@ function Perusahaan({onPress}) {
         style={{ marginTop: 32, marginBottom: 50 }}
         title={"Lanjut"}
         mode="contained"
-        onPress={() => {press();}}
+        onPress={() => {
+          press();
+        }}
       />
     </ScrollView>
   );

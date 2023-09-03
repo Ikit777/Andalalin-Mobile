@@ -7,7 +7,7 @@ import { Feather } from "@expo/vector-icons";
 function ACardPermohonan({ status, tanggal, jenis, kode, pemohon, alamat, style, onPress, title }) {
   const statusBg = () => {
     switch (status) {
-      case "Persayaratan tidak sesuai":
+      case "Persyaratan tidak sesuai":
         return color.error.error50;
       case "Permohonan selesai":
         return color.success.success50;
@@ -18,7 +18,7 @@ function ACardPermohonan({ status, tanggal, jenis, kode, pemohon, alamat, style,
 
   const statusText = () => {
     switch (status) {
-      case "Persayaratan tidak sesuai":
+      case "Persyaratan tidak sesuai":
         return color.error.error700;
       case "Permohonan selesai":
         return color.success.success700;

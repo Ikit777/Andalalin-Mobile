@@ -32,7 +32,6 @@ function ALoading({ visibleModal = false}) {
       visible={visible}
       transparent={true}
       statusBarTranslucent
-      onRequestClose={() => {setVisible(false)}}
     >
         <View style={[styles.container, styles.horizontal]}>
       <ActivityIndicator

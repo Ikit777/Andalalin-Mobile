@@ -118,7 +118,7 @@ export const authRefreshToken = async (user, authRespone) => {
       id: user.user.id,
       nama: user.user.nama,
       email: user.user.email,
-      role: user.role,
+      role: user.user.role,
       photo: user.user.photo,
     };
     Object.assign(user.user, newAuthState);

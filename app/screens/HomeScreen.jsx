@@ -16,10 +16,14 @@ import Constants from "expo-constants";
 import { UserContext } from "../context/UserContext";
 import AConfirmationDialog from "../component/utility/AConfirmationDialog";
 import { useStateToggler } from "../hooks/useUtility";
+import ADialog from "../component/utility/ADialog";
+import { authRefreshToken } from "../api/auth";
+import { userMe } from "../api/user";
 
 function HomeScreen({ navigation }) {
   const context = useContext(UserContext);
   const [confirm, toggleComfirm] = useStateToggler();
+  const [error, toggleError] = useStateToggler();
 
   useEffect(() => {
     navigation.addListener("beforeRemove", (e) => {
@@ -99,14 +103,27 @@ function HomeScreen({ navigation }) {
               title={"Daftar permohonan"}
               desc={"Daftar permohonan yang telah diajukan"}
               onPress={() => {
-                navigation.push("Daftar");
+                navigation.push("Daftar", {kondisi: "Diajukan"});
               }}
             />
+
             <AMenuCard
               style={{ marginBottom: 20 }}
-              icon={"file-text"}
-              title={"Daftar survei"}
-              desc={"Daftar survei yang dilakukan petugas"}
+              icon={"list"}
+              title={"Daftar permohonan selesai"}
+              desc={"Daftar permohonan yang telah selesai"}
+              onPress={() => {
+                navigation.push("Daftar", {kondisi: "Selesai"});
+              }}
+            />
+
+            <AMenuCard
+              style={{ marginBottom: 20 }}
+              icon={"clipboard"}
+              title={"Survei kepuasan masyarakat"}
+              desc={
+                "Daftar survei kepuasan yang dilakukan masyarakat terhadap aplikasi"
+              }
             />
           </View>
         );
@@ -115,59 +132,106 @@ function HomeScreen({ navigation }) {
           <View>
             <AMenuCard
               style={{ marginBottom: 20 }}
-              icon={"list"}
+              icon={"map-pin"}
               title={"Survei lapangan"}
               desc={"Pengisian data survei lapangan permohonan"}
+              onPress={() => {
+                navigation.push("Daftar", { kondisi: "Survei" });
+              }}
             />
             <AMenuCard
               style={{ marginBottom: 20 }}
-              icon={"file-text"}
+              icon={"list"}
               title={"Daftar survei"}
               desc={"Daftar survei yang dilakukan"}
+              onPress={() => {
+                navigation.push("Daftar", { kondisi: "Daftar" });
+              }}
             />
           </View>
         );
-      default:
+      case "Super Admin":
         return (
           <View>
             <AMenuCard
               style={{ marginBottom: 20 }}
-              icon={"clipboard"}
-              title={"Andalalin"}
-              desc={"Ajukan permohonan untuk pelaksanaan andalalin"}
+              icon={"list"}
+              title={"Daftar pengguna"}
+              desc={"Daftar pengguna andalalin"}
               onPress={() => {
-                navigation.push("Andalalin");
-                context.clear();
-                context.setIndex(1);
+                navigation.push("Daftar User");
               }}
             />
             <AMenuCard
               style={{ marginBottom: 20 }}
-              icon={"alert-triangle"}
-              title={"Rambu lalu lintas"}
-              desc={
-                "Ajukan permohonan untuk pelaksanaan pengadaan rambu lalu lintas"
-              }
+              icon={"user-plus"}
+              title={"Tambah pengguna"}
+              desc={"Tambahkan pengguna baru andalalin"}
+              onPress={() => {
+                navigation.push("Tambah User");
+              }}
             />
+          </View>
+        );
+      case "Admin":
+        return (
+          <View>
             <AMenuCard
               style={{ marginBottom: 20 }}
               icon={"list"}
-              title={"Daftar permohonan"}
-              desc={"Daftar permohonan yang telah diajukan"}
+              title={"Persetujuan dokumen"}
+              desc={"Persetujuan dokumen terhadap permohonan yang telah di ajukan"}
               onPress={() => {
                 navigation.push("Daftar");
               }}
             />
+
             <AMenuCard
-              style={{ marginBottom: 50 }}
-              icon={"file-text"}
-              title={"Survey kepuasa"}
-              desc={"Survey kepuasan masyaratan terhadap layanan kami"}
+              style={{ marginBottom: 20 }}
+              icon={"user-plus"}
+              title={"Pengelolaan produk"}
+              desc={"Pengelolaan produk yang diterapkan pada aplikasi andalalin"}
             />
           </View>
         );
     }
   };
+
+  const me = () => {
+    if (context.getUser() != "user") {
+      userMe(context.getUser().access_token, (response) => {
+        switch (response.status) {
+          case 200:
+            context.toggleLoading(false);
+            if (context.getUser() != "user") {
+              if (context.getUser().role === undefined) {
+                toggleError();
+              }
+            }
+            break;
+          case 424:
+            authRefreshToken(context, (response) => {
+              if (response.status === 200) {
+                me();
+              } else {
+                context.toggleLoading(false);
+              }
+            });
+            break;
+          default:
+            context.toggleLoading(false);
+            break;
+        }
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (context.loading == false) {
+      context.toggleLoading(true);
+    }
+    me();
+  }, [context.user]);
 
   return (
     <AScreen full statusbar={"light"}>
@@ -279,6 +343,16 @@ function HomeScreen({ navigation }) {
           toggleComfirm();
         }}
       />
+      <ADialog
+        title={"Error"}
+        desc={"Telah terjadi sesuatu, silahkan login kembali"}
+        visibleModal={error}
+        btnOK={"OK"}
+        onPressOKButton={() => {
+          navigation.push("Login");
+          toggleError();
+        }}
+      />
     </AScreen>
   );
 }
@@ -298,6 +372,7 @@ const styles = StyleSheet.create({
   content: {
     paddingTop: 29,
     paddingHorizontal: 16,
+    flex: 1,
   },
 });
 

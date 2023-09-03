@@ -7,7 +7,6 @@ import ATextInput from "../component/utility/ATextInput";
 import APasswordInput from "../component/utility/APasswordInput";
 import { usePasswordVisibility } from "../hooks/usePasswordVisibility";
 import AButton from "../component/utility/AButton";
-import ALoading from "../component/utility/ALoading";
 import ADialog from "../component/utility/ADialog";
 import { useStateToggler } from "../hooks/useUtility";
 import AConfirmationDialog from "../component/utility/AConfirmationDialog";
@@ -24,11 +23,9 @@ function LoginScreen({ navigation }) {
     usePasswordVisibility();
   const [dialogUser, toggleDialogUser] = useStateToggler();
   const [dialogVerif, toggleDialogVerif] = useStateToggler();
-  const [loading, toggleLoading] = useStateToggler();
   const [confirm, toggleComfirm] = useStateToggler();
   const [emailError, toggleEmailError] = useStateToggler();
   const [passwordError, togglePasswordError] = useStateToggler();
-  const [logged, toggleLogged] = useStateToggler();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -68,7 +65,9 @@ function LoginScreen({ navigation }) {
   }, [navigation]);
 
   useEffect(() => {
-    registerForPushNotificationsAsync().then((token) => setToken(token));
+    registerForPushNotificationsAsync()
+      .then((token) => setToken(token))
+      .catch(console.log("Network Failed"));
   }, []);
 
   async function registerForPushNotificationsAsync() {
@@ -105,20 +104,19 @@ function LoginScreen({ navigation }) {
   }
 
   const verif = (email) => {
-    toggleLoading();
+    context.toggleLoading(true);
     authResendVerication(email, (response) => {
       if (response.status === 201) {
-        toggleLoading();
+        context.toggleLoading(false);
       }
     });
   };
 
   const login = () => {
-    toggleLoading();
+    context.toggleLoading(true);
     authLogin(email, password, token.data, (response) => {
       switch (response.status) {
         case 200:
-          toggleLoading();
           (async () => {
             const result = await response.json();
 
@@ -137,20 +135,16 @@ function LoginScreen({ navigation }) {
             navigation.push("Home");
           })();
           break;
-        case 409:
-          toggleLoading();
-          toggleLogged();
-          break;
         case 400:
-          toggleLoading();
+          context.toggleLoading(false);
           toggleDialogUser();
           break;
         case 403:
-          toggleLoading();
+          context.toggleLoading(false);
           toggleDialogVerif();
           break;
         default:
-          toggleLoading();
+          context.toggleLoading(false);
           toggleDialogUser();
           break;
       }
@@ -344,18 +338,6 @@ function LoginScreen({ navigation }) {
           navigation.navigate("Verifikasi", { email: email });
         }}
       />
-      <ADialog
-        title={"Peringatan!"}
-        desc={"User telah login pada perangkat lain"}
-        visibleModal={logged}
-        btnOK={"OK"}
-        onPressOKButton={() => {
-          toggleLogged();
-          setEmail("");
-          setPassword("");
-        }}
-      />
-      <ALoading visibleModal={loading} />
     </AScreen>
   );
 }

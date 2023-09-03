@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { StyleSheet, View, Pressable, BackHandler } from "react-native";
 import AScreen from "../component/utility/AScreen";
 import BackButton from "../component/utility/ABackButton";
@@ -9,31 +9,31 @@ import ALoading from "../component/utility/ALoading";
 import { useStateToggler } from "../hooks/useUtility";
 import { authForgotPassword } from "../api/auth";
 import AButton from "../component/utility/AButton";
+import { UserContext } from "../context/UserContext";
 
 function ForgotPasswordScreen({ navigation }) {
+  const context = useContext(UserContext);
   const [email, setEmail] = useState("");
-
-  const [loading, toggleLoading] = useStateToggler();
   const [err, toggleErr] = useStateToggler();
   const [verif, toggleVerif] = useStateToggler();
   const [data, toggleData] = useStateToggler();
   const [bd, toggleBd] = useStateToggler();
 
   const forgot = (email) => {
-    toggleLoading();
+    context.toggleLoading(true);
     authForgotPassword(email, (response) => {
       switch (response.status) {
         case 200:
-          toggleLoading();
+          context.toggleLoading(false);
           navigation.navigate("Reset", { email: email });
           break;
         case 400:
-          toggleLoading();
+          context.toggleLoading(false);
           toggleErr();
           toggleBd();
           break;
         case 401:
-          toggleLoading();
+          context.toggleLoading(false);
           if (!err) {
             toggleVerif();
             toggleBd();
@@ -187,7 +187,6 @@ function ForgotPasswordScreen({ navigation }) {
           </Pressable>
         </View>
       </View>
-      <ALoading visibleModal={loading} />
     </AScreen>
   );
 }

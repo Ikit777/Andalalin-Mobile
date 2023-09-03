@@ -1,12 +1,41 @@
-import React, { useEffect } from "react";
-import { StyleSheet, View, BackHandler } from "react-native";
+import React, { useEffect, useState, useContext } from "react";
+import {
+  StyleSheet,
+  View,
+  BackHandler,
+  SafeAreaView,
+  Dimensions,
+} from "react-native";
 import AText from "../component/utility/AText";
 import color from "../constants/color";
 import AScreen from "../component/utility/AScreen";
 import ABackButton from "../component/utility/ABackButton";
 import Pdf from "react-native-pdf";
+import * as FileSystem from "expo-file-system";
+import ADialog from "../component/utility/ADialog";
+import { useStateToggler } from "../hooks/useUtility";
+import { UserContext } from "../context/UserContext";
 
 function PdfViewSreen({ navigation, route }) {
+  const context = useContext(UserContext);
+  const [data, setData] = useState();
+  const [gagal, toggleGagal] = useStateToggler();
+
+  const load = async () => {
+    const pdfFilePath = `${FileSystem.cacheDirectory}temp.pdf`;
+
+    await FileSystem.writeAsStringAsync(pdfFilePath, route.params.pdf, {
+      encoding: FileSystem.EncodingType.Base64,
+    });
+
+    setData(pdfFilePath);
+  };
+
+  useEffect(() => {
+    context.toggleLoading(true);
+    load();
+  }, []);
+
   useEffect(() => {
     BackHandler.addEventListener("hardwareBackPress", () => {
       navigation.goBack();
@@ -18,11 +47,6 @@ function PdfViewSreen({ navigation, route }) {
       return true;
     });
   }, []);
-
-  const source = {
-    uri: "data:application/pdf;base64," + route.params.pdf,
-    cache: true,
-  };
 
   return (
     <AScreen>
@@ -43,21 +67,31 @@ function PdfViewSreen({ navigation, route }) {
           </AText>
         </View>
       </View>
-      <View style={styles.content}>
-        <Pdf
-          source={source}
-          onLoadComplete={(numberOfPages, filePath) => {
-            console.log(`Number of pages: ${numberOfPages}`);
-          }}
-          onPageChanged={(page, numberOfPages) => {
-            console.log(`Current page: ${page}`);
-          }}
-          onError={(error) => {
-            console.log(error);
-          }}
-          style={styles.pdf}
-        />
-      </View>
+      <SafeAreaView style={styles.content}>
+        {data != null ? (
+          <Pdf
+            trustAllCerts={false}
+            source={{ uri: data, cache: true }}
+            style={styles.pdf}
+            onLoadComplete={() => {
+              context.toggleLoading(false);
+            }}
+            onError={() => {
+              context.toggleLoading(false);
+              toggleGagal();
+            }}
+          />
+        ) : (
+          ""
+        )}
+      </SafeAreaView>
+      <ADialog
+        title={"Berkas gagal dibuka!"}
+        desc={"Berkas telah gagal dibuka, silahkan coba lagi"}
+        visibleModal={gagal}
+        btnOK={"OK"}
+        onPressOKButton={() => {navigation.goBack();}}
+      />
     </AScreen>
   );
 }
@@ -68,11 +102,13 @@ const styles = StyleSheet.create({
     height: 64,
   },
   content: {
-    padding: 16,
+    flex: 1,
   },
   pdf: {
     flex: 1,
-    width: "100%",
+    backgroundColor: "transparent",
+    width: Dimensions.get("window").width,
+    height: Dimensions.get("window").height,
   },
 });
 

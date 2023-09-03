@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { StyleSheet, View, Pressable } from "react-native";
 import color from "../../constants/color";
 import AText from "../utility/AText";
@@ -8,17 +8,20 @@ import ASnackBar from "../utility/ASnackBar";
 import AConfirmationDialog from "../utility/AConfirmationDialog";
 import * as FileSystem from "expo-file-system";
 import { StorageAccessFramework } from "expo-file-system";
-import ALoading from "../utility/ALoading";
+import AButton from "../utility/AButton";
+import { UserContext } from "../../context/UserContext";
 
-function DetailUser({ permohonan }) {
+function DetailUser({ permohonan, navigation }) {
+  const context = useContext(UserContext);
   const [konfirmasi, toggleKonfirmasi] = useStateToggler();
   const [message, setMessage] = useState();
   const [isSnackbarVisible, setSnackbarVisible] = useStateToggler();
-  const [loading, toggleLoading] = useStateToggler();
+  const [file, setFile] = useState();
+  const [namaFile, setNamaFile] = useState();
 
   const status = () => {
     switch (permohonan.status_andalalin) {
-      case "Persayaratan tidak sesuai":
+      case "Persyaratan tidak sesuai":
         return color.error.error50;
       case "Permohonan selesai":
         return color.success.success50;
@@ -29,7 +32,7 @@ function DetailUser({ permohonan }) {
 
   const statusText = () => {
     switch (permohonan.status_andalalin) {
-      case "Persayaratan tidak sesuai":
+      case "Persyaratan tidak sesuai":
         return color.error.error700;
       case "Permohonan selesai":
         return color.success.success700;
@@ -52,31 +55,24 @@ function DetailUser({ permohonan }) {
       return;
     }
 
-    const fileName =
-      "Tanda terima pendaftaran permohonan " +
-      permohonan.kode_andalalin +
-      ".pdf";
-
     await StorageAccessFramework.createFileAsync(
       permissions.directoryUri,
-      fileName,
+      namaFile,
       "application/pdf"
     )
       .then(async (uri) => {
-        toggleLoading();
-        await FileSystem.writeAsStringAsync(
-          uri,
-          permohonan.tanda_terima_pendaftaran,
-          { encoding: FileSystem.EncodingType.Base64 }
-        );
+        context.toggleLoading(true);
+        await FileSystem.writeAsStringAsync(uri, file, {
+          encoding: FileSystem.EncodingType.Base64,
+        });
       })
       .catch(() => {
-        toggleLoading();
+        context.toggleLoading(false);
         setMessage("Berkas gagal di download");
         showSnackbar();
       })
       .finally(() => {
-        toggleLoading();
+        context.toggleLoading(false);
         setMessage("Berkas berhasil di download");
         showSnackbar();
       });
@@ -117,7 +113,7 @@ function DetailUser({ permohonan }) {
         </AText>
       </ADetailView>
 
-      <ADetailView style={{ marginTop: 20 }} title={"Informai"}>
+      <ADetailView style={{ marginTop: 20 }} title={"Informasi"}>
         <View
           style={{
             flexDirection: "row",
@@ -228,7 +224,22 @@ function DetailUser({ permohonan }) {
             {permohonan.nama_perusahaan}
           </AText>
         </View>
-
+        <View style={styles.separator} />
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            padding: 16,
+          }}
+        >
+          <AText size={12} color={color.neutral.neutral900} weight="normal">
+            Jenis Rencana Pembangunan
+          </AText>
+          <AText size={12} color={color.neutral.neutral500} weight="normal">
+            {permohonan.jenis_rencana_pembangunan}
+          </AText>
+        </View>
         <View style={styles.separator} />
         <View
           style={{
@@ -247,7 +258,14 @@ function DetailUser({ permohonan }) {
         </View>
       </ADetailView>
 
-      <ADetailView style={{ marginTop: 20, marginBottom: 50 }} title={"Berkas"}>
+      <ADetailView
+        style={{
+          marginTop: 20,
+          marginBottom:
+            permohonan.status_andalalin == "Persyaratan tidak sesuai" ? 20 : 50,
+        }}
+        title={"Berkas"}
+      >
         <View
           style={{
             flexDirection: "row",
@@ -263,6 +281,12 @@ function DetailUser({ permohonan }) {
           <Pressable
             style={{ flexDirection: "row", paddingLeft: 4 }}
             onPress={() => {
+              setNamaFile(
+                "Tanda terima pendaftaran permohonan " +
+                  permohonan.kode_andalalin +
+                  ".pdf"
+              );
+              setFile(permohonan.tanda_terima_pendaftaran);
               toggleKonfirmasi();
             }}
           >
@@ -271,7 +295,60 @@ function DetailUser({ permohonan }) {
             </AText>
           </Pressable>
         </View>
+        {permohonan.file_sk != null ? (
+          <View>
+            <View style={styles.separator} />
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                padding: 16,
+              }}
+            >
+              <AText size={12} color={color.neutral.neutral900} weight="normal">
+                Surat keputusan
+              </AText>
+
+              <Pressable
+                style={{ flexDirection: "row", paddingLeft: 4 }}
+                onPress={() => {
+                  setNamaFile(
+                    "Surat keputusan permohonan " +
+                      permohonan.kode_andalalin +
+                      ".pdf"
+                  );
+                  setFile(permohonan.file_sk);
+                  toggleKonfirmasi();
+                }}
+              >
+                <AText
+                  size={14}
+                  color={color.neutral.neutral700}
+                  weight="semibold"
+                >
+                  Download
+                </AText>
+              </Pressable>
+            </View>
+          </View>
+        ) : (
+          ""
+        )}
       </ADetailView>
+
+      {permohonan.status_andalalin == "Persyaratan tidak sesuai" ? (
+        <AButton
+          style={{ marginBottom: 50 }}
+          title={"Update persyaratan"}
+          mode="contained"
+          onPress={() => {
+            navigation.push("Update", { permohonan: permohonan });
+          }}
+        />
+      ) : (
+        ""
+      )}
       <AConfirmationDialog
         title={"Download"}
         desc={"Berkas akan tersimpan pada folder yang akan anda pilih"}
@@ -295,7 +372,6 @@ function DetailUser({ permohonan }) {
           ""
         )}
       </View>
-      <ALoading visibleModal={loading} />
     </View>
   );
 }

@@ -13,6 +13,7 @@ import { UserContext, UserProvider } from "./app/context/UserContext";
 import Navigator from "./app/navigation/Navigator";
 import ASessionEnd from "./app/component/utility/ASessionEnd";
 import { navigationRef } from "./app/navigation/RootNavigator";
+import ALoading from "./app/component/utility/ALoading";
 
 export default function App() {
   const [isAppReady, setIsAppReady] = useState(false);
@@ -61,14 +62,20 @@ export default function App() {
     <View onLayout={onLayoutRootView} style={{ flex: 1 }}>
       <NetProvider>
         <UserProvider>
-          <NetContext.Consumer>
-            {(ctx) => <ANoInternetDialog visibleModal={!ctx} />}
-          </NetContext.Consumer>
           <NavigationContainer ref={navigationRef}>
-            <Navigator isLogged={isLogged} />
+            <NetContext.Consumer>
+              {(ctx) => <ANoInternetDialog visibleModal={!ctx} />}
+            </NetContext.Consumer>
+
             <UserContext.Consumer>
               {(value) => <ASessionEnd visibleModal={value.getSession()} />}
             </UserContext.Consumer>
+
+            <UserContext.Consumer>
+              {(value) => <ALoading visibleModal={value.getLoading()} />}
+            </UserContext.Consumer>
+
+            <Navigator isLogged={isLogged} />
           </NavigationContainer>
         </UserProvider>
       </NetProvider>
