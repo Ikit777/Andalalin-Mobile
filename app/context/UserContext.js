@@ -155,7 +155,6 @@ export function UserProvider({ children }) {
           const result = await response.json();
           setDataMaster(result.data);
         })();
-      } else {
       }
     });
   };

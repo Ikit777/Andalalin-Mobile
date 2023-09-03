@@ -1,6 +1,4 @@
-import "dotenv/config";
-
-export default ({ config }) => {
+module.exports = ({ config }) => {
   return {
     ...config,
     extra: {
