@@ -5,19 +5,10 @@
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "internal",
-      "env": {
-        "APP_STATUS": "DEVELOPMENT",
-        "API_URL": "https://andalalin-development.up.railway.app"
-      }
-      
+      "distribution": "internal"
     },
     "preview": {
       "distribution": "internal",
-      "env": {
-        "APP_STATUS": "DEVELOPMENT",
-        "API_URL": "https://andalalin-development.up.railway.app"
-      },
       "android": {
         "buildType": "apk"
       }

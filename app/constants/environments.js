@@ -1,7 +1,7 @@
 import Constants from "expo-constants";
 
-const status = Constants?.expoConfig?.extra.appStatus;
-const url = Constants?.expoConfig?.extra?.apiURL;
+const status = Constants.expoConfig.extra.appStatus;
+const url = Constants.expoConfig.extra.apiURL;
 
 const environments = {
   DEVELOPMENT: {

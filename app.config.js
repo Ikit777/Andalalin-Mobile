@@ -2,6 +2,7 @@ import "dotenv/config";
 
 export default ({ config }) => {
   return {
+    ...config,
     extra: {
       eas: {
         projectId: "2b044a40-5746-4ede-8008-ca66914cc9c6",
@@ -9,6 +10,5 @@ export default ({ config }) => {
       appStatus: process.env.APP_STATUS,
       apiURL: process.env.API_URL,
     },
-    ...config,
   };
 };
