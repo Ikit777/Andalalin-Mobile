@@ -12,11 +12,12 @@ import AScreen from "../component/utility/AScreen";
 import ABackButton from "../component/utility/ABackButton";
 import { useStateToggler } from "../hooks/useUtility";
 import ADialog from "../component/utility/ADialog";
-import { andalalinGetById, andalalinGetSurvei } from "../api/andalalin";
+import { andalalinGetById } from "../api/andalalin";
 import { authRefreshToken } from "../api/auth";
 import { UserContext } from "../context/UserContext";
 import DetailUser from "../component/detail/DetailUser";
 import DetailNonUser from "../component/detail/DetailNonUser";
+import { useFocusEffect } from "@react-navigation/native";
 
 function DetailScreen({ navigation, route }) {
   const context = useContext(UserContext);
@@ -26,24 +27,26 @@ function DetailScreen({ navigation, route }) {
   const [refreshing, setRefreshing] = useState(false);
   const [progressViewOffset, setProgressViewOffset] = useState(40);
 
-  useEffect(() => {
-    BackHandler.addEventListener("hardwareBackPress", () => {
-      setProgressViewOffset(-3000);
-      back();
-      return true;
-    });
+  useFocusEffect(
+    React.useCallback(() => {
+      BackHandler.addEventListener("hardwareBackPress", () => {
+        setProgressViewOffset(-5000);
+        back();
+        return true;
+      });
 
-    return BackHandler.removeEventListener("hardwareBackPress", () => {
-      setProgressViewOffset(-3000);
-      back();
-      return true;
-    });
-  }, [data]);
+      return BackHandler.removeEventListener("hardwareBackPress", () => {
+        setProgressViewOffset(-5000);
+        back();
+        return true;
+      });
+    }, [data])
+  );
 
   const back = () => {
     switch (context.getUser().role) {
       case "User":
-        navigation.navigate("Daftar");
+        navigation.replace("Back Daftar");
         break;
       case "Operator":
         if (data.status_andalalin == "Permohonan selesai") {
@@ -56,7 +59,7 @@ function DetailScreen({ navigation, route }) {
         navigation.replace("Back Daftar", { kondisi: "Survei" });
         break;
       case "Admin":
-        navigation.navigate("Daftar");
+        navigation.replace("Back Daftar");
         break;
     }
   };
@@ -166,7 +169,7 @@ function DetailScreen({ navigation, route }) {
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <ABackButton
             onPress={() => {
-              setProgressViewOffset(-3000);
+              setProgressViewOffset(-5000);
               back();
             }}
           />

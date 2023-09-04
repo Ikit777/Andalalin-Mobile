@@ -101,7 +101,7 @@ function LaporanBAPScreen({ navigation, route }) {
         switch (response.status) {
           case 201:
             (async () => {
-              navigation.replace("Detail", { id: id });
+              navigation.replace("Back Detail", { id: id });
             })();
             break;
           case 424:
@@ -188,6 +188,7 @@ function LaporanBAPScreen({ navigation, route }) {
           title={"Nomor dasar"}
           rtype={"next"}
           multi={false}
+          blur={false}
           value={dasar}
           ref={dasarRef}
           onChangeText={(value) => {

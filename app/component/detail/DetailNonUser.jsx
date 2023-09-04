@@ -350,7 +350,7 @@ function DetailNonUser({ permohonan, navigation }) {
       (response) => {
         switch (response.status) {
           case 200:
-            navigation.replace("Detail", { id: permohonan.id_andalalin });
+            navigation.replace("Reload Detail", { id: permohonan.id_andalalin });
             break;
           case 424:
             authRefreshToken(context, (response) => {
@@ -385,7 +385,7 @@ function DetailNonUser({ permohonan, navigation }) {
         (response) => {
           switch (response.status) {
             case 200:
-              navigation.replace("Detail", { id: permohonan.id_andalalin });
+              navigation.replace("Reload Detail", { id: permohonan.id_andalalin });
               break;
             case 424:
               authRefreshToken(context, (response) => {
@@ -649,7 +649,7 @@ function DetailNonUser({ permohonan, navigation }) {
       (response) => {
         switch (response.status) {
           case 200:
-            navigation.replace("Detail", { id: permohonan.id_andalalin });
+            navigation.replace("Reload Detail", { id: permohonan.id_andalalin });
             break;
           case 424:
             authRefreshToken(context, (response) => {
@@ -807,7 +807,7 @@ function DetailNonUser({ permohonan, navigation }) {
       (response) => {
         switch (response.status) {
           case 201:
-            navigation.replace("Detail", { id: permohonan.id_andalalin });
+            navigation.replace("Reload Detail", { id: permohonan.id_andalalin });
             break;
           case 424:
             authRefreshToken(context, (response) => {

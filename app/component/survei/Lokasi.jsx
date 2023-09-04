@@ -25,7 +25,7 @@ function Lokasi({ onPress, id }) {
   const [permission, togglePermission] = useStateToggler();
   const [location, setLocation] = useState();
   const [lokasiKosong, toggleLokasiKosong] = useStateToggler();
-  const [load, toggleLoad] = useStateToggler();
+  const [load, toggleLoad] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -164,7 +164,7 @@ function Lokasi({ onPress, id }) {
             source={{ html: maps }}
             onLoadEnd={() => {
               context.toggleLoading(false);
-              toggleLoad();
+              toggleLoad(true);
             }}
           />
         ) : (

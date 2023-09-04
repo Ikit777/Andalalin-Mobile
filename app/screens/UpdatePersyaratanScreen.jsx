@@ -155,7 +155,7 @@ function UpdatePersyaratanScreen({ navigation, route }) {
         switch (response.status) {
           case 200:
             (async () => {
-              navigation.replace("Detail", { id: permohonan.id_andalalin });
+              navigation.replace("Back Detail", { id: permohonan.id_andalalin });
             })();
             break;
           case 424:
@@ -311,7 +311,7 @@ function UpdatePersyaratanScreen({ navigation, route }) {
           ""
         )}
         <AButton
-          style={{ marginBottom: 50, marginTop: 32 }}
+          style={{ marginBottom: 32, marginTop: 32 }}
           title={"Simpan"}
           mode="contained"
           onPress={() => {

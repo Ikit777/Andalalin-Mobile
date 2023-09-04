@@ -74,6 +74,18 @@ const Navigator = ({
         initialParams={{ id }}
       />
       <Stack.Screen
+        name="Back Detail"
+        component={DetailScreen}
+        options={{ animation: "slide_from_left" }}
+        initialParams={{ id }}
+      />
+      <Stack.Screen
+        name="Reload Detail"
+        component={DetailScreen}
+        options={{ animation: "none" }}
+        initialParams={{ id }}
+      />
+      <Stack.Screen
         name="Detail Survei"
         component={DetailSurveiScreen}
         initialParams={{ id, kondisi }}

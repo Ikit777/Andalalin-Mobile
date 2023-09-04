@@ -41,7 +41,6 @@ function DaftarScreen({ navigation, route }) {
         setProgressViewOffset(-1000);
         navigation.setOptions({ animation: "slide_from_right" });
         navigation.navigate("Home");
-
         return true;
       });
 
@@ -49,7 +48,6 @@ function DaftarScreen({ navigation, route }) {
         setProgressViewOffset(-1000);
         navigation.setOptions({ animation: "slide_from_right" });
         navigation.navigate("Home");
-
         return true;
       });
     });
@@ -326,6 +324,7 @@ function DaftarScreen({ navigation, route }) {
           <ABackButton
             onPress={() => {
               setProgressViewOffset(-1000);
+              navigation.setOptions({ animation: "slide_from_right" });
               navigation.navigate("Home");
             }}
           />

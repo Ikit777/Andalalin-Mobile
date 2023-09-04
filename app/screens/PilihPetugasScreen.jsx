@@ -47,11 +47,13 @@ function PilihPetugasScreen({ navigation, route }) {
 
   useEffect(() => {
     BackHandler.addEventListener("hardwareBackPress", () => {
+      setProgressViewOffset(-1000);
       navigation.goBack();
       return true;
     });
 
     return BackHandler.removeEventListener("hardwareBackPress", () => {
+      setProgressViewOffset(-1000);
       navigation.goBack();
       return true;
     });
@@ -127,7 +129,7 @@ function PilihPetugasScreen({ navigation, route }) {
           (response) => {
             switch (response.status) {
               case 200:
-                navigation.replace("Detail", { id: permohonan.id_andalalin });
+                navigation.replace("Back Detail", { id: permohonan.id_andalalin });
                 break;
               case 424:
                 authRefreshToken(context, (response) => {
@@ -154,7 +156,7 @@ function PilihPetugasScreen({ navigation, route }) {
           (response) => {
             switch (response.status) {
               case 200:
-                navigation.replace("Detail", { id: permohonan.id_andalalin });
+                navigation.replace("Back Detail", { id: permohonan.id_andalalin });
                 break;
               case 424:
                 authRefreshToken(context, (response) => {
@@ -201,6 +203,7 @@ function PilihPetugasScreen({ navigation, route }) {
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <ABackButton
             onPress={() => {
+              setProgressViewOffset(-1000);
               navigation.goBack();
             }}
           />
