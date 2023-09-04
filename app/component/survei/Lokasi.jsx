@@ -1,5 +1,11 @@
 import React, { useContext, useState, useEffect, useRef } from "react";
-import { StyleSheet, View, Pressable } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Pressable,
+  Platform,
+  PermissionsAndroid,
+} from "react-native";
 import { useStateToggler } from "../../hooks/useUtility";
 import AButton from "../utility/AButton";
 import * as Location from "expo-location";
@@ -10,6 +16,8 @@ import AText from "../utility/AText";
 import ADialog from "../utility/ADialog";
 import * as RootNavigation from "../../navigation/RootNavigator.js";
 import { UserContext } from "../../context/UserContext";
+
+import Geolocation from "react-native-geolocation-service";
 
 function Lokasi({ onPress, id }) {
   const {
@@ -23,124 +31,170 @@ function Lokasi({ onPress, id }) {
 
   const webViewRef = useRef();
   const [permission, togglePermission] = useStateToggler();
+  const [gagal, toggleGagal] = useStateToggler();
   const [location, setLocation] = useState();
   const [lokasiKosong, toggleLokasiKosong] = useStateToggler();
   const [load, toggleLoad] = useState(false);
 
+  const hasLocationPermission = async () => {
+    if (Platform.OS === "android" && Platform.Version < 23) {
+      return true;
+    }
+
+    const hasPermission = await PermissionsAndroid.check(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+    );
+
+    if (hasPermission) {
+      return true;
+    }
+
+    const status = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+    );
+
+    if (status === PermissionsAndroid.RESULTS.GRANTED) {
+      return true;
+    }
+
+    if (status === PermissionsAndroid.RESULTS.DENIED) {
+      context.toggleLoading(false);
+      togglePermission();
+    } else if (status === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
+      context.toggleLoading(false);
+      togglePermission();
+    }
+
+    return false;
+  };
+
   useEffect(() => {
-    (async () => {
-      context.toggleLoading(true);
-      loadMapsLocation();
-    })();
+    context.toggleLoading(true);
+    getLokasi();
   }, []);
 
-  const loadMapsLocation = async () => {
+  async function getLokasi() {
     try {
+      const hasPermission = await hasLocationPermission();
+
+      if (!hasPermission) {
+        return;
+      }
+
+      Geolocation.getCurrentPosition(
+        (position) => {
+          (async () => {
+            const { latitude, longitude } = position.coords;
+            let response = await Location.reverseGeocodeAsync({
+              latitude,
+              longitude,
+            });
+
+            for (let item of response) {
+              let address = `${item.street}`;
+              let addressLengkap = `${item.street}, ${item.name}, ${item.district}, ${item.postalCode}, ${item.city}, ${item.subregion}, ${item.region}, ${item.country}`;
+
+              setAlamat(address);
+              setAlamatLengkap(addressLengkap);
+            }
+
+            setLocation(position);
+            setMaps(`
+            <html>
+              <head>
+                <link
+                  rel="stylesheet"
+                  href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+                />
+                <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+              </head>
+              <body style="margin: 0; padding: 0;">
+                <div id="map" style="width: 100%; height: 100vh;"></div>
+                <script>
+                  var map = L.map('map').setView([${position.coords.latitude}, ${position.coords.longitude}], 20);
+                  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap'
+                  }).addTo(map);
+                  L.marker([${position.coords.latitude}, ${position.coords.longitude}]).addTo(map)
+                    .bindPopup('Lokasi anda!')
+                    .openPopup();
+                </script>
+              </body>
+            </html>
+            `);
+          })();
+        },
+        (error) => {
+          toggleGagal();
+        },
+        { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+      );
+    } catch (error) {
+      toggleGagal();
+    }
+  }
+
+  async function getLokasiUser() {
+    try {
+      const hasPermission = await hasLocationPermission();
+
+      if (!hasPermission) {
+        return;
+      }
       context.toggleLoading(true);
-      (await Location.requestForegroundPermissionsAsync()).canAskAgain;
-      let location = await Location.getCurrentPositionAsync({
-        accuracy: Location.Accuracy.Balanced,
-        enableHighAccuracy: true,
-        timeInterval: 5,
-      });
+      Geolocation.getCurrentPosition(
+        (position) => {
+          (async () => {
+            const { latitude, longitude } = position.coords;
+            let response = await Location.reverseGeocodeAsync({
+              latitude,
+              longitude,
+            });
 
-      const { latitude, longitude } = location.coords;
-      let response = await Location.reverseGeocodeAsync({
-        latitude,
-        longitude,
-      });
+            for (let item of response) {
+              let address = `${item.street}`;
+              let addressLengkap = `${item.street}, ${item.name}, ${item.district}, ${item.postalCode}, ${item.city}, ${item.subregion}, ${item.region}, ${item.country}`;
 
-      for (let item of response) {
-        let address = `${item.street}`;
-        let addressLengkap = `${item.street}, ${item.name}, ${item.district}, ${item.postalCode}, ${item.city}, ${item.subregion}, ${item.region}, ${item.country}`;
+              setAlamat(address);
+              setAlamatLengkap(addressLengkap);
+            }
 
-        setAlamat(address);
-        setAlamatLengkap(addressLengkap);
-      }
-
-      setLocation(location);
-      setMaps(`
-      <html>
-        <head>
-          <link
-            rel="stylesheet"
-            href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
-          />
-          <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-        </head>
-        <body style="margin: 0; padding: 0;">
-          <div id="map" style="width: 100%; height: 100vh;"></div>
-          <script>
-            var map = L.map('map').setView([${location.coords.latitude}, ${location.coords.longitude}], 20);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-              attribution: '© OpenStreetMap'
-            }).addTo(map);
-            L.marker([${location.coords.latitude}, ${location.coords.longitude}]).addTo(map)
-              .bindPopup('Lokasi anda!')
-              .openPopup();
-          </script>
-        </body>
-      </html>
-      `);
+            setLocation(position);
+            webViewRef.current.reload();
+            setMaps(`
+            <html>
+              <head>
+                <link
+                  rel="stylesheet"
+                  href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+                />
+                <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+              </head>
+              <body style="margin: 0; padding: 0;">
+                <div id="map" style="width: 100%; height: 100vh;"></div>
+                <script>
+                  var map = L.map('map').setView([${position.coords.latitude}, ${position.coords.longitude}], 20);
+                  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap'
+                  }).addTo(map);
+                  L.marker([${position.coords.latitude}, ${position.coords.longitude}]).addTo(map)
+                    .bindPopup('Lokasi anda!')
+                    .openPopup();
+                </script>
+              </body>
+            </html>
+            `);
+          })();
+        },
+        (error) => {
+          toggleGagal();
+        },
+        { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+      );
     } catch (error) {
-      context.toggleLoading(false);
-      togglePermission();
+      toggleGagal();
     }
-  };
-
-  const getLokasiSekarang = async () => {
-    context.toggleLoading(true);
-    try {
-      let location = await Location.getCurrentPositionAsync({
-        accuracy: Location.Accuracy.Balanced,
-        enableHighAccuracy: true,
-        timeInterval: 5,
-      });
-
-      const { latitude, longitude } = location.coords;
-      let response = await Location.reverseGeocodeAsync({
-        latitude,
-        longitude,
-      });
-
-      for (let item of response) {
-        let address = `${item.street}`;
-        let addressLengkap = `${item.street}, ${item.name}, ${item.district},\n${item.postalCode}, ${item.city},\n${item.subregion}, ${item.region},\n${item.country}`;
-
-        setAlamat(address);
-        setAlamatLengkap(addressLengkap);
-      }
-
-      setLocation(location);
-      webViewRef.current.reload();
-      setMaps(`
-      <html>
-        <head>
-          <link
-            rel="stylesheet"
-            href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
-          />
-          <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-        </head>
-        <body style="margin: 0; padding: 0;">
-          <div id="map" style="width: 100%; height: 100vh;"></div>
-          <script>
-            var map = L.map('map').setView([${location.coords.latitude}, ${location.coords.longitude}], 20);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-              attribution: '© OpenStreetMap'
-            }).addTo(map);
-            L.marker([${location.coords.latitude}, ${location.coords.longitude}]).addTo(map)
-              .bindPopup('Lokasi anda!')
-              .openPopup();
-          </script>
-        </body>
-      </html>
-      `);
-    } catch (error) {
-      context.toggleLoading(false);
-      togglePermission();
-    }
-  };
+  }
 
   const pilih_lokasi = () => {
     if (alamatLengkap != "") {
@@ -187,7 +241,7 @@ function Lokasi({ onPress, id }) {
               elevation: 8,
             }}
             onPress={() => {
-              getLokasiSekarang();
+              getLokasiUser();
             }}
           >
             <Feather
@@ -262,6 +316,18 @@ function Lokasi({ onPress, id }) {
         btnOK={"OK"}
         onPressOKButton={() => {
           togglePermission();
+          RootNavigation.replace("Detail", { id: id });
+          context.setIndexSurvei(1);
+        }}
+      />
+
+      <ADialog
+        title={"Lokasi gagal dimuat"}
+        desc={"Terjadi kesalahan pada server kami, mohon coba lagi lain waktu"}
+        visibleModal={gagal}
+        btnOK={"OK"}
+        onPressOKButton={() => {
+          toggleGagal();
           RootNavigation.replace("Detail", { id: id });
           context.setIndexSurvei(1);
         }}

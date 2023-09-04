@@ -334,7 +334,7 @@ function TambahUserScreen({ navigation }) {
 
       <ADialog
         title={"Tambah pengguna gagal"}
-        desc={"Tambah pengguna gagal, silahkan coba kembali"}
+        desc={"Terjadi kesalahan pada server kami, mohon coba lagi lain waktu"}
         visibleModal={something}
         btnOK={"OK"}
         onPressOKButton={() => {

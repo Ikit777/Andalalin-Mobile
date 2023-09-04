@@ -122,7 +122,7 @@ function Keterangan({ navigation, id }) {
       />
       <ADialog
         title={"Survei gagal disimpan"}
-        desc={"Simpan gagal, silahkan coba lagi"}
+        desc={"Terjadi kesalahan pada server kami, mohon coba lagi lain waktu"}
         visibleModal={kirimGagal}
         btnOK={"OK"}
         onPressOKButton={() => {

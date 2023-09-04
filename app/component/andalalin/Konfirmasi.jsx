@@ -169,8 +169,8 @@ function Konfirmasi({ navigation }) {
         }}
       />
       <ADialog
-        title={"Pengajuan gagal dikirim"}
-        desc={"Pengajuan gagal, silahkan coba lagi"}
+        title={"Permohonan gagal dikirim"}
+        desc={"Terjadi kesalahan pada server kami, mohon coba lagi lain waktu"}
         visibleModal={kirimGagal}
         btnOK={"OK"}
         onPressOKButton={() => {

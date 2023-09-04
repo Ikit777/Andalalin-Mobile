@@ -233,7 +233,7 @@ function NotifikasiScreen({ navigation }) {
       />
       <ADialog
         title={"Hapus notifikasi gagal"}
-        desc={"Notifikasi gagal dihapus, silahkan coba lagi"}
+        desc={"Terjadi kesalahan pada server kami, mohon coba lagi lain waktu"}
         visibleModal={hapusGagal}
         btnOK={"OK"}
         onPressOKButton={() => {

@@ -229,7 +229,7 @@ function SettingScreen({ navigation }) {
       />
       <ADialog
         title={"Keluar gagal"}
-        desc={"Telah terjadi sesuatu yang menyebabkan Anda tidak dapat keluar"}
+        desc={"Terjadi kesalahan pada server kami, mohon coba lagi lain waktu"}
         visibleModal={gagal}
         btnOK={"OK"}
         onPressOKButton={() => {
@@ -238,8 +238,8 @@ function SettingScreen({ navigation }) {
       />
 
       <ADialog
-        title={"Ubah foto berhasil"}
-        desc={"Ubah foto profil berhasil"}
+        title={"Foto berhasil diperbaharui"}
+        desc={"Foto profil berhasil diperbaharui"}
         visibleModal={fotoBerhasil}
         btnOK={"OK"}
         onPressOKButton={() => {
@@ -248,9 +248,9 @@ function SettingScreen({ navigation }) {
       />
 
       <ADialog
-        title={"Ubah foto gagal"}
+        title={"Foto gagal diperbaharui"}
         desc={
-          "Ubah foto profil gagal, telah terjadi sesuatu yang buruk pada sistem kami"
+          "Terjadi kesalahan pada server kami, mohon coba lagi lain waktu"
         }
         visibleModal={fotoGagal}
         btnOK={"OK"}

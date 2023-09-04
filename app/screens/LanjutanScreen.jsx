@@ -1141,7 +1141,7 @@ function LanjutanScreen({ navigation, route }) {
       </View>
       <AConfirmationDialog
         title={"Download"}
-        desc={"Berkas akan tersimpan pada folder yang akan anda pilih"}
+        desc={"Berkas akan tersimpan pada folder yang anda pilih"}
         visibleModal={konfirmasi}
         btnOK={"OK"}
         btnBATAL={"Batal"}

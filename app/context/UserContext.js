@@ -115,10 +115,12 @@ export function UserProvider({ children }) {
   }, [lastNotificationResponse]);
 
   const clear = () => {
+    setIndex(1);
     dispatch(initialState);
   };
 
   const clearSurvei = () => {
+    setIndexSurvei(1);
     setSurvei(surveiInit);
   };
 

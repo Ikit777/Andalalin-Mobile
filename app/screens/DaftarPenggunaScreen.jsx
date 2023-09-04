@@ -381,8 +381,8 @@ function DaftarPenggunaScreen({ navigation }) {
       </ABottomSheet>
 
       <ADialog
-        title={"Memuat pengguna gagal"}
-        desc={"Pengguna gagal dimuat, silahkan coba lagi"}
+        title={"Pengguna gagal dimuat"}
+        desc={"Terjadi kesalahan pada server kami, mohon coba lagi lain waktu"}
         visibleModal={gagal}
         btnOK={"OK"}
         onPressOKButton={() => {
@@ -392,8 +392,8 @@ function DaftarPenggunaScreen({ navigation }) {
       />
 
       <ADialog
-        title={"Hapus pengguna gagal"}
-        desc={"Hapus pengguna gagal, silahkan coba kembali"}
+        title={"Pengguna gagal dihapus"}
+        desc={"Terjadi kesalahan pada server kami, mohon coba lagi lain waktu"}
         visibleModal={hapusGagal}
         btnOK={"OK"}
         onPressOKButton={() => {

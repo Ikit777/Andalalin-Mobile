@@ -1198,7 +1198,7 @@ function DetailNonUser({ permohonan, navigation }) {
 
       <ADialog
         title={"Menyimpan gagal"}
-        desc={"Tindakan gagal disimpan, silahkan coba lagi"}
+        desc={"Terjadi kesalahan pada server kami, mohon coba lagi lain waktu"}
         visibleModal={gagal}
         btnOK={"OK"}
         onPressOKButton={() => {
@@ -1208,7 +1208,7 @@ function DetailNonUser({ permohonan, navigation }) {
 
       <AConfirmationDialog
         title={"Simpan"}
-        desc={"Apakah Anda yakin ingin simpan?"}
+        desc={"Apakah Anda yakin ingin simpan validasi?"}
         visibleModal={konfirmasi}
         btnOK={"Simpan"}
         btnBATAL={"Batal"}
@@ -1234,7 +1234,7 @@ function DetailNonUser({ permohonan, navigation }) {
 
       <AConfirmationDialog
         title={"Simpan"}
-        desc={"Apakah Anda yakin ingin simpan?"}
+        desc={"Apakah Anda yakin ingin simpan persetujuan?"}
         visibleModal={konfirmasiPersetujuan}
         btnOK={"Simpan"}
         btnBATAL={"Batal"}
@@ -1253,7 +1253,7 @@ function DetailNonUser({ permohonan, navigation }) {
 
       <AConfirmationDialog
         title={"Simpan"}
-        desc={"Apakah Anda yakin ingin simpan?"}
+        desc={"Apakah Anda yakin ingin simpan surat keputusan?"}
         visibleModal={konfrimasiSK}
         btnOK={"Simpan"}
         btnBATAL={"Batal"}

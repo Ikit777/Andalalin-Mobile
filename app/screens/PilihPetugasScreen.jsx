@@ -7,7 +7,7 @@ import {
   Image,
   TextInput,
   useWindowDimensions,
-  RefreshControl
+  RefreshControl,
 } from "react-native";
 import AText from "../component/utility/AText";
 import color from "../constants/color";
@@ -46,18 +46,22 @@ function PilihPetugasScreen({ navigation, route }) {
   const [progressViewOffset, setProgressViewOffset] = useState(20);
 
   useEffect(() => {
-    BackHandler.addEventListener("hardwareBackPress", () => {
-      setProgressViewOffset(-1000);
-      navigation.goBack();
-      return true;
+    const unsubscribe = navigation.addListener("focus", () => {
+      BackHandler.addEventListener("hardwareBackPress", () => {
+        setProgressViewOffset(-1000);
+        navigation.goBack();
+        return true;
+      });
+
+      return BackHandler.removeEventListener("hardwareBackPress", () => {
+        setProgressViewOffset(-1000);
+        navigation.goBack();
+        return true;
+      });
     });
 
-    return BackHandler.removeEventListener("hardwareBackPress", () => {
-      setProgressViewOffset(-1000);
-      navigation.goBack();
-      return true;
-    });
-  }, []);
+    return unsubscribe;
+  }, [navigation]);
 
   useEffect(() => {
     context.toggleLoading(true);
@@ -129,7 +133,9 @@ function PilihPetugasScreen({ navigation, route }) {
           (response) => {
             switch (response.status) {
               case 200:
-                navigation.replace("Back Detail", { id: permohonan.id_andalalin });
+                navigation.replace("Back Detail", {
+                  id: permohonan.id_andalalin,
+                });
                 break;
               case 424:
                 authRefreshToken(context, (response) => {
@@ -156,7 +162,9 @@ function PilihPetugasScreen({ navigation, route }) {
           (response) => {
             switch (response.status) {
               case 200:
-                navigation.replace("Back Detail", { id: permohonan.id_andalalin });
+                navigation.replace("Back Detail", {
+                  id: permohonan.id_andalalin,
+                });
                 break;
               case 424:
                 authRefreshToken(context, (response) => {
@@ -195,7 +203,6 @@ function PilihPetugasScreen({ navigation, route }) {
       load_petugas();
     }, 50);
   }, []);
-
 
   return (
     <AScreen style={{ minHeight: Math.round(windowHeight) }}>
@@ -254,7 +261,12 @@ function PilihPetugasScreen({ navigation, route }) {
             showsVerticalScrollIndicator={false}
             vertical
             refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[color.primary.primary500]} progressViewOffset={progressViewOffset}/>
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+                colors={[color.primary.primary500]}
+                progressViewOffset={progressViewOffset}
+              />
             }
             renderItem={({ item }) => (
               <View style={{ paddingBottom: 24 }}>

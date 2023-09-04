@@ -415,8 +415,8 @@ function DaftarScreen({ navigation, route }) {
         )}
       </View>
       <ADialog
-        title={"Memuat permohoman gagal"}
-        desc={"Permohonan gagal dimuat, silahkan coba lagi"}
+        title={"Permohoman gagal dimuat"}
+        desc={"Terjadi kesalahan pada server kami, mohon coba lagi lain waktu"}
         visibleModal={gagal}
         btnOK={"OK"}
         onPressOKButton={() => {
@@ -426,8 +426,8 @@ function DaftarScreen({ navigation, route }) {
       />
 
       <ADialog
-        title={"Memuat daftar survei gagal"}
-        desc={"Daftar survei gagal dimuat, silahkan coba lagi"}
+        title={"Daftar survei gagal dimuat"}
+        desc={"Terjadi kesalahan pada server kami, mohon coba lagi lain waktu"}
         visibleModal={surveiGagal}
         btnOK={"OK"}
         onPressOKButton={() => {

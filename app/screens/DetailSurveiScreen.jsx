@@ -310,8 +310,8 @@ function DetailSurveiScreen({ navigation, route }) {
       )}
 
       <ADialog
-        title={"Memuat data survei gagal"}
-        desc={"Data survei gagal dimuat, silahkan coba lagi"}
+        title={"Data survei gagal dimuat"}
+        desc={"Terjadi kesalahan pada server kami, mohon coba lagi lain waktu"}
         visibleModal={surveiGagal}
         btnOK={"OK"}
         onPressOKButton={() => {

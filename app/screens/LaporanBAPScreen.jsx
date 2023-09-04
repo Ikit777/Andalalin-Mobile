@@ -313,7 +313,7 @@ function LaporanBAPScreen({ navigation, route }) {
 
       <ADialog
         title={"Simpan gagal"}
-        desc={"Laporan BAP gagal disimpan, silahkan coba lagi"}
+        desc={"Terjadi kesalahan pada server kami, mohon coba lagi lain waktu"}
         visibleModal={simpanGagal}
         btnOK={"OK"}
         onPressOKButton={() => {

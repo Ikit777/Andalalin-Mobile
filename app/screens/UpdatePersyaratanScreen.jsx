@@ -343,7 +343,7 @@ function UpdatePersyaratanScreen({ navigation, route }) {
       </ScrollView>
       <AConfirmationDialog
         title={"Apakah Anda yakin?"}
-        desc={"Data yang diisikan akan dikirim"}
+        desc={"Data yang perbaharui akan disimpan"}
         visibleModal={confirm}
         btnOK={"OK"}
         btnBATAL={"Batal"}
@@ -358,7 +358,7 @@ function UpdatePersyaratanScreen({ navigation, route }) {
       />
       <ADialog
         title={"Persyaratan gagal diperbaharuui"}
-        desc={"Persyaratan gagal diperbaharuui, silahkan coba lagi"}
+        desc={"Terjadi kesalahan pada server kami, mohon coba lagi lain waktu"}
         visibleModal={kirimGagal}
         btnOK={"OK"}
         onPressOKButton={() => {

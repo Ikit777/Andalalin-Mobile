@@ -86,8 +86,8 @@ function PdfViewSreen({ navigation, route }) {
         )}
       </SafeAreaView>
       <ADialog
-        title={"Berkas gagal dibuka!"}
-        desc={"Berkas telah gagal dibuka, silahkan coba lagi"}
+        title={"Berkas gagal dimuat!"}
+        desc={"Berkas telah gagal muat, silahkan coba lagi"}
         visibleModal={gagal}
         btnOK={"OK"}
         onPressOKButton={() => {navigation.goBack();}}

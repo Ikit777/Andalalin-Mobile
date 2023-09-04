@@ -312,7 +312,7 @@ function RegisterScreen({ navigation }) {
       />
       <ADialog
         title={"Peringatan!"}
-        desc={"Telah terjadi sesuatu yang buruk pada server kami"}
+        desc={"Terjadi kesalahan pada server kami, mohon coba lagi lain waktu"}
         visibleModal={something}
         btnOK={"OK"}
         onPressOKButton={() => {

@@ -199,8 +199,8 @@ function DetailScreen({ navigation, route }) {
         {data != "permohonan" ? detail() : ""}
       </ScrollView>
       <ADialog
-        title={"Memuat permohoman gagal"}
-        desc={"Permohonan gagal dimuat, silahkan coba lagi"}
+        title={"Permohoman gagal dimuat"}
+        desc={"Terjadi kesalahan pada server kami, mohon coba lagi lain waktu"}
         visibleModal={gagal}
         btnOK={"OK"}
         onPressOKButton={() => {

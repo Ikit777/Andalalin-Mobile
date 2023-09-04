@@ -320,7 +320,7 @@ function ResetPasswordScreen({ navigation, route }) {
       <ADialog
         title={"Reset password gagal"}
         desc={
-          "Reset kode Anda sudah tidak luarsa, silahkan kirim ulang kode reset"
+          "kode reset Anda sudah tidak luarsa, silahkan kirim ulang kode reset"
         }
         visibleModal={expired}
         btnOK={"OK"}
