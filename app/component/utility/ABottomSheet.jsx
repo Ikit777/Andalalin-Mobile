@@ -20,10 +20,6 @@ function ABottomSheet({ visible, children }) {
 }
 
 const styles = StyleSheet.create({
-  modal: {
-    flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
   inside: {
     backgroundColor: color.text.white,
     borderTopLeftRadius: 8,
