@@ -7,9 +7,9 @@
     "icon": "./app/assets/image/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./app/assets/image/splashscreen.png",
+      "image": "./app/assets/image/icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#F5F5FF"
+      "backgroundColor": "#FFF;"
     },
     "plugins": [
       "@config-plugins/react-native-blob-util",
