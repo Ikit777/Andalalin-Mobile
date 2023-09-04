@@ -9,7 +9,7 @@
     "splash": {
       "image": "./app/assets/image/icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#FFF;"
+      "backgroundColor": "#FFF"
     },
     "plugins": [
       "@config-plugins/react-native-blob-util",
