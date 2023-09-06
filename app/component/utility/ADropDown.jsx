@@ -6,7 +6,7 @@ import AText from "./AText";
 import color from "../../constants/color";
 import { Feather } from "@expo/vector-icons";
 
-function ADropDown({ judul, hint, data, saved, selected, padding, bdColor, max }) {
+function ADropDown({ judul, hint, data, saved, selected, padding, bdColor, max, notFound }) {
 
   return (
     <View style={{ paddingTop: padding }}>
@@ -34,6 +34,7 @@ function ADropDown({ judul, hint, data, saved, selected, padding, bdColor, max }
         data={data}
         save="value"
         defaultOption={{key:saved, value:saved}}
+        notFoundText={notFound}
       />
     </View>
   );

@@ -5,6 +5,7 @@ import {
   FlatList,
   BackHandler,
   RefreshControl,
+  Pressable,
 } from "react-native";
 import AText from "../component/utility/AText";
 import color from "../constants/color";
@@ -12,28 +13,42 @@ import AScreen from "../component/utility/AScreen";
 import ABackButton from "../component/utility/ABackButton";
 import ACardPermohonan from "../component/utility/ACardPermohonan";
 import {
+  andalalinGetAllByTiketLevel2,
   andalalinGetAllSurvei,
   andalalinGetByIdUser,
   andalalinGetByStatus,
   andalalinGetByTiketLevel1,
   andalalinGetByTiketLevel2,
+  andalalinGetUsulanTindakan,
+  andalalinHapusUsulan,
   andalalinPersetujuan,
+  andalalinTindakan,
 } from "../api/andalalin";
 import { authRefreshToken } from "../api/auth";
 import ADialog from "../component/utility/ADialog";
 import { useStateToggler } from "../hooks/useUtility";
 import { UserContext } from "../context/UserContext";
 import { Feather } from "@expo/vector-icons";
+import ABottomSheet from "../component/utility/ABottomSheet";
+import { RadioButton } from "react-native-paper";
+import AConfirmationDialog from "../component/utility/AConfirmationDialog";
 
 function DaftarScreen({ navigation, route }) {
   const [gagal, toggleGagal] = useStateToggler();
   const [surveiGagal, toggleSurveiGagal] = useStateToggler();
+  const [usulanGagal, toggleUsulanGagal] = useStateToggler();
   const [permohonan, setPermohonan] = useState("permohonan");
   const context = useContext(UserContext);
   const kondisi = route.params.kondisi;
 
   const [refreshing, setRefreshing] = useState(false);
   const [progressViewOffset, setProgressViewOffset] = useState(20);
+
+  const [lanjutkanModal, toggleLanjutkanModal] = useStateToggler();
+  const [lanjutkanCheck, setLanjutanCheck] = useState();
+  const [idPermohonan, setIdPermohonan] = useState();
+  const [confirm, toggleComfirm] = useStateToggler();
+  const [lanjutkanGagal, toggleLanjutkanGagal] = useStateToggler();
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
@@ -75,14 +90,24 @@ function DaftarScreen({ navigation, route }) {
         case "Petugas":
           context.toggleLoading(true);
           if (kondisi == "Survei" && kondisi != undefined) {
-            loadDaftarByTiketLevel2();
+            loadDaftarByTiketLevel2("Buka");
           } else {
             loadDaftarSurvei();
           }
           break;
         case "Admin":
           context.toggleLoading(true);
-          loadPermohonanPersetujuan();
+          switch (kondisi) {
+            case "Persetujuan":
+              loadPermohonanPersetujuan();
+              break;
+            case "Pengawasan":
+              loadUsulanTindakan();
+              break;
+            case "Tertunda":
+              loadAllByTiketLevel2("Tunda");
+              break;
+          }
           break;
       }
     });
@@ -198,31 +223,35 @@ function DaftarScreen({ navigation, route }) {
     });
   };
 
-  const loadDaftarByTiketLevel2 = () => {
-    andalalinGetByTiketLevel2(context.getUser().access_token, (response) => {
-      switch (response.status) {
-        case 200:
-          (async () => {
-            const result = await response.json();
-            setPermohonan(result.data);
-            context.toggleLoading(false);
-          })();
-          break;
-        case 424:
-          authRefreshToken(context, (response) => {
-            if (response.status === 200) {
-              loadDaftarByTiketLevel1();
-            } else {
+  const loadDaftarByTiketLevel2 = (status) => {
+    andalalinGetByTiketLevel2(
+      context.getUser().access_token,
+      status,
+      (response) => {
+        switch (response.status) {
+          case 200:
+            (async () => {
+              const result = await response.json();
+              setPermohonan(result.data);
               context.toggleLoading(false);
-            }
-          });
-          break;
-        default:
-          context.toggleLoading(false);
-          toggleGagal();
-          break;
+            })();
+            break;
+          case 424:
+            authRefreshToken(context, (response) => {
+              if (response.status === 200) {
+                loadDaftarByTiketLevel1();
+              } else {
+                context.toggleLoading(false);
+              }
+            });
+            break;
+          default:
+            context.toggleLoading(false);
+            toggleGagal();
+            break;
+        }
       }
-    });
+    );
   };
 
   const loadDaftarSurvei = () => {
@@ -252,6 +281,64 @@ function DaftarScreen({ navigation, route }) {
     });
   };
 
+  const loadUsulanTindakan = () => {
+    andalalinGetUsulanTindakan(context.getUser().access_token, (response) => {
+      switch (response.status) {
+        case 200:
+          (async () => {
+            const result = await response.json();
+            setPermohonan(result.data);
+            context.toggleLoading(false);
+          })();
+          break;
+        case 424:
+          authRefreshToken(context, (response) => {
+            if (response.status === 200) {
+              loadUsulanTindakan();
+            } else {
+              context.toggleLoading(false);
+            }
+          });
+          break;
+        default:
+          context.toggleLoading(false);
+          toggleUsulanGagal();
+          break;
+      }
+    });
+  };
+
+  const loadAllByTiketLevel2 = (status) => {
+    andalalinGetAllByTiketLevel2(
+      context.getUser().access_token,
+      status,
+      (response) => {
+        switch (response.status) {
+          case 200:
+            (async () => {
+              const result = await response.json();
+              setPermohonan(result.data);
+              context.toggleLoading(false);
+            })();
+            break;
+          case 424:
+            authRefreshToken(context, (response) => {
+              if (response.status === 200) {
+                loadAllByTiketLevel2();
+              } else {
+                context.toggleLoading(false);
+              }
+            });
+            break;
+          default:
+            context.toggleLoading(false);
+            toggleGagal();
+            break;
+        }
+      }
+    );
+  };
+
   const judul = () => {
     switch (context.getUser().role) {
       case "User":
@@ -265,7 +352,14 @@ function DaftarScreen({ navigation, route }) {
           return "Daftar survei";
         }
       case "Admin":
-        return "Daftar permohonan";
+        switch (kondisi) {
+          case "Persetujuan":
+            return "Daftar permohonan";
+          case "Pengawasan":
+            return "Daftar usulan";
+          case "Tertunda":
+            return "Daftar tunda";
+        }
     }
   };
 
@@ -287,7 +381,40 @@ function DaftarScreen({ navigation, route }) {
           });
         }
       case "Admin":
-        return navigation.push("Detail", { id: item.id_andalalin });
+        switch (kondisi) {
+          case "Persetujuan":
+            return navigation.push("Detail", { id: item.id_andalalin });
+          case "Pengawasan":
+            return navigation.push("Detail Usulan", { id: item.id_andalalin });
+          case "Tertunda":
+            setIdPermohonan(item.id_andalalin);
+            toggleLanjutkanModal();
+            break;
+        }
+    }
+  };
+
+  const list_item = (item) => {
+    switch (context.getUser().role) {
+      case "User":
+        return list("Detail", item);
+      case "Operator":
+        return list("Detail", item);
+      case "Petugas":
+        if (kondisi == "Survei") {
+          return list("Detail", item);
+        } else {
+          return list("Detail", item);
+        }
+      case "Admin":
+        switch (kondisi) {
+          case "Persetujuan":
+            return list("Detail", item);
+          case "Pengawasan":
+            return list("Detail", item);
+          case "Tertunda":
+            return list("Lanjutkan", item);
+        }
     }
   };
 
@@ -296,26 +423,198 @@ function DaftarScreen({ navigation, route }) {
     setRefreshing(false);
     setTimeout(() => {
       context.toggleLoading(true);
+      setPermohonan("permohonan");
       switch (context.getUser().role) {
         case "User":
+          context.toggleLoading(true);
           loadDaftarPermohonan();
           break;
         case "Operator":
-          loadDaftarByTiketLevel1();
+          context.toggleLoading(true);
+          if (kondisi == "Diajukan" && kondisi != undefined) {
+            loadDaftarByTiketLevel1();
+          } else {
+            loadPermohonanByStatus("Permohonan selesai");
+          }
+
           break;
         case "Petugas":
-          if (kondisi == "Survei") {
-            loadDaftarByTiketLevel2();
+          context.toggleLoading(true);
+          if (kondisi == "Survei" && kondisi != undefined) {
+            loadDaftarByTiketLevel2("Buka");
           } else {
             loadDaftarSurvei();
           }
           break;
-        default:
-          loadDaftarPermohonan();
+        case "Admin":
+          context.toggleLoading(true);
+          switch (kondisi) {
+            case "Persetujuan":
+              loadPermohonanPersetujuan();
+              break;
+            case "Pengawasan":
+              loadUsulanTindakan();
+              break;
+            case "Tertunda":
+              loadAllByTiketLevel2("Tunda");
+              break;
+          }
           break;
       }
     }, 50);
   }, []);
+
+  const list = (text, item) => {
+    return (
+      <ACardPermohonan
+        style={{ marginBottom: 16 }}
+        status={item.status_andalalin}
+        tanggal={item.tanggal_andalalin}
+        jenis={item.jenis_andalalin}
+        kode={item.kode_andalalin}
+        pemohon={item.nama_pemohon}
+        alamat={item.alamat_pemohon}
+        title={text}
+        onPress={() => {
+          doPress(item);
+        }}
+      />
+    );
+  };
+
+  const pelaksanaan = () => {
+    if (context.getUser().role == "Admin" && kondisi == "Tertunda") {
+      return (
+        <ABottomSheet visible={lanjutkanModal}>
+          <View style={{ height: 250 }}>
+            <AText
+              style={{ paddingBottom: 16 }}
+              size={18}
+              color={color.neutral.neutral700}
+              weight="semibold"
+            >
+              Apakah Anda ingin melanjutkan{"\n"}permohonan ini?
+            </AText>
+
+            <RadioButton.Group
+              onValueChange={(value) => setLanjutanCheck(value)}
+            >
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <RadioButton
+                  label="Buka"
+                  value="Buka"
+                  uncheckedColor={color.neutral.neutral300}
+                  color={color.primary.primary600}
+                  status={lanjutkanCheck === "Buka" ? "checked" : "unchecked"}
+                />
+                <AText
+                  style={{ paddingLeft: 4 }}
+                  size={14}
+                  color={color.neutral.neutral700}
+                >
+                  Lanjutkan pelaksanaan
+                </AText>
+              </View>
+
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  paddingTop: 8,
+                }}
+              >
+                <RadioButton
+                  label="Batal"
+                  value="Batal"
+                  uncheckedColor={color.neutral.neutral300}
+                  color={color.primary.primary600}
+                  status={lanjutkanCheck === "Batal" ? "checked" : "unchecked"}
+                />
+                <AText
+                  style={{ paddingLeft: 4 }}
+                  size={14}
+                  color={color.neutral.neutral700}
+                >
+                  Batalkan pelaksanaan
+                </AText>
+              </View>
+            </RadioButton.Group>
+
+            <View
+              style={{
+                flexDirection: "row",
+                alignSelf: "flex-end",
+                position: "absolute",
+                bottom: 24,
+                right: 16,
+              }}
+            >
+              <Pressable
+                style={{ flexDirection: "row", paddingLeft: 4 }}
+                onPress={() => {
+                  setIdPermohonan(null);
+                  setLanjutanCheck(null);
+                  toggleLanjutkanModal();
+                }}
+              >
+                <AText
+                  size={14}
+                  color={color.neutral.neutral700}
+                  weight="semibold"
+                >
+                  Batal
+                </AText>
+              </Pressable>
+              <Pressable
+                style={{ flexDirection: "row", paddingLeft: 4, marginLeft: 32 }}
+                onPress={() => {
+                  if (lanjutkanCheck != null) {
+                    toggleLanjutkanModal();
+                    toggleComfirm();
+                  }
+                }}
+              >
+                <AText
+                  size={14}
+                  color={color.neutral.neutral700}
+                  weight="semibold"
+                >
+                  Simpan
+                </AText>
+              </Pressable>
+            </View>
+          </View>
+        </ABottomSheet>
+      );
+    }
+  };
+
+  const tindakan = () => {
+    andalalinTindakan(
+      context.getUser().access_token,
+      idPermohonan,
+      lanjutkanCheck,
+      (response) => {
+        switch (response.status) {
+          case 201:
+            loadAllByTiketLevel2("Tunda");
+            break;
+          case 424:
+            authRefreshToken(context, (response) => {
+              if (response.status === 200) {
+                tindakan();
+              } else {
+                context.toggleLoading(false);
+              }
+            });
+            break;
+          default:
+            context.toggleLoading(false);
+            toggleLanjutkanGagal();
+        }
+      }
+    );
+  };
 
   return (
     <AScreen>
@@ -355,21 +654,7 @@ function DaftarScreen({ navigation, route }) {
                 progressViewOffset={progressViewOffset}
               />
             }
-            renderItem={({ item }) => (
-              <ACardPermohonan
-                style={{ marginBottom: 16 }}
-                status={item.status_andalalin}
-                tanggal={item.tanggal_andalalin}
-                jenis={item.jenis_andalalin}
-                kode={item.kode_andalalin}
-                pemohon={item.nama_pemohon}
-                alamat={item.alamat_pemohon}
-                title={"Detail"}
-                onPress={() => {
-                  doPress(item);
-                }}
-              />
-            )}
+            renderItem={({ item }) => list_item(item)}
           />
         ) : (
           ""
@@ -414,6 +699,9 @@ function DaftarScreen({ navigation, route }) {
           ""
         )}
       </View>
+
+      {pelaksanaan()}
+
       <ADialog
         title={"Permohoman gagal dimuat"}
         desc={"Terjadi kesalahan pada server kami, mohon coba lagi lain waktu"}
@@ -433,6 +721,45 @@ function DaftarScreen({ navigation, route }) {
         onPressOKButton={() => {
           toggleSurveiGagal();
           navigation.navigate("Home");
+        }}
+      />
+
+      <ADialog
+        title={"Usulan tindakan gagal dimuat"}
+        desc={"Terjadi kesalahan pada server kami, mohon coba lagi lain waktu"}
+        visibleModal={usulanGagal}
+        btnOK={"OK"}
+        onPressOKButton={() => {
+          toggleUsulanGagal();
+          navigation.navigate("Home");
+        }}
+      />
+
+      <ADialog
+        title={"Tindakan gagal disimpan"}
+        desc={"Terjadi kesalahan pada server kami, mohon coba lagi lain waktu"}
+        visibleModal={lanjutkanGagal}
+        btnOK={"OK"}
+        onPressOKButton={() => {
+          toggleLanjutkanGagal();
+        }}
+      />
+
+      <AConfirmationDialog
+        title={"Apakah Anda yakin?"}
+        desc={"Tindakan akan disimpan"}
+        visibleModal={confirm}
+        btnOK={"OK"}
+        btnBATAL={"Batal"}
+        onPressBATALButton={() => {
+          toggleComfirm();
+          setIdPermohonan(null);
+          setLanjutanCheck(null);
+        }}
+        onPressOKButton={() => {
+          toggleComfirm();
+          context.toggleLoading(true);
+          tindakan();
         }}
       />
     </AScreen>

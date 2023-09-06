@@ -25,6 +25,8 @@ import {
   DaftarPenggunaScreen,
   DetailSurveiScreen,
   LaporanBAPScreen,
+  UsulanPengelolaanScreen,
+  DetailUsulanScreen,
 } from "../screens";
 
 const Stack = createNativeStackNavigator();
@@ -49,6 +51,11 @@ const Navigator = ({
 
       <Stack.Screen name="Onboarding" component={OnBoardingScreen} />
       <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen
+        name="Back Login"
+        component={LoginScreen}
+        options={{ animation: "slide_from_left" }}
+      />
       <Stack.Screen name="Register" component={RegisterScreen} />
       <Stack.Screen
         name="Verifikasi"
@@ -71,13 +78,13 @@ const Navigator = ({
       <Stack.Screen
         name="Detail"
         component={DetailScreen}
-        initialParams={{ id }}
+        initialParams={{ id, kondisi }}
       />
       <Stack.Screen
         name="Back Detail"
         component={DetailScreen}
         options={{ animation: "slide_from_left" }}
-        initialParams={{ id }}
+        initialParams={{ id, kondisi }}
       />
       <Stack.Screen
         name="Reload Detail"
@@ -134,10 +141,28 @@ const Navigator = ({
         component={SurveiScreen}
         initialParams={{ id }}
       />
-      <Stack.Screen name="Ketentuan" component={KetentuanScreen} initialParams={{ kondisi }}/>
+      <Stack.Screen
+        name="Ketentuan"
+        component={KetentuanScreen}
+        initialParams={{ kondisi }}
+      />
       <Stack.Screen name="Tambah User" component={TambahUserScreen} />
       <Stack.Screen name="Daftar User" component={DaftarPenggunaScreen} />
-      <Stack.Screen name="Laporan BAP" component={LaporanBAPScreen} initialParams={{ id }}/>
+      <Stack.Screen
+        name="Laporan BAP"
+        component={LaporanBAPScreen}
+        initialParams={{ id }}
+      />
+      <Stack.Screen
+        name="Usulan"
+        component={UsulanPengelolaanScreen}
+        initialParams={{ id }}
+      />
+      <Stack.Screen
+        name="Detail Usulan"
+        component={DetailUsulanScreen}
+        initialParams={{ id }}
+      />
     </Stack.Navigator>
   );
 };

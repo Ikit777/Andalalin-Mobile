@@ -316,7 +316,7 @@ function DetailSurveiScreen({ navigation, route }) {
         btnOK={"OK"}
         onPressOKButton={() => {
           toggleSurveiGagal();
-          navigation.goBack();
+          back();
         }}
       />
     </AScreen>

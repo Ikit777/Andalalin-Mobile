@@ -135,7 +135,7 @@ function Permohonan({ onPress }) {
         ""
       )}
 
-      {jenisRencana != "" && jenisRencana != "Lainnya" ? (
+      {jenisRencana != "Lainnya" ? (
         <ADropDown
           bdColor={
             rencanaError ? color.error.error300 : color.neutral.neutral300
@@ -146,12 +146,9 @@ function Permohonan({ onPress }) {
           padding={20}
           selected={setrencanaJenisPembangunan}
           saved={rencana_pembangunan}
+          notFound={"Kategori belum dipilih"}
         />
       ) : (
-        ""
-      )}
-
-      {jenisRencana == "Lainnya" ? (
         <ATextInput
           bdColor={
             rencanaError ? color.error.error300 : color.neutral.neutral300
@@ -167,8 +164,6 @@ function Permohonan({ onPress }) {
             setrencanaJenisPembangunan(value);
           }}
         />
-      ) : (
-        ""
       )}
 
       {rencanaError && jenisRencana != "" ? (

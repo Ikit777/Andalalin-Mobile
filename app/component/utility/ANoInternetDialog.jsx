@@ -39,7 +39,7 @@ function ANoInternetDialog({ visibleModal = false }) {
     if (context.getUser() != "user") {
       RootNavigation.replace("Home");
     } else {
-      RootNavigation.replace("Login");
+      RootNavigation.replace("Back Login");
     }
   };
 

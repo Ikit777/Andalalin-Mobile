@@ -198,14 +198,21 @@ export const andalalinGantiPetugas = async (
   authRespone(response);
 };
 
-export const andalalinGetByTiketLevel2 = async (accessToken, authRespone) => {
-  const response = await fetch(ENDPOINTS.ANDALALIN_GET_BY_TIKET_LEVEL_2, {
-    method: "GET",
-    headers: {
-      Authorization: "Bearer " + accessToken,
-      "Content-Type": "application/json",
-    },
-  });
+export const andalalinGetByTiketLevel2 = async (
+  accessToken,
+  status,
+  authRespone
+) => {
+  const response = await fetch(
+    ENDPOINTS.ANDALALIN_GET_BY_TIKET_LEVEL_2 + "/" + status,
+    {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + accessToken,
+        "Content-Type": "application/json",
+      },
+    }
+  );
   authRespone(response);
 };
 
@@ -336,26 +343,24 @@ export const andalalinSimpanPersetujuan = async (
   persetujuan,
   authRespone
 ) => {
-  const response = await fetch(ENDPOINTS.ANDALALIN_SIMPAN_PERSETUJUAN + "/" + id, {
-    method: "POST",
-    headers: {
-      Authorization: "Bearer " + accessToken,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      persetujuan: persetujuan.dokumen,
-      keterangan: persetujuan.keterangan,
-    }),
-  });
+  const response = await fetch(
+    ENDPOINTS.ANDALALIN_SIMPAN_PERSETUJUAN + "/" + id,
+    {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + accessToken,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        persetujuan: persetujuan.dokumen,
+        keterangan: persetujuan.keterangan,
+      }),
+    }
+  );
   authRespone(response);
 };
 
-export const andalalinSimpanSK = async (
-  accessToken,
-  id,
-  file,
-  authRespone
-) => {
+export const andalalinSimpanSK = async (accessToken, id, file, authRespone) => {
   const formData = new FormData();
   formData.append("sk", {
     uri: file,
@@ -374,7 +379,11 @@ export const andalalinSimpanSK = async (
   authRespone(response);
 };
 
-export const andalalinGetByStatus = async (accessToken, status, authRespone) => {
+export const andalalinGetByStatus = async (
+  accessToken,
+  status,
+  authRespone
+) => {
   const response = await fetch(ENDPOINTS.ANDALALIN_GET_STATUS + "/" + status, {
     method: "GET",
     headers: {
@@ -382,5 +391,105 @@ export const andalalinGetByStatus = async (accessToken, status, authRespone) => 
       "Content-Type": "application/json",
     },
   });
+  authRespone(response);
+};
+
+export const andalalinUsulanTindakan = async (
+  accessToken,
+  id,
+  tindakan,
+  authRespone
+) => {
+  const response = await fetch(ENDPOINTS.ANDALALIN_USULAN_TINDAKAN + "/" + id, {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer " + accessToken,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      pertimbangan: tindakan.pertimbangan,
+      keterangan: tindakan.keterangan,
+    }),
+  });
+  authRespone(response);
+};
+
+export const andalalinGetUsulanTindakan = async (accessToken, authRespone) => {
+  const response = await fetch(ENDPOINTS.ANDALALIN_GET_USULAN_TINDAKAN, {
+    method: "GET",
+    headers: {
+      Authorization: "Bearer " + accessToken,
+      "Content-Type": "application/json",
+    },
+  });
+  authRespone(response);
+};
+
+export const andalalinGetDetailUsulan = async (
+  accessToken,
+  id,
+  authRespone
+) => {
+  const response = await fetch(
+    ENDPOINTS.ANDALALIN_DETAIL_USULAN_TINDAKAN + "/" + id,
+    {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + accessToken,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  authRespone(response);
+};
+
+export const andalalinTindakan = async (
+  accessToken,
+  id,
+  tindakan,
+  authRespone
+) => {
+  const response = await fetch(
+    ENDPOINTS.ANDALALIN_TINDAKAN_USULAN + "/" + id + "/" + tindakan,
+    {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + accessToken,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  authRespone(response);
+};
+
+export const andalalinHapusUsulan = async (accessToken, id, authRespone) => {
+  const response = await fetch(
+    ENDPOINTS.ANDALALIN_HAPUS_USULAN_TINDAKAN + "/" + id,
+    {
+      method: "DELETE",
+      headers: {
+        Authorization: "Bearer " + accessToken,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  authRespone(response);
+};
+
+export const andalalinGetAllByTiketLevel2 = async (
+  accessToken,
+  status,
+  authRespone
+) => {
+  const response = await fetch(
+    ENDPOINTS.ANDALALIN_GET_ALL_BY_TIKET_LEVEL2 + "/" + status,
+    {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + accessToken,
+        "Content-Type": "application/json",
+      },
+    }
+  );
   authRespone(response);
 };

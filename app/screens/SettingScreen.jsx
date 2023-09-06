@@ -45,7 +45,7 @@ function SettingScreen({ navigation }) {
         case 200:
           context.toggleLoading(false);
           remove("authState");
-          navigation.replace("Login");
+          navigation.replace("Back Login");
           break;
         case 424:
           authRefreshToken(context, (response) => {

@@ -164,7 +164,6 @@ function UpdatePersyaratanScreen({ navigation, route }) {
                 simpan();
               } else {
                 context.toggleLoading(false);
-                toggleKirimGagal();
               }
             });
             break;

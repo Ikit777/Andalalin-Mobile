@@ -59,7 +59,11 @@ function DetailScreen({ navigation, route }) {
         navigation.replace("Back Daftar", { kondisi: "Survei" });
         break;
       case "Admin":
-        navigation.replace("Back Daftar");
+        if (kondisi == "Persetujuan") {
+          navigation.replace("Back Daftar", { kondisi: "Persetujuan" });
+        } else {
+          navigation.replace("Back Daftar", { kondisi: "Pengawasan" });
+        }
         break;
     }
   };

@@ -22,3 +22,5 @@ export { default as TambahUserScreen} from "./TambahUserScreen";
 export { default as DaftarPenggunaScreen} from "./DaftarPenggunaScreen";
 export { default as DetailSurveiScreen} from "./DetailSurveiScreen";
 export { default as LaporanBAPScreen} from "./LaporanBAPScreen";
+export { default as UsulanPengelolaanScreen} from "./UsulanPengelolaanScreen";
+export { default as DetailUsulanScreen} from "./DetailUsulanScreen";

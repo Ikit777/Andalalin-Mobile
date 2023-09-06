@@ -19,6 +19,7 @@ import { useStateToggler } from "../hooks/useUtility";
 import ADialog from "../component/utility/ADialog";
 import { authRefreshToken } from "../api/auth";
 import { userMe } from "../api/user";
+import ExitApp from 'react-native-exit-app';
 
 function HomeScreen({ navigation }) {
   const context = useContext(UserContext);
@@ -57,7 +58,7 @@ function HomeScreen({ navigation }) {
     switch (context.getUser().role) {
       case "User":
         return (
-          <View>
+          <View style={{ paddingBottom: 40 }}>
             <AMenuCard
               style={{ marginBottom: 20 }}
               icon={"clipboard"}
@@ -96,14 +97,14 @@ function HomeScreen({ navigation }) {
         );
       case "Operator":
         return (
-          <View>
+          <View style={{ paddingBottom: 40 }}>
             <AMenuCard
               style={{ marginBottom: 20 }}
               icon={"list"}
               title={"Daftar permohonan"}
               desc={"Daftar permohonan yang telah diajukan"}
               onPress={() => {
-                navigation.push("Daftar", {kondisi: "Diajukan"});
+                navigation.push("Daftar", { kondisi: "Diajukan" });
               }}
             />
 
@@ -113,7 +114,7 @@ function HomeScreen({ navigation }) {
               title={"Daftar permohonan selesai"}
               desc={"Daftar permohonan yang telah selesai"}
               onPress={() => {
-                navigation.push("Daftar", {kondisi: "Selesai"});
+                navigation.push("Daftar", { kondisi: "Selesai" });
               }}
             />
 
@@ -129,7 +130,7 @@ function HomeScreen({ navigation }) {
         );
       case "Petugas":
         return (
-          <View>
+          <View style={{ paddingBottom: 40 }}>
             <AMenuCard
               style={{ marginBottom: 20 }}
               icon={"map-pin"}
@@ -152,7 +153,7 @@ function HomeScreen({ navigation }) {
         );
       case "Super Admin":
         return (
-          <View>
+          <View style={{ paddingBottom: 40 }}>
             <AMenuCard
               style={{ marginBottom: 20 }}
               icon={"list"}
@@ -175,22 +176,50 @@ function HomeScreen({ navigation }) {
         );
       case "Admin":
         return (
-          <View>
+          <View style={{ paddingBottom: 40 }}>
             <AMenuCard
               style={{ marginBottom: 20 }}
-              icon={"list"}
+              icon={"check-square"}
               title={"Persetujuan dokumen"}
-              desc={"Persetujuan dokumen terhadap permohonan yang telah di ajukan"}
+              desc={
+                "Persetujuan dokumen terhadap permohonan yang telah di ajukan"
+              }
               onPress={() => {
-                navigation.push("Daftar");
+                navigation.push("Daftar", { kondisi: "Persetujuan" });
               }}
             />
 
             <AMenuCard
               style={{ marginBottom: 20 }}
-              icon={"user-plus"}
+              icon={"paperclip"}
+              title={"Pengawasan tiket"}
+              desc={
+                "Pengawasan tiket berguna untuk menindaklanjuti usulan tindakan terhadap pelaksanaan survei lapangan"
+              }
+              onPress={() => {
+                navigation.push("Daftar", { kondisi: "Pengawasan" });
+              }}
+            />
+
+            <AMenuCard
+              style={{ marginBottom: 20 }}
+              icon={"archive"}
+              title={"Lanjutkan pelaksanaan survei"}
+              desc={
+                "Melanjutkan pelaksanaan survei lapangan yang ditunda"
+              }
+              onPress={() => {
+                navigation.push("Daftar", { kondisi: "Tertunda" });
+              }}
+            />
+
+            <AMenuCard
+              style={{ marginBottom: 20 }}
+              icon={"edit"}
               title={"Pengelolaan produk"}
-              desc={"Pengelolaan produk yang diterapkan pada aplikasi andalalin"}
+              desc={
+                "Pengelolaan produk yang diterapkan pada aplikasi andalalin"
+              }
             />
           </View>
         );
@@ -249,7 +278,7 @@ function HomeScreen({ navigation }) {
             Andalalin
           </AText>
           <View style={{ flexDirection: "row" }}>
-            {context.getUser().role == "User" ? (
+            {context.getUser().role == "User" || context.getUser().role == "Operator" || context.getUser().role == "Petugas" ? (
               <Pressable
                 style={{ padding: 8, flexDirection: "row" }}
                 onPress={() => {
@@ -339,7 +368,7 @@ function HomeScreen({ navigation }) {
           toggleComfirm();
         }}
         onPressOKButton={() => {
-          BackHandler.exitApp();
+          ExitApp.exitApp();
           toggleComfirm();
         }}
       />

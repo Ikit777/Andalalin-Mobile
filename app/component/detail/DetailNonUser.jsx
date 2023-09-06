@@ -91,12 +91,22 @@ function DetailNonUser({ permohonan, navigation }) {
               });
             }, "Pilih petugas");
           case "Survey lapangan":
-            return tindakan(() => {
-              navigation.push("Pilih Petugas", {
-                kondisi: "Ganti",
-                permohonan: permohonan,
-              });
-            }, "Ganti pentugas");
+            switch (permohonan.status_tiket) {
+              case "Buka":
+                return tindakan(() => {
+                  navigation.push("Usulan", {
+                    id: permohonan.id_andalalin,
+                  });
+                }, "Usulan tindakan");
+              case "Batal":
+                return tindakan(() => {
+                  navigation.push("Pilih Petugas", {
+                    kondisi: "Ganti",
+                    permohonan: permohonan,
+                  });
+                }, "Ganti pentugas");
+            }
+            break;
           case "Laporan BAP":
             return permohonan.file_bap == null
               ? tindakan(() => {
@@ -350,7 +360,9 @@ function DetailNonUser({ permohonan, navigation }) {
       (response) => {
         switch (response.status) {
           case 200:
-            navigation.replace("Reload Detail", { id: permohonan.id_andalalin });
+            navigation.replace("Reload Detail", {
+              id: permohonan.id_andalalin,
+            });
             break;
           case 424:
             authRefreshToken(context, (response) => {
@@ -385,7 +397,9 @@ function DetailNonUser({ permohonan, navigation }) {
         (response) => {
           switch (response.status) {
             case 200:
-              navigation.replace("Reload Detail", { id: permohonan.id_andalalin });
+              navigation.replace("Reload Detail", {
+                id: permohonan.id_andalalin,
+              });
               break;
             case 424:
               authRefreshToken(context, (response) => {
@@ -649,7 +663,9 @@ function DetailNonUser({ permohonan, navigation }) {
       (response) => {
         switch (response.status) {
           case 200:
-            navigation.replace("Reload Detail", { id: permohonan.id_andalalin });
+            navigation.replace("Reload Detail", {
+              id: permohonan.id_andalalin,
+            });
             break;
           case 424:
             authRefreshToken(context, (response) => {
@@ -787,7 +803,9 @@ function DetailNonUser({ permohonan, navigation }) {
           <Pressable
             style={{ flexDirection: "row", paddingLeft: 4, marginLeft: 32 }}
             onPress={() => {
-              {fileSK != null ? (toggleKonformasiSK()) : ("")}
+              {
+                fileSK != null ? toggleKonformasiSK() : "";
+              }
             }}
           >
             <AText size={14} color={color.neutral.neutral700} weight="semibold">
@@ -807,7 +825,9 @@ function DetailNonUser({ permohonan, navigation }) {
       (response) => {
         switch (response.status) {
           case 201:
-            navigation.replace("Reload Detail", { id: permohonan.id_andalalin });
+            navigation.replace("Reload Detail", {
+              id: permohonan.id_andalalin,
+            });
             break;
           case 424:
             authRefreshToken(context, (response) => {
@@ -828,7 +848,7 @@ function DetailNonUser({ permohonan, navigation }) {
         }
       }
     );
-  }
+  };
 
   const sk = () => {
     if (permohonan.file_sk != null) {
