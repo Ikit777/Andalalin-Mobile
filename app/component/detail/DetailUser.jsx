@@ -21,7 +21,7 @@ function DetailUser({ permohonan, navigation }) {
 
   const status = () => {
     switch (permohonan.status_andalalin) {
-      case "Persyaratan tidak sesuai":
+      case "Persyaratan tidak terpenuhi":
         return color.error.error50;
       case "Permohonan selesai":
         return color.success.success50;
@@ -32,7 +32,7 @@ function DetailUser({ permohonan, navigation }) {
 
   const statusText = () => {
     switch (permohonan.status_andalalin) {
-      case "Persyaratan tidak sesuai":
+      case "Persyaratan tidak terpenuhi":
         return color.error.error700;
       case "Permohonan selesai":
         return color.success.success700;
@@ -262,7 +262,7 @@ function DetailUser({ permohonan, navigation }) {
         style={{
           marginTop: 20,
           marginBottom:
-            permohonan.status_andalalin == "Persyaratan tidak sesuai" ? 20 : 50,
+            permohonan.status_andalalin == "Persyaratan tidak terpenuhi" ? 20 : 50,
         }}
         title={"Berkas"}
       >
@@ -337,10 +337,10 @@ function DetailUser({ permohonan, navigation }) {
         )}
       </ADetailView>
 
-      {permohonan.status_andalalin == "Persyaratan tidak sesuai" ? (
+      {permohonan.status_andalalin == "Persyaratan tidak terpenuhi" ? (
         <AButton
           style={{ marginBottom: 50 }}
-          title={"Update persyaratan"}
+          title={"Perbaharui persyaratan"}
           mode="contained"
           onPress={() => {
             navigation.push("Update", { permohonan: permohonan });

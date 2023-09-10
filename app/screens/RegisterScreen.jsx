@@ -55,7 +55,7 @@ function RegisterScreen({ navigation }) {
       switch (response.status) {
         case 201:
           context.toggleLoading(false);
-          navigation.navigate("Verifikasi", { email: email });
+          navigation.push("Verifikasi", { email: email });
           break;
         case 409:
           context.toggleLoading(false);
@@ -275,7 +275,7 @@ function RegisterScreen({ navigation }) {
           <Pressable
             style={{ flexDirection: "row", paddingLeft: 4 }}
             onPress={() => {
-              navigation.navigate("Login");
+              navigation.push("Back Login");
             }}
           >
             <AText size={14} color={color.neutral.neutral700} weight="semibold">

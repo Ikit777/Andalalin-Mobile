@@ -190,7 +190,7 @@ function UpdatePersyaratanScreen({ navigation, route }) {
             color={color.neutral.neutral900}
             weight="normal"
           >
-            Update persyaratan
+            Perbaharui persyaratan
           </AText>
         </View>
       </View>
@@ -205,7 +205,7 @@ function UpdatePersyaratanScreen({ navigation, route }) {
           size={16}
           weight="normal"
         >
-          Berikut ini persyaratan yang masih kurang lengkap atau ada kesalahan:
+          Berikut ini persyaratan yang masih masih belum terpenuhi atau ada kesalahan:
         </AText>
 
         {permohonan.persyaratan_tidak_sesuai.find(

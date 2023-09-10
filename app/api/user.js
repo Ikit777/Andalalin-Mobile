@@ -2,7 +2,7 @@ import environments from "../constants/environments";
 
 const { ENDPOINTS } = environments;
 
-export const userMe = async (accessToken, authRespone) => {
+export const userMe = async (accessToken, userRespone) => {
   const response = await fetch(ENDPOINTS.USER_ME, {
     method: "GET",
     headers: {
@@ -10,10 +10,10 @@ export const userMe = async (accessToken, authRespone) => {
       "Content-Type": "application/json",
     },
   });
-  authRespone(response);
+  userRespone(response);
 };
 
-export const userUpdatePhoto = async (file, accessToken, authRespone) => {
+export const userUpdatePhoto = async (file, accessToken, userRespone) => {
   const formData = new FormData();
   formData.append("profile", {
     uri: file,
@@ -29,10 +29,10 @@ export const userUpdatePhoto = async (file, accessToken, authRespone) => {
     },
     body: formData,
   });
-  authRespone(response);
+  userRespone(response);
 };
 
-export const notifikasiByIdUser = async (accessToken, authRespone) => {
+export const notifikasiByIdUser = async (accessToken, userRespone) => {
   const response = await fetch(ENDPOINTS.USER_NOTIFIKASI, {
     method: "GET",
     headers: {
@@ -40,10 +40,10 @@ export const notifikasiByIdUser = async (accessToken, authRespone) => {
       "Content-Type": "application/json",
     },
   });
-  authRespone(response);
+  userRespone(response);
 };
 
-export const clearnotifikasiByIdUser = async (accessToken, authRespone) => {
+export const clearnotifikasiByIdUser = async (accessToken, userRespone) => {
   const response = await fetch(ENDPOINTS.USER_CLEAR_NOTIFIKASI, {
     method: "DELETE",
     headers: {
@@ -51,10 +51,10 @@ export const clearnotifikasiByIdUser = async (accessToken, authRespone) => {
       "Content-Type": "application/json",
     },
   });
-  authRespone(response);
+  userRespone(response);
 };
 
-export const userPetugas = async (accessToken, authRespone) => {
+export const userPetugas = async (accessToken, userRespone) => {
   const response = await fetch(ENDPOINTS.USER_PETUGAS, {
     method: "GET",
     headers: {
@@ -62,10 +62,10 @@ export const userPetugas = async (accessToken, authRespone) => {
       "Content-Type": "application/json",
     },
   });
-  authRespone(response);
+  userRespone(response);
 };
 
-export const tambahUser = async (accessToken, user, authRespone) => {
+export const tambahUser = async (accessToken, user, userRespone) => {
   const response = await fetch(ENDPOINTS.TAMBAH_USER, {
     method: "POST",
     headers: {
@@ -79,10 +79,10 @@ export const tambahUser = async (accessToken, user, authRespone) => {
       password: user.password
     }),
   });
-  authRespone(response);
+  userRespone(response);
 };
 
-export const userAll = async (accessToken, authRespone) => {
+export const userAll = async (accessToken, userRespone) => {
   const response = await fetch(ENDPOINTS.GET_ALL_USER, {
     method: "GET",
     headers: {
@@ -90,10 +90,10 @@ export const userAll = async (accessToken, authRespone) => {
       "Content-Type": "application/json",
     },
   });
-  authRespone(response);
+  userRespone(response);
 };
 
-export const userDelete = async (accessToken, user, authRespone) => {
+export const userDelete = async (accessToken, user, userRespone) => {
   const response = await fetch(ENDPOINTS.DELETE_USER, {
     method: "DELETE",
     headers: {
@@ -105,5 +105,5 @@ export const userDelete = async (accessToken, user, authRespone) => {
       role: user.role,
     }),
   });
-  authRespone(response);
+  userRespone(response);
 };

@@ -27,6 +27,9 @@ import {
   LaporanBAPScreen,
   UsulanPengelolaanScreen,
   DetailUsulanScreen,
+  PengelolaanProdukScreen,
+  DaftarProdukScreen,
+  MapScreen,
 } from "../screens";
 
 const Stack = createNativeStackNavigator();
@@ -40,6 +43,7 @@ const Navigator = ({
   permohonan,
   kondisi,
   foto,
+  koordinat,
 }) => {
   return (
     <Stack.Navigator
@@ -47,6 +51,11 @@ const Navigator = ({
       screenOptions={{ headerShown: false, animation: "slide_from_right" }}
     >
       <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen
+        name="Back Home"
+        component={HomeScreen}
+        options={{ animation: "slide_from_left" }}
+      />
       <Stack.Screen name="Setting" component={SettingScreen} />
 
       <Stack.Screen name="Onboarding" component={OnBoardingScreen} />
@@ -90,7 +99,7 @@ const Navigator = ({
         name="Reload Detail"
         component={DetailScreen}
         options={{ animation: "none" }}
-        initialParams={{ id }}
+        initialParams={{ id, kondisi }}
       />
       <Stack.Screen
         name="Detail Survei"
@@ -149,9 +158,9 @@ const Navigator = ({
       <Stack.Screen name="Tambah User" component={TambahUserScreen} />
       <Stack.Screen name="Daftar User" component={DaftarPenggunaScreen} />
       <Stack.Screen
-        name="Laporan BAP"
+        name="Berita acara pemeriksaan"
         component={LaporanBAPScreen}
-        initialParams={{ id }}
+        initialParams={{ id, kondisi }}
       />
       <Stack.Screen
         name="Usulan"
@@ -162,6 +171,17 @@ const Navigator = ({
         name="Detail Usulan"
         component={DetailUsulanScreen}
         initialParams={{ id }}
+      />
+      <Stack.Screen name="Pengelolaan" component={PengelolaanProdukScreen} />
+      <Stack.Screen
+        name="Produk"
+        component={DaftarProdukScreen}
+        initialParams={{ kondisi }}
+      />
+      <Stack.Screen
+        name="Map"
+        component={MapScreen}
+        initialParams={{ koordinat }}
       />
     </Stack.Navigator>
   );

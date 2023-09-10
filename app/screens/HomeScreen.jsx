@@ -19,7 +19,8 @@ import { useStateToggler } from "../hooks/useUtility";
 import ADialog from "../component/utility/ADialog";
 import { authRefreshToken } from "../api/auth";
 import { userMe } from "../api/user";
-import ExitApp from 'react-native-exit-app';
+import ExitApp from "react-native-exit-app";
+import { useFocusEffect } from "@react-navigation/native";
 
 function HomeScreen({ navigation }) {
   const context = useContext(UserContext);
@@ -88,7 +89,7 @@ function HomeScreen({ navigation }) {
               }}
             />
             <AMenuCard
-              style={{ marginBottom: 50 }}
+              style={{ marginBottom: 20 }}
               icon={"file-text"}
               title={"Survey kepuasa"}
               desc={"Survey kepuasan masyaratan terhadap layanan kami"}
@@ -179,6 +180,16 @@ function HomeScreen({ navigation }) {
           <View style={{ paddingBottom: 40 }}>
             <AMenuCard
               style={{ marginBottom: 20 }}
+              icon={"list"}
+              title={"Daftar permohonan selesai"}
+              desc={"Daftar permohonan yang telah selesai"}
+              onPress={() => {
+                navigation.push("Daftar", { kondisi: "Selesai" });
+              }}
+            />
+
+            <AMenuCard
+              style={{ marginBottom: 20 }}
               icon={"check-square"}
               title={"Persetujuan dokumen"}
               desc={
@@ -194,7 +205,7 @@ function HomeScreen({ navigation }) {
               icon={"paperclip"}
               title={"Pengawasan tiket"}
               desc={
-                "Pengawasan tiket berguna untuk menindaklanjuti usulan tindakan terhadap pelaksanaan survei lapangan"
+                "Pengawasan tiket bertujuan untuk menindaklanjuti usulan tindakan terhadap pelaksanaan survei lapangan"
               }
               onPress={() => {
                 navigation.push("Daftar", { kondisi: "Pengawasan" });
@@ -205,9 +216,7 @@ function HomeScreen({ navigation }) {
               style={{ marginBottom: 20 }}
               icon={"archive"}
               title={"Lanjutkan pelaksanaan survei"}
-              desc={
-                "Melanjutkan pelaksanaan survei lapangan yang ditunda"
-              }
+              desc={"Melanjutkan pelaksanaan survei lapangan yang ditunda"}
               onPress={() => {
                 navigation.push("Daftar", { kondisi: "Tertunda" });
               }}
@@ -219,6 +228,18 @@ function HomeScreen({ navigation }) {
               title={"Pengelolaan produk"}
               desc={
                 "Pengelolaan produk yang diterapkan pada aplikasi andalalin"
+              }
+              onPress={() => {
+                navigation.push("Pengelolaan");
+              }}
+            />
+
+            <AMenuCard
+              style={{ marginBottom: 20 }}
+              icon={"clipboard"}
+              title={"Survei kepuasan masyarakat"}
+              desc={
+                "Daftar survei kepuasan yang dilakukan masyarakat terhadap aplikasi"
               }
             />
           </View>
@@ -232,11 +253,7 @@ function HomeScreen({ navigation }) {
         switch (response.status) {
           case 200:
             context.toggleLoading(false);
-            if (context.getUser() != "user") {
-              if (context.getUser().role === undefined) {
-                toggleError();
-              }
-            }
+            context.setCheck("userIsChecked");
             break;
           case 424:
             authRefreshToken(context, (response) => {
@@ -249,18 +266,32 @@ function HomeScreen({ navigation }) {
             break;
           default:
             context.toggleLoading(false);
+            toggleError();
             break;
         }
       });
     }
   };
 
-  useEffect(() => {
-    if (context.loading == false) {
-      context.toggleLoading(true);
-    }
-    me();
-  }, [context.user]);
+  useEffect(() => {}, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const timerID = setInterval(() => {
+        if (context.getUser() != "user") {
+          clearInterval(timerID);
+          if (context.check == null) {
+            setTimeout(() => {
+              me();
+            }, 1000);
+          }
+        }
+      }, 1000);
+      return () => {
+        clearInterval(timerID);
+      };
+    }, [context.user])
+  );
 
   return (
     <AScreen full statusbar={"light"}>
@@ -278,7 +309,9 @@ function HomeScreen({ navigation }) {
             Andalalin
           </AText>
           <View style={{ flexDirection: "row" }}>
-            {context.getUser().role == "User" || context.getUser().role == "Operator" || context.getUser().role == "Petugas" ? (
+            {context.getUser().role == "User" ||
+            context.getUser().role == "Operator" ||
+            context.getUser().role == "Petugas" ? (
               <Pressable
                 style={{ padding: 8, flexDirection: "row" }}
                 onPress={() => {

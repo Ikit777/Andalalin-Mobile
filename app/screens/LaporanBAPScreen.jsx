@@ -18,6 +18,7 @@ import { authRefreshToken } from "../api/auth";
 
 function LaporanBAPScreen({ navigation, route }) {
   const context = useContext(UserContext);
+  const kondisi = route.params.kondisi;
   const id = route.params.id;
   const dasarRef = React.createRef();
   const pelaksanaanRef = React.createRef();
@@ -157,6 +158,15 @@ function LaporanBAPScreen({ navigation, route }) {
     }
   };
 
+  const judul = () => {
+    switch (kondisi) {
+      case "Laporan":
+        return "Laporan BAP";
+      case "Perbaharui":
+        return "Perbaharui laporan";
+    }
+  };
+
   return (
     <AScreen>
       <View style={styles.header}>
@@ -172,7 +182,7 @@ function LaporanBAPScreen({ navigation, route }) {
             color={color.neutral.neutral900}
             weight="normal"
           >
-            Laporan BAP
+            {judul()}
           </AText>
         </View>
       </View>
@@ -323,7 +333,7 @@ function LaporanBAPScreen({ navigation, route }) {
 
       <AConfirmationDialog
         title={"Apakah Anda yakin?"}
-        desc={"Laporan BAP akan disimpan"}
+        desc={"Laporan berita acara pemeriksaan akan disimpan"}
         visibleModal={confirm}
         btnOK={"OK"}
         btnBATAL={"Batal"}

@@ -33,7 +33,7 @@ function LanjutanScreen({ navigation, route }) {
 
   const status = () => {
     switch (data.status_andalalin) {
-      case "Persyaratan tidak sesuai":
+      case "Persyaratan tidak terpenuhi":
         return color.error.error50;
       case "Permohonan selesai":
         return color.success.success50;
@@ -44,7 +44,7 @@ function LanjutanScreen({ navigation, route }) {
 
   const statusText = () => {
     switch (data.status_andalalin) {
-      case "Persyaratan tidak sesuai":
+      case "Persyaratan tidak terpenuhi":
         return color.error.error700;
       case "Permohonan selesai":
         return color.success.success700;

@@ -25,7 +25,7 @@ function ForgotPasswordScreen({ navigation }) {
       switch (response.status) {
         case 200:
           context.toggleLoading(false);
-          navigation.navigate("Reset", { email: email });
+          navigation.push("Reset", { email: email });
           break;
         case 400:
           context.toggleLoading(false);
@@ -42,20 +42,23 @@ function ForgotPasswordScreen({ navigation }) {
       }
     });
   };
-
+  
   useEffect(() => {
-    BackHandler.addEventListener("hardwareBackPress", () => {
-      setEmail("");
-      navigation.goBack();
-      return true;
-    });
+    const unsubscribe = navigation.addListener("focus", () => {
+      BackHandler.addEventListener("hardwareBackPress", () => {
+        setEmail("");
+        navigation.goBack();
+        return true;
+      });
 
-    return BackHandler.removeEventListener("hardwareBackPress", () => {
-      setEmail("");
-      navigation.goBack();
-      return true;
+      return BackHandler.removeEventListener("hardwareBackPress", () => {
+        setEmail("");
+        navigation.goBack();
+        return true;
+      });
     });
-  }, []);
+    return unsubscribe;
+  }, [navigation]);
 
   return (
     <AScreen>
@@ -178,7 +181,7 @@ function ForgotPasswordScreen({ navigation }) {
             style={{ flexDirection: "row", paddingLeft: 4 }}
             onPress={() => {
               setEmail("");
-              navigation.navigate("Register", { email: email });
+              navigation.push("Register", { email: email });
             }}
           >
             <AText size={14} color={color.neutral.neutral700} weight="semibold">

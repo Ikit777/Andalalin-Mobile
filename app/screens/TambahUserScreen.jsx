@@ -42,7 +42,6 @@ function TambahUserScreen({ navigation }) {
     usePasswordVisibility();
 
   const jenis_peran = [
-    { value: "Dinas Perhubungan" },
     { value: "Admin" },
     { value: "Operator" },
     { value: "Petugas" },
@@ -130,7 +129,6 @@ function TambahUserScreen({ navigation }) {
               tambah_pengguna();
             } else {
               context.toggleLoading(false);
-              toggleSomething();
             }
           });
           break;

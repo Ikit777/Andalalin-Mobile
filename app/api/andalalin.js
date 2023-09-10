@@ -6,7 +6,7 @@ export const andalalinPengajuan = async (
   accessToken,
   pengajuan,
   file,
-  authRespone
+  andalalinRespone
 ) => {
   const formData = new FormData();
   formData.append("ktp", {
@@ -34,10 +34,10 @@ export const andalalinPengajuan = async (
     },
     body: formData,
   });
-  authRespone(response);
+  andalalinRespone(response);
 };
 
-export const andalalinGetById = async (id, accessToken, authRespone) => {
+export const andalalinGetById = async (id, accessToken, andalalinRespone) => {
   const response = await fetch(ENDPOINTS.ANDALALIN_GET_BY_ID + "/" + id, {
     method: "GET",
     headers: {
@@ -45,10 +45,10 @@ export const andalalinGetById = async (id, accessToken, authRespone) => {
       "Content-Type": "application/json",
     },
   });
-  authRespone(response);
+  andalalinRespone(response);
 };
 
-export const andalalinGetByIdUser = async (accessToken, authRespone) => {
+export const andalalinGetByIdUser = async (accessToken, andalalinRespone) => {
   const response = await fetch(ENDPOINTS.ANDALALIN_GET_BY_ID_USER, {
     method: "GET",
     headers: {
@@ -56,10 +56,10 @@ export const andalalinGetByIdUser = async (accessToken, authRespone) => {
       "Content-Type": "application/json",
     },
   });
-  authRespone(response);
+  andalalinRespone(response);
 };
 
-export const andalalinGetByTiketLevel1 = async (accessToken, authRespone) => {
+export const andalalinGetByTiketLevel1 = async (accessToken, andalalinRespone) => {
   const response = await fetch(ENDPOINTS.ANDALALIN_GET_BY_TIKET_LEVEL_1, {
     method: "GET",
     headers: {
@@ -67,13 +67,13 @@ export const andalalinGetByTiketLevel1 = async (accessToken, authRespone) => {
       "Content-Type": "application/json",
     },
   });
-  authRespone(response);
+  andalalinRespone(response);
 };
 
 export const andalalinPersyaratanTerpenuhi = async (
   accessToken,
   id,
-  authRespone
+  andalalinRespone
 ) => {
   const response = await fetch(
     ENDPOINTS.ANDALALIN_PERSYARATAN_TERPENUHI + "/" + id,
@@ -85,14 +85,14 @@ export const andalalinPersyaratanTerpenuhi = async (
       },
     }
   );
-  authRespone(response);
+  andalalinRespone(response);
 };
 
 export const andalalinPersyaratanTidakSesuai = async (
   accessToken,
   id,
   persyaratan,
-  authRespone
+  andalalinRespone
 ) => {
   const response = await fetch(
     ENDPOINTS.ANDALALIN_PERSYARATAN_TIDAK_SESUAI + "/" + id,
@@ -107,14 +107,14 @@ export const andalalinPersyaratanTidakSesuai = async (
       }),
     }
   );
-  authRespone(response);
+  andalalinRespone(response);
 };
 
 export const andalalinUpdatePersyaratan = async (
   accessToken,
   id,
   file,
-  authRespone
+  andalalinRespone
 ) => {
   const formData = new FormData();
 
@@ -153,14 +153,14 @@ export const andalalinUpdatePersyaratan = async (
       body: formData,
     }
   );
-  authRespone(response);
+  andalalinRespone(response);
 };
 
 export const andalalinPilihPetugas = async (
   id,
   petugas,
   accessToken,
-  authRespone
+  andalalinRespone
 ) => {
   const response = await fetch(ENDPOINTS.ANDALALIN_TAMBAH_PETUGAS + "/" + id, {
     method: "POST",
@@ -174,14 +174,14 @@ export const andalalinPilihPetugas = async (
       email_petugas: petugas.email,
     }),
   });
-  authRespone(response);
+  andalalinRespone(response);
 };
 
 export const andalalinGantiPetugas = async (
   id,
   petugas,
   accessToken,
-  authRespone
+  andalalinRespone
 ) => {
   const response = await fetch(ENDPOINTS.ANDALALIN_GANTI_PETUGAS + "/" + id, {
     method: "POST",
@@ -195,13 +195,13 @@ export const andalalinGantiPetugas = async (
       email_petugas: petugas.email,
     }),
   });
-  authRespone(response);
+  andalalinRespone(response);
 };
 
 export const andalalinGetByTiketLevel2 = async (
   accessToken,
   status,
-  authRespone
+  andalalinRespone
 ) => {
   const response = await fetch(
     ENDPOINTS.ANDALALIN_GET_BY_TIKET_LEVEL_2 + "/" + status,
@@ -213,7 +213,7 @@ export const andalalinGetByTiketLevel2 = async (
       },
     }
   );
-  authRespone(response);
+  andalalinRespone(response);
 };
 
 export const andalalinSurveiLapangan = async (
@@ -221,7 +221,7 @@ export const andalalinSurveiLapangan = async (
   id,
   foto,
   lokasi,
-  authRespone
+  andalalinRespone
 ) => {
   const formData = new FormData();
 
@@ -259,10 +259,10 @@ export const andalalinSurveiLapangan = async (
     },
     body: formData,
   });
-  authRespone(response);
+  andalalinRespone(response);
 };
 
-export const andalalinGetAllSurvei = async (accessToken, authRespone) => {
+export const andalalinGetAllSurvei = async (accessToken, andalalinRespone) => {
   const response = await fetch(ENDPOINTS.ANDALALIN_GET_ALL_SURVEI_LAPANGAN, {
     method: "GET",
     headers: {
@@ -270,10 +270,10 @@ export const andalalinGetAllSurvei = async (accessToken, authRespone) => {
       "Content-Type": "application/json",
     },
   });
-  authRespone(response);
+  andalalinRespone(response);
 };
 
-export const andalalinGetSurvei = async (accessToken, id, authRespone) => {
+export const andalalinGetSurvei = async (accessToken, id, andalalinRespone) => {
   const response = await fetch(
     ENDPOINTS.ANDALALIN_GET_SURVEI_LAPANGAN + "/" + id,
     {
@@ -284,7 +284,7 @@ export const andalalinGetSurvei = async (accessToken, id, authRespone) => {
       },
     }
   );
-  authRespone(response);
+  andalalinRespone(response);
 };
 
 export const andalalinLaporanBAP = async (
@@ -292,7 +292,7 @@ export const andalalinLaporanBAP = async (
   id,
   file,
   bap,
-  authRespone
+  andalalinRespone
 ) => {
   const formData = new FormData();
 
@@ -312,10 +312,10 @@ export const andalalinLaporanBAP = async (
     },
     body: formData,
   });
-  authRespone(response);
+  andalalinRespone(response);
 };
 
-export const andalalinGetAll = async (accessToken, authRespone) => {
+export const andalalinGetAll = async (accessToken, andalalinRespone) => {
   const response = await fetch(ENDPOINTS.ANDALALIN_GET_ALL, {
     method: "GET",
     headers: {
@@ -323,25 +323,14 @@ export const andalalinGetAll = async (accessToken, authRespone) => {
       "Content-Type": "application/json",
     },
   });
-  authRespone(response);
-};
-
-export const andalalinPersetujuan = async (accessToken, authRespone) => {
-  const response = await fetch(ENDPOINTS.ANDALALIN_PERSETUJUAN, {
-    method: "GET",
-    headers: {
-      Authorization: "Bearer " + accessToken,
-      "Content-Type": "application/json",
-    },
-  });
-  authRespone(response);
+  andalalinRespone(response);
 };
 
 export const andalalinSimpanPersetujuan = async (
   accessToken,
   id,
   persetujuan,
-  authRespone
+  andalalinRespone
 ) => {
   const response = await fetch(
     ENDPOINTS.ANDALALIN_SIMPAN_PERSETUJUAN + "/" + id,
@@ -357,10 +346,10 @@ export const andalalinSimpanPersetujuan = async (
       }),
     }
   );
-  authRespone(response);
+  andalalinRespone(response);
 };
 
-export const andalalinSimpanSK = async (accessToken, id, file, authRespone) => {
+export const andalalinSimpanSK = async (accessToken, id, file, andalalinRespone) => {
   const formData = new FormData();
   formData.append("sk", {
     uri: file,
@@ -376,13 +365,13 @@ export const andalalinSimpanSK = async (accessToken, id, file, authRespone) => {
     },
     body: formData,
   });
-  authRespone(response);
+  andalalinRespone(response);
 };
 
 export const andalalinGetByStatus = async (
   accessToken,
   status,
-  authRespone
+  andalalinRespone
 ) => {
   const response = await fetch(ENDPOINTS.ANDALALIN_GET_STATUS + "/" + status, {
     method: "GET",
@@ -391,14 +380,14 @@ export const andalalinGetByStatus = async (
       "Content-Type": "application/json",
     },
   });
-  authRespone(response);
+  andalalinRespone(response);
 };
 
 export const andalalinUsulanTindakan = async (
   accessToken,
   id,
   tindakan,
-  authRespone
+  andalalinRespone
 ) => {
   const response = await fetch(ENDPOINTS.ANDALALIN_USULAN_TINDAKAN + "/" + id, {
     method: "POST",
@@ -411,10 +400,10 @@ export const andalalinUsulanTindakan = async (
       keterangan: tindakan.keterangan,
     }),
   });
-  authRespone(response);
+  andalalinRespone(response);
 };
 
-export const andalalinGetUsulanTindakan = async (accessToken, authRespone) => {
+export const andalalinGetUsulanTindakan = async (accessToken, andalalinRespone) => {
   const response = await fetch(ENDPOINTS.ANDALALIN_GET_USULAN_TINDAKAN, {
     method: "GET",
     headers: {
@@ -422,13 +411,13 @@ export const andalalinGetUsulanTindakan = async (accessToken, authRespone) => {
       "Content-Type": "application/json",
     },
   });
-  authRespone(response);
+  andalalinRespone(response);
 };
 
 export const andalalinGetDetailUsulan = async (
   accessToken,
   id,
-  authRespone
+  andalalinRespone
 ) => {
   const response = await fetch(
     ENDPOINTS.ANDALALIN_DETAIL_USULAN_TINDAKAN + "/" + id,
@@ -440,14 +429,14 @@ export const andalalinGetDetailUsulan = async (
       },
     }
   );
-  authRespone(response);
+  andalalinRespone(response);
 };
 
 export const andalalinTindakan = async (
   accessToken,
   id,
   tindakan,
-  authRespone
+  andalalinRespone
 ) => {
   const response = await fetch(
     ENDPOINTS.ANDALALIN_TINDAKAN_USULAN + "/" + id + "/" + tindakan,
@@ -459,10 +448,10 @@ export const andalalinTindakan = async (
       },
     }
   );
-  authRespone(response);
+  andalalinRespone(response);
 };
 
-export const andalalinHapusUsulan = async (accessToken, id, authRespone) => {
+export const andalalinHapusUsulan = async (accessToken, id, andalalinRespone) => {
   const response = await fetch(
     ENDPOINTS.ANDALALIN_HAPUS_USULAN_TINDAKAN + "/" + id,
     {
@@ -473,13 +462,13 @@ export const andalalinHapusUsulan = async (accessToken, id, authRespone) => {
       },
     }
   );
-  authRespone(response);
+  andalalinRespone(response);
 };
 
 export const andalalinGetAllByTiketLevel2 = async (
   accessToken,
   status,
-  authRespone
+  andalalinRespone
 ) => {
   const response = await fetch(
     ENDPOINTS.ANDALALIN_GET_ALL_BY_TIKET_LEVEL2 + "/" + status,
@@ -491,5 +480,5 @@ export const andalalinGetAllByTiketLevel2 = async (
       },
     }
   );
-  authRespone(response);
+  andalalinRespone(response);
 };

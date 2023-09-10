@@ -25,11 +25,13 @@ function DetailSurveiScreen({ navigation, route }) {
 
   useEffect(() => {
     BackHandler.addEventListener("hardwareBackPress", () => {
+      navigation.setOptions({ animation: "slide_from_right" });
       back();
       return true;
     });
 
     return BackHandler.removeEventListener("hardwareBackPress", () => {
+      navigation.setOptions({ animation: "slide_from_right" });
       back();
       return true;
     });
@@ -87,6 +89,7 @@ function DetailSurveiScreen({ navigation, route }) {
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <ABackButton
             onPress={() => {
+              navigation.setOptions({ animation: "slide_from_right" });
               back();
             }}
           />
@@ -277,6 +280,73 @@ function DetailSurveiScreen({ navigation, route }) {
             ) : (
               ""
             )}
+          </ADetailView>
+
+          <ADetailView style={{ marginTop: 20 }} title={"Koordinat survei"}>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                padding: 16,
+              }}
+            >
+              <AText size={12} color={color.neutral.neutral900} weight="normal">
+                Latitude
+              </AText>
+              <AText size={12} color={color.neutral.neutral500} weight="normal">
+                {survei.Latitude}
+              </AText>
+            </View>
+            <View style={styles.separator} />
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                padding: 16,
+              }}
+            >
+              <AText size={12} color={color.neutral.neutral900} weight="normal">
+                Longitude
+              </AText>
+              <AText size={12} color={color.neutral.neutral500} weight="normal">
+                {survei.Longitude}
+              </AText>
+            </View>
+
+            <View style={styles.separator} />
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                padding: 16,
+              }}
+            >
+              <AText size={12} color={color.neutral.neutral900} weight="normal">
+                Map lokasi survei
+              </AText>
+
+              <Pressable
+                style={{ flexDirection: "row", paddingLeft: 4 }}
+                onPress={() => {
+                  const koordinat = {
+                    latitude: survei.Latitude,
+                    longitude: survei.Longitude,
+                  }
+                  navigation.push("Map", { koordinat: koordinat });
+                }}
+              >
+                <AText
+                  size={14}
+                  color={color.neutral.neutral700}
+                  weight="semibold"
+                >
+                  Lihat
+                </AText>
+              </Pressable>
+            </View>
           </ADetailView>
 
           <ADetailView style={{ marginTop: 20 }} title={"Lokasi survei"}>

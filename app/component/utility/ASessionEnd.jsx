@@ -55,6 +55,7 @@ function ASessionEnd({ visibleModal = false }) {
               context.setSession(false);
               setVisible(false);
               remove("authState");
+              context.setCheck();
               RootNavigation.push("Back Login")
             }}
           >

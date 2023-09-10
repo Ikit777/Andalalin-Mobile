@@ -342,15 +342,6 @@ function DaftarPenggunaScreen({ navigation }) {
             <AText size={18} color={color.neutral.neutral700} weight="semibold">
               Pilihan
             </AText>
-            <Pressable
-              style={{ flexDirection: "row", padding: 8 }}
-              onPress={() => {
-                toggleHapusModal();
-                setPilih("");
-              }}
-            >
-              <Feather name="x" size={20} color={color.neutral.neutral900} />
-            </Pressable>
           </View>
           <Pressable
             style={{
@@ -377,6 +368,30 @@ function DaftarPenggunaScreen({ navigation }) {
               Hapus
             </AText>
           </Pressable>
+          <View
+            style={{
+              flexDirection: "row",
+              alignSelf: "flex-end",
+              marginRight: 16,
+              marginBottom: 16,
+            }}
+          >
+            <Pressable
+              style={{ flexDirection: "row", paddingLeft: 4 }}
+              onPress={() => {
+                toggleHapusModal();
+                setPilih("");
+              }}
+            >
+              <AText
+                size={14}
+                color={color.neutral.neutral700}
+                weight="semibold"
+              >
+                Batal
+              </AText>
+            </Pressable>
+          </View>
         </View>
       </ABottomSheet>
 

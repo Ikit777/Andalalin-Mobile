@@ -102,6 +102,7 @@ function Lokasi({ onPress, id }) {
             setMaps(`
             <html>
               <head>
+              <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
                 <link
                   rel="stylesheet"
                   href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
@@ -116,7 +117,7 @@ function Lokasi({ onPress, id }) {
                     attribution: '© OpenStreetMap'
                   }).addTo(map);
                   L.marker([${position.coords.latitude}, ${position.coords.longitude}]).addTo(map)
-                    .bindPopup('Lokasi anda!')
+                    .bindPopup('Lokasi saat ini')
                     .openPopup();
                 </script>
               </body>
@@ -164,6 +165,7 @@ function Lokasi({ onPress, id }) {
             setMaps(`
             <html>
               <head>
+              <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
                 <link
                   rel="stylesheet"
                   href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
@@ -178,7 +180,7 @@ function Lokasi({ onPress, id }) {
                     attribution: '© OpenStreetMap'
                   }).addTo(map);
                   L.marker([${position.coords.latitude}, ${position.coords.longitude}]).addTo(map)
-                    .bindPopup('Lokasi anda!')
+                    .bindPopup('Lokasi saat ini')
                     .openPopup();
                 </script>
               </body>

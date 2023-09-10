@@ -20,6 +20,7 @@ function Permohonan({ onPress }) {
     useState(rencana_pembangunan);
 
   const [rencana, setRencana] = useState("");
+  const [jenis_rencana, setjenis_rencana] = useState("");
 
   const [jenisError, toggleJenisError] = useStateToggler();
   const [lokasiError, toggleLokasiError] = useStateToggler();
@@ -29,32 +30,31 @@ function Permohonan({ onPress }) {
     return { value: item };
   });
 
-  let jenis_rencana = dataMaster.jenis_rencana.map((item) => {
-    return { value: item };
-  });
+  useEffect(() => {
+    let pusat = dataMaster.rencana_pembangunan.filter((item) => {
+      return item.JenisRencana != null;
+    });
+
+    let jenis_rencana = pusat.map((item) => {
+      return item.Kategori;
+    });
+
+    jenis_rencana.push("Lainnya");
+
+    setjenis_rencana(jenis_rencana);
+  }, []);
 
   const rencanaPembangunan = () => {
-    switch (jenisRencana) {
-      case "Pusat kegiatan":
-        let pusat = dataMaster.rencana_pembangunan.Pusat.map((item) => {
-          return { value: item };
-        });
-        setRencana(pusat);
-        break;
-      case "Pemukiman":
-        let pemukiman = dataMaster.rencana_pembangunan.Pemukiman.map((item) => {
-          return { value: item };
-        });
-        setRencana(pemukiman);
-        break;
-      case "Infrastruktur":
-        let infrastruktur = dataMaster.rencana_pembangunan.Infrastruktur.map(
-          (item) => {
-            return { value: item };
-          }
-        );
-        setRencana(infrastruktur);
-        break;
+    let pusat = dataMaster.rencana_pembangunan.find((item) => {
+      return item.Kategori == jenisRencana;
+    });
+
+    if (pusat != null) {
+      let jenis_rencana = pusat.JenisRencana.map((item) => {
+        return { value: item };
+      });
+
+      setRencana(jenis_rencana);
     }
   };
 
@@ -62,7 +62,9 @@ function Permohonan({ onPress }) {
     {
       jenisError ? toggleJenisError() : "";
     }
-    rencanaPembangunan();
+    if (jenisRencana != "") {
+      rencanaPembangunan();
+    }
   }, [jenisRencana]);
 
   useEffect(() => {

@@ -17,6 +17,7 @@ import { UserContext } from "../context/UserContext";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import Constants from "expo-constants";
+import ExitApp from "react-native-exit-app";
 
 function LoginScreen({ navigation }) {
   const { passwordVisibility, rightIcon, handlePasswordVisibility } =
@@ -50,6 +51,9 @@ function LoginScreen({ navigation }) {
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
+      context.toggleLoading(false);
+      context.setUser("userLoggin");
+
       BackHandler.addEventListener("hardwareBackPress", () => {
         toggleComfirm();
         return true;
@@ -257,7 +261,7 @@ function LoginScreen({ navigation }) {
             marginTop: 24,
           }}
           onPress={() => {
-            navigation.navigate("Forgot");
+            navigation.push("Forgot");
             setEmail("");
             setPassword("");
           }}
@@ -291,7 +295,7 @@ function LoginScreen({ navigation }) {
             onPress={() => {
               setEmail("");
               setPassword("");
-              navigation.navigate("Register");
+              navigation.push("Register");
             }}
           >
             <AText size={14} color={color.neutral.neutral700} weight="semibold">
@@ -310,7 +314,7 @@ function LoginScreen({ navigation }) {
           toggleComfirm();
         }}
         onPressOKButton={() => {
-          BackHandler.exitApp();
+          ExitApp.exitApp();
           toggleComfirm();
         }}
       />
@@ -335,7 +339,7 @@ function LoginScreen({ navigation }) {
           setEmail("");
           setPassword("");
           verif(email);
-          navigation.navigate("Verifikasi", { email: email });
+          navigation.push("Verifikasi", { email: email });
         }}
       />
     </AScreen>

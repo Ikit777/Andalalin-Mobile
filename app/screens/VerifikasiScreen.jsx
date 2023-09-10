@@ -1,4 +1,4 @@
-import React, { useState, Fragment, useEffect } from "react";
+import React, { useState, Fragment, useEffect, useContext } from "react";
 import { StyleSheet, View, Pressable, Text, BackHandler } from "react-native";
 import AScreen from "../component/utility/AScreen";
 import AText from "../component/utility/AText";
@@ -14,10 +14,12 @@ import {
   useBlurOnFulfill,
   useClearByFocusCell,
 } from "react-native-confirmation-code-field";
+import { UserContext } from "../context/UserContext";
 
 const CELL_COUNT = 6;
 
 function VerifikasiScreen({ navigation, route }) {
+  const context = useContext(UserContext);
   const [value, setValue] = useState("000000");
   const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT, setIsFull });
   const [props, getCellOnLayoutHandler] = useClearByFocusCell({
@@ -182,7 +184,7 @@ function VerifikasiScreen({ navigation, route }) {
         btnOK={"OK"}
         onPressOKButton={() => {
           toggleBerhasil();
-          navigation.navigate("Login");
+          navigation.push("Back Login");
         }}
       />
       <ADialog

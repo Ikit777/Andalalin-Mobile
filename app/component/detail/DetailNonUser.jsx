@@ -51,7 +51,7 @@ function DetailNonUser({ permohonan, navigation }) {
 
   const status = () => {
     switch (permohonan.status_andalalin) {
-      case "Persyaratan tidak sesuai":
+      case "Persyaratan tidak terpenuhi":
         return color.error.error50;
       case "Permohonan selesai":
         return color.success.success50;
@@ -62,7 +62,7 @@ function DetailNonUser({ permohonan, navigation }) {
 
   const statusText = () => {
     switch (permohonan.status_andalalin) {
-      case "Persyaratan tidak sesuai":
+      case "Persyaratan tidak terpenuhi":
         return color.error.error700;
       case "Permohonan selesai":
         return color.success.success700;
@@ -107,18 +107,28 @@ function DetailNonUser({ permohonan, navigation }) {
                 }, "Ganti pentugas");
             }
             break;
-          case "Laporan BAP":
-            return permohonan.file_bap == null
-              ? tindakan(() => {
-                  navigation.push("Laporan BAP", {
+          case "Berita acara pemeriksaan":
+            switch (permohonan.persetujuan) {
+              case "Dokumen tidak disetujui":
+                return tindakan(() => {
+                  navigation.push("Berita acara pemeriksaan", {
                     id: permohonan.id_andalalin,
+                    kondisi: "Perbaharui",
                   });
-                }, "Laporan BAP")
-              : "";
-          case "Pembuatan SK":
+                }, "Perbaharui laporan");
+              default:
+                return tindakan(() => {
+                  navigation.push("Berita acara pemeriksaan", {
+                    id: permohonan.id_andalalin,
+                    kondisi: "Laporan",
+                  });
+                }, "Berita acara pemeriksaan");
+            }
+            break;
+          case "Pembuatan surat keputusan":
             return tindakan(() => {
               setSKModal();
-            }, "Pembuatan SK");
+            }, "Pembuatan surat keputusan");
         }
         break;
       case "Petugas":
@@ -132,12 +142,10 @@ function DetailNonUser({ permohonan, navigation }) {
         break;
       case "Admin":
         switch (permohonan.status_andalalin) {
-          case "Laporan BAP":
-            return permohonan.file_bap != null
-              ? tindakan(() => {
-                  setPersetujuanModal();
-                }, "Persetujuan dokumen")
-              : "";
+          case "Persetujuan dokumen":
+            return tindakan(() => {
+              setPersetujuanModal();
+            }, "Persetujuan dokumen");
         }
         break;
     }
@@ -149,7 +157,7 @@ function DetailNonUser({ permohonan, navigation }) {
         {syarat == null || syarat == "Persyaratan terpenuhi"
           ? persyaratan_sesuai()
           : ""}
-        {syarat === "Persyaratan tidak sesuai"
+        {syarat === "Persyaratan tidak terpenuhi"
           ? persyaratan_tidak_sesuai()
           : ""}
 
@@ -158,7 +166,7 @@ function DetailNonUser({ permohonan, navigation }) {
             flexDirection: "row",
             alignSelf: "flex-end",
             position: "absolute",
-            bottom: 24,
+            bottom: 32,
             right: 16,
           }}
         >
@@ -221,7 +229,7 @@ function DetailNonUser({ permohonan, navigation }) {
               size={14}
               color={color.neutral.neutral700}
             >
-              Persayaratan terpenuhi
+              Persyaratan terpenuhi
             </AText>
           </View>
 
@@ -233,12 +241,14 @@ function DetailNonUser({ permohonan, navigation }) {
             }}
           >
             <RadioButton
-              label="Persyaratan tidak sesuai"
-              value="Persyaratan tidak sesuai"
+              label="Persyaratan tidak terpenuhi"
+              value="Persyaratan tidak terpenuhi"
               uncheckedColor={color.neutral.neutral300}
               color={color.primary.primary600}
               status={
-                checked === "Persyaratan tidak sesuai" ? "checked" : "unchecked"
+                checked === "Persyaratan tidak terpenuhi"
+                  ? "checked"
+                  : "unchecked"
               }
             />
             <AText
@@ -246,7 +256,7 @@ function DetailNonUser({ permohonan, navigation }) {
               size={14}
               color={color.neutral.neutral700}
             >
-              Persayaratan tidak sesuai
+              Persyaratan tidak terpenuhi
             </AText>
           </View>
         </RadioButton.Group>
@@ -263,7 +273,7 @@ function DetailNonUser({ permohonan, navigation }) {
           color={color.neutral.neutral700}
           weight="semibold"
         >
-          Persayaratan apa saja yang{"\n"}tidak sesuai?
+          Persyaratan apa saja yang{"\n"}tidak terpenuhi?
         </AText>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <Checkbox
@@ -447,8 +457,8 @@ function DetailNonUser({ permohonan, navigation }) {
 
   const survei = () => {
     if (
-      permohonan.status_andalalin == "Laporan BAP" ||
-      permohonan.status_andalalin == "Pembuatan SK" ||
+      permohonan.status_andalalin == "Berita acara pemeriksaan" ||
+      permohonan.status_andalalin == "Pembuatan surat keputusan" ||
       permohonan.status_andalalin == "Permohonan selesai"
     ) {
       return (
@@ -468,10 +478,20 @@ function DetailNonUser({ permohonan, navigation }) {
             <Pressable
               style={{ flexDirection: "row", paddingLeft: 4 }}
               onPress={() => {
-                navigation.push("Detail Survei", {
-                  id: permohonan.id_andalalin,
-                  kondisi: "Operator",
-                });
+                switch (context.getUser().role) {
+                  case "Operator":
+                    navigation.push("Detail Survei", {
+                      id: permohonan.id_andalalin,
+                      kondisi: "Operator",
+                    });
+                    break;
+                  case "Admin":
+                    navigation.push("Detail Survei", {
+                      id: permohonan.id_andalalin,
+                      kondisi: "Admin",
+                    });
+                    break;
+                }
               }}
             >
               <AText
@@ -491,7 +511,10 @@ function DetailNonUser({ permohonan, navigation }) {
   const bap = () => {
     if (permohonan.file_bap != null) {
       return (
-        <ADetailView style={{ marginTop: 20 }} title={"Laporan BAP"}>
+        <ADetailView
+          style={{ marginTop: 20 }}
+          title={"Berita acara pemeriksaan"}
+        >
           <View
             style={{
               flexDirection: "row",
@@ -501,7 +524,7 @@ function DetailNonUser({ permohonan, navigation }) {
             }}
           >
             <AText size={12} color={color.neutral.neutral900} weight="normal">
-              Laporan BAP
+              Laporan berita acara pemeriksaan
             </AText>
 
             <Pressable
@@ -529,7 +552,7 @@ function DetailNonUser({ permohonan, navigation }) {
 
   const persetujuan = () => {
     return (
-      <View style={{ height: 250 }}>
+      <View style={{ height: 278 }}>
         <AText
           style={{ paddingBottom: 16 }}
           size={18}
@@ -597,10 +620,9 @@ function DetailNonUser({ permohonan, navigation }) {
               bdColor={color.neutral.neutral300}
               ktype={"default"}
               hint={"Masukkan keterangan"}
-              title={"Keterangan"}
               rtype={"done"}
-              max={3}
-              maxHeight={100}
+              max={4}
+              maxHeight={90}
               multi={true}
               value={keteranganPersetujuan}
               onChangeText={(value) => {
@@ -615,7 +637,7 @@ function DetailNonUser({ permohonan, navigation }) {
             flexDirection: "row",
             alignSelf: "flex-end",
             position: "absolute",
-            bottom: 24,
+            bottom: 32,
             right: 16,
           }}
         >
@@ -665,6 +687,7 @@ function DetailNonUser({ permohonan, navigation }) {
           case 200:
             navigation.replace("Reload Detail", {
               id: permohonan.id_andalalin,
+              kondisi: "Persetujuan",
             });
             break;
           case 424:
@@ -690,56 +713,43 @@ function DetailNonUser({ permohonan, navigation }) {
   const persetujuan_dokumen = () => {
     if (permohonan.persetujuan != null) {
       return (
-        <ADetailView style={{ marginTop: 20 }} title={"Persetujuan dokumen"}>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              padding: 16,
-            }}
-          >
-            <AText size={12} color={color.neutral.neutral900} weight="normal">
-              Persetujuan dokumen
-            </AText>
+        <View>
+          <ADetailView style={{ marginTop: 20 }} title={"Persetujuan dokumen"}>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                padding: 16,
+              }}
+            >
+              <AText size={12} color={color.neutral.neutral900} weight="normal">
+                Persetujuan dokumen
+              </AText>
 
-            <AText size={12} color={color.neutral.neutral500} weight="normal">
-              {permohonan.persetujuan}
-            </AText>
-          </View>
-
-          {permohonan.keterangan_persetujuan != "" ? (
-            <View>
-              <View style={styles.separator} />
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  padding: 16,
-                }}
-              >
-                <AText
-                  size={12}
-                  color={color.neutral.neutral900}
-                  weight="normal"
-                >
-                  Keterangan
-                </AText>
-
-                <AText
-                  size={12}
-                  color={color.neutral.neutral500}
-                  weight="normal"
-                >
-                  {permohonan.keterangan_persetujuan}
-                </AText>
-              </View>
+              <AText size={12} color={color.neutral.neutral500} weight="normal">
+                {permohonan.persetujuan}
+              </AText>
             </View>
+          </ADetailView>
+          {permohonan.keterangan_persetujuan != "" ? (
+            <ADetailView
+              style={{ marginTop: 20 }}
+              title={"Keterangan persetujuan dokumen"}
+            >
+              <AText
+                style={{ padding: 16 }}
+                size={12}
+                color={color.neutral.neutral900}
+                weight="normal"
+              >
+                {permohonan.keterangan_persetujuan}
+              </AText>
+            </ADetailView>
           ) : (
             ""
           )}
-        </ADetailView>
+        </View>
       );
     }
   };
@@ -763,7 +773,7 @@ function DetailNonUser({ permohonan, navigation }) {
           color={color.neutral.neutral700}
           weight="semibold"
         >
-          Pembuatan SK
+          Pembuatan surat keputusan
         </AText>
 
         <ATextInputIcon
@@ -773,7 +783,7 @@ function DetailNonUser({ permohonan, navigation }) {
           icon={"file-plus"}
           mult={true}
           value={namaFileSK}
-          maxHeight={100}
+          maxHeight={90}
           onPress={() => {
             file();
           }}
@@ -870,7 +880,7 @@ function DetailNonUser({ permohonan, navigation }) {
               style={{ flexDirection: "row", paddingLeft: 4 }}
               onPress={() => {
                 navigation.push("PDF", {
-                  title: "Laporan BAP",
+                  title: "Berita acara pemeriksaan",
                   pdf: permohonan.file_sk,
                 });
               }}

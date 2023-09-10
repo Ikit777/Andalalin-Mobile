@@ -45,6 +45,7 @@ function SettingScreen({ navigation }) {
         case 200:
           context.toggleLoading(false);
           remove("authState");
+          context.setCheck();
           navigation.replace("Back Login");
           break;
         case 424:

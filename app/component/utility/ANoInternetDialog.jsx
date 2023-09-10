@@ -30,6 +30,7 @@ function ANoInternetDialog({ visibleModal = false }) {
   };
 
   const ok = () => {
+    context.masterData();
     setTimeout(() => setVisible(false), 200);
     Animated.spring(scaleValue, {
       toValue: 0,
@@ -37,9 +38,7 @@ function ANoInternetDialog({ visibleModal = false }) {
       useNativeDriver: true,
     }).start();
     if (context.getUser() != "user") {
-      RootNavigation.replace("Home");
-    } else {
-      RootNavigation.replace("Back Login");
+      RootNavigation.replace("Back Home");
     }
   };
 

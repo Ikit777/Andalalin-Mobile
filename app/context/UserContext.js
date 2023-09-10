@@ -4,8 +4,8 @@ import React, {
   useEffect,
   useReducer,
   useRef,
+  useContext,
 } from "react";
-import { get } from "../utils/local-storage";
 
 import * as Notifications from "expo-notifications";
 import { masterAndalalin } from "../api/master";
@@ -21,7 +21,6 @@ const initialState = {
   rencana_pembangunan: "",
   lokasi_pengambilan: "",
   nik_pemohon: "",
-  nama_pemohon: "",
   tempat_lahir_pemohon: "",
   tanggal_lahir_pemohon: "",
   alamat_pemohon: "",
@@ -69,7 +68,7 @@ const surveiInit = {
 };
 
 export function UserProvider({ children }) {
-  const [loading, toggleLoading] = useState(false);
+  const [loading, toggleLoading] = useState(true);
 
   const [user, setUser] = useState("user");
   const [session, setSession] = useState(false);
@@ -86,6 +85,8 @@ export function UserProvider({ children }) {
   const [notification, setNotification] = useState(false);
 
   const [dataMaster, setDataMaster] = useState("master");
+
+  const [check, setCheck] = useState();
 
   Notifications.setNotificationHandler({
     handleNotification: async () => ({
@@ -128,20 +129,6 @@ export function UserProvider({ children }) {
     return user;
   };
 
-  const loadUser = async () => {
-    try {
-      const user = await get("authState");
-      if (user !== null) {
-        setUser(user);
-      }
-    } catch (e) {}
-  };
-
-  useEffect(() => {
-    loadUser();
-    masterData();
-  }, []);
-
   const getSession = () => {
     return session;
   };
@@ -167,6 +154,8 @@ export function UserProvider({ children }) {
         loading,
         toggleLoading,
         getLoading,
+        check,
+        setCheck,
         user,
         setUser,
         getUser,
@@ -181,6 +170,8 @@ export function UserProvider({ children }) {
         notification,
         setNotification,
         dataMaster,
+        setDataMaster,
+        masterData,
         indexSurvei,
         setIndexSurvei,
         survei,
@@ -191,4 +182,8 @@ export function UserProvider({ children }) {
       {children}
     </UserContext.Provider>
   );
+}
+
+export function useMyContext() {
+  return useContext(UserContext);
 }

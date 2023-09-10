@@ -1,5 +1,11 @@
 import React, { useState, useEffect, useContext } from "react";
-import { StyleSheet, View, Pressable, BackHandler, ScrollView } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Pressable,
+  BackHandler,
+  ScrollView,
+} from "react-native";
 import AScreen from "../component/utility/AScreen";
 import BackButton from "../component/utility/ABackButton";
 import AText from "../component/utility/AText";
@@ -25,7 +31,7 @@ function ResetPasswordScreen({ navigation, route }) {
 
   let [count, setTimer] = useState(5 * 60);
   let [isStarted, setIsStarted] = useState(true);
-  
+
   const [resendBerhasil, toggleResendBerhasil] = useStateToggler();
   const [resendGagal, toggleResendGagal] = useStateToggler();
   const [resetBerhasil, toggleResetBerhasil] = useStateToggler();
@@ -36,16 +42,19 @@ function ResetPasswordScreen({ navigation, route }) {
   const [codeError, toggleCodeError] = useStateToggler();
 
   useEffect(() => {
-    BackHandler.addEventListener("hardwareBackPress", () => {
-      navigation.goBack();
-      return true;
-    });
+    const unsubscribe = navigation.addListener("focus", () => {
+      BackHandler.addEventListener("hardwareBackPress", () => {
+        navigation.goBack();
+        return true;
+      });
 
-    return BackHandler.removeEventListener("hardwareBackPress", () => {
-      navigation.goBack();
-      return true;
+      return BackHandler.removeEventListener("hardwareBackPress", () => {
+        navigation.goBack();
+        return true;
+      });
     });
-  }, []);
+    return unsubscribe;
+  }, [navigation]);
 
   useEffect(() => {
     let interval = setInterval(() => {
@@ -108,14 +117,30 @@ function ResetPasswordScreen({ navigation, route }) {
 
   const doReset = () => {
     if (baru != "" && konfirmasi != "" && code != "") {
-      { passwordError ? togglePasswordError() : ""}
-      { konfirmasiError ? toggleKonfirmasiError() : ""}
-      { codeError ? toggleCodeError() : ""}
+      {
+        passwordError ? togglePasswordError() : "";
+      }
+      {
+        konfirmasiError ? toggleKonfirmasiError() : "";
+      }
+      {
+        codeError ? toggleCodeError() : "";
+      }
       reset(baru, konfirmasi, code);
     } else {
-      { baru == "" ? (passwordError ? "" : togglePasswordError()) : ""}
-      { konfirmasi == "" ? (konfirmasiError ? "" : toggleKonfirmasiError()) : ""}
-      {code == "" ? (codeError ? "" : toggleCodeError()) : ""}
+      {
+        baru == "" ? (passwordError ? "" : togglePasswordError()) : "";
+      }
+      {
+        konfirmasi == ""
+          ? konfirmasiError
+            ? ""
+            : toggleKonfirmasiError()
+          : "";
+      }
+      {
+        code == "" ? (codeError ? "" : toggleCodeError()) : "";
+      }
     }
   };
 
@@ -128,7 +153,11 @@ function ResetPasswordScreen({ navigation, route }) {
           }}
         />
       </View>
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false} persistentScrollbar={true}>
+      <ScrollView
+        style={styles.content}
+        showsVerticalScrollIndicator={false}
+        persistentScrollbar={true}
+      >
         <AText color={color.neutral.neutral900} size={24} weight="semibold">
           Reset password
         </AText>
@@ -158,7 +187,9 @@ function ResetPasswordScreen({ navigation, route }) {
             setBaru(value);
           }}
           submit={() => {
-            { passwordError ? togglePasswordError() : ""};
+            {
+              passwordError ? togglePasswordError() : "";
+            }
             konfirmasiPassword.current.focus();
           }}
         />
@@ -191,7 +222,9 @@ function ResetPasswordScreen({ navigation, route }) {
             setKonfirmasi(value);
           }}
           submit={() => {
-            { konfirmasiError ? toggleKonfirmasiError() : ""}
+            {
+              konfirmasiError ? toggleKonfirmasiError() : "";
+            }
             codeInput.current.focus();
           }}
         />
@@ -220,7 +253,9 @@ function ResetPasswordScreen({ navigation, route }) {
           padding={20}
           ref={codeInput}
           submit={() => {
-            { codeError ? toggleCodeError() : ""}
+            {
+              codeError ? toggleCodeError() : "";
+            }
           }}
           onChangeText={(value) => {
             setCode(value);
@@ -303,7 +338,8 @@ function ResetPasswordScreen({ navigation, route }) {
         onPressOKButton={() => {
           toggleResetBerhasil();
           remove("authState");
-          navigation.navigate("Login");
+          context.setCheck();
+          navigation.push("Back Login");
         }}
       />
 

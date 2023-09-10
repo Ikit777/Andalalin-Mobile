@@ -20,8 +20,6 @@ import {
   andalalinGetByTiketLevel1,
   andalalinGetByTiketLevel2,
   andalalinGetUsulanTindakan,
-  andalalinHapusUsulan,
-  andalalinPersetujuan,
   andalalinTindakan,
 } from "../api/andalalin";
 import { authRefreshToken } from "../api/auth";
@@ -55,14 +53,14 @@ function DaftarScreen({ navigation, route }) {
       BackHandler.addEventListener("hardwareBackPress", () => {
         setProgressViewOffset(-1000);
         navigation.setOptions({ animation: "slide_from_right" });
-        navigation.navigate("Home");
+        navigation.replace("Back Home");
         return true;
       });
 
       return BackHandler.removeEventListener("hardwareBackPress", () => {
         setProgressViewOffset(-1000);
         navigation.setOptions({ animation: "slide_from_right" });
-        navigation.navigate("Home");
+        navigation.replace("Back Home");
         return true;
       });
     });
@@ -99,13 +97,16 @@ function DaftarScreen({ navigation, route }) {
           context.toggleLoading(true);
           switch (kondisi) {
             case "Persetujuan":
-              loadPermohonanPersetujuan();
+              loadPermohonanByStatus("Persetujuan dokumen");
               break;
             case "Pengawasan":
               loadUsulanTindakan();
               break;
             case "Tertunda":
               loadAllByTiketLevel2("Tunda");
+              break;
+            case "Selesai":
+              loadPermohonanByStatus("Permohonan selesai");
               break;
           }
           break;
@@ -114,33 +115,6 @@ function DaftarScreen({ navigation, route }) {
 
     return unsubscribe;
   }, [navigation]);
-
-  const loadPermohonanPersetujuan = () => {
-    andalalinPersetujuan(context.getUser().access_token, (response) => {
-      switch (response.status) {
-        case 200:
-          (async () => {
-            const result = await response.json();
-            setPermohonan(result.data);
-            context.toggleLoading(false);
-          })();
-          break;
-        case 424:
-          authRefreshToken(context, (response) => {
-            if (response.status === 200) {
-              loadPermohonanPersetujuan();
-            } else {
-              context.toggleLoading(false);
-            }
-          });
-          break;
-        default:
-          context.toggleLoading(false);
-          toggleGagal();
-          break;
-      }
-    });
-  };
 
   const loadPermohonanByStatus = (status) => {
     andalalinGetByStatus(context.getUser().access_token, status, (response) => {
@@ -359,6 +333,8 @@ function DaftarScreen({ navigation, route }) {
             return "Daftar usulan";
           case "Tertunda":
             return "Daftar tunda";
+          case "Selesai":
+            return "Daftar permohonan";
         }
     }
   };
@@ -390,6 +366,8 @@ function DaftarScreen({ navigation, route }) {
             setIdPermohonan(item.id_andalalin);
             toggleLanjutkanModal();
             break;
+          case "Selesai":
+            return navigation.push("Detail", { id: item.id_andalalin });
         }
     }
   };
@@ -414,6 +392,8 @@ function DaftarScreen({ navigation, route }) {
             return list("Detail", item);
           case "Tertunda":
             return list("Lanjutkan", item);
+          case "Selesai":
+            return list("Detail", item);
         }
     }
   };
@@ -486,7 +466,7 @@ function DaftarScreen({ navigation, route }) {
     if (context.getUser().role == "Admin" && kondisi == "Tertunda") {
       return (
         <ABottomSheet visible={lanjutkanModal}>
-          <View style={{ height: 250 }}>
+          <View style={{ height: 278 }}>
             <AText
               style={{ paddingBottom: 16 }}
               size={18}
@@ -545,7 +525,7 @@ function DaftarScreen({ navigation, route }) {
                 flexDirection: "row",
                 alignSelf: "flex-end",
                 position: "absolute",
-                bottom: 24,
+                bottom: 32,
                 right: 16,
               }}
             >
@@ -624,7 +604,7 @@ function DaftarScreen({ navigation, route }) {
             onPress={() => {
               setProgressViewOffset(-1000);
               navigation.setOptions({ animation: "slide_from_right" });
-              navigation.navigate("Home");
+              navigation.replace("Back Home");
             }}
           />
           <AText

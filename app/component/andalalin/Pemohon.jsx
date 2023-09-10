@@ -14,7 +14,6 @@ function Pemohon({ onPress }) {
   const {
     permohonan: {
       nik_pemohon,
-      nama_pemohon,
       jabatan_pemohon,
       jenis_kelamin_pemohon,
       tempat_lahir_pemohon,
@@ -27,7 +26,6 @@ function Pemohon({ onPress }) {
   } = useContext(UserContext);
 
   const nikInput = React.createRef();
-  const namaInput = React.createRef();
   const tempatLahirInput = React.createRef();
   const tanggalLahirInput = React.createRef();
   const jabatanInput = React.createRef();
@@ -36,7 +34,6 @@ function Pemohon({ onPress }) {
   const nomerSelulerInput = React.createRef();
 
   const [nik, setNik] = useState(nik_pemohon);
-  const [nama, setNama] = useState(nama_pemohon);
   const [tempat, setTempat] = useState(tempat_lahir_pemohon);
   const [tanggal, setTanggal] = useState(tanggal_lahir_pemohon);
   const [jabatan, setJabatan] = useState(jabatan_pemohon);
@@ -46,7 +43,6 @@ function Pemohon({ onPress }) {
   const [nomerSeluler, setNomerSeluler] = useState(nomer_seluler_pemohon);
 
   const [nikError, togglenikError] = useStateToggler();
-  const [namaError, togglenamaError] = useStateToggler();
   const [tempatError, toggletempatError] = useStateToggler();
   const [tanggalError, toggletanggalError] = useStateToggler();
   const [jabatanError, togglejabatanError] = useStateToggler();
@@ -84,7 +80,6 @@ function Pemohon({ onPress }) {
   const press = () => {
     if (
       nik != "" &&
-      nama != "" &&
       jabatan != "" &&
       jenis != "" &&
       tempat != "" &&
@@ -95,9 +90,6 @@ function Pemohon({ onPress }) {
     ) {
       {
         nikError ? togglenikError() : "";
-      }
-      {
-        namaError ? togglenamaError() : "";
       }
       {
         jabatanError ? togglejabatanError() : "";
@@ -119,7 +111,6 @@ function Pemohon({ onPress }) {
       }
       dispatch({
         nik_pemohon: nik,
-        nama_pemohon: nama,
         jabatan_pemohon: jabatan,
         jenis_kelamin_pemohon: jenis,
         tempat_lahir_pemohon: tempat,
@@ -132,9 +123,6 @@ function Pemohon({ onPress }) {
     } else {
       {
         nik == "" ? (nikError ? "" : togglenikError()) : "";
-      }
-      {
-        nama == "" ? (namaError ? "" : togglenamaError()) : "";
       }
       {
         jabatan == "" ? (jabatanError ? "" : togglejabatanError()) : "";
@@ -195,7 +183,7 @@ function Pemohon({ onPress }) {
           {
             nikError ? togglenikError() : "";
           }
-          namaInput.current.focus();
+          jabatanInput.current.focus();
         }}
       />
 
@@ -213,41 +201,7 @@ function Pemohon({ onPress }) {
       )}
 
       <ATextInput
-        bdColor={namaError ? color.error.error300 : color.neutral.neutral300}
-        ktype={"default"}
-        hint={"Masukkan nama anda"}
-        title={"Nama"}
-        rtype={"next"}
-        multi={false}
-        value={nama}
-        padding={20}
-        ref={namaInput}
-        onChangeText={(value) => {
-          setNama(value);
-        }}
-        submit={() => {
-          {
-            namaError ? togglenamaError() : "";
-          }
-          jabatanInput.current.focus();
-        }}
-      />
-
-      {namaError ? (
-        <AText
-          style={{ paddingTop: 6 }}
-          color={color.error.error500}
-          size={14}
-          weight="normal"
-        >
-          Nama kosong
-        </AText>
-      ) : (
-        ""
-      )}
-
-      <ATextInput
-        bdColor={namaError ? color.error.error300 : color.neutral.neutral300}
+        bdColor={jabatanError ? color.error.error300 : color.neutral.neutral300}
         ktype={"default"}
         hint={"Masukkan jabatan anda"}
         title={"Jabatan"}

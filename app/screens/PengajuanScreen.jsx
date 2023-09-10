@@ -28,6 +28,10 @@ function PengajuanScreen({ navigation }) {
     });
   }, [context.index]);
 
+  useEffect(() => {
+    context.masterData();
+  }, []);
+
   const back = () => {
     if (context.index == 1) {
       toggleComfirm();
@@ -113,7 +117,7 @@ function PengajuanScreen({ navigation }) {
           toggleComfirm();
         }}
         onPressOKButton={() => {
-          navigation.navigate("Home");
+          navigation.replace("Back Home");
           context.setIndex(1);
           context.clear();
           toggleComfirm();

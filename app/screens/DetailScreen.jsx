@@ -59,11 +59,12 @@ function DetailScreen({ navigation, route }) {
         navigation.replace("Back Daftar", { kondisi: "Survei" });
         break;
       case "Admin":
-        if (kondisi == "Persetujuan") {
-          navigation.replace("Back Daftar", { kondisi: "Persetujuan" });
+        if (data.status_andalalin == "Permohonan selesai") {
+          navigation.replace("Back Daftar", { kondisi: "Selesai" });
         } else {
-          navigation.replace("Back Daftar", { kondisi: "Pengawasan" });
+          navigation.replace("Back Daftar", { kondisi: "Persetujuan" });
         }
+        
         break;
     }
   };

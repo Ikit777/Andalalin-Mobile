@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import React, { useEffect, useState, useCallback, useRef } from "react";
+import React, { useEffect, useState, useCallback, useContext } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 
 import * as Font from "expo-font";
@@ -9,15 +9,21 @@ import { NetProvider, NetContext } from "./app/context/NetContext";
 import { AFonts } from "./app/constants/font";
 import { get } from "./app/utils/local-storage";
 import ANoInternetDialog from "./app/component/utility/ANoInternetDialog";
-import { UserContext, UserProvider } from "./app/context/UserContext";
+import {
+  UserContext,
+  UserProvider,
+  useMyContext,
+} from "./app/context/UserContext";
 import Navigator from "./app/navigation/Navigator";
 import ASessionEnd from "./app/component/utility/ASessionEnd";
 import { navigationRef } from "./app/navigation/RootNavigator";
 import ALoading from "./app/component/utility/ALoading";
+import { masterAndalalin } from "./app/api/master";
 
 export default function App() {
   const [isAppReady, setIsAppReady] = useState(false);
   const [isLogged, setLogged] = useState(false);
+  const [user, setUser] = useState("user");
 
   const onLayoutRootView = useCallback(async () => {
     if (isAppReady) {
@@ -42,6 +48,7 @@ export default function App() {
     if (!value) {
       setLogged(false);
     } else {
+      setUser(value);
       setLogged(true);
     }
   };
@@ -62,6 +69,7 @@ export default function App() {
     <View onLayout={onLayoutRootView} style={{ flex: 1 }}>
       <NetProvider>
         <UserProvider>
+          <LoadMaster isLogged={isLogged} user={user} />
           <NavigationContainer ref={navigationRef}>
             <NetContext.Consumer>
               {(ctx) => <ANoInternetDialog visibleModal={!ctx} />}
@@ -72,7 +80,13 @@ export default function App() {
             </UserContext.Consumer>
 
             <UserContext.Consumer>
-              {(value) => <ALoading visibleModal={value.getLoading()} />}
+              {(value) =>
+                value.user != "user" ? (
+                  <ALoading visibleModal={value.getLoading()} />
+                ) : (
+                  ""
+                )
+              }
             </UserContext.Consumer>
 
             <Navigator isLogged={isLogged} />
@@ -81,4 +95,30 @@ export default function App() {
       </NetProvider>
     </View>
   );
+}
+
+function LoadMaster({ isLogged, user }) {
+  const { setDataMaster, setUser } = useMyContext();
+
+  const masterData = () => {
+    masterAndalalin((response) => {
+      if (response.status === 200) {
+        (async () => {
+          const result = await response.json();
+          setDataMaster(result.data);
+        })();
+      }
+    });
+  };
+
+  const checkFirstTimeLaunch = () => {
+    if (isLogged) {
+      setUser(user);
+    }
+  };
+
+  useEffect(() => {
+    masterData();
+    checkFirstTimeLaunch();
+  }, []);
 }

@@ -24,3 +24,6 @@ export { default as DetailSurveiScreen} from "./DetailSurveiScreen";
 export { default as LaporanBAPScreen} from "./LaporanBAPScreen";
 export { default as UsulanPengelolaanScreen} from "./UsulanPengelolaanScreen";
 export { default as DetailUsulanScreen} from "./DetailUsulanScreen";
+export { default as PengelolaanProdukScreen} from "./PengelolaanProdukScreen";
+export { default as DaftarProdukScreen} from "./DaftarProdukScreen";
+export { default as MapScreen} from "./MapScreen";
