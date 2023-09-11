@@ -52,6 +52,7 @@ const initialState = {
   nama_akta: "",
   berkas_surat: "",
   nama_surat: "",
+  persyaratan_tambahan: [],
 };
 
 const surveiInit = {

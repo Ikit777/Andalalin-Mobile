@@ -3,10 +3,10 @@ import { StyleSheet, ScrollView } from "react-native";
 import AText from "../../component/utility/AText";
 import color from "../../constants/color";
 import ATextInput from "../utility/ATextInput";
-import ADropDown from "../utility/ADropDown";
 import { UserContext } from "../../context/UserContext";
 import { useStateToggler } from "../../hooks/useUtility";
 import AButton from "../utility/AButton";
+import ADropDownCostume from "../utility/ADropdownCostume";
 
 function Perusahaan({ onPress }) {
   const {
@@ -334,7 +334,7 @@ function Perusahaan({ onPress }) {
         ""
       )}
 
-      <ADropDown
+      <ADropDownCostume
         bdColor={jenisError ? color.error.error300 : color.neutral.neutral300}
         judul={"Jenis kelamin pimpinan"}
         hint={"Pilih jenis kelamin"}

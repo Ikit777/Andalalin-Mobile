@@ -5,10 +5,10 @@ import color from "../../constants/color";
 import { UserContext } from "../../context/UserContext";
 import ATextInput from "../utility/ATextInput";
 import { useStateToggler } from "../../hooks/useUtility";
-import ADropDown from "../utility/ADropDown";
 import ATextInputIcon from "../utility/ATextInputIcon";
 import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 import AButton from "../utility/AButton";
+import ADropDownCostume from "../utility/ADropdownCostume";
 
 function Pemohon({ onPress }) {
   const {
@@ -233,7 +233,7 @@ function Pemohon({ onPress }) {
         ""
       )}
 
-      <ADropDown
+      <ADropDownCostume
         bdColor={jenisError ? color.error.error300 : color.neutral.neutral300}
         judul={"Jenis kelamin"}
         hint={"Pilih jenis kelamin"}

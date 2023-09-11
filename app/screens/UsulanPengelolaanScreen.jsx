@@ -7,14 +7,13 @@ import ABackButton from "../component/utility/ABackButton";
 import { UserContext } from "../context/UserContext";
 import { useStateToggler } from "../hooks/useUtility";
 import ATextInput from "../component/utility/ATextInput";
-import ADropDown from "../component/utility/ADropDown";
 import AButton from "../component/utility/AButton";
 import ADialog from "../component/utility/ADialog";
 import AConfirmationDialog from "../component/utility/AConfirmationDialog";
 import { andalalinUsulanTindakan } from "../api/andalalin";
 import { authRefreshToken } from "../api/auth";
 
-function TentangScreen({ navigation, route }) {
+function UsulanPengelolaanScreen({ navigation, route }) {
   const id = route.params.id;
   const context = useContext(UserContext);
 
@@ -211,4 +210,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TentangScreen;
+export default UsulanPengelolaanScreen;

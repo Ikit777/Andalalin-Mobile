@@ -1,37 +1,77 @@
-import React, { useEffect, useContext } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import { StyleSheet, View, BackHandler, ScrollView } from "react-native";
 import AText from "../component/utility/AText";
 import color from "../constants/color";
 import AScreen from "../component/utility/AScreen";
 import ABackButton from "../component/utility/ABackButton";
 import { UserContext } from "../context/UserContext";
-import { SelectList } from "react-native-dropdown-select-list";
-import { poppins } from "../constants/font";
-import { Feather } from "@expo/vector-icons";
+import AKetentuanDropdown from "../component/utility/AKetentuanDropdown";
 
 function KetentuanScreen({ navigation, route }) {
   const context = useContext(UserContext);
-  const kondisi = route.params.kondisi
+  const kondisi = route.params.kondisi;
+  const [data, setData] = useState();
 
-  const ktp = [{ value: "Kartu tanda penduduk Indonesia", disabled: true }];
-  const akta = [
-    {
-      value:
-        "Akta Pendirian badan yang telah mendapatkan pengesahan dari pejabat yang berwenang, apabila pemrakarsa adalah badan (operasional)",
-      disabled: true,
-    },
-  ];
-  const surat = [
-    {
-      value:
-        "Surat kuasa bermaterai dari pemrakarsa apabila pengajuan permohonan dikuasakan kepada orang lain.\n\nPemberian surat kuasa hanya diberikan kepada orang yang memiliki hubungan keluarga/saudara atau hubungan staf/bawahan/kerja dengan pemohon izin yang dibuktikan dengan:\n\n1. Foto copy kartu keluarga atau surat pernyataan bermaterai yang menyatakan bahwa yang bersangkutan memiliki hubungan keluarga/saudara, dalam hal kuasa diberikan kepada orang yang memiliki hubungan keluarga/saudara.\n\n2. Surat keterangan bermaterai terkait status kepegawaian/surat penempatan kerja, dalam hal kuasa diberikan kepada orang ang memiliki hubungan staff/bawahan/kerja.",
-      disabled: true,
-    },
-  ];
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      load();
+    });
+    return unsubscribe;
+  }, [navigation]);
+
+  const load = () => {
+    const wajib = [
+      {
+        persyaratan: "Kartu tanda penduduk",
+        keterangan:
+          "Kartu tanda penduduk asli indonesia dengan nama yang tercantum sama dengan nama pemohon",
+      },
+      {
+        persyaratan: "Akta pendirian badan",
+        keterangan:
+          "Akta Pendirian badan yang telah mendapatkan pengesahan dari pejabat yang berwenang, apabila pemrakarsa adalah badan (operasional)",
+      },
+      {
+        persyaratan: "Surat kuasa",
+        keterangan:
+          "Surat kuasa bermaterai dari pemrakarsa apabila pengajuan permohonan dikuasakan kepada orang lain.\n\nPemberian surat kuasa hanya diberikan kepada orang yang memiliki hubungan keluarga/saudara atau hubungan staf/bawahan/kerja dengan pemohon izin yang dibuktikan dengan:\n\n1. Foto copy kartu keluarga atau surat pernyataan bermaterai yang menyatakan bahwa yang bersangkutan memiliki hubungan keluarga/saudara, dalam hal kuasa diberikan kepada orang yang memiliki hubungan keluarga/saudara.\n\n2. Surat keterangan bermaterai terkait status kepegawaian/surat penempatan kerja, dalam hal kuasa diberikan kepada orang ang memiliki hubungan staff/bawahan/kerja.",
+      },
+    ];
+    switch (kondisi) {
+      case "Pengajuan andalalin":
+        context.toggleLoading(true);
+
+        setTimeout(() => {
+          context.dataMaster.persyaratan_tambahan.PersyaratanTambahanAndalalin.map(
+            (item) => {
+              wajib.push(item);
+            }
+          );
+
+          setData(wajib);
+          context.toggleLoading(false);
+        }, 1000);
+        break;
+      case "Pengajuan rambulalin":
+        context.toggleLoading(true);
+
+        setTimeout(() => {
+          context.dataMaster.persyaratan_tambahan.PersyaratanTambahanRambulalin.map(
+            (item) => {
+              wajib.push(item);
+            }
+          );
+
+          setData(wajib);
+          context.toggleLoading(false);
+        }, 1000);
+        break;
+    }
+  };
 
   useEffect(() => {
     BackHandler.addEventListener("hardwareBackPress", () => {
-      if (kondisi == "Pengajuan") {
+      if (kondisi == "Pengajuan andalalin") {
         navigation.push("Back Andalalin");
       } else {
         navigation.goBack();
@@ -41,7 +81,7 @@ function KetentuanScreen({ navigation, route }) {
     });
 
     return BackHandler.removeEventListener("hardwareBackPress", () => {
-      if (kondisi == "Pengajuan") {
+      if (kondisi == "Pengajuan andalalin") {
         navigation.push("Back Andalalin");
       } else {
         navigation.goBack();
@@ -74,98 +114,39 @@ function KetentuanScreen({ navigation, route }) {
           </AText>
         </View>
       </View>
+
       <ScrollView
         showsVerticalScrollIndicator={false}
         persistentScrollbar={true}
         style={styles.content}
       >
-        <View style={{ marginTop: 0 }}>
-          <SelectList
-            placeholder="Kartu tanda penduduk"
-            arrowicon={<Feather name="chevron-down" size={20} color="black" />}
-            fontFamily={poppins.normal}
-            inputStyles={{ fontSize: 22 }}
-            boxStyles={{
-              backgroundColor: color.primary.primary25,
-              borderColor: color.neutral.neutral300,
-              borderWidth: 0,
-              marginBottom: -20,
-            }}
-            dropdownStyles={{
-              backgroundColor: color.primary.primary25,
-              borderColor: color.neutral.neutral300,
-              borderWidth: 0,
-              marginBottom: -10,
-            }}
-            search={false}
-            data={ktp}
-            disabledItemStyles={{ backgroundColor: color.primary.primary25 }}
-            disabledTextStyles={{
-              fontSize: 17,
-              color: color.neutral.neutral500,
-            }}
-            maxHeight={100}
-          />
-        </View>
-
-        <View style={{ marginTop: 0 }}>
-          <SelectList
-            placeholder="Akta Pendirian badan"
-            arrowicon={<Feather name="chevron-down" size={20} color="black" />}
-            fontFamily={poppins.normal}
-            inputStyles={{ fontSize: 22 }}
-            boxStyles={{
-              backgroundColor: color.primary.primary25,
-              borderColor: color.neutral.neutral300,
-              borderWidth: 0,
-              marginBottom: -20,
-            }}
-            dropdownStyles={{
-              backgroundColor: color.primary.primary25,
-              borderColor: color.neutral.neutral300,
-              borderWidth: 0,
-              marginBottom: -10,
-            }}
-            search={false}
-            data={akta}
-            disabledItemStyles={{ backgroundColor: color.primary.primary25 }}
-            disabledTextStyles={{
-              fontSize: 17,
-              color: color.neutral.neutral500,
-            }}
-            maxHeight={100}
-          />
-        </View>
-
-        <View style={{ marginTop: 0 }}>
-          <SelectList
-            placeholder="Surat kuasa"
-            arrowicon={<Feather name="chevron-down" size={20} color="black" />}
-            fontFamily={poppins.normal}
-            inputStyles={{ fontSize: 22 }}
-            dropdownTextStyles={{ fontSize: 19 }}
-            boxStyles={{
-              backgroundColor: color.primary.primary25,
-              borderColor: color.neutral.neutral300,
-              borderWidth: 0,
-              marginBottom: -20,
-            }}
-            dropdownStyles={{
-              backgroundColor: color.primary.primary25,
-              borderColor: color.neutral.neutral300,
-              borderWidth: 0,
-              marginBottom: -10,
-            }}
-            search={false}
-            data={surat}
-            disabledItemStyles={{ backgroundColor: color.primary.primary25 }}
-            disabledTextStyles={{
-              fontSize: 17,
-              color: color.neutral.neutral500,
-            }}
-            maxHeight={500}
-          />
-        </View>
+        {data != null
+          ? data.map((item, index) => (
+              <View
+                key={index}
+                style={{ paddingBottom: index + 1 != data.length ? 0 : 40 }}
+              >
+                <View style={{ paddingHorizontal: 16 }}>
+                  <AKetentuanDropdown
+                    hint={item.persyaratan}
+                    data={item.keterangan}
+                    max={200}
+                    padding={10}
+                    bdColor={color.neutral.neutral300}
+                  />
+                </View>
+                <View
+                  style={{
+                    height: 1,
+                    width: "100%",
+                    backgroundColor: color.neutral.neutral50,
+                    alignSelf: "center",
+                    marginTop: 6,
+                  }}
+                />
+              </View>
+            ))
+          : ""}
       </ScrollView>
     </AScreen>
   );
@@ -176,7 +157,9 @@ const styles = StyleSheet.create({
     paddingTop: 16,
     height: 64,
   },
-  content: {},
+  content: {
+    paddingBottom: 100,
+  },
 });
 
 export default KetentuanScreen;

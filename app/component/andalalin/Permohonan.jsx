@@ -1,12 +1,12 @@
 import React, { useState, useContext, useEffect } from "react";
-import { StyleSheet, ScrollView } from "react-native";
+import { StyleSheet, ScrollView, View } from "react-native";
 import AButton from "../utility/AButton";
-import ADropDown from "../utility/ADropDown";
 import { useStateToggler } from "../../hooks/useUtility";
 import color from "../../constants/color";
 import AText from "../utility/AText";
 import { UserContext } from "../../context/UserContext";
 import ATextInput from "../utility/ATextInput";
+import ADropDownCostume from "../utility/ADropdownCostume";
 
 function Permohonan({ onPress }) {
   const {
@@ -14,8 +14,8 @@ function Permohonan({ onPress }) {
     dispatch,
     dataMaster,
   } = useContext(UserContext);
-  const [jenisRencana, setJenisRencana] = useState("");
-  const [lokasiPengambilan, setLokasi] = useState("");
+  const [jenisRencana, setJenisRencana] = useState(jenis);
+  const [lokasiPengambilan, setLokasi] = useState(lokasi_pengambilan);
   const [rencanaJenisPembangunan, setrencanaJenisPembangunan] =
     useState(rencana_pembangunan);
 
@@ -36,10 +36,10 @@ function Permohonan({ onPress }) {
     });
 
     let jenis_rencana = pusat.map((item) => {
-      return item.Kategori;
+      return { value: item.Kategori };
     });
 
-    jenis_rencana.push("Lainnya");
+    jenis_rencana.push({ value: "Lainnya" });
 
     setjenis_rencana(jenis_rencana);
   }, []);
@@ -64,6 +64,9 @@ function Permohonan({ onPress }) {
     }
     if (jenisRencana != "") {
       rencanaPembangunan();
+    }
+    if (jenisRencana != jenis) {
+      setrencanaJenisPembangunan("")
     }
   }, [jenisRencana]);
 
@@ -96,12 +99,10 @@ function Permohonan({ onPress }) {
         jenisRencana == "" ? (jenisError ? "" : toggleJenisError()) : "";
       }
       {
-        jenisRencana != ""
-          ? rencanaJenisPembangunan == ""
-            ? rencanaError
-              ? ""
-              : toggleRencanaError()
-            : ""
+        rencanaJenisPembangunan == ""
+          ? rencanaError
+            ? ""
+            : toggleRencanaError()
           : "";
       }
       {
@@ -116,12 +117,13 @@ function Permohonan({ onPress }) {
       showsVerticalScrollIndicator={false}
       persistentScrollbar={true}
     >
-      <ADropDown
+      <ADropDownCostume
         judul={"Kategori jenis rencana pembangunan"}
         hint={"Pilih jenis"}
         data={jenis_rencana}
         selected={setJenisRencana}
-        saved={jenis}
+        max={200}
+        saved={jenisRencana}
         bdColor={jenisError ? color.error.error300 : color.neutral.neutral300}
       />
       {jenisError ? (
@@ -138,16 +140,17 @@ function Permohonan({ onPress }) {
       )}
 
       {jenisRencana != "Lainnya" ? (
-        <ADropDown
+        <ADropDownCostume
           bdColor={
             rencanaError ? color.error.error300 : color.neutral.neutral300
           }
           judul={"Jenis rencana pembangunan"}
           hint={"Pilih rencana"}
           data={rencana}
+          max={200}
           padding={20}
           selected={setrencanaJenisPembangunan}
-          saved={rencana_pembangunan}
+          saved={rencanaJenisPembangunan}
           notFound={"Kategori belum dipilih"}
         />
       ) : (
@@ -168,7 +171,7 @@ function Permohonan({ onPress }) {
         />
       )}
 
-      {rencanaError && jenisRencana != "" ? (
+      {rencanaError ? (
         <AText
           style={{ paddingTop: 6 }}
           color={color.error.error500}
@@ -181,13 +184,14 @@ function Permohonan({ onPress }) {
         ""
       )}
 
-      <ADropDown
+      <ADropDownCostume
         judul={"Lokasi pengambilan"}
         hint={"Pilih lokasi"}
         data={lokasi}
         selected={setLokasi}
+        max={200}
         padding={20}
-        saved={lokasi_pengambilan}
+        saved={lokasiPengambilan}
         bdColor={lokasiError ? color.error.error300 : color.neutral.neutral300}
       />
       {lokasiError ? (

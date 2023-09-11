@@ -37,7 +37,7 @@ function Informasi({ navigation, onPress }) {
         title={"Lihat persyaratan"}
         mode="text"
         onPress={() => {
-          navigation.push("Ketentuan", {kondisi: "Pengajuan"})
+          navigation.push("Ketentuan", {kondisi: "Pengajuan andalalin"})
         }}
       />
 

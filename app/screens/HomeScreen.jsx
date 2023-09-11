@@ -88,12 +88,6 @@ function HomeScreen({ navigation }) {
                 navigation.push("Daftar");
               }}
             />
-            <AMenuCard
-              style={{ marginBottom: 20 }}
-              icon={"file-text"}
-              title={"Survey kepuasa"}
-              desc={"Survey kepuasan masyaratan terhadap layanan kami"}
-            />
           </View>
         );
       case "Operator":

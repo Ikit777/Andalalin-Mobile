@@ -116,3 +116,91 @@ export const masterEditRencanaPembangunan = async (accessToken, id, kategori, re
   
   masterRespone(response);
 };
+
+export const masterTambahPersyaratanAndalalin = async (accessToken, id, persyaratan, keterangan, masterRespone) => {
+  const response = await fetch(ENDPOINTS.TAMBAH_PERSYARATAN_ANDALALIN+ "/" + id, {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer " + accessToken,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      persyaratan: persyaratan,
+      keterangan: keterangan,
+    }),
+  });
+  
+  masterRespone(response);
+};
+
+export const masterHapusPersyaratanAndalalin = async (accessToken, id, persyaratan, masterRespone) => {
+  const response = await fetch(ENDPOINTS.HAPUS_PERSYARATAN_ANDALALIN+ "/" + id + "/" + persyaratan, {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer " + accessToken,
+      "Content-Type": "application/json",
+    },
+  });
+  
+  masterRespone(response);
+};
+
+export const masterEditPersyaratanAndalalin = async (accessToken, id, pilih, persyaratan, keterangan, masterRespone) => {
+  const response = await fetch(ENDPOINTS.EDIT_PERSYARATAN_ANDALALIN+ "/" + id + "/" + pilih, {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer " + accessToken,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      persyaratan: persyaratan,
+      keterangan: keterangan,
+    }),
+  });
+  
+  masterRespone(response);
+};
+
+export const masterTambahPersyaratanRambulalin = async (accessToken, id, persyaratan, keterangan, masterRespone) => {
+  const response = await fetch(ENDPOINTS.TAMBAH_PERSYARATAN_RAMBULALIN+ "/" + id, {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer " + accessToken,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      persyaratan: persyaratan,
+      keterangan: keterangan,
+    }),
+  });
+  
+  masterRespone(response);
+};
+
+export const masterHapusPersyaratanRambulalin = async (accessToken, id, persyaratan, masterRespone) => {
+  const response = await fetch(ENDPOINTS.HAPUS_PERSYARATAN_RAMBULALIN+ "/" + id + "/" + persyaratan, {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer " + accessToken,
+      "Content-Type": "application/json",
+    },
+  });
+  
+  masterRespone(response);
+};
+
+export const masterEditPersyaratanRambulalin = async (accessToken, id, pilih, persyaratan, keterangan, masterRespone) => {
+  const response = await fetch(ENDPOINTS.EDIT_PERSYARATAN_RAMBULALIN+ "/" + id + "/" + pilih, {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer " + accessToken,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      persyaratan: persyaratan,
+      keterangan: keterangan,
+    }),
+  });
+  
+  masterRespone(response);
+};

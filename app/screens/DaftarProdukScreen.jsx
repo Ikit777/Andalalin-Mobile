@@ -6,6 +6,8 @@ import {
   RefreshControl,
   FlatList,
   Pressable,
+  Platform,
+  UIManager,
 } from "react-native";
 import AText from "../component/utility/AText";
 import color from "../constants/color";
@@ -21,17 +23,28 @@ import ADialog from "../component/utility/ADialog";
 import {
   masterEditKategori,
   masterEditLokasiPengambilan,
+  masterEditPersyaratanAndalalin,
+  masterEditPersyaratanRambulalin,
   masterEditRencanaPembangunan,
   masterHapusKategori,
   masterHapusLokasiPengambilan,
+  masterHapusPersyaratanAndalalin,
+  masterHapusPersyaratanRambulalin,
   masterHapusRencanaPembangunan,
   masterTambahKategori,
   masterTambahLokasiPengambilan,
+  masterTambahPersyaratanAndalalin,
+  masterTambahPersyaratanRambulalin,
   masterTambahRencanaPembangunan,
 } from "../api/master";
 import { authRefreshToken } from "../api/auth";
 import ASnackBar from "../component/utility/ASnackBar";
-import ADropDown from "../component/utility/ADropDown";
+import ADropDownCostume from "../component/utility/ADropdownCostume";
+import AJenisDropdown from "../component/utility/AJenisDropdown";
+
+if (Platform.OS === "android") {
+  UIManager.setLayoutAnimationEnabledExperimental(true);
+}
 
 function DaftarProdukScreen({ navigation, route }) {
   const context = useContext(UserContext);
@@ -89,9 +102,24 @@ function DaftarProdukScreen({ navigation, route }) {
       case "Jenis":
         return "Jenis pembangunan";
       case "Andalalin":
-        return "Tambah peryaratan";
+        return "Tambah persyaratan";
       case "Rambulalin":
-        return "Tambah peryaratan";
+        return "Tambah persyaratan";
+    }
+  };
+
+  const title = () => {
+    switch (kondisi) {
+      case "Lokasi":
+        return "Lokasi pengambilan";
+      case "Kategori":
+        return "Kategori pembangunan";
+      case "Jenis":
+        return "Jenis pembangunan";
+      case "Andalalin":
+        return "Persyaratan andalalin";
+      case "Rambulalin":
+        return "Persyaratan rambulalin";
     }
   };
 
@@ -154,7 +182,7 @@ function DaftarProdukScreen({ navigation, route }) {
         setTimeout(() => {
           if (
             context.dataMaster.persyaratan_tambahan
-              .PersyaratanTambahanAndalalin == null
+              .PersyaratanTambahanAndalalin.length == 0
           ) {
             setDataOn(true);
             context.toggleLoading(false);
@@ -162,7 +190,7 @@ function DaftarProdukScreen({ navigation, route }) {
             let persyaratan =
               context.dataMaster.persyaratan_tambahan.PersyaratanTambahanAndalalin.map(
                 (item) => {
-                  return item.PersyaratanTambahan;
+                  return item.persyaratan;
                 }
               );
             setData(persyaratan);
@@ -176,7 +204,7 @@ function DaftarProdukScreen({ navigation, route }) {
         setTimeout(() => {
           if (
             context.dataMaster.persyaratan_tambahan
-              .PersyaratanTambahanRambulalin == null
+              .PersyaratanTambahanRambulalin.length == 0
           ) {
             setDataOn(true);
             context.toggleLoading(false);
@@ -184,7 +212,7 @@ function DaftarProdukScreen({ navigation, route }) {
             let persyaratan =
               context.dataMaster.persyaratan_tambahan.PersyaratanTambahanRambulalin.map(
                 (item) => {
-                  return item.PersyaratanTambahan;
+                  return item.persyaratan;
                 }
               );
             setData(persyaratan);
@@ -192,6 +220,27 @@ function DaftarProdukScreen({ navigation, route }) {
           }
         }, 1000);
         break;
+    }
+  };
+
+  const getKeterangan = (pilihan) => {
+    switch (kondisi) {
+      case "Andalalin":
+        let keteranganAndalalin =
+          context.dataMaster.persyaratan_tambahan.PersyaratanTambahanAndalalin.find(
+            (item) => {
+              return item.persyaratan == pilihan;
+            }
+          );
+        return keteranganAndalalin.keterangan;
+      case "Rambulalin":
+        let keteranganRambulalin =
+          context.dataMaster.persyaratan_tambahan.PersyaratanTambahanRambulalin.find(
+            (item) => {
+              return item.persyaratan == pilihan;
+            }
+          );
+        return keteranganRambulalin.keterangan;
     }
   };
 
@@ -332,25 +381,14 @@ function DaftarProdukScreen({ navigation, route }) {
             showsHorizontalScrollIndicator={false}
             showsVerticalScrollIndicator={false}
             vertical
-            renderItem={({ item: pembangunan }) => (
-              <View style={{ paddingBottom: 8 }}>
-                <View
-                  style={{
-                    flexDirection: "column",
-                    paddingVertical: 16,
-                    paddingLeft: 16,
-                    backgroundColor: color.text.white,
-                    borderRadius: 8,
-                    shadowColor: "rgba(16, 24, 40, 0.10)",
-                    elevation: 8,
-                  }}
-                >
-                  <AText size={16} color={color.neutral.neutral900}>
-                    {pembangunan.Kategori}
-                  </AText>
-                </View>
+            renderItem={({ item: pembangunan, index }) => (
+              <AJenisDropdown
+                hint={pembangunan.Kategori}
+                padding={index + 1 == 1 ? 0 : 20}
+                bdColor={color.neutral.neutral300}
+              >
                 <FlatList
-                  style={{ paddingTop: 16 }}
+                  style={{ paddingTop: 16, flex: 1 }}
                   data={pembangunan.JenisRencana}
                   overScrollMode="never"
                   bounces={false}
@@ -360,7 +398,8 @@ function DaftarProdukScreen({ navigation, route }) {
                   renderItem={({ item: jenis, index }) => (
                     <View
                       style={{
-                        paddingBottom: 24,
+                        paddingBottom:
+                          index + 1 == pembangunan.JenisRencana.length ? 0 : 24,
                         flexDirection: "row",
                         alignItems: "center",
                         justifyContent: "space-between",
@@ -412,7 +451,7 @@ function DaftarProdukScreen({ navigation, route }) {
                     </View>
                   )}
                 />
-              </View>
+              </AJenisDropdown>
             )}
           />
         );
@@ -466,6 +505,7 @@ function DaftarProdukScreen({ navigation, route }) {
                   style={{ flexDirection: "row", padding: 8 }}
                   onPress={() => {
                     setPilih(item);
+                    toggleTindakan();
                   }}
                 >
                   <Feather
@@ -528,6 +568,7 @@ function DaftarProdukScreen({ navigation, route }) {
                   style={{ flexDirection: "row", padding: 8 }}
                   onPress={() => {
                     setPilih(item);
+                    toggleTindakan();
                   }}
                 >
                   <Feather
@@ -759,11 +800,13 @@ function DaftarProdukScreen({ navigation, route }) {
                 Tambah jenis pembangunan
               </AText>
             </View>
-            <ADropDown
+            <ADropDownCostume
               hint={"Pilih kategori"}
+              saved={""}
               data={kategori}
               selected={setPilih}
               bdColor={color.neutral.neutral300}
+              max={300}
             />
             <View style={{ paddingBottom: 16 }} />
             <ATextInput
@@ -866,7 +909,7 @@ function DaftarProdukScreen({ navigation, route }) {
               multi={true}
               max={4}
               maxHeight={90}
-              value={input}
+              value={input2}
               onChangeText={(value) => {
                 setInput2(value);
               }}
@@ -885,6 +928,7 @@ function DaftarProdukScreen({ navigation, route }) {
                 style={{ flexDirection: "row", paddingLeft: 4 }}
                 onPress={() => {
                   setInput("");
+                  setInput2("");
                   toggleTambah();
                 }}
               >
@@ -958,7 +1002,7 @@ function DaftarProdukScreen({ navigation, route }) {
               multi={true}
               max={4}
               maxHeight={90}
-              value={input}
+              value={input2}
               onChangeText={(value) => {
                 setInput2(value);
               }}
@@ -977,6 +1021,7 @@ function DaftarProdukScreen({ navigation, route }) {
                 style={{ flexDirection: "row", paddingLeft: 4 }}
                 onPress={() => {
                   setInput("");
+                  setInput2("");
                   toggleTambah();
                 }}
               >
@@ -1036,7 +1081,19 @@ function DaftarProdukScreen({ navigation, route }) {
             }}
             onPress={() => {
               toggleEdit();
-              setInput(pilih);
+              switch (kondisi) {
+                case "Andalalin":
+                  setInput(pilih);
+                  setInput2(getKeterangan(pilih));
+                  break;
+                case "Rambulalin":
+                  setInput(pilih);
+                  setInput2(getKeterangan(pilih));
+                  break;
+                default:
+                  setInput(pilih);
+                  break;
+              }
             }}
           >
             <Feather name="edit-2" size={20} color={color.neutral.neutral900} />
@@ -1103,81 +1160,290 @@ function DaftarProdukScreen({ navigation, route }) {
         </View>
       );
     } else {
-      return (
-        <View style={{ height: 278 }}>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginBottom: 24,
-            }}
-          >
-            <AText size={18} color={color.neutral.neutral700} weight="semibold">
-              Edit {judul().toLowerCase()}
-            </AText>
-          </View>
-          <ATextInput
-            bdColor={color.neutral.neutral300}
-            ktype={"default"}
-            hint={"Masukkan lokasi"}
-            rtype={"done"}
-            multi={true}
-            max={4}
-            maxHeight={90}
-            value={input}
-            onChangeText={(value) => {
-              setInput(value);
-            }}
-          />
-
-          <View
-            style={{
-              flexDirection: "row",
-              alignSelf: "flex-end",
-              marginTop: 80,
-              marginRight: 16,
-              marginBottom: 16,
-            }}
-          >
-            <Pressable
-              style={{ flexDirection: "row", paddingLeft: 4 }}
-              onPress={() => {
-                setInput("");
-                toggleTindakan();
-                toggleEdit();
-              }}
-            >
-              <AText
-                size={14}
-                color={color.neutral.neutral700}
-                weight="semibold"
+      switch (kondisi) {
+        case "Andalalin":
+          return (
+            <View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: 24,
+                }}
               >
-                Batal
-              </AText>
-            </Pressable>
+                <AText
+                  size={18}
+                  color={color.neutral.neutral700}
+                  weight="semibold"
+                >
+                  Edit persyaratan andalalin
+                </AText>
+              </View>
+              <ATextInput
+                bdColor={color.neutral.neutral300}
+                ktype={"default"}
+                hint={"Masukkan persyaratan tambahan"}
+                rtype={"done"}
+                multi={true}
+                max={1}
+                maxHeight={90}
+                value={input}
+                onChangeText={(value) => {
+                  setInput(value);
+                }}
+              />
+              <View style={{ paddingBottom: 16 }} />
+              <ATextInput
+                bdColor={color.neutral.neutral300}
+                ktype={"default"}
+                hint={"Masukkan keterangan persyaratan"}
+                rtype={"done"}
+                multi={true}
+                max={4}
+                maxHeight={90}
+                value={input2}
+                onChangeText={(value) => {
+                  setInput2(value);
+                }}
+              />
 
-            <Pressable
-              style={{ flexDirection: "row", paddingLeft: 4, marginLeft: 32 }}
-              onPress={() => {
-                if (input != "" && input != pilih) {
-                  toggleTindakan();
-                  toggleEdit();
-                  toggleEditConfirms();
-                }
-              }}
-            >
-              <AText
-                size={14}
-                color={color.neutral.neutral700}
-                weight="semibold"
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignSelf: "flex-end",
+                  marginTop: 80,
+                  marginRight: 16,
+                  marginBottom: 16,
+                }}
               >
-                Simpan
-              </AText>
-            </Pressable>
-          </View>
-        </View>
-      );
+                <Pressable
+                  style={{ flexDirection: "row", paddingLeft: 4 }}
+                  onPress={() => {
+                    setInput("");
+                    setInput2("");
+                    toggleTindakan();
+                    toggleEdit();
+                  }}
+                >
+                  <AText
+                    size={14}
+                    color={color.neutral.neutral700}
+                    weight="semibold"
+                  >
+                    Batal
+                  </AText>
+                </Pressable>
+
+                <Pressable
+                  style={{
+                    flexDirection: "row",
+                    paddingLeft: 4,
+                    marginLeft: 32,
+                  }}
+                  onPress={() => {
+                    if (input != "" && input2 != "") {
+                      toggleTindakan();
+                      toggleEdit();
+                      toggleEditConfirms();
+                    }
+                  }}
+                >
+                  <AText
+                    size={14}
+                    color={color.neutral.neutral700}
+                    weight="semibold"
+                  >
+                    Simpan
+                  </AText>
+                </Pressable>
+              </View>
+            </View>
+          );
+        case "Rambulalin":
+          return (
+            <View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: 24,
+                }}
+              >
+                <AText
+                  size={18}
+                  color={color.neutral.neutral700}
+                  weight="semibold"
+                >
+                  Edit persyaratan rambulalin
+                </AText>
+              </View>
+              <ATextInput
+                bdColor={color.neutral.neutral300}
+                ktype={"default"}
+                hint={"Masukkan persyaratan tambahan"}
+                rtype={"done"}
+                multi={true}
+                max={1}
+                maxHeight={90}
+                value={input}
+                onChangeText={(value) => {
+                  setInput(value);
+                }}
+              />
+              <View style={{ paddingBottom: 16 }} />
+              <ATextInput
+                bdColor={color.neutral.neutral300}
+                ktype={"default"}
+                hint={"Masukkan keterangan persyaratan"}
+                rtype={"done"}
+                multi={true}
+                max={4}
+                maxHeight={90}
+                value={input2}
+                onChangeText={(value) => {
+                  setInput2(value);
+                }}
+              />
+
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignSelf: "flex-end",
+                  marginTop: 80,
+                  marginRight: 16,
+                  marginBottom: 16,
+                }}
+              >
+                <Pressable
+                  style={{ flexDirection: "row", paddingLeft: 4 }}
+                  onPress={() => {
+                    setInput("");
+                    setInput2("");
+                    toggleTindakan();
+                    toggleEdit();
+                  }}
+                >
+                  <AText
+                    size={14}
+                    color={color.neutral.neutral700}
+                    weight="semibold"
+                  >
+                    Batal
+                  </AText>
+                </Pressable>
+
+                <Pressable
+                  style={{
+                    flexDirection: "row",
+                    paddingLeft: 4,
+                    marginLeft: 32,
+                  }}
+                  onPress={() => {
+                    if (input != "" && input2 != "") {
+                      toggleTindakan();
+                      toggleEdit();
+                      toggleEditConfirms();
+                    }
+                  }}
+                >
+                  <AText
+                    size={14}
+                    color={color.neutral.neutral700}
+                    weight="semibold"
+                  >
+                    Simpan
+                  </AText>
+                </Pressable>
+              </View>
+            </View>
+          );
+        default:
+          return (
+            <View style={{ height: 278 }}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: 24,
+                }}
+              >
+                <AText
+                  size={18}
+                  color={color.neutral.neutral700}
+                  weight="semibold"
+                >
+                  Edit {judul().toLowerCase()}
+                </AText>
+              </View>
+              <ATextInput
+                bdColor={color.neutral.neutral300}
+                ktype={"default"}
+                hint={"Masukkan " + judul().toLowerCase()}
+                rtype={"done"}
+                multi={true}
+                max={4}
+                maxHeight={90}
+                value={input}
+                onChangeText={(value) => {
+                  setInput(value);
+                }}
+              />
+
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignSelf: "flex-end",
+                  marginTop: 80,
+                  marginRight: 16,
+                  marginBottom: 16,
+                }}
+              >
+                <Pressable
+                  style={{ flexDirection: "row", paddingLeft: 4 }}
+                  onPress={() => {
+                    setInput("");
+                    toggleTindakan();
+                    toggleEdit();
+                  }}
+                >
+                  <AText
+                    size={14}
+                    color={color.neutral.neutral700}
+                    weight="semibold"
+                  >
+                    Batal
+                  </AText>
+                </Pressable>
+
+                <Pressable
+                  style={{
+                    flexDirection: "row",
+                    paddingLeft: 4,
+                    marginLeft: 32,
+                  }}
+                  onPress={() => {
+                    if (input != "" && input != pilih) {
+                      toggleTindakan();
+                      toggleEdit();
+                      toggleEditConfirms();
+                    }
+                  }}
+                >
+                  <AText
+                    size={14}
+                    color={color.neutral.neutral700}
+                    weight="semibold"
+                  >
+                    Simpan
+                  </AText>
+                </Pressable>
+              </View>
+            </View>
+          );
+      }
     }
   };
 
@@ -1327,8 +1593,114 @@ function DaftarProdukScreen({ navigation, route }) {
         );
         break;
       case "Andalalin":
+        masterTambahPersyaratanAndalalin(
+          context.getUser().access_token,
+          context.dataMaster.id_data_master,
+          input,
+          input2,
+          (response) => {
+            switch (response.status) {
+              case 200:
+                (async () => {
+                  setInput("");
+                  setInput2("");
+
+                  const result = await response.json();
+                  context.setDataMaster(result.data);
+                  setDataOn(false);
+                  let persyaratan =
+                    result.data.persyaratan_tambahan.PersyaratanTambahanAndalalin.map(
+                      (item) => {
+                        return item.persyaratan;
+                      }
+                    );
+                  setData(persyaratan);
+                  setTimeout(() => {
+                    context.toggleLoading(false);
+                    setMessage("Persyaratan andalalin berhasil ditambahkan");
+                    showSnackbar();
+                  }, 1000);
+                })();
+                break;
+              case 409:
+                context.toggleLoading(false);
+                setInput("");
+                setInput2("");
+                toggleDataExist();
+                break;
+              case 424:
+                authRefreshToken(context, (response) => {
+                  if (response.status === 200) {
+                    tambah_data();
+                  } else {
+                    context.toggleLoading(false);
+                  }
+                });
+                break;
+              default:
+                context.toggleLoading(false);
+                setInput("");
+                setInput2("");
+                toggleTambahGagal();
+                break;
+            }
+          }
+        );
         break;
       case "Rambulalin":
+        masterTambahPersyaratanRambulalin(
+          context.getUser().access_token,
+          context.dataMaster.id_data_master,
+          input,
+          input2,
+          (response) => {
+            switch (response.status) {
+              case 200:
+                (async () => {
+                  setInput("");
+                  setInput2("");
+
+                  const result = await response.json();
+                  context.setDataMaster(result.data);
+                  setDataOn(false);
+                  let persyaratan =
+                    result.data.persyaratan_tambahan.PersyaratanTambahanRambulalin.map(
+                      (item) => {
+                        return item.persyaratan;
+                      }
+                    );
+                  setData(persyaratan);
+                  setTimeout(() => {
+                    context.toggleLoading(false);
+                    setMessage("Persyaratan rambulalin berhasil ditambahkan");
+                    showSnackbar();
+                  }, 1000);
+                })();
+                break;
+              case 409:
+                context.toggleLoading(false);
+                setInput("");
+                setInput2("");
+                toggleDataExist();
+                break;
+              case 424:
+                authRefreshToken(context, (response) => {
+                  if (response.status === 200) {
+                    tambah_data();
+                  } else {
+                    context.toggleLoading(false);
+                  }
+                });
+                break;
+              default:
+                context.toggleLoading(false);
+                setInput("");
+                setInput2("");
+                toggleTambahGagal();
+                break;
+            }
+          }
+        );
         break;
     }
   };
@@ -1473,8 +1845,102 @@ function DaftarProdukScreen({ navigation, route }) {
         );
         break;
       case "Andalalin":
+        masterHapusPersyaratanAndalalin(
+          context.getUser().access_token,
+          context.dataMaster.id_data_master,
+          pilih,
+          (response) => {
+            switch (response.status) {
+              case 200:
+                (async () => {
+                  const result = await response.json();
+                  context.setDataMaster(result.data);
+                  let persyaratan =
+                    result.data.persyaratan_tambahan.PersyaratanTambahanAndalalin.map(
+                      (item) => {
+                        return item.persyaratan;
+                      }
+                    );
+
+                  if (persyaratan.length == 0) {
+                    setDataOn(true);
+                    setData(persyaratan);
+                  } else {
+                    setDataOn(false);
+                    setData(persyaratan);
+                  }
+                  setTimeout(() => {
+                    context.toggleLoading(false);
+                    setMessage("Persyaratan andalalin berhasil dihapus");
+                    showSnackbar();
+                  }, 1000);
+                })();
+                break;
+              case 424:
+                authRefreshToken(context, (response) => {
+                  if (response.status === 200) {
+                    hapus_data();
+                  } else {
+                    context.toggleLoading(false);
+                  }
+                });
+                break;
+              default:
+                context.toggleLoading(false);
+                toggleHapusGagal();
+                break;
+            }
+          }
+        );
         break;
       case "Rambulalin":
+        masterHapusPersyaratanRambulalin(
+          context.getUser().access_token,
+          context.dataMaster.id_data_master,
+          pilih,
+          (response) => {
+            switch (response.status) {
+              case 200:
+                (async () => {
+                  const result = await response.json();
+                  context.setDataMaster(result.data);
+                  let persyaratan =
+                    result.data.persyaratan_tambahan.PersyaratanTambahanRambulalin.map(
+                      (item) => {
+                        return item.persyaratan;
+                      }
+                    );
+
+                  if (persyaratan.length == 0) {
+                    setDataOn(true);
+                    setData(persyaratan);
+                  } else {
+                    setDataOn(false);
+                    setData(persyaratan);
+                  }
+                  setTimeout(() => {
+                    context.toggleLoading(false);
+                    setMessage("Persyaratan rambulalin berhasil dihapus");
+                    showSnackbar();
+                  }, 1000);
+                })();
+                break;
+              case 424:
+                authRefreshToken(context, (response) => {
+                  if (response.status === 200) {
+                    hapus_data();
+                  } else {
+                    context.toggleLoading(false);
+                  }
+                });
+                break;
+              default:
+                context.toggleLoading(false);
+                toggleHapusGagal();
+                break;
+            }
+          }
+        );
         break;
     }
   };
@@ -1609,8 +2075,104 @@ function DaftarProdukScreen({ navigation, route }) {
         );
         break;
       case "Andalalin":
+        masterEditPersyaratanAndalalin(
+          context.getUser().access_token,
+          context.dataMaster.id_data_master,
+          pilih,
+          input,
+          input2,
+          (response) => {
+            switch (response.status) {
+              case 200:
+                (async () => {
+                  setInput("");
+                  setInput2("");
+
+                  const result = await response.json();
+                  context.setDataMaster(result.data);
+                  setDataOn(false);
+                  let persyaratan =
+                    result.data.persyaratan_tambahan.PersyaratanTambahanAndalalin.map(
+                      (item) => {
+                        return item.persyaratan;
+                      }
+                    );
+                  setData(persyaratan);
+                  setTimeout(() => {
+                    context.toggleLoading(false);
+                    setMessage("Persyaratan andalalin berhasil diedit");
+                    showSnackbar();
+                  }, 1000);
+                })();
+                break;
+              case 424:
+                authRefreshToken(context, (response) => {
+                  if (response.status === 200) {
+                    tambah_data();
+                  } else {
+                    context.toggleLoading(false);
+                  }
+                });
+                break;
+              default:
+                context.toggleLoading(false);
+                setInput("");
+                setInput2("");
+                toggleEditGagal();
+                break;
+            }
+          }
+        );
         break;
       case "Rambulalin":
+        masterEditPersyaratanRambulalin(
+          context.getUser().access_token,
+          context.dataMaster.id_data_master,
+          pilih,
+          input,
+          input2,
+          (response) => {
+            switch (response.status) {
+              case 200:
+                (async () => {
+                  setInput("");
+                  setInput2("");
+
+                  const result = await response.json();
+                  context.setDataMaster(result.data);
+                  setDataOn(false);
+                  let persyaratan =
+                    result.data.persyaratan_tambahan.PersyaratanTambahanRambulalin.map(
+                      (item) => {
+                        return item.persyaratan;
+                      }
+                    );
+                  setData(persyaratan);
+                  setTimeout(() => {
+                    context.toggleLoading(false);
+                    setMessage("Persyaratan rambulalin berhasil diedit");
+                    showSnackbar();
+                  }, 1000);
+                })();
+                break;
+              case 424:
+                authRefreshToken(context, (response) => {
+                  if (response.status === 200) {
+                    tambah_data();
+                  } else {
+                    context.toggleLoading(false);
+                  }
+                });
+                break;
+              default:
+                context.toggleLoading(false);
+                setInput("");
+                setInput2("");
+                toggleEditGagal();
+                break;
+            }
+          }
+        );
         break;
     }
   };
@@ -1684,8 +2246,8 @@ function DaftarProdukScreen({ navigation, route }) {
       )}
 
       <AConfirmationDialog
-        title={"Tambah " + judul().toLowerCase()}
-        desc={"Apakah Anda yakin ingin tambah " + judul().toLowerCase() + "?"}
+        title={"Tambah " + title().toLowerCase()}
+        desc={"Apakah Anda yakin ingin tambah " + title().toLowerCase() + "?"}
         visibleModal={tambahConfirms}
         btnOK={"OK"}
         btnBATAL={"Batal"}
@@ -1700,7 +2262,7 @@ function DaftarProdukScreen({ navigation, route }) {
       />
 
       <AConfirmationDialog
-        title={"Hapus " + judul().toLowerCase()}
+        title={"Hapus " + title().toLowerCase()}
         desc={"Apakah Anda yakin ingin hapus " + pilih + "?"}
         visibleModal={hapusConfirms}
         btnOK={"OK"}
@@ -1716,7 +2278,7 @@ function DaftarProdukScreen({ navigation, route }) {
       />
 
       <AConfirmationDialog
-        title={"Edit " + judul().toLowerCase()}
+        title={"Edit " + title().toLowerCase()}
         desc={"Apakah Anda yakin ingin edit " + pilih + "?"}
         visibleModal={editConfirms}
         btnOK={"OK"}
@@ -1732,7 +2294,7 @@ function DaftarProdukScreen({ navigation, route }) {
       />
 
       <ADialog
-        title={"Tambah " + judul().toLowerCase() + " gagal"}
+        title={"Tambah " + title().toLowerCase() + " gagal"}
         desc={"Terjadi kesalahan pada server kami, mohon coba lagi lain waktu"}
         visibleModal={tambahGagal}
         btnOK={"OK"}
@@ -1742,7 +2304,7 @@ function DaftarProdukScreen({ navigation, route }) {
       />
 
       <ADialog
-        title={"Hapus " + judul().toLowerCase() + " gagal"}
+        title={"Hapus " + title().toLowerCase() + " gagal"}
         desc={"Terjadi kesalahan pada server kami, mohon coba lagi lain waktu"}
         visibleModal={hapusGagal}
         btnOK={"OK"}
@@ -1752,7 +2314,7 @@ function DaftarProdukScreen({ navigation, route }) {
       />
 
       <ADialog
-        title={"Edit " + judul().toLowerCase() + " gagal"}
+        title={"Edit " + title().toLowerCase() + " gagal"}
         desc={"Terjadi kesalahan pada server kami, mohon coba lagi lain waktu"}
         visibleModal={editGagal}
         btnOK={"OK"}
@@ -1762,9 +2324,9 @@ function DaftarProdukScreen({ navigation, route }) {
       />
 
       <ADialog
-        title={judul() + " sudah tersedia"}
+        title={title() + " sudah tersedia"}
         desc={
-          judul() + " yang diinputkan sudah tersedia, silahkan coba kembali"
+          title() + " yang diinputkan sudah tersedia, silahkan coba kembali"
         }
         visibleModal={dataExist}
         btnOK={"OK"}

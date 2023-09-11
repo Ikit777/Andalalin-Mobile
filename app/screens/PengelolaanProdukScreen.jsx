@@ -73,7 +73,7 @@ function PengelolaanProdukScreen({ navigation }) {
         <APengelolaanItem
           style={{ marginBottom: 20 }}
           title={"Persyaratan tambahan andalalin"}
-          desc={"Persyaratan dokumen permohonan andalalin baru"}
+          desc={"Persyaratan tambahan untuk dokumen permohonan andalalin"}
           onPress={() => {
             navigation.push("Produk", { kondisi: "Andalalin" });
           }}
@@ -81,7 +81,7 @@ function PengelolaanProdukScreen({ navigation }) {
         <APengelolaanItem
           style={{ marginBottom: 20 }}
           title={"Persyaratan tambahan rambulalin"}
-          desc={"Persyaratan dokumen permohonan rambulalin baru"}
+          desc={"Persyaratan tambahan untuk dokumen permohonan rambulalin"}
           onPress={() => {
             navigation.push("Produk", { kondisi: "Rambulalin" });
           }}

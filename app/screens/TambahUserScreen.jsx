@@ -5,7 +5,6 @@ import color from "../constants/color";
 import AScreen from "../component/utility/AScreen";
 import ABackButton from "../component/utility/ABackButton";
 import ATextInput from "../component/utility/ATextInput";
-import ADropDown from "../component/utility/ADropDown";
 import APasswordInput from "../component/utility/APasswordInput";
 import { usePasswordVisibility } from "../hooks/usePasswordVisibility";
 import AButton from "../component/utility/AButton";
@@ -16,6 +15,7 @@ import { UserContext } from "../context/UserContext";
 import ADialog from "../component/utility/ADialog";
 import { authRefreshToken } from "../api/auth";
 import ASnackBar from "../component/utility/ASnackBar";
+import ADropDownCostume from "../component/utility/ADropdownCostume";
 
 function TambahUserScreen({ navigation }) {
   const [confirm, toggleComfirm] = useStateToggler();
@@ -235,14 +235,14 @@ function TambahUserScreen({ navigation }) {
           ""
         )}
 
-        <ADropDown
+        <ADropDownCostume
           bdColor={peranError ? color.error.error300 : color.neutral.neutral300}
           judul={"Peran"}
           hint={"Pilih peran"}
           data={jenis_peran}
           padding={20}
           selected={setPeran}
-          max={500}
+          max={400}
           saved={peran}
         />
         {peranError ? (
