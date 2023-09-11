@@ -16,7 +16,7 @@ export const andalalinPengajuan = async (
   });
   formData.append("apb", {
     uri: file.akta,
-    name: "akta pendirian bangunan.pdf",
+    name: "akta pendirian badan.pdf",
     type: "application/pdf",
   });
   formData.append("sk", {
