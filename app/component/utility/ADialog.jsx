@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View, Modal, Pressable, Animated } from "react-native";
+import { StyleSheet, View, Modal, Pressable, Animated, Dimensions } from "react-native";
 import color from "../../constants/color";
 import AText from "../utility/AText";
 
@@ -32,6 +32,7 @@ function ADialog({ visibleModal = false, title, desc, onPressOKButton, btnOK }) 
       visible={visible}
       transparent={true}
       statusBarTranslucent
+      deviceHeight={Dimensions.get('screen').height}
     >
       <View style={styles.container}>
         <View style={styles.horizontal}>

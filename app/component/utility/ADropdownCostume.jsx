@@ -36,8 +36,8 @@ function ADropDownCostume({
   };
 
   useEffect(() => {
-    setValue(saved)
-    selected(saved)
+    setValue(saved);
+    selected(saved);
   }, [saved]);
 
   return (
@@ -64,18 +64,18 @@ function ADropDownCostume({
           borderRadius: 8,
           borderColor: bdColor,
           backgroundColor: color.text.white,
+          alignItems: "center",
         }}
-        onPress={() => {
-          toggleView();
-        }}
+        onPress={toggleView}
       >
         <AText
+          style={{ width: "95%" }}
           size={16}
           color={
             value == "" ? color.neutral.neutral500 : color.neutral.neutral900
           }
         >
-          {value == "" ? hint : value }
+          {value == "" ? hint : value}
         </AText>
         {open ? (
           <Feather
@@ -125,14 +125,20 @@ function ADropDownCostume({
               backgroundColor: color.text.white,
               maxHeight: max,
             }}
-            contentContainerStyle={{ paddingVertical: 10, paddingHorizontal: 14, overflow: "hidden" }}
+            contentContainerStyle={{
+              paddingVertical: 10,
+              paddingHorizontal: 14,
+              overflow: "hidden",
+            }}
+            showsVerticalScrollIndicator={false}
+            persistentScrollbar={true}
           >
             {data.map((item, index) => (
               <TouchableOpacity
                 key={index}
-                onPress={() => {
+                onPress={toggleView}
+                onPressIn={() => {
                   setValue(item.value);
-                  toggleView();
                   selected(item.value);
                 }}
               >

@@ -24,20 +24,18 @@ function UpdatePersyaratanScreen({ navigation, route }) {
   const permohonan = route.params.permohonan;
   const context = useContext(UserContext);
 
-  const [ktp, setKTP] = useState("");
-  const [akta, setAkta] = useState("");
-  const [surat, setSurat] = useState("");
-
-  const [namaKtp, setNamaKtp] = useState();
-  const [namaAkta, setNamaAkta] = useState();
-  const [namaSurat, setNamaSurat] = useState();
-
-  const [ktpError, setKTPError] = useStateToggler();
-  const [aktaError, setAktaError] = useStateToggler();
-  const [suratError, setSuratError] = useStateToggler();
-
   const [confirm, toggleComfirm] = useStateToggler();
   const [kirimGagal, toggleKirimGagal] = useStateToggler();
+
+  const stateError = false;
+  const namaFile = "";
+  const berkasFile = "";
+
+  const [stateVariables, setStateVariables] = useState([]);
+
+  const [updateNoEmpyt, setUpdateNotEmpty] = useState(false);
+
+  const [data, setData] = useState();
 
   useEffect(() => {
     BackHandler.addEventListener("hardwareBackPress", () => {
@@ -51,111 +49,78 @@ function UpdatePersyaratanScreen({ navigation, route }) {
     });
   }, []);
 
-  const fileKtp = async () => {
-    const result = await DocumentPicker.getDocumentAsync({
-      type: "application/pdf",
-    });
-    if (!result.canceled) {
-      {
-        ktpError ? setKTPError() : "";
-      }
-      setNamaKtp(result.assets[0].name);
-      setKTP(result.assets[0].uri);
-    }
-  };
-
-  const fileAkta = async () => {
-    const result = await DocumentPicker.getDocumentAsync({
-      type: "application/pdf",
-    });
-    if (!result.canceled) {
-      {
-        aktaError ? setAktaError() : "";
-      }
-      setNamaAkta(result.assets[0].name);
-      setAkta(result.assets[0].uri);
-    }
-  };
-
-  const fileSurat = async () => {
-    const result = await DocumentPicker.getDocumentAsync({
-      type: "application/pdf",
-    });
-    if (!result.canceled) {
-      {
-        suratError ? setSuratError() : "";
-      }
-      setNamaSurat(result.assets[0].name);
-      setSurat(result.assets[0].uri);
-    }
-  };
-
   useEffect(() => {
-    if (
-      permohonan.persyaratan_tidak_sesuai.find(
-        (value) => value == "Kartu tanda penduduk"
-      ) == undefined
-    ) {
-      setKTP("Kosong");
-    }
-
-    if (
-      permohonan.persyaratan_tidak_sesuai.find(
-        (value) => value == "Akta pendirian badan"
-      ) == undefined
-    ) {
-      setAkta("Kosong");
-    }
-
-    if (
-      permohonan.persyaratan_tidak_sesuai.find(
-        (value) => value == "Surat kuasa"
-      ) == undefined
-    ) {
-      setSurat("Kosong");
-    }
+    let val = permohonan.persyaratan_tidak_sesuai.map((item) => {
+      stateVariables.push({
+        persyaratan: item,
+        stateError,
+        namaFile,
+        berkasFile,
+      });
+      return item;
+    });
+    setData(val);
   }, []);
 
+  const handleChangeFile = (persyaratan, name, uri) => {
+    const updateItems = stateVariables.map((item) => {
+      if (item.persyaratan === persyaratan && uri !== null) {
+        setUpdateNotEmpty(true);
+        return { ...item, namaFile: name, berkasFile: uri, stateError: false };
+      }
+      return item;
+    });
+
+    setStateVariables(updateItems);
+  };
+
+  const handleChangeAllError = (cond) => {
+    const updateItems = stateVariables.map((item) => {
+      if (item.berkasFile === "") {
+        return { ...item, stateError: cond };
+      }
+      return item;
+    });
+    setStateVariables(updateItems);
+  };
+
+  const file = async (persyaratan) => {
+    const result = await DocumentPicker.getDocumentAsync({
+      type: "application/pdf",
+    });
+    if (!result.canceled) {
+      handleChangeFile(
+        persyaratan,
+        result.assets[0].name,
+        result.assets[0].uri
+      );
+    }
+  };
+
   const doSimpan = () => {
-    if (ktp != "" && akta != "" && surat != "") {
-      {
-        ktpError ? setKTPError() : "";
+    stateVariables.forEach((state) => {
+      if (state.berkasFile === "") {
+        handleChangeAllError(true);
       }
-      {
-        aktaError ? setAktaError() : "";
-      }
-      {
-        suratError ? setSuratError() : "";
-      }
+    });
+
+    if (updateNoEmpyt) {
       toggleComfirm();
-    } else {
-      {
-        ktp == "" ? (ktpError ? "" : setKTPError()) : "";
-      }
-      {
-        akta == "" ? (aktaError ? "" : setAktaError()) : "";
-      }
-      {
-        surat == "" ? (suratError ? "" : setSuratError()) : "";
-      }
     }
   };
 
   const simpan = () => {
-    const file = {
-      ktp: ktp,
-      akta: akta,
-      surat: surat,
-    };
     andalalinUpdatePersyaratan(
       context.getUser().access_token,
       permohonan.id_andalalin,
-      file,
+      stateVariables,
       (response) => {
         switch (response.status) {
           case 200:
             (async () => {
-              navigation.replace("Back Detail", { id: permohonan.id_andalalin });
+              navigation.replace("Back Detail", {
+                id: permohonan.id_andalalin,
+              });
             })();
             break;
           case 424:
@@ -175,17 +140,71 @@ function UpdatePersyaratanScreen({ navigation, route }) {
     );
   };
 
+  const view_tidak_terpenuhi = () => {
+    if (stateVariables.length !== 0 && data !== null) {
+      return (
+        <View>
+          {data.map((item, index) => (
+            <View key={index} style={{ paddingTop: 32 }}>
+              <ATextInputIcon
+                bdColor={
+                  stateVariables.find((variabel) => {
+                    return variabel.persyaratan == item;
+                  }).stateError
+                    ? color.error.error300
+                    : color.neutral.neutral300
+                }
+                hint={"Masukkan " + item.toLowerCase()}
+                title={item}
+                icon={"file-plus"}
+                value={
+                  stateVariables.find((variabel) => {
+                    return variabel.persyaratan == item;
+                  }).namaFile
+                }
+                onPress={() => {
+                  file(item);
+                }}
+              />
+
+              {stateVariables.find((variabel) => {
+                return variabel.persyaratan == item;
+              }).stateError ? (
+                <AText
+                  style={{ paddingTop: 6 }}
+                  color={color.error.error500}
+                  size={14}
+                  weight="normal"
+                >
+                  {item} kosong
+                </AText>
+              ) : (
+                ""
+              )}
+            </View>
+          ))}
+        </View>
+      );
+    }
+  };
+
   return (
     <AScreen>
       <View style={styles.header}>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            paddingVertical: 8,
+          }}
+        >
           <ABackButton
             onPress={() => {
               navigation.goBack();
             }}
           />
           <AText
-            style={{ paddingLeft: 8 }}
+            style={{ paddingLeft: 4 }}
             size={24}
             color={color.neutral.neutral900}
             weight="normal"
@@ -205,110 +224,12 @@ function UpdatePersyaratanScreen({ navigation, route }) {
           size={16}
           weight="normal"
         >
-          Berikut ini persyaratan yang masih masih belum terpenuhi atau ada kesalahan:
+          Berikut ini persyaratan yang masih masih belum terpenuhi atau ada
+          kesalahan:
         </AText>
 
-        {permohonan.persyaratan_tidak_sesuai.find(
-          (value) => value == "Kartu tanda penduduk"
-        ) != undefined ? (
-          <View style={{ paddingTop: 32 }}>
-            <ATextInputIcon
-              bdColor={
-                ktpError ? color.error.error300 : color.neutral.neutral300
-              }
-              hint={"Masukkan berkas KTP"}
-              title={"Berkas KTP"}
-              icon={"file-plus"}
-              value={namaKtp}
-              onPress={() => {
-                fileKtp();
-              }}
-            />
+        {view_tidak_terpenuhi()}
 
-            {ktpError ? (
-              <AText
-                style={{ paddingTop: 6 }}
-                color={color.error.error500}
-                size={14}
-                weight="normal"
-              >
-                Berkas KTP kosong
-              </AText>
-            ) : (
-              ""
-            )}
-          </View>
-        ) : (
-          ""
-        )}
-
-        {permohonan.persyaratan_tidak_sesuai.find(
-          (value) => value == "Akta pendirian badan"
-        ) != undefined ? (
-          <View style={{ paddingTop: 32 }}>
-            <ATextInputIcon
-              bdColor={
-                aktaError ? color.error.error300 : color.neutral.neutral300
-              }
-              hint={"Masukkan berkas akta"}
-              title={"Berkas akta pendirian badan"}
-              icon={"file-plus"}
-              value={namaAkta}
-              onPress={() => {
-                fileAkta();
-              }}
-            />
-
-            {aktaError ? (
-              <AText
-                style={{ paddingTop: 6 }}
-                color={color.error.error500}
-                size={14}
-                weight="normal"
-              >
-                Berkas akta kosong
-              </AText>
-            ) : (
-              ""
-            )}
-          </View>
-        ) : (
-          ""
-        )}
-
-        {permohonan.persyaratan_tidak_sesuai.find(
-          (value) => value == "Surat kuasa"
-        ) != undefined ? (
-          <View style={{ paddingTop: 32 }}>
-            <ATextInputIcon
-              bdColor={
-                suratError ? color.error.error300 : color.neutral.neutral300
-              }
-              hint={"Masukkan berkas surat"}
-              title={"Berkas surat kuasa"}
-              icon={"file-plus"}
-              value={namaSurat}
-              onPress={() => {
-                fileSurat();
-              }}
-            />
-
-            {suratError ? (
-              <AText
-                style={{ paddingTop: 6 }}
-                color={color.error.error500}
-                size={14}
-                weight="normal"
-              >
-                Berkas surat kosong
-              </AText>
-            ) : (
-              ""
-            )}
-          </View>
-        ) : (
-          ""
-        )}
         <AButton
           style={{ marginBottom: 32, marginTop: 32 }}
           title={"Simpan"}
@@ -331,7 +252,9 @@ function UpdatePersyaratanScreen({ navigation, route }) {
           <Pressable
             style={{ flexDirection: "row", paddingLeft: 4 }}
             onPress={() => {
-              navigation.push("Ketentuan", {kondisi: "Update"});
+              permohonan.jenis_andalalin == "Dokumen analisa dampak lalu lintas"
+                ? navigation.push("Ketentuan", { kondisi: "Update andalalin" })
+                : navigation.push("Ketentuan", { kondisi: "Update perlalin" });
             }}
           >
             <AText size={14} color={color.neutral.neutral700} weight="semibold">
@@ -369,12 +292,9 @@ function UpdatePersyaratanScreen({ navigation, route }) {
 }
 
 const styles = StyleSheet.create({
-  header: {
-    paddingTop: 16,
-    height: 64,
-  },
+  header: {},
   content: {
-    padding: 16,
+    paddingHorizontal: 16,
   },
 });
 

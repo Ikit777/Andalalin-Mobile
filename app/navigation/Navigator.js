@@ -30,6 +30,8 @@ import {
   PengelolaanProdukScreen,
   DaftarProdukScreen,
   MapScreen,
+  SurveiKepuasanScreen,
+  KameraScreen,
 } from "../screens";
 
 const Stack = createNativeStackNavigator();
@@ -44,6 +46,7 @@ const Navigator = ({
   kondisi,
   foto,
   koordinat,
+  jenis,
 }) => {
   return (
     <Stack.Navigator
@@ -78,11 +81,16 @@ const Navigator = ({
         initialParams={{ email }}
       />
       <Stack.Screen name="Tentang" component={TentangScreen} />
-      <Stack.Screen name="Andalalin" component={PengajuanScreen} />
+      <Stack.Screen
+        name="Andalalin"
+        component={PengajuanScreen}
+        initialParams={{ kondisi }}
+      />
       <Stack.Screen
         name="Back Andalalin"
         component={PengajuanScreen}
         options={{ animation: "slide_from_left" }}
+        initialParams={{ kondisi }}
       />
       <Stack.Screen
         name="Detail"
@@ -104,7 +112,13 @@ const Navigator = ({
       <Stack.Screen
         name="Detail Survei"
         component={DetailSurveiScreen}
-        initialParams={{ id, kondisi }}
+        initialParams={{ id, kondisi, jenis }}
+      />
+      <Stack.Screen
+        name="Reload Survei"
+        component={DetailSurveiScreen}
+        options={{ animation: "none" }}
+        initialParams={{ id, kondisi, jenis }}
       />
       <Stack.Screen
         name="Daftar"
@@ -148,7 +162,7 @@ const Navigator = ({
       <Stack.Screen
         name="Survei"
         component={SurveiScreen}
-        initialParams={{ id }}
+        initialParams={{ id, kondisi }}
       />
       <Stack.Screen
         name="Ketentuan"
@@ -183,6 +197,8 @@ const Navigator = ({
         component={MapScreen}
         initialParams={{ koordinat }}
       />
+      <Stack.Screen name="Kepuasan" component={SurveiKepuasanScreen} />
+      <Stack.Screen name="Kamera" component={KameraScreen} />
     </Stack.Navigator>
   );
 };

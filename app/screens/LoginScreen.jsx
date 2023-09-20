@@ -18,6 +18,7 @@ import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import Constants from "expo-constants";
 import ExitApp from "react-native-exit-app";
+import ABackButton from "../component/utility/ABackButton";
 
 function LoginScreen({ navigation }) {
   const { passwordVisibility, rightIcon, handlePasswordVisibility } =
@@ -176,6 +177,11 @@ function LoginScreen({ navigation }) {
 
   return (
     <AScreen>
+      <View style={styles.header}>
+        <ABackButton
+          color={color.text.trans}
+        />
+      </View>
       <View style={styles.content}>
         <AText color={color.neutral.neutral900} size={24} weight="semibold">
           Log in
@@ -347,9 +353,12 @@ function LoginScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+  header: {
+    paddingVertical: 8,
+  },
   content: {
-    padding: 16,
-    paddingTop: 80,
+    paddingHorizontal: 16,
+    paddingBottom: 16,
   },
   lupaPassword: {
     alignItems: "flex-end",

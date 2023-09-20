@@ -147,11 +147,19 @@ function ResetPasswordScreen({ navigation, route }) {
   return (
     <AScreen>
       <View style={styles.header}>
-        <BackButton
-          onPress={() => {
-            navigation.goBack();
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            paddingVertical: 8,
           }}
-        />
+        >
+          <BackButton
+            onPress={() => {
+              navigation.goBack();
+            }}
+          />
+        </View>
       </View>
       <ScrollView
         style={styles.content}
@@ -288,6 +296,7 @@ function ResetPasswordScreen({ navigation, route }) {
           style={{
             flexDirection: "row",
             paddingTop: 32,
+            marginBottom: 32,
             alignSelf: "center",
           }}
         >
@@ -370,11 +379,10 @@ function ResetPasswordScreen({ navigation, route }) {
 
 const styles = StyleSheet.create({
   header: {
-    paddingTop: 16,
-    height: 64,
+    paddingVertical: 8,
   },
   content: {
-    padding: 16,
+    paddingHorizontal: 16,
     flexGrow: 1,
   },
   reset: {

@@ -1,28 +1,26 @@
 import React, { useContext, useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { UserContext } from "../../context/UserContext";
-import Permohonan from "./Permohonan";
-import Pemohon from "./Pemohon";
-import Perusahaan from "./Perusahaan";
 import color from "../../constants/color";
-import LokasiPerusahaan from "./LokasiPerusahaan";
-import Kegiatan from "./Kegiatan";
 import Konfirmasi from "./Konfirmasi";
 import Informasi from "./Informasi";
-import Persyaratan from "./Persyaratan";
+import PermohonanPerlalin from "./PermohonanPerlalin";
+import PemohonPerlalin from "./PemohonPerlalin";
+import KegiatanPerlalin from "./KegiatanPerlalin";
+import PersyaratanPerlalin from "./PersyaratanPerlalin";
 
-export default function AndalalinItem({ navigation, route }) {
+export default function PerlalinItem({ navigation, route }) {
   const context = useContext(UserContext);
   const index = route.params.index;
   const kondisi = route.params.kondisi;
 
   const onGoToNext = () => {
-    if (index < 8) {
+    if (index < 6) {
       const newIndex = index + 1;
-      
+
       context.setIndex(newIndex);
 
-      navigation.push("AndalalinItem", {
+      navigation.push("PerlalinItem", {
         index: newIndex,
       });
     }
@@ -31,20 +29,24 @@ export default function AndalalinItem({ navigation, route }) {
   const renderItem = () => {
     switch (index) {
       case 1:
-        return <Informasi onPress={onGoToNext} navigation={navigation} kondisi={kondisi} />;
+        return (
+          <Informasi
+            onPress={onGoToNext}
+            navigation={navigation}
+            kondisi={kondisi}
+          />
+        );
       case 2:
-        return <Permohonan onPress={onGoToNext} />;
+        return <PermohonanPerlalin onPress={onGoToNext} />;
       case 3:
-        return <Pemohon onPress={onGoToNext} />;
+        return <PemohonPerlalin onPress={onGoToNext} />;
       case 4:
-        return <Perusahaan onPress={onGoToNext} />;
+        return <KegiatanPerlalin onPress={onGoToNext} />;
       case 5:
-        return <LokasiPerusahaan onPress={onGoToNext} />;
+        return (
+          <PersyaratanPerlalin onPress={onGoToNext} navigation={navigation} />
+        );
       case 6:
-        return <Kegiatan onPress={onGoToNext} />;
-      case 7:
-        return <Persyaratan onPress={onGoToNext} navigation={navigation} />;
-      case 8:
         return <Konfirmasi navigation={navigation} kondisi={kondisi} />;
     }
   };

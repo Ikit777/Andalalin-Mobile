@@ -1,12 +1,14 @@
-import React, { useEffect } from "react";
-import { StyleSheet, View, Image, BackHandler } from "react-native";
+import React, { useEffect, useContext } from "react";
+import { StyleSheet, View, BackHandler, ScrollView } from "react-native";
 import AText from "../component/utility/AText";
 import color from "../constants/color";
 import AScreen from "../component/utility/AScreen";
 import ABackButton from "../component/utility/ABackButton";
 import APengelolaanItem from "../component/utility/APengelolaanItem";
+import { UserContext } from "../context/UserContext";
 
 function PengelolaanProdukScreen({ navigation }) {
+  const context = useContext(UserContext);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
@@ -27,14 +29,20 @@ function PengelolaanProdukScreen({ navigation }) {
   return (
     <AScreen>
       <View style={styles.header}>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            paddingVertical: 8,
+          }}
+        >
           <ABackButton
             onPress={() => {
               navigation.replace("Back Home");
             }}
           />
           <AText
-            style={{ paddingLeft: 8 }}
+            style={{ paddingLeft: 4 }}
             size={24}
             color={color.neutral.neutral900}
             weight="normal"
@@ -43,7 +51,11 @@ function PengelolaanProdukScreen({ navigation }) {
           </AText>
         </View>
       </View>
-      <View style={styles.content}>
+      <ScrollView
+        style={styles.content}
+        showsVerticalScrollIndicator={false}
+        persistentScrollbar={true}
+      >
         <APengelolaanItem
           style={{ marginBottom: 20 }}
           title={"Lokasi pengambilan"}
@@ -67,7 +79,37 @@ function PengelolaanProdukScreen({ navigation }) {
             "Jenis pembangunan yang direncanakan untuk dibangun oleh pemohon berdasarkan kategori pembangunan"
           }
           onPress={() => {
-            navigation.push("Produk", { kondisi: "Jenis" });
+            const items = context.dataMaster.jenis_rencana.filter(
+              (item) => item !== "Lainnya"
+            );
+            if (items != null) {
+              navigation.push("Produk", { kondisi: "Jenis" });
+            }
+          }}
+        />
+        <APengelolaanItem
+          style={{ marginBottom: 20 }}
+          title={"Kategori perlengkapan lalu lintas"}
+          desc={
+            "Penggolongan jenis perlengkapan lalu lintas dalam satu kategori"
+          }
+          onPress={() => {
+            navigation.push("Produk", { kondisi: "Kategori perlalin" });
+          }}
+        />
+        <APengelolaanItem
+          style={{ marginBottom: 20 }}
+          title={"Jenis perlengkapan lalu lintas"}
+          desc={
+            "Jenis perlengkapan lalu lintas yang dapat dilakukan oleh pemohon berdasarkan kategori perlengkapan lalu lintas"
+          }
+          onPress={() => {
+            const items = context.dataMaster.kategori_perlengkapan.filter(
+              (item) => item !== "Lainnya"
+            );
+            if (items != null) {
+              navigation.push("Produk", { kondisi: "Jenis perlalin" });
+            }
           }}
         />
         <APengelolaanItem
@@ -79,25 +121,22 @@ function PengelolaanProdukScreen({ navigation }) {
           }}
         />
         <APengelolaanItem
-          style={{ marginBottom: 20 }}
-          title={"Persyaratan tambahan rambulalin"}
-          desc={"Persyaratan tambahan untuk dokumen permohonan rambulalin"}
+          style={{ marginBottom: 32 }}
+          title={"Persyaratan tambahan perlalin"}
+          desc={"Persyaratan tambahan untuk dokumen permohonan perlalin"}
           onPress={() => {
-            navigation.push("Produk", { kondisi: "Rambulalin" });
+            navigation.push("Produk", { kondisi: "Perlalin" });
           }}
         />
-      </View>
+      </ScrollView>
     </AScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  header: {
-    paddingTop: 16,
-    height: 64,
-  },
+  header: {},
   content: {
-    padding: 16,
+    paddingHorizontal: 16,
   },
 });
 

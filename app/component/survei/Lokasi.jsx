@@ -21,11 +21,11 @@ import Geolocation from "react-native-geolocation-service";
 
 function Lokasi({ onPress, id }) {
   const {
-    survei: { lat, long, lokasi },
+    survei: { lat, long, lokasi, jalan },
     setSurvei,
   } = useContext(UserContext);
   const context = useContext(UserContext);
-  const [alamat, setAlamat] = useState();
+  const [alamat, setAlamat] = useState(jalan);
   const [maps, setMaps] = useState("");
   const [alamatLengkap, setAlamatLengkap] = useState(lokasi);
 
@@ -69,8 +69,35 @@ function Lokasi({ onPress, id }) {
   };
 
   useEffect(() => {
-    context.toggleLoading(true);
-    getLokasi();
+    if (lokasi == "") {
+      context.toggleLoading(true);
+      getLokasi();
+    } else {
+      setMaps(`
+            <html>
+              <head>
+              <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
+                <link
+                  rel="stylesheet"
+                  href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+                />
+                <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+              </head>
+              <body style="margin: 0; padding: 0;">
+                <div id="map" style="width: 100%; height: 100vh;"></div>
+                <script>
+                  var map = L.map('map').setView([${lat}, ${long}], 20);
+                  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap'
+                  }).addTo(map);
+                  L.marker([${lat}, ${long}]).addTo(map)
+                    .bindPopup('Lokasi saat ini')
+                    .openPopup();
+                </script>
+              </body>
+            </html>
+            `);
+    }
   }, []);
 
   async function getLokasi() {
@@ -200,11 +227,22 @@ function Lokasi({ onPress, id }) {
 
   const pilih_lokasi = () => {
     if (alamatLengkap != "") {
-      setSurvei({
-        lat: location.coords.latitude,
-        long: location.coords.longitude,
-        lokasi: alamatLengkap,
-      });
+      if (location != null) {
+        setSurvei({
+          lat: location.coords.latitude,
+          long: location.coords.longitude,
+          lokasi: alamatLengkap,
+          jalan: alamat,
+        });
+      } else {
+        setSurvei({
+          lat: lat,
+          long: long,
+          lokasi: lokasi,
+          jalan: jalan,
+        });
+      }
+
       onPress();
     } else {
       toggleLokasiKosong();
@@ -262,7 +300,7 @@ function Lokasi({ onPress, id }) {
           <View
             style={{
               flexDirection: "row",
-              paddingTop: 16,
+              paddingTop: 24,
               width: "100%",
               paddingHorizontal: 16,
             }}

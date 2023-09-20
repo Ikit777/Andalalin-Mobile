@@ -8,13 +8,17 @@ import { Feather } from "@expo/vector-icons";
 const ATextInputIcon = React.forwardRef((props, ref) => {
   return (
     <View style={{ flexDirection: "column", paddingTop: props.padding }}>
-      <AText color={color.neutral.neutral700} size={14}>
-        {props.title}
-      </AText>
+      {props.title != null ? (
+        <AText color={color.neutral.neutral700} size={14}>
+          {props.title}
+        </AText>
+      ) : (
+        ""
+      )}
       <Pressable onPress={props.onPress} style={[styles.border, { borderColor: props.bdColor }]}>
         <TextInput
           editable={false}
-          style={[styles.input, {maxHeight: props.maxHeight}]}
+          style={[styles.input, {maxHeight: props.maxHeight, width: props.width == null ? "100%" : "90%"}]}
           numberOfLines={props.max}
           placeholderTextColor={color.neutral.neutral500}
           onChangeText={props.onChangeText}
@@ -25,9 +29,10 @@ const ATextInputIcon = React.forwardRef((props, ref) => {
           textAlignVertical="top"
           autoComplete="off"
           ref={ref}
+          underlineColorAndroid="transparent"
         />
         <Feather
-          style={{ paddingRight: 14 }}
+          style={{ position: "absolute", right: 14 }}
           name={props.icon}
           size={16}
           color={color.neutral.neutral900}
@@ -56,7 +61,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   input: {
-    width: "90%",
     paddingLeft: 14,
     paddingVertical: 10,
     fontFamily: poppins.normal,

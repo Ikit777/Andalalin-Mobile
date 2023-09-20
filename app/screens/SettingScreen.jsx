@@ -138,7 +138,11 @@ function SettingScreen({ navigation }) {
     <AScreen>
       <View style={styles.header}>
         <View
-          style={{ flexDirection: "row", alignItems: "center" }}
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            paddingVertical: 8,
+          }}
         >
           <ABackButton
             onPress={() => {
@@ -146,7 +150,7 @@ function SettingScreen({ navigation }) {
             }}
           />
           <AText
-            style={{ paddingLeft: 8 }}
+            style={{ paddingLeft: 4}}
             size={24}
             color={color.neutral.neutral900}
             weight="normal"
@@ -160,7 +164,6 @@ function SettingScreen({ navigation }) {
           style={{
             flexDirection: "row",
             alignItems: "center",
-            marginTop: 16,
           }}
         >
           <Image
@@ -250,9 +253,7 @@ function SettingScreen({ navigation }) {
 
       <ADialog
         title={"Foto gagal diperbaharui"}
-        desc={
-          "Terjadi kesalahan pada server kami, mohon coba lagi lain waktu"
-        }
+        desc={"Terjadi kesalahan pada server kami, mohon coba lagi lain waktu"}
         visibleModal={fotoGagal}
         btnOK={"OK"}
         onPressOKButton={() => {
@@ -274,12 +275,10 @@ function SettingScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  header: {
-    paddingTop: 16,
-    height: 64,
-  },
+  header: {},
   content: {
-    padding: 16,
+    paddingHorizontal: 16,
+    paddingBottom: 16,
   },
 });
 

@@ -39,6 +39,7 @@ const ATextInput = React.forwardRef((props, ref) => {
           onSubmitEditing={props.submit}
           ref={ref}
           blurOnSubmit={props.blur}
+          underlineColorAndroid="transparent"
         ></TextInput>
       </View>
     </View>

@@ -15,6 +15,7 @@ import {
   useClearByFocusCell,
 } from "react-native-confirmation-code-field";
 import { UserContext } from "../context/UserContext";
+import ABackButton from "../component/utility/ABackButton";
 
 const CELL_COUNT = 6;
 
@@ -94,6 +95,9 @@ function VerifikasiScreen({ navigation, route }) {
 
   return (
     <AScreen>
+      <View style={styles.header}>
+        <ABackButton color={color.text.trans} />
+      </View>
       <View style={styles.content}>
         <AText color={color.neutral.neutral900} size={24} weight="semibold">
           Kode verifikasi
@@ -230,9 +234,12 @@ function VerifikasiScreen({ navigation, route }) {
 }
 
 const styles = StyleSheet.create({
+  header: {
+    paddingVertical: 8,
+  },
   content: {
-    padding: 16,
-    paddingTop: 80,
+    paddingHorizontal: 16,
+    paddingBottom: 16,
   },
   codeFieldRoot: {},
   cell: {

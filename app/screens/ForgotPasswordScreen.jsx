@@ -42,7 +42,7 @@ function ForgotPasswordScreen({ navigation }) {
       }
     });
   };
-  
+
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
       BackHandler.addEventListener("hardwareBackPress", () => {
@@ -196,11 +196,11 @@ function ForgotPasswordScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   header: {
-    paddingTop: 16,
-    height: 64,
+    paddingVertical: 8,
   },
   content: {
-    padding: 16,
+    paddingHorizontal: 16,
+    paddingBottom: 16,
   },
   forgot: {
     marginTop: 32,

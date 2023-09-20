@@ -1,5 +1,11 @@
 import React, { useEffect, useState, useContext } from "react";
-import { StyleSheet, View, Pressable, BackHandler, ScrollView } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Pressable,
+  BackHandler,
+  ScrollView,
+} from "react-native";
 import AScreen from "../component/utility/AScreen";
 import BackButton from "../component/utility/ABackButton";
 import AText from "../component/utility/AText";
@@ -75,18 +81,38 @@ function RegisterScreen({ navigation }) {
 
   const doRegister = () => {
     if (name != "" && email != "" && password != "" && confirmPassword != "") {
-      {nameError ? toggleNameError() : ""}
-      {emailError ? toggleEmailError() : ""}
-      {passwordError ? togglePasswordError() : ""}
-      {konfirmasiError ? toggleKonfirmasiError() : ""}
+      {
+        nameError ? toggleNameError() : "";
+      }
+      {
+        emailError ? toggleEmailError() : "";
+      }
+      {
+        passwordError ? togglePasswordError() : "";
+      }
+      {
+        konfirmasiError ? toggleKonfirmasiError() : "";
+      }
       register(name, email, password, confirmPassword);
     } else {
-      {name == "" ? (nameError ? "" : toggleNameError()) : ""}
-      {email == "" ? (emailError ? "" : toggleEmailError()) : ""}
-      {password == ""? (passwordError ? "" : togglePasswordError()) : ""}
-      {confirmPassword == "" ? konfirmasiError ? "" : toggleKonfirmasiError() : ""}
+      {
+        name == "" ? (nameError ? "" : toggleNameError()) : "";
+      }
+      {
+        email == "" ? (emailError ? "" : toggleEmailError()) : "";
+      }
+      {
+        password == "" ? (passwordError ? "" : togglePasswordError()) : "";
+      }
+      {
+        confirmPassword == ""
+          ? konfirmasiError
+            ? ""
+            : toggleKonfirmasiError()
+          : "";
+      }
     }
-  }
+  };
 
   return (
     <AScreen>
@@ -97,7 +123,11 @@ function RegisterScreen({ navigation }) {
           }}
         />
       </View>
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false} persistentScrollbar={true}>
+      <ScrollView
+        style={styles.content}
+        showsVerticalScrollIndicator={false}
+        persistentScrollbar={true}
+      >
         <AText color={color.neutral.neutral900} size={24} weight="semibold">
           Daftar
         </AText>
@@ -122,7 +152,9 @@ function RegisterScreen({ navigation }) {
             setName(value);
           }}
           submit={() => {
-            {nameError ? toggleNameError() : ""}
+            {
+              nameError ? toggleNameError() : "";
+            }
             emailInput.current.focus();
           }}
         />
@@ -154,7 +186,9 @@ function RegisterScreen({ navigation }) {
           }}
           ref={emailInput}
           submit={() => {
-            {emailError ? toggleEmailError() : ""}
+            {
+              emailError ? toggleEmailError() : "";
+            }
             passwordInput.current.focus();
           }}
         />
@@ -188,7 +222,9 @@ function RegisterScreen({ navigation }) {
           handlePasswordVisibility={handlePasswordVisibility}
           rightIcon={rightIcon}
           submit={() => {
-            {passwordError ? togglePasswordError() : ""}
+            {
+              passwordError ? togglePasswordError() : "";
+            }
             comfirmInput.current.focus();
           }}
         />
@@ -218,7 +254,9 @@ function RegisterScreen({ navigation }) {
             setconfirmPassword(value);
           }}
           submit={() => {
-            {konfirmasiError ? toggleKonfirmasiError() : ""}
+            {
+              konfirmasiError ? toggleKonfirmasiError() : "";
+            }
           }}
           ref={comfirmInput}
           passwordVisibility={passwordVisibility}
@@ -325,11 +363,11 @@ function RegisterScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   header: {
-    paddingTop: 16,
-    height: 64,
+    paddingVertical: 8,
   },
   content: {
-    padding: 16,
+    paddingHorizontal: 16,
+    paddingBottom: 16,
     flexGrow: 1,
   },
   register: {

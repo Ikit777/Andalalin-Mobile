@@ -15,6 +15,7 @@ function SurveiScreen({ navigation, route }) {
   const context = useContext(UserContext);
 
   const id = route.params.id;
+  const kondisi = route.params.kondisi;
 
   useEffect(() => {
     BackHandler.addEventListener("hardwareBackPress", () => {
@@ -55,7 +56,13 @@ function SurveiScreen({ navigation, route }) {
   return (
     <AScreen>
       <View style={styles.header}>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            paddingVertical: 8,
+          }}
+        >
           <ABackButton
             onPress={() => {
               if (context.indexSurvei == 1) {
@@ -71,7 +78,7 @@ function SurveiScreen({ navigation, route }) {
             }}
           />
           <AText
-            style={{ paddingLeft: 8 }}
+            style={{ paddingLeft: 4}}
             size={24}
             color={color.neutral.neutral900}
             weight="normal"
@@ -82,7 +89,7 @@ function SurveiScreen({ navigation, route }) {
         <AProgressBar progress={Math.floor((context.indexSurvei * 100) / 3)} />
       </View>
       <View style={styles.content}>
-        <SurveiNavigator index={context.indexSurvei} id={id}/>
+        <SurveiNavigator index={context.indexSurvei} id={id} kondisi={kondisi} />
       </View>
 
       <AConfirmationDialog
@@ -106,13 +113,9 @@ function SurveiScreen({ navigation, route }) {
 }
 
 const styles = StyleSheet.create({
-  header: {
-    paddingTop: 16,
-    height: 64,
-  },
+  header: {},
   content: {
     flex: 1,
-    marginTop: 16,
   },
 });
 

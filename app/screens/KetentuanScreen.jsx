@@ -20,7 +20,7 @@ function KetentuanScreen({ navigation, route }) {
   }, [navigation]);
 
   const load = () => {
-    const wajib = [
+    const wajibAndlalin = [
       {
         persyaratan: "Kartu tanda penduduk",
         keterangan:
@@ -37,6 +37,19 @@ function KetentuanScreen({ navigation, route }) {
           "Surat kuasa bermaterai dari pemrakarsa apabila pengajuan permohonan dikuasakan kepada orang lain.\n\nPemberian surat kuasa hanya diberikan kepada orang yang memiliki hubungan keluarga/saudara atau hubungan staf/bawahan/kerja dengan pemohon izin yang dibuktikan dengan:\n\n1. Foto copy kartu keluarga atau surat pernyataan bermaterai yang menyatakan bahwa yang bersangkutan memiliki hubungan keluarga/saudara, dalam hal kuasa diberikan kepada orang yang memiliki hubungan keluarga/saudara.\n\n2. Surat keterangan bermaterai terkait status kepegawaian/surat penempatan kerja, dalam hal kuasa diberikan kepada orang ang memiliki hubungan staff/bawahan/kerja.",
       },
     ];
+
+    const wajibPerlalin = [
+      {
+        persyaratan: "Kartu tanda penduduk",
+        keterangan:
+          "Kartu tanda penduduk asli indonesia dengan nama yang tercantum sama dengan nama pemohon",
+      },
+      {
+        persyaratan: "Surat permohonan",
+        keterangan:
+          "Surat permohonan berisi infromasi terkait permohonan yang akan diajukan seperti perlengkapan lalu lintas",
+      },
+    ];
     switch (kondisi) {
       case "Pengajuan andalalin":
         context.toggleLoading(true);
@@ -44,25 +57,53 @@ function KetentuanScreen({ navigation, route }) {
         setTimeout(() => {
           context.dataMaster.persyaratan_tambahan.PersyaratanTambahanAndalalin.map(
             (item) => {
-              wajib.push(item);
+              wajibAndlalin.push(item);
             }
           );
 
-          setData(wajib);
+          setData(wajibAndlalin);
           context.toggleLoading(false);
         }, 1000);
         break;
-      case "Pengajuan rambulalin":
+      case "Update andalalin":
         context.toggleLoading(true);
 
         setTimeout(() => {
-          context.dataMaster.persyaratan_tambahan.PersyaratanTambahanRambulalin.map(
+          context.dataMaster.persyaratan_tambahan.PersyaratanTambahanAndalalin.map(
             (item) => {
-              wajib.push(item);
+              wajibAndlalin.push(item);
             }
           );
 
-          setData(wajib);
+          setData(wajibAndlalin);
+          context.toggleLoading(false);
+        }, 1000);
+        break;
+      case "Pengajuan perlalin":
+        context.toggleLoading(true);
+
+        setTimeout(() => {
+          context.dataMaster.persyaratan_tambahan.PersyaratanTambahanPerlalin.map(
+            (item) => {
+              wajibPerlalin.push(item);
+            }
+          );
+
+          setData(wajibPerlalin);
+          context.toggleLoading(false);
+        }, 1000);
+        break;
+      case "Update perlalin":
+        context.toggleLoading(true);
+
+        setTimeout(() => {
+          context.dataMaster.persyaratan_tambahan.PersyaratanTambahanPerlalin.map(
+            (item) => {
+              wajibPerlalin.push(item);
+            }
+          );
+
+          setData(wajibPerlalin);
           context.toggleLoading(false);
         }, 1000);
         break;
@@ -72,7 +113,9 @@ function KetentuanScreen({ navigation, route }) {
   useEffect(() => {
     BackHandler.addEventListener("hardwareBackPress", () => {
       if (kondisi == "Pengajuan andalalin") {
-        navigation.push("Back Andalalin");
+        navigation.push("Back Andalalin", { kondisi: "Andalalin" });
+      } else if (kondisi == "Pengajuan perlalin") {
+        navigation.push("Back Andalalin", { kondisi: "Perlalin" });
       } else {
         navigation.goBack();
       }
@@ -82,7 +125,9 @@ function KetentuanScreen({ navigation, route }) {
 
     return BackHandler.removeEventListener("hardwareBackPress", () => {
       if (kondisi == "Pengajuan andalalin") {
-        navigation.push("Back Andalalin");
+        navigation.push("Back Andalalin", { kondisi: "Andalalin" });
+      } else if (kondisi == "Pengajuan perlalin") {
+        navigation.push("Back Andalalin", { kondisi: "Perlalin" });
       } else {
         navigation.goBack();
       }
@@ -94,18 +139,26 @@ function KetentuanScreen({ navigation, route }) {
   return (
     <AScreen>
       <View style={styles.header}>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            paddingVertical: 8,
+          }}
+        >
           <ABackButton
             onPress={() => {
-              if (kondisi == "Pengajuan") {
-                navigation.push("Back Andalalin");
+              if (kondisi == "Pengajuan andalalin") {
+                navigation.push("Back Andalalin", { kondisi: "Andalalin" });
+              } else if (kondisi == "Pengajuan perlalin") {
+                navigation.push("Back Andalalin", { kondisi: "Perlalin" });
               } else {
                 navigation.goBack();
               }
             }}
           />
           <AText
-            style={{ paddingLeft: 8 }}
+            style={{ paddingLeft: 4 }}
             size={24}
             color={color.neutral.neutral900}
             weight="normal"
@@ -153,10 +206,7 @@ function KetentuanScreen({ navigation, route }) {
 }
 
 const styles = StyleSheet.create({
-  header: {
-    paddingTop: 16,
-    height: 64,
-  },
+  header: {},
   content: {
     paddingBottom: 100,
   },

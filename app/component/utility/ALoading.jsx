@@ -1,5 +1,5 @@
 import React from "react";
-import { ActivityIndicator, StyleSheet, View, Modal, Animated } from "react-native";
+import { ActivityIndicator, StyleSheet, View, Modal, Animated, Dimensions } from "react-native";
 import color from "../../constants/color";
 import AText from "../utility/AText";
 
@@ -32,6 +32,7 @@ function ALoading({ visibleModal = false}) {
       visible={visible}
       transparent={true}
       statusBarTranslucent
+      deviceHeight={Dimensions.get('screen').height}
     >
         <View style={[styles.container, styles.horizontal]}>
       <ActivityIndicator

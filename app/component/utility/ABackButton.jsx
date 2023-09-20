@@ -1,13 +1,12 @@
 import React from "react";
 import { StyleSheet, TouchableWithoutFeedback, View } from "react-native";
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import color from "../../constants/color";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-function ABackButton({ onPress, style }) {
+function ABackButton({ onPress, style, color = "#210A0A" }) {
   return (
     <TouchableWithoutFeedback onPress={onPress} style={[style]}>
       <View style={styles.back}>
-      <MaterialCommunityIcons name="arrow-left" size={28} color={color.neutral.neutral900} />
+        <MaterialCommunityIcons name="arrow-left" size={28} color={color} />
       </View>
     </TouchableWithoutFeedback>
   );
@@ -15,8 +14,8 @@ function ABackButton({ onPress, style }) {
 
 const styles = StyleSheet.create({
   back: {
-    width: 56,
-    height: 56,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "transparent",

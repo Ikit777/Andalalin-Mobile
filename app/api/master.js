@@ -117,6 +117,94 @@ export const masterEditRencanaPembangunan = async (accessToken, id, kategori, re
   masterRespone(response);
 };
 
+export const masterTambahKategoriPerlalin = async (accessToken, id, kategori, masterRespone) => {
+  const response = await fetch(ENDPOINTS.TAMBAH_KATEGORI_PERLALIN+ "/" + id + "/" + kategori, {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer " + accessToken,
+      "Content-Type": "application/json",
+    },
+  });
+  
+  masterRespone(response);
+};
+
+export const masterHapusKategoriPerlalin = async (accessToken, id, kategori, masterRespone) => {
+  const response = await fetch(ENDPOINTS.HAPUS_KATEGORI_PERLALIN+ "/" + id + "/" + kategori, {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer " + accessToken,
+      "Content-Type": "application/json",
+    },
+  });
+  
+  masterRespone(response);
+};
+
+export const masterEditKategoriPerlalin = async (accessToken, id, kategori, kategori_baru, masterRespone) => {
+  const response = await fetch(ENDPOINTS.EDIT_KATEGORI_PERLALIN+ "/" + id + "/" + kategori + "/" + kategori_baru, {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer " + accessToken,
+      "Content-Type": "application/json",
+    },
+  });
+  
+  masterRespone(response);
+};
+
+export const masterTambahPerlalin = async (accessToken, id, kategori, perlengkapan, file, masterRespone) => {
+  const formData = new FormData();
+  formData.append("perlengkapan", {
+    uri: file,
+    name: "perlengkapan.jpg",
+    type: "image/jpeg",
+  })
+  const response = await fetch(ENDPOINTS.TAMBAH_PERLALIN+ "/" + id + "/" + kategori + "/" + perlengkapan, {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer " + accessToken,
+      "Content-Type": "multipart/form-data",
+    },
+    body: formData,
+  });
+  
+  masterRespone(response);
+}
+
+export const masterHapusPerlalin = async (accessToken, id, kategori, perlengkapan, masterRespone) => {
+  const response = await fetch(ENDPOINTS.HAPUS_PERLALIN+ "/" + id + "/" + kategori + "/" + perlengkapan, {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer " + accessToken,
+      "Content-Type": "application/json",
+    },
+  });
+  
+  masterRespone(response);
+}
+
+export const masterEditPerlalin = async (accessToken, id, kategori, perlengkapan, newPerlengkapan, file, masterRespone) => {
+  const formData = new FormData();
+  file != "Kosong"
+    ? formData.append("perlengkapan", {
+        uri: file,
+        name: "perlengkapan.jpg",
+        type: "image/jpeg",
+      })
+    : formData.append("perlengkapan");
+  const response = await fetch(ENDPOINTS.EDIT_PERLALIN+ "/" + id + "/" + kategori + "/" + perlengkapan + "/" + newPerlengkapan, {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer " + accessToken,
+      "Content-Type": "multipart/form-data",
+    },
+    body: formData,
+  });
+  
+  masterRespone(response);
+}
+
 export const masterTambahPersyaratanAndalalin = async (accessToken, id, persyaratan, keterangan, masterRespone) => {
   const response = await fetch(ENDPOINTS.TAMBAH_PERSYARATAN_ANDALALIN+ "/" + id, {
     method: "POST",
@@ -161,8 +249,8 @@ export const masterEditPersyaratanAndalalin = async (accessToken, id, pilih, per
   masterRespone(response);
 };
 
-export const masterTambahPersyaratanRambulalin = async (accessToken, id, persyaratan, keterangan, masterRespone) => {
-  const response = await fetch(ENDPOINTS.TAMBAH_PERSYARATAN_RAMBULALIN+ "/" + id, {
+export const masterTambahPersyaratanPerlalin = async (accessToken, id, persyaratan, keterangan, masterRespone) => {
+  const response = await fetch(ENDPOINTS.TAMBAH_PERSYARATAN_PERLALIN+ "/" + id, {
     method: "POST",
     headers: {
       Authorization: "Bearer " + accessToken,
@@ -177,8 +265,8 @@ export const masterTambahPersyaratanRambulalin = async (accessToken, id, persyar
   masterRespone(response);
 };
 
-export const masterHapusPersyaratanRambulalin = async (accessToken, id, persyaratan, masterRespone) => {
-  const response = await fetch(ENDPOINTS.HAPUS_PERSYARATAN_RAMBULALIN+ "/" + id + "/" + persyaratan, {
+export const masterHapusPersyaratanPerlalin = async (accessToken, id, persyaratan, masterRespone) => {
+  const response = await fetch(ENDPOINTS.HAPUS_PERSYARATAN_PERLALIN+ "/" + id + "/" + persyaratan, {
     method: "POST",
     headers: {
       Authorization: "Bearer " + accessToken,
@@ -189,8 +277,8 @@ export const masterHapusPersyaratanRambulalin = async (accessToken, id, persyara
   masterRespone(response);
 };
 
-export const masterEditPersyaratanRambulalin = async (accessToken, id, pilih, persyaratan, keterangan, masterRespone) => {
-  const response = await fetch(ENDPOINTS.EDIT_PERSYARATAN_RAMBULALIN+ "/" + id + "/" + pilih, {
+export const masterEditPersyaratanPerlalin = async (accessToken, id, pilih, persyaratan, keterangan, masterRespone) => {
+  const response = await fetch(ENDPOINTS.EDIT_PERSYARATAN_PERLALIN+ "/" + id + "/" + pilih, {
     method: "POST",
     headers: {
       Authorization: "Bearer " + accessToken,

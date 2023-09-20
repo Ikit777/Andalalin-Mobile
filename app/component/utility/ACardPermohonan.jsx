@@ -28,13 +28,14 @@ function ACardPermohonan({
     "November",
     "Desember",
   ];
-  const [tanggalMod, setTanggalMod] = useState();
 
   const statusBg = () => {
     switch (status) {
       case "Persyaratan tidak terpenuhi":
         return color.error.error50;
       case "Permohonan selesai":
+        return color.success.success50;
+      case "Survei diterima":
         return color.success.success50;
       default:
         return color.secondary.secondary50;
@@ -46,6 +47,8 @@ function ACardPermohonan({
       case "Persyaratan tidak terpenuhi":
         return color.error.error700;
       case "Permohonan selesai":
+        return color.success.success700;
+      case "Survei diterima":
         return color.success.success700;
       default:
         return color.secondary.secondary700;
@@ -99,19 +102,23 @@ function ACardPermohonan({
           <AText size={14} color={color.neutral.neutral400} weight="normal">
             {tanggalRef()}
           </AText>
-          <AText
-            style={{
-              backgroundColor: statusBg(),
-              paddingHorizontal: 8,
-              paddingVertical: 2,
-              borderRadius: 15,
-            }}
-            size={12}
-            color={statusText()}
-            weight="normal"
-          >
-            {status}
-          </AText>
+          {status != null ? (
+            <AText
+              style={{
+                backgroundColor: statusBg(),
+                paddingHorizontal: 8,
+                paddingVertical: 2,
+                borderRadius: 15,
+              }}
+              size={12}
+              color={statusText()}
+              weight="normal"
+            >
+              {status}
+            </AText>
+          ) : (
+            ""
+          )}
         </View>
         <View style={styles.separator} />
         <AText
@@ -133,9 +140,14 @@ function ACardPermohonan({
         <AText size={12} color={color.neutral.neutral400} weight="normal">
           {pemohon}
         </AText>
-        <AText size={12} color={color.neutral.neutral400} weight="normal">
-          {alamat}
-        </AText>
+        {alamat != null ? (
+          <AText size={12} color={color.neutral.neutral400} weight="normal">
+            {alamat}
+          </AText>
+        ) : (
+          ""
+        )}
+
         <Pressable
           style={{
             flexDirection: "row",

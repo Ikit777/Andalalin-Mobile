@@ -56,14 +56,20 @@ function MapScreen({ navigation, route }) {
   return (
     <AScreen>
       <View style={styles.header}>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            paddingVertical: 8,
+          }}
+        >
           <ABackButton
             onPress={() => {
               navigation.goBack();
             }}
           />
           <AText
-            style={{ paddingLeft: 8 }}
+            style={{ paddingLeft: 4}}
             size={24}
             color={color.neutral.neutral900}
             weight="normal"
@@ -92,11 +98,8 @@ function MapScreen({ navigation, route }) {
 }
 
 const styles = StyleSheet.create({
-  header: {
-    paddingTop: 16,
-    height: 64,
-  },
-  content: { flex: 1, paddingVertical: 16 },
+  header: {},
+  content: { flex: 1, paddingBottom: 16 },
 });
 
 export default MapScreen;

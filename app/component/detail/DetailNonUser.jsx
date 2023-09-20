@@ -11,6 +11,8 @@ import { RadioButton, Checkbox } from "react-native-paper";
 import {
   andalalinPersyaratanTerpenuhi,
   andalalinPersyaratanTidakSesuai,
+  andalalinSimpanKeputusan,
+  andalalinSimpanLaporanSurvei,
   andalalinSimpanPersetujuan,
   andalalinSimpanSK,
 } from "../../api/andalalin";
@@ -34,6 +36,9 @@ function DetailNonUser({ permohonan, navigation }) {
   const [ktp, setKtp] = React.useState(false);
   const [akta, setAkta] = React.useState(false);
   const [surat, setSurat] = React.useState(false);
+  const state = false;
+
+  const [stateVariables, setStateVariables] = useState([]);
 
   const [tidak_sesuai, setTidakSesuai] = useState([]);
 
@@ -48,6 +53,38 @@ function DetailNonUser({ permohonan, navigation }) {
   const [fileSK, setFileSK] = useState();
   const [namaFileSK, setNamaFileSK] = useState();
   const [konfrimasiSK, toggleKonformasiSK] = useStateToggler();
+
+  const [laporanModal, setLaporanModal] = useStateToggler();
+  const [laporanFile, setLaporanFile] = useState();
+  const [laporanNamaFile, setLaporanNamaFile] = useState();
+  const [laporanKonfirmasi, toggleLaporanKonfirmasi] = useStateToggler();
+
+  const [keputusanModal, toggleKeputusanModal] = useStateToggler();
+  const [keputusanLanjut, setKeputusanLanjut] = useState();
+  const [keputusan, setKeputusan] = useState();
+  const [keputusanKeterangan, setKeputusanKeterangan] = useState();
+  const [keputusanKonfirmasi, toggleKeputusanKonfirmasi] = useStateToggler();
+
+  useEffect(() => {
+    if (permohonan.persyaratan_tambahan != null)
+      permohonan.persyaratan_tambahan.map((item) => {
+        stateVariables.push({
+          persyaratan: item.Persyaratan,
+          state,
+        });
+      });
+  }, [permohonan.persyaratan_tambahan]);
+
+  const handleChangeCheck = (persyaratan, cek) => {
+    const updateItems = stateVariables.map((item) => {
+      if (item.persyaratan === persyaratan) {
+        return { ...item, state: cek };
+      }
+      return item;
+    });
+
+    setStateVariables(updateItems);
+  };
 
   const status = () => {
     switch (permohonan.status_andalalin) {
@@ -72,12 +109,56 @@ function DetailNonUser({ permohonan, navigation }) {
   };
 
   const tindakan = (onPress, title) => {
-    return <AButton title={title} mode="contained" onPress={onPress} />;
+    return (
+      <AButton
+        style={{ marginBottom: 32 }}
+        title={title}
+        mode="contained"
+        onPress={onPress}
+      />
+    );
   };
 
-  const button = () => {
+  const buttonAndalalin = () => {
     switch (context.getUser().role) {
       case "Operator":
+        switch (permohonan.status_andalalin) {
+          case "Cek persyaratan":
+            return tindakan(() => {
+              setPersyaratanModal();
+            }, "Cek persyaratan");
+          case "Berita acara pemeriksaan":
+            switch (permohonan.persetujuan) {
+              case "Dokumen tidak disetujui":
+                return tindakan(() => {
+                  navigation.push("Berita acara pemeriksaan", {
+                    id: permohonan.id_andalalin,
+                    kondisi: "Perbaharui",
+                  });
+                }, "Perbaharui laporan");
+              default:
+                return tindakan(() => {
+                  navigation.push("Berita acara pemeriksaan", {
+                    id: permohonan.id_andalalin,
+                    kondisi: "Laporan",
+                  });
+                }, "Berita acara pemeriksaan");
+            }
+          case "Pembuatan surat keputusan":
+            return tindakan(() => {
+              setSKModal();
+            }, "Pembuatan surat keputusan");
+        }
+        break;
+      case "Admin":
+        switch (permohonan.status_andalalin) {
+          case "Persetujuan dokumen":
+            return tindakan(() => {
+              setPersetujuanModal();
+            }, "Persetujuan dokumen");
+        }
+        break;
+      case "Super Admin":
         switch (permohonan.status_andalalin) {
           case "Cek persyaratan":
             return tindakan(() => {
@@ -124,24 +205,10 @@ function DetailNonUser({ permohonan, navigation }) {
                   });
                 }, "Berita acara pemeriksaan");
             }
-            break;
           case "Pembuatan surat keputusan":
             return tindakan(() => {
               setSKModal();
             }, "Pembuatan surat keputusan");
-        }
-        break;
-      case "Petugas":
-        switch (permohonan.status_andalalin) {
-          case "Survey lapangan":
-            return tindakan(() => {
-              navigation.push("Survei", { id: permohonan.id_andalalin }),
-                context.clearSurvei();
-            }, "Survei lapangan");
-        }
-        break;
-      case "Admin":
-        switch (permohonan.status_andalalin) {
           case "Persetujuan dokumen":
             return tindakan(() => {
               setPersetujuanModal();
@@ -151,14 +218,115 @@ function DetailNonUser({ permohonan, navigation }) {
     }
   };
 
+  const buttonPerlalin = () => {
+    switch (context.getUser().role) {
+      case "Operator":
+        switch (permohonan.status_andalalin) {
+          case "Cek persyaratan":
+            return tindakan(() => {
+              setPersyaratanModal();
+            }, "Cek persyaratan");
+          case "Persyaratan terpenuhi":
+            return tindakan(() => {
+              navigation.push("Pilih Petugas", {
+                kondisi: "Pilih",
+                permohonan: permohonan,
+              });
+            }, "Pilih petugas");
+          case "Survey lapangan":
+            switch (permohonan.status_tiket) {
+              case "Buka":
+                return tindakan(() => {
+                  navigation.push("Usulan", {
+                    id: permohonan.id_andalalin,
+                  });
+                }, "Usulan tindakan");
+              case "Batal":
+                return tindakan(() => {
+                  navigation.push("Pilih Petugas", {
+                    kondisi: "Ganti",
+                    permohonan: permohonan,
+                  });
+                }, "Ganti pentugas");
+            }
+            break;
+          case "Laporan survei":
+            return tindakan(() => {
+              setLaporanModal();
+            }, "Laporan survei");
+        }
+        break;
+      case "Petugas":
+        switch (permohonan.status_andalalin) {
+          case "Survey lapangan":
+            return tindakan(() => {
+              navigation.push("Survei", {
+                id: permohonan.id_andalalin,
+                kondisi: "Permohonan",
+              }),
+                context.clearSurvei();
+            }, "Survei lapangan");
+        }
+        break;
+      case "Admin":
+        switch (permohonan.status_andalalin) {
+          case "Menunggu hasil keputusan":
+            return tindakan(() => {
+              toggleKeputusanModal();
+            }, "Pengambilan keputusan hasil");
+        }
+        break;
+      case "Super Admin":
+        switch (permohonan.status_andalalin) {
+          case "Cek persyaratan":
+            return tindakan(() => {
+              setPersyaratanModal();
+            }, "Cek persyaratan");
+          case "Persyaratan terpenuhi":
+            return tindakan(() => {
+              navigation.push("Pilih Petugas", {
+                kondisi: "Pilih",
+                permohonan: permohonan,
+              });
+            }, "Pilih petugas");
+          case "Survey lapangan":
+            switch (permohonan.status_tiket) {
+              case "Buka":
+                return tindakan(() => {
+                  navigation.push("Usulan", {
+                    id: permohonan.id_andalalin,
+                  });
+                }, "Usulan tindakan");
+              case "Batal":
+                return tindakan(() => {
+                  navigation.push("Pilih Petugas", {
+                    kondisi: "Ganti",
+                    permohonan: permohonan,
+                  });
+                }, "Ganti pentugas");
+            }
+            break;
+          case "Laporan survei":
+            return tindakan(() => {
+              setLaporanModal();
+            }, "Laporan survei");
+          case "Menuggu keputusan":
+            return tindakan(() => {}, "Keputusan dokumen");
+        }
+        break;
+    }
+  };
+
   const persyaratan = () => {
     return (
-      <View style={{ height: 278 }}>
+      <View>
         {syarat == null || syarat == "Persyaratan terpenuhi"
           ? persyaratan_sesuai()
           : ""}
         {syarat === "Persyaratan tidak terpenuhi"
-          ? persyaratan_tidak_sesuai()
+          ? permohonan.jenis_andalalin == "Dokumen analisa dampak lalu lintas"
+            ? persyaratan_tidak_sesuai_andalalin()
+            : persyaratan_tidak_sesuai_perlalin()
           : ""}
 
         <View
@@ -213,58 +381,72 @@ function DetailNonUser({ permohonan, navigation }) {
         >
           Apakah persyaratan sudah{"\n"}sesuai?
         </AText>
-        <RadioButton.Group onValueChange={(value) => setChecked(value)}>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <RadioButton
-              label="Persyaratan terpenuhi"
-              value="Persyaratan terpenuhi"
-              uncheckedColor={color.neutral.neutral300}
-              color={color.primary.primary600}
-              status={
-                checked === "Persyaratan terpenuhi" ? "checked" : "unchecked"
-              }
-            />
-            <AText
-              style={{ paddingLeft: 4 }}
-              size={14}
-              color={color.neutral.neutral700}
-            >
-              Persyaratan terpenuhi
-            </AText>
-          </View>
+        <View style={{ paddingBottom: 106 }}>
+          <RadioButton.Group onValueChange={(value) => setChecked(value)}>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <RadioButton
+                label="Persyaratan terpenuhi"
+                value="Persyaratan terpenuhi"
+                uncheckedColor={color.neutral.neutral300}
+                color={color.primary.primary600}
+                status={
+                  checked === "Persyaratan terpenuhi" ? "checked" : "unchecked"
+                }
+              />
+              <Pressable
+                onPress={() => {
+                  setChecked("Persyaratan terpenuhi");
+                }}
+              >
+                <AText
+                  style={{ paddingLeft: 4 }}
+                  size={14}
+                  color={color.neutral.neutral700}
+                >
+                  Persyaratan terpenuhi
+                </AText>
+              </Pressable>
+            </View>
 
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              paddingTop: 8,
-            }}
-          >
-            <RadioButton
-              label="Persyaratan tidak terpenuhi"
-              value="Persyaratan tidak terpenuhi"
-              uncheckedColor={color.neutral.neutral300}
-              color={color.primary.primary600}
-              status={
-                checked === "Persyaratan tidak terpenuhi"
-                  ? "checked"
-                  : "unchecked"
-              }
-            />
-            <AText
-              style={{ paddingLeft: 4 }}
-              size={14}
-              color={color.neutral.neutral700}
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                paddingTop: 8,
+              }}
             >
-              Persyaratan tidak terpenuhi
-            </AText>
-          </View>
-        </RadioButton.Group>
+              <RadioButton
+                label="Persyaratan tidak terpenuhi"
+                value="Persyaratan tidak terpenuhi"
+                uncheckedColor={color.neutral.neutral300}
+                color={color.primary.primary600}
+                status={
+                  checked === "Persyaratan tidak terpenuhi"
+                    ? "checked"
+                    : "unchecked"
+                }
+              />
+              <Pressable
+                onPress={() => {
+                  setChecked("Persyaratan tidak terpenuhi");
+                }}
+              >
+                <AText
+                  style={{ paddingLeft: 4 }}
+                  size={14}
+                  color={color.neutral.neutral700}
+                >
+                  Persyaratan tidak terpenuhi
+                </AText>
+              </Pressable>
+            </View>
+          </RadioButton.Group>
+        </View>
       </View>
     );
   };
 
-  const persyaratan_tidak_sesuai = () => {
+  const persyaratan_tidak_sesuai_andalalin = () => {
     return (
       <View>
         <AText
@@ -275,77 +457,255 @@ function DetailNonUser({ permohonan, navigation }) {
         >
           Persyaratan apa saja yang{"\n"}tidak terpenuhi?
         </AText>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Checkbox
-            uncheckedColor={color.neutral.neutral300}
-            color={color.primary.primary600}
-            status={ktp ? "checked" : "unchecked"}
-            onPress={() => {
-              setKtp(!ktp);
-              if (!ktp) {
-                addItem("Kartu tanda penduduk");
-              } else {
-                removeItem("Kartu tanda penduduk");
-              }
-            }}
-          />
-          <AText
-            style={{ paddingLeft: 4 }}
-            size={14}
-            color={color.neutral.neutral700}
-          >
-            Kartu tanda penduduk
-          </AText>
-        </View>
+        <View style={{ paddingBottom: 106 }}>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Checkbox
+              uncheckedColor={color.neutral.neutral300}
+              color={color.primary.primary600}
+              status={ktp ? "checked" : "unchecked"}
+              onPress={() => {
+                setKtp(!ktp);
+                if (!ktp) {
+                  addItem("Kartu tanda penduduk");
+                } else {
+                  removeItem("Kartu tanda penduduk");
+                }
+              }}
+            />
+            <AText
+              style={{ paddingLeft: 4 }}
+              size={14}
+              color={color.neutral.neutral700}
+            >
+              Kartu tanda penduduk
+            </AText>
+          </View>
 
-        <View
-          style={{ flexDirection: "row", alignItems: "center", paddingTop: 8 }}
-        >
-          <Checkbox
-            uncheckedColor={color.neutral.neutral300}
-            color={color.primary.primary600}
-            status={akta ? "checked" : "unchecked"}
-            onPress={() => {
-              setAkta(!akta);
-              if (!akta) {
-                addItem("Akta pendirian badan");
-              } else {
-                removeItem("Akta pendirian badan");
-              }
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              paddingTop: 8,
             }}
-          />
-          <AText
-            style={{ paddingLeft: 4 }}
-            size={14}
-            color={color.neutral.neutral700}
           >
-            Akta pendirian badan
-          </AText>
-        </View>
+            <Checkbox
+              uncheckedColor={color.neutral.neutral300}
+              color={color.primary.primary600}
+              status={akta ? "checked" : "unchecked"}
+              onPress={() => {
+                setAkta(!akta);
+                if (!akta) {
+                  addItem("Akta pendirian badan");
+                } else {
+                  removeItem("Akta pendirian badan");
+                }
+              }}
+            />
+            <AText
+              style={{ paddingLeft: 4 }}
+              size={14}
+              color={color.neutral.neutral700}
+            >
+              Akta pendirian badan
+            </AText>
+          </View>
 
-        <View
-          style={{ flexDirection: "row", alignItems: "center", paddingTop: 8 }}
-        >
-          <Checkbox
-            uncheckedColor={color.neutral.neutral300}
-            color={color.primary.primary600}
-            status={surat ? "checked" : "unchecked"}
-            onPress={() => {
-              setSurat(!surat);
-              if (!surat) {
-                addItem("Surat kuasa");
-              } else {
-                removeItem("Surat kuasa");
-              }
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              paddingTop: 8,
             }}
-          />
-          <AText
-            style={{ paddingLeft: 4 }}
-            size={14}
-            color={color.neutral.neutral700}
           >
-            Surat kuasa
-          </AText>
+            <Checkbox
+              uncheckedColor={color.neutral.neutral300}
+              color={color.primary.primary600}
+              status={surat ? "checked" : "unchecked"}
+              onPress={() => {
+                setSurat(!surat);
+                if (!surat) {
+                  addItem("Surat kuasa");
+                } else {
+                  removeItem("Surat kuasa");
+                }
+              }}
+            />
+            <AText
+              style={{ paddingLeft: 4 }}
+              size={14}
+              color={color.neutral.neutral700}
+            >
+              Surat kuasa
+            </AText>
+          </View>
+
+          {permohonan.persyaratan_tambahan != null
+            ? permohonan.persyaratan_tambahan.map((item, index) => (
+                <View key={index}>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      paddingTop: 8,
+                    }}
+                  >
+                    <Checkbox
+                      uncheckedColor={color.neutral.neutral300}
+                      color={color.primary.primary600}
+                      status={
+                        stateVariables.find((variabel) => {
+                          return variabel.persyaratan == item.Persyaratan;
+                        }).state
+                          ? "checked"
+                          : "unchecked"
+                      }
+                      onPress={() => {
+                        handleChangeCheck(
+                          item.Persyaratan,
+                          !stateVariables.find((variabel) => {
+                            return variabel.persyaratan == item.Persyaratan;
+                          }).state
+                        );
+                        if (
+                          !stateVariables.find((variabel) => {
+                            return variabel.persyaratan == item.Persyaratan;
+                          }).state
+                        ) {
+                          addItem(item.Persyaratan);
+                        } else {
+                          removeItem(item.Persyaratan);
+                        }
+                      }}
+                    />
+                    <AText
+                      style={{ paddingLeft: 4 }}
+                      size={14}
+                      color={color.neutral.neutral700}
+                    >
+                      {item.Persyaratan}
+                    </AText>
+                  </View>
+                </View>
+              ))
+            : ""}
+        </View>
+      </View>
+    );
+  };
+
+  const persyaratan_tidak_sesuai_perlalin = () => {
+    return (
+      <View>
+        <AText
+          style={{ paddingBottom: 16 }}
+          size={18}
+          color={color.neutral.neutral700}
+          weight="semibold"
+        >
+          Persyaratan apa saja yang{"\n"}tidak terpenuhi?
+        </AText>
+        <View style={{ paddingBottom: 106 }}>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Checkbox
+              uncheckedColor={color.neutral.neutral300}
+              color={color.primary.primary600}
+              status={ktp ? "checked" : "unchecked"}
+              onPress={() => {
+                setKtp(!ktp);
+                if (!ktp) {
+                  addItem("Kartu tanda penduduk");
+                } else {
+                  removeItem("Kartu tanda penduduk");
+                }
+              }}
+            />
+            <AText
+              style={{ paddingLeft: 4 }}
+              size={14}
+              color={color.neutral.neutral700}
+            >
+              Kartu tanda penduduk
+            </AText>
+          </View>
+
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              paddingTop: 8,
+            }}
+          >
+            <Checkbox
+              uncheckedColor={color.neutral.neutral300}
+              color={color.primary.primary600}
+              status={surat ? "checked" : "unchecked"}
+              onPress={() => {
+                setSurat(!surat);
+                if (!surat) {
+                  addItem("Surat permohonan");
+                } else {
+                  removeItem("Surat permohonan");
+                }
+              }}
+            />
+            <AText
+              style={{ paddingLeft: 4 }}
+              size={14}
+              color={color.neutral.neutral700}
+            >
+              Surat permohonan
+            </AText>
+          </View>
+
+          {permohonan.persyaratan_tambahan != null
+            ? permohonan.persyaratan_tambahan.map((item, index) => (
+                <View key={index}>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      paddingTop: 8,
+                    }}
+                  >
+                    <Checkbox
+                      uncheckedColor={color.neutral.neutral300}
+                      color={color.primary.primary600}
+                      status={
+                        stateVariables.find((variabel) => {
+                          return variabel.persyaratan == item.Persyaratan;
+                        }).state
+                          ? "checked"
+                          : "unchecked"
+                      }
+                      onPress={() => {
+                        handleChangeCheck(
+                          item.Persyaratan,
+                          !stateVariables.find((variabel) => {
+                            return variabel.persyaratan == item.Persyaratan;
+                          }).state
+                        );
+                        if (
+                          !stateVariables.find((variabel) => {
+                            return variabel.persyaratan == item.Persyaratan;
+                          }).state
+                        ) {
+                          addItem(item.Persyaratan);
+                        } else {
+                          removeItem(item.Persyaratan);
+                        }
+                      }}
+                    />
+                    <AText
+                      style={{ paddingLeft: 4 }}
+                      size={14}
+                      color={color.neutral.neutral700}
+                    >
+                      {item.Persyaratan}
+                    </AText>
+                  </View>
+                </View>
+              ))
+            : ""}
         </View>
       </View>
     );
@@ -457,9 +817,10 @@ function DetailNonUser({ permohonan, navigation }) {
 
   const survei = () => {
     if (
-      permohonan.status_andalalin == "Berita acara pemeriksaan" ||
-      permohonan.status_andalalin == "Pembuatan surat keputusan" ||
-      permohonan.status_andalalin == "Permohonan selesai"
+      permohonan.status_andalalin != "Cek persyaratan" &&
+      permohonan.status_andalalin != "Persyaratan tidak terpenuhi" &&
+      permohonan.status_andalalin != "Persyaratan terpenuhi" &&
+      permohonan.status_andalalin != "Survey lapangan"
     ) {
       return (
         <ADetailView style={{ marginTop: 20 }} title={"Survei lapangan"}>
@@ -478,20 +839,11 @@ function DetailNonUser({ permohonan, navigation }) {
             <Pressable
               style={{ flexDirection: "row", paddingLeft: 4 }}
               onPress={() => {
-                switch (context.getUser().role) {
-                  case "Operator":
-                    navigation.push("Detail Survei", {
-                      id: permohonan.id_andalalin,
-                      kondisi: "Operator",
-                    });
-                    break;
-                  case "Admin":
-                    navigation.push("Detail Survei", {
-                      id: permohonan.id_andalalin,
-                      kondisi: "Admin",
-                    });
-                    break;
-                }
+                navigation.push("Detail Survei", {
+                  id: permohonan.id_andalalin,
+                  kondisi: context.getUser().role,
+                  jenis: "Permohonan",
+                });
               }}
             >
               <AText
@@ -578,13 +930,19 @@ function DetailNonUser({ permohonan, navigation }) {
                     : "unchecked"
                 }
               />
-              <AText
-                style={{ paddingLeft: 4 }}
-                size={14}
-                color={color.neutral.neutral700}
+              <Pressable
+                onPress={() => {
+                  setPersetujuanDokumen("Dokumen disetujui");
+                }}
               >
-                Dokumen disetujui
-              </AText>
+                <AText
+                  style={{ paddingLeft: 4 }}
+                  size={14}
+                  color={color.neutral.neutral700}
+                >
+                  Dokumen disetujui
+                </AText>
+              </Pressable>
             </View>
 
             <View
@@ -605,13 +963,19 @@ function DetailNonUser({ permohonan, navigation }) {
                     : "unchecked"
                 }
               />
-              <AText
-                style={{ paddingLeft: 4 }}
-                size={14}
-                color={color.neutral.neutral700}
+              <Pressable
+                onPress={() => {
+                  setPersetujuanDokumen("Dokumen tidak disetujui");
+                }}
               >
-                Dokumen tidak disetujui
-              </AText>
+                <AText
+                  style={{ paddingLeft: 4 }}
+                  size={14}
+                  color={color.neutral.neutral700}
+                >
+                  Dokumen tidak disetujui
+                </AText>
+              </Pressable>
             </View>
           </RadioButton.Group>
         ) : (
@@ -700,8 +1064,9 @@ function DetailNonUser({ permohonan, navigation }) {
             });
             break;
           default:
-            setFileSK(null);
-            setNamaFileSK(null);
+            setPersetujuanDokumen(null);
+            setSetujuLanjut(null);
+            setKeteranganPersetujuan(null);
             context.toggleLoading(false);
             toggleGagal();
             break;
@@ -778,8 +1143,7 @@ function DetailNonUser({ permohonan, navigation }) {
 
         <ATextInputIcon
           bdColor={color.neutral.neutral300}
-          hint={"Masukkan berkas SK"}
-          title={"Surat keputusan"}
+          hint={"Masukkan surat keputusan"}
           icon={"file-plus"}
           mult={true}
           value={namaFileSK}
@@ -813,8 +1177,9 @@ function DetailNonUser({ permohonan, navigation }) {
           <Pressable
             style={{ flexDirection: "row", paddingLeft: 4, marginLeft: 32 }}
             onPress={() => {
-              {
-                fileSK != null ? toggleKonformasiSK() : "";
+              if (fileSK != null) {
+                setSKModal();
+                toggleKonformasiSK();
               }
             }}
           >
@@ -849,9 +1214,8 @@ function DetailNonUser({ permohonan, navigation }) {
             });
             break;
           default:
-            setPersetujuanDokumen(null);
-            setSetujuLanjut(null);
-            setKeteranganPersetujuan(null);
+            setFileSK(null);
+            setNamaFileSK(null);
             context.toggleLoading(false);
             toggleGagal();
             break;
@@ -899,300 +1263,1012 @@ function DetailNonUser({ permohonan, navigation }) {
     }
   };
 
-  return (
-    <View>
-      <ADetailView title={"Jenis permohonan"}>
-        <AText
-          style={{ padding: 16 }}
-          size={12}
-          color={color.neutral.neutral900}
-          weight="normal"
-        >
-          {permohonan.jenis_andalalin}
-        </AText>
-      </ADetailView>
-
-      <ADetailView style={{ marginTop: 20 }} title={"Jenis kegiatan"}>
-        <AText
-          style={{ padding: 16 }}
-          size={12}
-          color={color.neutral.neutral900}
-          weight="normal"
-        >
-          {permohonan.jenis_kegiatan}
-        </AText>
-      </ADetailView>
-
-      <ADetailView style={{ marginTop: 20 }} title={"Peruntukan"}>
-        <AText
-          style={{ padding: 16 }}
-          size={12}
-          color={color.neutral.neutral900}
-          weight="normal"
-        >
-          {permohonan.peruntukan}
-        </AText>
-      </ADetailView>
-
-      <ADetailView style={{ marginTop: 20 }} title={"Informasi"}>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            padding: 14,
-          }}
-        >
-          <AText size={12} color={color.neutral.neutral900} weight="normal">
-            Status
-          </AText>
+  const andalalin = () => {
+    return (
+      <View>
+        <ADetailView title={"Jenis permohonan"}>
           <AText
-            style={{
-              backgroundColor: status(),
-              paddingHorizontal: 8,
-              paddingVertical: 2,
-              borderRadius: 15,
-            }}
+            style={{ padding: 16 }}
             size={12}
-            color={statusText()}
+            color={color.neutral.neutral900}
             weight="normal"
           >
-            {permohonan.status_andalalin}
+            {permohonan.jenis_andalalin}
           </AText>
-        </View>
+        </ADetailView>
 
-        <View style={styles.separator} />
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            padding: 16,
-          }}
-        >
-          <AText size={12} color={color.neutral.neutral900} weight="normal">
-            Tanggal
+        <ADetailView style={{ marginTop: 20 }} title={"Jenis kegiatan"}>
+          <AText
+            style={{ padding: 16 }}
+            size={12}
+            color={color.neutral.neutral900}
+            weight="normal"
+          >
+            {permohonan.jenis_kegiatan}
           </AText>
-          <AText size={12} color={color.neutral.neutral500} weight="normal">
-            {permohonan.tanggal_andalalin}
-          </AText>
-        </View>
+        </ADetailView>
 
-        <View style={styles.separator} />
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            padding: 16,
-          }}
-        >
-          <AText size={12} color={color.neutral.neutral900} weight="normal">
-            Kode Registrasi
+        <ADetailView style={{ marginTop: 20 }} title={"Peruntukan"}>
+          <AText
+            style={{ padding: 16 }}
+            size={12}
+            color={color.neutral.neutral900}
+            weight="normal"
+          >
+            {permohonan.peruntukan}
           </AText>
-          <AText size={12} color={color.neutral.neutral500} weight="normal">
-            {permohonan.kode_andalalin}
-          </AText>
-        </View>
+        </ADetailView>
 
-        <View style={styles.separator} />
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            padding: 16,
-          }}
+        <ADetailView
+          style={{ marginTop: 20 }}
+          title={"Kategori rencana pembangunan"}
         >
-          <AText size={12} color={color.neutral.neutral900} weight="normal">
-            Lokasi pengambilan
+          <AText
+            style={{ padding: 16 }}
+            size={12}
+            color={color.neutral.neutral900}
+            weight="normal"
+          >
+            {permohonan.kategori}
           </AText>
-          <AText size={12} color={color.neutral.neutral500} weight="normal">
-            {permohonan.lokasi_pengambilan}
-          </AText>
-        </View>
+        </ADetailView>
 
-        <View style={styles.separator} />
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            padding: 16,
-          }}
+        <ADetailView
+          style={{ marginTop: 20 }}
+          title={"Jenis rencana pembangunan"}
         >
-          <AText size={12} color={color.neutral.neutral900} weight="normal">
-            Pemohon
-          </AText>
-          <AText size={12} color={color.neutral.neutral500} weight="normal">
-            {permohonan.nama_pemohon}
-          </AText>
-        </View>
-
-        <View style={styles.separator} />
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            padding: 16,
-          }}
-        >
-          <AText size={12} color={color.neutral.neutral900} weight="normal">
-            Perusahaan
-          </AText>
-          <AText size={12} color={color.neutral.neutral500} weight="normal">
-            {permohonan.nama_perusahaan}
-          </AText>
-        </View>
-        <View style={styles.separator} />
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            padding: 16,
-          }}
-        >
-          <AText size={12} color={color.neutral.neutral900} weight="normal">
-            Jenis Rencana Pembangunan
-          </AText>
-          <AText size={12} color={color.neutral.neutral500} weight="normal">
+          <AText
+            style={{ padding: 16 }}
+            size={12}
+            color={color.neutral.neutral900}
+            weight="normal"
+          >
             {permohonan.jenis_rencana_pembangunan}
           </AText>
-        </View>
+        </ADetailView>
 
-        <View style={styles.separator} />
+        <ADetailView style={{ marginTop: 20 }} title={"Informasi"}>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: 14,
+            }}
+          >
+            <AText size={12} color={color.neutral.neutral900} weight="normal">
+              Status
+            </AText>
+            <AText
+              style={{
+                backgroundColor: status(),
+                paddingHorizontal: 8,
+                paddingVertical: 2,
+                borderRadius: 15,
+              }}
+              size={12}
+              color={statusText()}
+              weight="normal"
+            >
+              {permohonan.status_andalalin}
+            </AText>
+          </View>
+
+          <View style={styles.separator} />
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: 16,
+            }}
+          >
+            <AText size={12} color={color.neutral.neutral900} weight="normal">
+              Tanggal
+            </AText>
+            <AText size={12} color={color.neutral.neutral500} weight="normal">
+              {permohonan.tanggal_andalalin}
+            </AText>
+          </View>
+
+          <View style={styles.separator} />
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: 16,
+            }}
+          >
+            <AText size={12} color={color.neutral.neutral900} weight="normal">
+              Kode Registrasi
+            </AText>
+            <AText size={12} color={color.neutral.neutral500} weight="normal">
+              {permohonan.kode_andalalin}
+            </AText>
+          </View>
+
+          <View style={styles.separator} />
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: 16,
+            }}
+          >
+            <AText size={12} color={color.neutral.neutral900} weight="normal">
+              Lokasi pengambilan
+            </AText>
+            <AText size={12} color={color.neutral.neutral500} weight="normal">
+              {permohonan.lokasi_pengambilan}
+            </AText>
+          </View>
+
+          <View style={styles.separator} />
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: 16,
+            }}
+          >
+            <AText size={12} color={color.neutral.neutral900} weight="normal">
+              Pemohon
+            </AText>
+            <AText size={12} color={color.neutral.neutral500} weight="normal">
+              {permohonan.nama_pemohon}
+            </AText>
+          </View>
+
+          <View style={styles.separator} />
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: 16,
+            }}
+          >
+            <AText size={12} color={color.neutral.neutral900} weight="normal">
+              Perusahaan
+            </AText>
+            <AText size={12} color={color.neutral.neutral500} weight="normal">
+              {permohonan.nama_perusahaan}
+            </AText>
+          </View>
+
+          <View style={styles.separator} />
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: 16,
+            }}
+          >
+            <AText size={12} color={color.neutral.neutral900} weight="normal">
+              Luas lahan
+            </AText>
+            <AText size={12} color={color.neutral.neutral500} weight="normal">
+              {permohonan.luas_lahan}
+            </AText>
+          </View>
+        </ADetailView>
+
+        <ADetailView style={{ marginTop: 20 }} title={"Berkas"}>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: 16,
+            }}
+          >
+            <AText size={12} color={color.neutral.neutral900} weight="normal">
+              Tanda terima pendaftaran
+            </AText>
+
+            <Pressable
+              style={{ flexDirection: "row", paddingLeft: 4 }}
+              onPress={() => {
+                navigation.push("PDF", {
+                  title: "Tanda terima",
+                  pdf: permohonan.tanda_terima_pendaftaran,
+                });
+              }}
+            >
+              <AText
+                size={14}
+                color={color.neutral.neutral700}
+                weight="semibold"
+              >
+                Lihat
+              </AText>
+            </Pressable>
+          </View>
+          <View style={styles.separator} />
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: 16,
+            }}
+          >
+            <AText size={12} color={color.neutral.neutral900} weight="normal">
+              Kartu tanda penduduk
+            </AText>
+
+            <Pressable
+              style={{ flexDirection: "row", paddingLeft: 4 }}
+              onPress={() => {
+                navigation.push("PDF", {
+                  title: "Kartu tanda penduduk",
+                  pdf: permohonan.ktp,
+                });
+              }}
+            >
+              <AText
+                size={14}
+                color={color.neutral.neutral700}
+                weight="semibold"
+              >
+                Lihat
+              </AText>
+            </Pressable>
+          </View>
+          <View style={styles.separator} />
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: 16,
+            }}
+          >
+            <AText size={12} color={color.neutral.neutral900} weight="normal">
+              Akta pendirian badan
+            </AText>
+
+            <Pressable
+              style={{ flexDirection: "row", paddingLeft: 4 }}
+              onPress={() => {
+                navigation.push("PDF", {
+                  title: "Akta",
+                  pdf: permohonan.akta_pendirian_badan,
+                });
+              }}
+            >
+              <AText
+                size={14}
+                color={color.neutral.neutral700}
+                weight="semibold"
+              >
+                Lihat
+              </AText>
+            </Pressable>
+          </View>
+          <View style={styles.separator} />
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: 16,
+            }}
+          >
+            <AText size={12} color={color.neutral.neutral900} weight="normal">
+              Surat kuasa
+            </AText>
+
+            <Pressable
+              style={{ flexDirection: "row", paddingLeft: 4 }}
+              onPress={() => {
+                navigation.push("PDF", {
+                  title: "Surat kuasa",
+                  pdf: permohonan.surat_kuasa,
+                });
+              }}
+            >
+              <AText
+                size={14}
+                color={color.neutral.neutral700}
+                weight="semibold"
+              >
+                Lihat
+              </AText>
+            </Pressable>
+          </View>
+
+          {permohonan.persyaratan_tambahan != null
+            ? permohonan.persyaratan_tambahan.map((item, index) => (
+                <View key={index}>
+                  <View style={styles.separator} />
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      padding: 16,
+                    }}
+                  >
+                    <AText
+                      size={12}
+                      color={color.neutral.neutral900}
+                      weight="normal"
+                    >
+                      {item.Persyaratan}
+                    </AText>
+
+                    <Pressable
+                      style={{ flexDirection: "row", paddingLeft: 4 }}
+                      onPress={() => {
+                        navigation.push("PDF", {
+                          title: item.Persyaratan,
+                          pdf: item.Berkas,
+                        });
+                      }}
+                    >
+                      <AText
+                        size={14}
+                        color={color.neutral.neutral700}
+                        weight="semibold"
+                      >
+                        Lihat
+                      </AText>
+                    </Pressable>
+                  </View>
+                </View>
+              ))
+            : ""}
+        </ADetailView>
+      </View>
+    );
+  };
+
+  const perlalin = () => {
+    return (
+      <View>
+        <ADetailView title={"Jenis permohonan"}>
+          <AText
+            style={{ padding: 16 }}
+            size={12}
+            color={color.neutral.neutral900}
+            weight="normal"
+          >
+            {permohonan.jenis_andalalin}
+          </AText>
+        </ADetailView>
+
+        <ADetailView style={{ marginTop: 20 }} title={"Jenis kegiatan"}>
+          <AText
+            style={{ padding: 16 }}
+            size={12}
+            color={color.neutral.neutral900}
+            weight="normal"
+          >
+            {permohonan.jenis_kegiatan}
+          </AText>
+        </ADetailView>
+
+        <ADetailView style={{ marginTop: 20 }} title={"Peruntukan"}>
+          <AText
+            style={{ padding: 16 }}
+            size={12}
+            color={color.neutral.neutral900}
+            weight="normal"
+          >
+            {permohonan.peruntukan}
+          </AText>
+        </ADetailView>
+
+        <ADetailView
+          style={{ marginTop: 20 }}
+          title={"Kategori perlengkapan lalu lintas"}
+        >
+          <AText
+            style={{ padding: 16 }}
+            size={12}
+            color={color.neutral.neutral900}
+            weight="normal"
+          >
+            {permohonan.kategori}
+          </AText>
+        </ADetailView>
+
+        <ADetailView
+          style={{ marginTop: 20 }}
+          title={"Jenis perlengkapan lalu lintas"}
+        >
+          <AText
+            style={{ padding: 16 }}
+            size={12}
+            color={color.neutral.neutral900}
+            weight="normal"
+          >
+            {permohonan.jenis_rencana_pembangunan}
+          </AText>
+        </ADetailView>
+
+        <ADetailView style={{ marginTop: 20 }} title={"Informasi"}>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: 14,
+            }}
+          >
+            <AText size={12} color={color.neutral.neutral900} weight="normal">
+              Status
+            </AText>
+            <AText
+              style={{
+                backgroundColor: status(),
+                paddingHorizontal: 8,
+                paddingVertical: 2,
+                borderRadius: 15,
+              }}
+              size={12}
+              color={statusText()}
+              weight="normal"
+            >
+              {permohonan.status_andalalin}
+            </AText>
+          </View>
+
+          <View style={styles.separator} />
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: 16,
+            }}
+          >
+            <AText size={12} color={color.neutral.neutral900} weight="normal">
+              Tanggal
+            </AText>
+            <AText size={12} color={color.neutral.neutral500} weight="normal">
+              {permohonan.tanggal_andalalin}
+            </AText>
+          </View>
+
+          <View style={styles.separator} />
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: 16,
+            }}
+          >
+            <AText size={12} color={color.neutral.neutral900} weight="normal">
+              Kode Registrasi
+            </AText>
+            <AText size={12} color={color.neutral.neutral500} weight="normal">
+              {permohonan.kode_andalalin}
+            </AText>
+          </View>
+
+          <View style={styles.separator} />
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: 16,
+            }}
+          >
+            <AText size={12} color={color.neutral.neutral900} weight="normal">
+              Lokasi pengambilan
+            </AText>
+            <AText size={12} color={color.neutral.neutral500} weight="normal">
+              {permohonan.lokasi_pengambilan}
+            </AText>
+          </View>
+
+          <View style={styles.separator} />
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: 16,
+            }}
+          >
+            <AText size={12} color={color.neutral.neutral900} weight="normal">
+              Pemohon
+            </AText>
+            <AText size={12} color={color.neutral.neutral500} weight="normal">
+              {permohonan.nama_pemohon}
+            </AText>
+          </View>
+
+          <View style={styles.separator} />
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: 16,
+            }}
+          >
+            <AText size={12} color={color.neutral.neutral900} weight="normal">
+              Luas lahan
+            </AText>
+            <AText size={12} color={color.neutral.neutral500} weight="normal">
+              {permohonan.luas_lahan}
+            </AText>
+          </View>
+        </ADetailView>
+
+        <ADetailView style={{ marginTop: 20 }} title={"Berkas"}>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: 16,
+            }}
+          >
+            <AText size={12} color={color.neutral.neutral900} weight="normal">
+              Tanda terima pendaftaran
+            </AText>
+
+            <Pressable
+              style={{ flexDirection: "row", paddingLeft: 4 }}
+              onPress={() => {
+                navigation.push("PDF", {
+                  title: "Tanda terima",
+                  pdf: permohonan.tanda_terima_pendaftaran,
+                });
+              }}
+            >
+              <AText
+                size={14}
+                color={color.neutral.neutral700}
+                weight="semibold"
+              >
+                Lihat
+              </AText>
+            </Pressable>
+          </View>
+          <View style={styles.separator} />
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: 16,
+            }}
+          >
+            <AText size={12} color={color.neutral.neutral900} weight="normal">
+              Kartu tanda penduduk
+            </AText>
+
+            <Pressable
+              style={{ flexDirection: "row", paddingLeft: 4 }}
+              onPress={() => {
+                navigation.push("PDF", {
+                  title: "Kartu tanda penduduk",
+                  pdf: permohonan.ktp,
+                });
+              }}
+            >
+              <AText
+                size={14}
+                color={color.neutral.neutral700}
+                weight="semibold"
+              >
+                Lihat
+              </AText>
+            </Pressable>
+          </View>
+
+          <View style={styles.separator} />
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: 16,
+            }}
+          >
+            <AText size={12} color={color.neutral.neutral900} weight="normal">
+              Surat permohonan
+            </AText>
+
+            <Pressable
+              style={{ flexDirection: "row", paddingLeft: 4 }}
+              onPress={() => {
+                navigation.push("PDF", {
+                  title: "Surat permohonan",
+                  pdf: permohonan.surat_kuasa,
+                });
+              }}
+            >
+              <AText
+                size={14}
+                color={color.neutral.neutral700}
+                weight="semibold"
+              >
+                Lihat
+              </AText>
+            </Pressable>
+          </View>
+          {permohonan.laporan_survei != null ? (
+            <View>
+              <View style={styles.separator} />
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  padding: 16,
+                }}
+              >
+                <AText
+                  size={12}
+                  color={color.neutral.neutral900}
+                  weight="normal"
+                >
+                  Laporan survei
+                </AText>
+
+                <Pressable
+                  style={{ flexDirection: "row", paddingLeft: 4 }}
+                  onPress={() => {
+                    navigation.push("PDF", {
+                      title: "Laporan survei",
+                      pdf: permohonan.laporan_survei,
+                    });
+                  }}
+                >
+                  <AText
+                    size={14}
+                    color={color.neutral.neutral700}
+                    weight="semibold"
+                  >
+                    Lihat
+                  </AText>
+                </Pressable>
+              </View>
+            </View>
+          ) : (
+            ""
+          )}
+
+          {permohonan.persyaratan_tambahan != null
+            ? permohonan.persyaratan_tambahan.map((item, index) => (
+                <View key={index}>
+                  <View style={styles.separator} />
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      padding: 16,
+                    }}
+                  >
+                    <AText
+                      size={12}
+                      color={color.neutral.neutral900}
+                      weight="normal"
+                    >
+                      {item.Persyaratan}
+                    </AText>
+
+                    <Pressable
+                      style={{ flexDirection: "row", paddingLeft: 4 }}
+                      onPress={() => {
+                        navigation.push("PDF", {
+                          title: item.Persyaratan,
+                          pdf: item.Berkas,
+                        });
+                      }}
+                    >
+                      <AText
+                        size={14}
+                        color={color.neutral.neutral700}
+                        weight="semibold"
+                      >
+                        Lihat
+                      </AText>
+                    </Pressable>
+                  </View>
+                </View>
+              ))
+            : ""}
+        </ADetailView>
+
+        {survei()}
+      </View>
+    );
+  };
+
+  const fileLaporan = async () => {
+    const result = await DocumentPicker.getDocumentAsync({
+      type: "application/pdf",
+    });
+    if (!result.canceled) {
+      setLaporanFile(result.assets[0].uri);
+      setLaporanNamaFile(result.assets[0].name);
+    }
+  };
+
+  const laporan_survei = () => {
+    return (
+      <View style={{ height: 250 }}>
+        <AText
+          style={{ paddingBottom: 16 }}
+          size={18}
+          color={color.neutral.neutral700}
+          weight="semibold"
+        >
+          Laporan survei
+        </AText>
+
+        <ATextInputIcon
+          bdColor={color.neutral.neutral300}
+          hint={"Masukkan laporan"}
+          icon={"file-plus"}
+          mult={true}
+          value={laporanNamaFile}
+          maxHeight={90}
+          onPress={() => {
+            fileLaporan();
+          }}
+        />
+
         <View
           style={{
             flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            padding: 16,
+            alignSelf: "flex-end",
+            position: "absolute",
+            bottom: 24,
+            right: 16,
           }}
         >
-          <AText size={12} color={color.neutral.neutral900} weight="normal">
-            Luas lahan
-          </AText>
-          <AText size={12} color={color.neutral.neutral500} weight="normal">
-            {permohonan.luas_lahan}
-          </AText>
-        </View>
-      </ADetailView>
-
-      <ADetailView style={{ marginTop: 20 }} title={"Berkas"}>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            padding: 16,
-          }}
-        >
-          <AText size={12} color={color.neutral.neutral900} weight="normal">
-            Tanda terima pendaftaran
-          </AText>
-
           <Pressable
             style={{ flexDirection: "row", paddingLeft: 4 }}
             onPress={() => {
-              navigation.push("PDF", {
-                title: "Tanda terima",
-                pdf: permohonan.tanda_terima_pendaftaran,
-              });
+              setLaporanFile(null);
+              setLaporanNamaFile(null);
+              setLaporanModal();
             }}
           >
             <AText size={14} color={color.neutral.neutral700} weight="semibold">
-              Lihat
+              Batal
+            </AText>
+          </Pressable>
+          <Pressable
+            style={{ flexDirection: "row", paddingLeft: 4, marginLeft: 32 }}
+            onPress={() => {
+              if (laporanFile != null) {
+                setLaporanModal();
+                toggleLaporanKonfirmasi();
+              }
+            }}
+          >
+            <AText size={14} color={color.neutral.neutral700} weight="semibold">
+              Simpan
             </AText>
           </Pressable>
         </View>
-        <View style={styles.separator} />
+      </View>
+    );
+  };
+
+  const simpan_laporan_survei = () => {
+    andalalinSimpanLaporanSurvei(
+      context.getUser().access_token,
+      permohonan.id_andalalin,
+      laporanFile,
+      (response) => {
+        switch (response.status) {
+          case 201:
+            navigation.replace("Reload Detail", {
+              id: permohonan.id_andalalin,
+            });
+            break;
+          case 424:
+            authRefreshToken(context, (response) => {
+              if (response.status === 200) {
+                simpan_laporan_survei();
+              } else {
+                context.toggleLoading(false);
+              }
+            });
+            break;
+          default:
+            setLaporanFile(null);
+            setLaporanNamaFile(null);
+            context.toggleLoading(false);
+            toggleGagal();
+            break;
+        }
+      }
+    );
+  };
+
+  const keputusan_modal = () => {
+    return (
+      <View style={{ height: 278 }}>
+        <AText
+          style={{ paddingBottom: 16 }}
+          size={18}
+          color={color.neutral.neutral700}
+          weight="semibold"
+        >
+          Pengambilan keputusan hasil permohonan
+        </AText>
+
+        {keputusanLanjut == null ? (
+          <RadioButton.Group onValueChange={(value) => setKeputusan(value)}>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <RadioButton
+                label="Pemasangan disegerakan"
+                value="Pemasangan disegerakan"
+                uncheckedColor={color.neutral.neutral300}
+                color={color.primary.primary600}
+                status={
+                  keputusan === "Pemasangan disegerakan"
+                    ? "checked"
+                    : "unchecked"
+                }
+              />
+              <Pressable
+                onPress={() => {
+                  setKeputusan("Pemasangan disegerakan");
+                }}
+              >
+                <AText
+                  style={{ paddingLeft: 4 }}
+                  size={14}
+                  color={color.neutral.neutral700}
+                >
+                  Pemasangan disegerakan
+                </AText>
+              </Pressable>
+            </View>
+
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                paddingTop: 8,
+              }}
+            >
+              <RadioButton
+                label="Pemasangan ditunda"
+                value="Pemasangan ditunda"
+                uncheckedColor={color.neutral.neutral300}
+                color={color.primary.primary600}
+                status={
+                  keputusan === "Pemasangan ditunda" ? "checked" : "unchecked"
+                }
+              />
+              <Pressable
+                onPress={() => {
+                  setKeputusan("Pemasangan ditunda");
+                }}
+              >
+                <AText
+                  style={{ paddingLeft: 4 }}
+                  size={14}
+                  color={color.neutral.neutral700}
+                >
+                  Pemasangan ditunda
+                </AText>
+              </Pressable>
+            </View>
+          </RadioButton.Group>
+        ) : (
+          <View>
+            <ATextInput
+              bdColor={color.neutral.neutral300}
+              ktype={"default"}
+              hint={"Masukkan pertimbangan"}
+              rtype={"done"}
+              max={4}
+              maxHeight={90}
+              multi={true}
+              value={keputusanKeterangan}
+              onChangeText={(value) => {
+                setKeputusanKeterangan(value);
+              }}
+            />
+          </View>
+        )}
+
         <View
           style={{
             flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            padding: 16,
+            alignSelf: "flex-end",
+            position: "absolute",
+            bottom: 32,
+            right: 16,
           }}
         >
-          <AText size={12} color={color.neutral.neutral900} weight="normal">
-            Kartu tanda penduduk
-          </AText>
-
           <Pressable
             style={{ flexDirection: "row", paddingLeft: 4 }}
             onPress={() => {
-              navigation.push("PDF", { title: "KTP", pdf: permohonan.ktp });
+              setKeputusan(null);
+              setKeputusanLanjut(null);
+              setKeputusan(null);
+              toggleKeputusanModal();
             }}
           >
             <AText size={14} color={color.neutral.neutral700} weight="semibold">
-              Lihat
+              Batal
             </AText>
           </Pressable>
-        </View>
-        <View style={styles.separator} />
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            padding: 16,
-          }}
-        >
-          <AText size={12} color={color.neutral.neutral900} weight="normal">
-            Akta pendirian badan
-          </AText>
-
           <Pressable
-            style={{ flexDirection: "row", paddingLeft: 4 }}
+            style={{ flexDirection: "row", paddingLeft: 4, marginLeft: 32 }}
             onPress={() => {
-              navigation.push("PDF", {
-                title: "Akta",
-                pdf: permohonan.akta_pendirian_badan,
-              });
+              if (keputusanLanjut != null && keputusanKeterangan != null) {
+                toggleKeputusanModal();
+                toggleKeputusanKonfirmasi();
+              }
+              setKeputusanLanjut(keputusan);
             }}
           >
             <AText size={14} color={color.neutral.neutral700} weight="semibold">
-              Lihat
+              Lanjut
             </AText>
           </Pressable>
         </View>
-        <View style={styles.separator} />
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            padding: 16,
-          }}
-        >
-          <AText size={12} color={color.neutral.neutral900} weight="normal">
-            Surat kuasa
-          </AText>
+      </View>
+    );
+  };
 
-          <Pressable
-            style={{ flexDirection: "row", paddingLeft: 4 }}
-            onPress={() => {
-              navigation.push("PDF", {
-                title: "Surat kuasa",
-                pdf: permohonan.surat_kuasa,
-              });
-            }}
-          >
-            <AText size={14} color={color.neutral.neutral700} weight="semibold">
-              Lihat
-            </AText>
-          </Pressable>
-        </View>
-      </ADetailView>
+  const simpan_keputusan = () => {
+    andalalinSimpanKeputusan(
+      context.getUser().access_token,
+      permohonan.id_andalalin,
+      keputusan,
+      keputusanKeterangan,
+      (response) => {
+        switch (response.status) {
+          case 200:
+            navigation.replace("Reload Detail", {
+              id: permohonan.id_andalalin,
+            });
+            break;
+          case 424:
+            authRefreshToken(context, (response) => {
+              if (response.status === 200) {
+                simpan_keputusan();
+              } else {
+                context.toggleLoading(false);
+              }
+            });
+            break;
+          default:
+            setKeputusanKeterangan(null);
+            setKeputusan(null);
+            setKeputusanLanjut(null);
+            context.toggleLoading(false);
+            toggleGagal();
+            break;
+        }
+      }
+    );
+  };
 
-      {survei()}
+  return (
+    <View>
+      {permohonan.jenis_andalalin == "Dokumen analisa dampak lalu lintas"
+        ? andalalin()
+        : perlalin()}
       {bap()}
       {persetujuan_dokumen()}
       {sk()}
       <ADetailView
-        style={{ marginTop: 20, marginBottom: 20 }}
+        style={{ marginTop: 20, marginBottom: 32 }}
         title={"Lanjutan"}
       >
         <View
@@ -1219,12 +2295,18 @@ function DetailNonUser({ permohonan, navigation }) {
           </Pressable>
         </View>
       </ADetailView>
-      <View style={{ marginBottom: 50 }}>{button()}</View>
+      {permohonan.jenis_andalalin == "Dokumen analisa dampak lalu lintas"
+        ? buttonAndalalin()
+        : buttonPerlalin()}
       <ABottomSheet visible={persyaratanModal}>{persyaratan()}</ABottomSheet>
 
       <ABottomSheet visible={persetujuanModal}>{persetujuan()}</ABottomSheet>
 
       <ABottomSheet visible={skModal}>{pembuatan_sk()}</ABottomSheet>
+
+      <ABottomSheet visible={laporanModal}>{laporan_survei()}</ABottomSheet>
+
+      <ABottomSheet visible={keputusanModal}>{keputusan_modal()}</ABottomSheet>
 
       <ADialog
         title={"Menyimpan gagal"}
@@ -1289,15 +2371,50 @@ function DetailNonUser({ permohonan, navigation }) {
         btnBATAL={"Batal"}
         onPressBATALButton={() => {
           toggleKonformasiSK();
-          setSKModal();
           setFileSK(null);
           setNamaFileSK(null);
         }}
         onPressOKButton={() => {
           toggleKonformasiSK();
-          setSKModal();
           context.toggleLoading(true);
           simpan_sk();
+        }}
+      />
+
+      <AConfirmationDialog
+        title={"Simpan"}
+        desc={"Apakah Anda yakin ingin simpan laporan survei?"}
+        visibleModal={laporanKonfirmasi}
+        btnOK={"Simpan"}
+        btnBATAL={"Batal"}
+        onPressBATALButton={() => {
+          toggleLaporanKonfirmasi();
+          setLaporanFile(null);
+          setLaporanNamaFile(null);
+        }}
+        onPressOKButton={() => {
+          toggleLaporanKonfirmasi();
+          context.toggleLoading(true);
+          simpan_laporan_survei();
+        }}
+      />
+
+      <AConfirmationDialog
+        title={"Simpan"}
+        desc={"Apakah Anda yakin ingin simpan keputusan hasil?"}
+        visibleModal={keputusanKonfirmasi}
+        btnOK={"Simpan"}
+        btnBATAL={"Batal"}
+        onPressBATALButton={() => {
+          toggleKeputusanKonfirmasi();
+          setKeputusanKeterangan(null);
+          setKeputusan(null);
+          setKeputusanLanjut(null);
+        }}
+        onPressOKButton={() => {
+          toggleKeputusanKonfirmasi();
+          context.toggleLoading(true);
+          simpan_keputusan();
         }}
       />
     </View>

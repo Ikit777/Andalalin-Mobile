@@ -1,5 +1,10 @@
 import React from "react";
-import { StyleSheet, View, KeyboardAvoidingView } from "react-native";
+import {
+  StyleSheet,
+  View,
+  KeyboardAvoidingView,
+  Dimensions
+} from "react-native";
 import color from "../../constants/color";
 import Modal from "react-native-modal";
 
@@ -8,8 +13,10 @@ function ABottomSheet({ visible, children }) {
     <Modal
       isVisible={visible}
       style={styles.view}
-      statusBarTranslucent
       backdropOpacity={0.5}
+      statusBarTranslucent    
+      coverScreen={true}
+      deviceHeight={Dimensions.get('screen').height}
       backdropTransitionOutTiming={0}
     >
       <KeyboardAvoidingView behavior={"padding"}>

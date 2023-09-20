@@ -1,38 +1,34 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-import SurveiItem from "./SurveiItem";
+import PerlalinItem from "./PerlalinItem";
 
 const Stack = createNativeStackNavigator();
 
 /* A navigator for the exercises that will take the current exercise and passed it the exercise item */
-const SurveiNavigator = ({ index, id, kondisi }) => {
+const PerlalinNavigator = ({ index }) => {
   return (
     <Stack.Navigator
-      initialRouteName="SurveiItem"
+      initialRouteName="PerlalinItem"
       screenOptions={{ headerShown: false, animation: "slide_from_right" }}
     >
       <Stack.Screen
-        name="SurveiItem"
-        component={SurveiItem}
+        name="PerlalinItem"
+        component={PerlalinItem}
         initialParams={{
           index,
-          id,
-          kondisi,
         }}
       />
       <Stack.Screen
         name="Back"
-        component={SurveiItem}
+        component={PerlalinItem}
         options={{ animation: "slide_from_left" }}
         initialParams={{
           index,
-          id,
-          kondisi,
         }}
       />
     </Stack.Navigator>
   );
 };
 
-export default SurveiNavigator;
+export default PerlalinNavigator;

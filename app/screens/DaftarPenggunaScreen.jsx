@@ -46,18 +46,22 @@ function DaftarPenggunaScreen({ navigation }) {
   const [hapusModal, toggleHapusModal] = useStateToggler();
 
   useEffect(() => {
-    BackHandler.addEventListener("hardwareBackPress", () => {
-      setProgressViewOffset(-1000);
-      navigation.goBack();
-      return true;
+    const unsubscribe = navigation.addListener("focus", () => {
+      BackHandler.addEventListener("hardwareBackPress", () => {
+        setProgressViewOffset(-1000);
+        navigation.goBack();
+        return true;
+      });
+  
+      return BackHandler.removeEventListener("hardwareBackPress", () => {
+        setProgressViewOffset(-1000);
+        navigation.goBack();
+        return true;
+      });
     });
 
-    return BackHandler.removeEventListener("hardwareBackPress", () => {
-      setProgressViewOffset(-1000);
-      navigation.goBack();
-      return true;
-    });
-  }, []);
+    return unsubscribe;
+  }, [navigation]);
 
   useEffect(() => {
     context.toggleLoading(true);
@@ -70,12 +74,15 @@ function DaftarPenggunaScreen({ navigation }) {
         case 200:
           (async () => {
             const result = await response.json();
+            const user = result.data.filter((item) => {
+              return item.role !== "Super Admin";
+            });
             if (result.results == 0) {
               setDataOn(true);
               context.toggleLoading(false);
             } else {
-              setPengguna(result.data);
-              setPenggunaDefault(result.data);
+              setPengguna(user);
+              setPenggunaDefault(user);
               setDataOn(false);
               context.toggleLoading(false);
             }
@@ -165,7 +172,13 @@ function DaftarPenggunaScreen({ navigation }) {
   return (
     <AScreen style={{ minHeight: Math.round(windowHeight) }}>
       <View style={styles.header}>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            paddingVertical: 8,
+          }}
+        >
           <ABackButton
             onPress={() => {
               setProgressViewOffset(-1000);
@@ -173,7 +186,7 @@ function DaftarPenggunaScreen({ navigation }) {
             }}
           />
           <AText
-            style={{ paddingLeft: 8 }}
+            style={{ paddingLeft: 4}}
             size={24}
             color={color.neutral.neutral900}
             weight="normal"
@@ -330,6 +343,31 @@ function DaftarPenggunaScreen({ navigation }) {
         )}
       </View>
 
+      {pengguna != null || dataOn ? (
+        <Pressable
+          style={{
+            shadowColor: "rgba(0, 0, 0, 0.30)",
+            elevation: 8,
+            borderRadius: 16,
+            overflow: "hidden",
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: color.primary.primary100,
+            position: "absolute",
+            bottom: 64,
+            right: 16,
+            padding: 16,
+          }}
+          onPress={() => {
+            navigation.push("Tambah User")
+          }}
+        >
+          <Feather name="plus" size={24} color={color.neutral.neutral900} />
+        </Pressable>
+      ) : (
+        ""
+      )}
+
       <ABottomSheet visible={hapusModal}>
         <View>
           <View
@@ -445,12 +483,10 @@ function DaftarPenggunaScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  header: {
-    paddingTop: 16,
-    height: 64,
-  },
+  header: {},
   content: {
-    padding: 16,
+    paddingHorizontal: 16,
+    paddingBottom: 16,
     flex: 1,
   },
   searchInput: {

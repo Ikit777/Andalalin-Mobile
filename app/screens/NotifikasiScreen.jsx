@@ -18,7 +18,6 @@ import { UserContext } from "../context/UserContext";
 import { authRefreshToken } from "../api/auth";
 import { useStateToggler } from "../hooks/useUtility";
 import ADialog from "../component/utility/ADialog";
-import { MaterialIcons } from "@expo/vector-icons";
 import AConfirmationDialog from "../component/utility/AConfirmationDialog";
 
 function NotifikasiScreen({ navigation }) {
@@ -120,7 +119,13 @@ function NotifikasiScreen({ navigation }) {
   return (
     <AScreen>
       <View style={styles.header}>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            paddingVertical: 8,
+          }}
+        >
           <ABackButton
             onPress={() => {
               setProgressViewOffset(-1000);
@@ -128,7 +133,7 @@ function NotifikasiScreen({ navigation }) {
             }}
           />
           <AText
-            style={{ paddingLeft: 8 }}
+            style={{ paddingLeft: 4}}
             size={24}
             color={color.neutral.neutral900}
             weight="normal"
@@ -143,8 +148,8 @@ function NotifikasiScreen({ navigation }) {
               toggleComfirmasi();
             }}
           >
-            <MaterialIcons
-              name="clear"
+            <Feather
+              name="x"
               size={28}
               color={color.neutral.neutral900}
             />
@@ -261,15 +266,12 @@ function NotifikasiScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   header: {
-    paddingTop: 16,
-    height: 64,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
   },
   content: {
     paddingHorizontal: 16,
-    paddingTop: 16,
     flex: 1,
   },
 });

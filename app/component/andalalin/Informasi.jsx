@@ -4,7 +4,7 @@ import AText from "../utility/AText";
 import color from "../../constants/color";
 import AButton from "../utility/AButton";
 
-function Informasi({ navigation, onPress }) {
+function Informasi({ navigation, onPress, kondisi }) {
   return (
     <View style={styles.content}>
       <AText size={24} weight="semibold" color={color.neutral.neutral900}>
@@ -23,8 +23,8 @@ function Informasi({ navigation, onPress }) {
         size={16}
         color={color.neutral.neutral500}
       >
-        Sebelum melakukan Pengisian data, pastikan koneksi pada perangkat Anda
-        berjalan dengan baik.
+        Pastikan juga Anda telah melengkapi dokumen persyaratan yang bisa di
+        lihat di bawah ini agar pengisian berjalan lancar.
       </AText>
 
       <AButton
@@ -37,7 +37,12 @@ function Informasi({ navigation, onPress }) {
         title={"Lihat persyaratan"}
         mode="text"
         onPress={() => {
-          navigation.push("Ketentuan", {kondisi: "Pengajuan andalalin"})
+          if(kondisi == "Andalalin"){
+            navigation.push("Ketentuan", { kondisi: "Pengajuan andalalin" });
+          }else{
+            navigation.push("Ketentuan", { kondisi: "Pengajuan perlalin" });
+          }
+          
         }}
       />
 

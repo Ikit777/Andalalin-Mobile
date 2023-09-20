@@ -35,6 +35,7 @@ function AJenisDropdown({ hint, padding, bdColor, children }) {
           borderRadius: 8,
           borderColor: bdColor,
           backgroundColor: color.text.white,
+          alignItems: "center"
         }}
         onPress={() => {
           toggleView();

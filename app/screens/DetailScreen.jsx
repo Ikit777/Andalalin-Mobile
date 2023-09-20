@@ -60,11 +60,37 @@ function DetailScreen({ navigation, route }) {
         break;
       case "Admin":
         if (data.status_andalalin == "Permohonan selesai") {
+        } else {
+        }
+
+        switch (data.status_andalalin) {
+          case "Permohonan selesai":
+            navigation.replace("Back Daftar", { kondisi: "Selesai" });
+            break;
+          default:
+            if (data.jenis_andalalin == "Dokumen analisa dampak lalu lintas") {
+              navigation.replace("Back Daftar", { kondisi: "Persetujuan" });
+            } else {
+              navigation.replace("Back Daftar", { kondisi: "Keputusan" });
+            }
+
+            break;
+        }
+
+        break;
+      case "Dinas Perhubungan":
+        if (data.status_andalalin == "Permohonan selesai") {
           navigation.replace("Back Daftar", { kondisi: "Selesai" });
         } else {
-          navigation.replace("Back Daftar", { kondisi: "Persetujuan" });
+          navigation.replace("Back Daftar", { kondisi: "Berlangsung" });
         }
-        
+        break;
+      case "Super Admin":
+        if (data.status_andalalin == "Permohonan selesai") {
+          navigation.replace("Back Daftar", { kondisi: "Selesai" });
+        } else {
+          navigation.replace("Back Daftar", { kondisi: "Diajukan" });
+        }
         break;
     }
   };
@@ -84,6 +110,12 @@ function DetailScreen({ navigation, route }) {
         loadPermohonan();
         break;
       case "Admin":
+        loadPermohonan();
+        break;
+      case "Dinas Perhubungan":
+        loadPermohonan();
+        break;
+      case "Super Admin":
         loadPermohonan();
         break;
     }
@@ -130,6 +162,10 @@ function DetailScreen({ navigation, route }) {
         return <DetailNonUser permohonan={data} navigation={navigation} />;
       case "Admin":
         return <DetailNonUser permohonan={data} navigation={navigation} />;
+      case "Dinas Perhubungan":
+        return <DetailNonUser permohonan={data} navigation={navigation} />;
+      case "Super Admin":
+        return <DetailNonUser permohonan={data} navigation={navigation} />;
     }
   };
 
@@ -142,6 +178,10 @@ function DetailScreen({ navigation, route }) {
       case "Petugas":
         return "Detail permohonan";
       case "Admin":
+        return "Detail permohonan";
+      case "Dinas Perhubungan":
+        return "Detail permohonan";
+      case "Super Admin":
         return "Detail permohonan";
     }
   };
@@ -164,6 +204,12 @@ function DetailScreen({ navigation, route }) {
         case "Admin":
           loadPermohonan();
           break;
+        case "Dinas Perhubungan":
+          loadPermohonan();
+          break;
+        case "Super Admin":
+          loadPermohonan();
+          break;
       }
     }, 50);
   }, []);
@@ -171,7 +217,13 @@ function DetailScreen({ navigation, route }) {
   return (
     <AScreen>
       <View style={styles.header}>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            paddingVertical: 8,
+          }}
+        >
           <ABackButton
             onPress={() => {
               setProgressViewOffset(-5000);
@@ -179,7 +231,7 @@ function DetailScreen({ navigation, route }) {
             }}
           />
           <AText
-            style={{ paddingLeft: 8 }}
+            style={{ paddingLeft: 4 }}
             size={24}
             color={color.neutral.neutral900}
             weight="normal"
@@ -218,13 +270,10 @@ function DetailScreen({ navigation, route }) {
 }
 
 const styles = StyleSheet.create({
-  header: {
-    paddingTop: 16,
-    height: 64,
-  },
+  header: {},
   content: {
     flex: 1,
-    padding: 16,
+    paddingHorizontal: 16,
   },
 });
 

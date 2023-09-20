@@ -21,11 +21,14 @@ import { authRefreshToken } from "../api/auth";
 import { userMe } from "../api/user";
 import ExitApp from "react-native-exit-app";
 import { useFocusEffect } from "@react-navigation/native";
+import { masterAndalalin } from "../api/master";
+import { remove } from "../utils/local-storage";
 
 function HomeScreen({ navigation }) {
   const context = useContext(UserContext);
   const [confirm, toggleComfirm] = useStateToggler();
   const [error, toggleError] = useStateToggler();
+  const [gagal, toggleGagal] = useStateToggler();
 
   useEffect(() => {
     navigation.addListener("beforeRemove", (e) => {
@@ -59,14 +62,14 @@ function HomeScreen({ navigation }) {
     switch (context.getUser().role) {
       case "User":
         return (
-          <View style={{ paddingBottom: 40 }}>
+          <View style={{ paddingBottom: 32 }}>
             <AMenuCard
               style={{ marginBottom: 20 }}
               icon={"clipboard"}
               title={"Andalalin"}
               desc={"Ajukan permohonan untuk pelaksanaan andalalin"}
               onPress={() => {
-                navigation.push("Andalalin");
+                navigation.push("Andalalin", { kondisi: "Andalalin" });
                 context.clear();
                 context.setIndex(1);
               }}
@@ -74,10 +77,15 @@ function HomeScreen({ navigation }) {
             <AMenuCard
               style={{ marginBottom: 20 }}
               icon={"alert-triangle"}
-              title={"Rambu lalu lintas"}
+              title={"Perlengkapan lalu lintas"}
               desc={
-                "Ajukan permohonan untuk pelaksanaan pengadaan rambu lalu lintas"
+                "Ajukan permohonan untuk pelaksanaan pengadaan perlengkapan lalu lintas"
               }
+              onPress={() => {
+                navigation.push("Andalalin", { kondisi: "Perlalin" });
+                context.clear();
+                context.setIndex(1);
+              }}
             />
             <AMenuCard
               style={{ marginBottom: 20 }}
@@ -92,7 +100,7 @@ function HomeScreen({ navigation }) {
         );
       case "Operator":
         return (
-          <View style={{ paddingBottom: 40 }}>
+          <View style={{ paddingBottom: 32 }}>
             <AMenuCard
               style={{ marginBottom: 20 }}
               icon={"list"}
@@ -115,17 +123,32 @@ function HomeScreen({ navigation }) {
 
             <AMenuCard
               style={{ marginBottom: 20 }}
+              icon={"list"}
+              title={"Daftar survei lapangan mandiri"}
+              desc={
+                "Daftar survei lapangan mandiri yang dilakukan oleh pertugas"
+              }
+              onPress={() => {
+                navigation.push("Daftar", { kondisi: "Mandiri" });
+              }}
+            />
+
+            <AMenuCard
+              style={{ marginBottom: 20 }}
               icon={"clipboard"}
               title={"Survei kepuasan masyarakat"}
               desc={
                 "Daftar survei kepuasan yang dilakukan masyarakat terhadap aplikasi"
               }
+              onPress={() => {
+                navigation.push("Kepuasan");
+              }}
             />
           </View>
         );
       case "Petugas":
         return (
-          <View style={{ paddingBottom: 40 }}>
+          <View style={{ paddingBottom: 32 }}>
             <AMenuCard
               style={{ marginBottom: 20 }}
               icon={"map-pin"}
@@ -144,11 +167,44 @@ function HomeScreen({ navigation }) {
                 navigation.push("Daftar", { kondisi: "Daftar" });
               }}
             />
+            <AMenuCard
+              style={{ marginBottom: 20 }}
+              icon={"map-pin"}
+              title={"Survei lapangan mandiri"}
+              desc={
+                "Daftar survei lapangan mandiri yang dilakukan oleh pertugas"
+              }
+              onPress={() => {
+                navigation.push("Survei", { kondisi: "Mandiri" });
+              }}
+            />
+            <AMenuCard
+              style={{ marginBottom: 20 }}
+              icon={"list"}
+              title={"Daftar survei lapangan mandiri"}
+              desc={
+                "Daftar survei lapangan mandiri yang dilakukan oleh pertugas"
+              }
+              onPress={() => {
+                navigation.push("Daftar", { kondisi: "Mandiri" });
+              }}
+            />
+            <AMenuCard
+              style={{ marginBottom: 20 }}
+              icon={"clipboard"}
+              title={"Survei kepuasan masyarakat"}
+              desc={
+                "Daftar survei kepuasan yang dilakukan masyarakat terhadap aplikasi"
+              }
+              onPress={() => {
+                navigation.push("Kepuasan");
+              }}
+            />
           </View>
         );
       case "Super Admin":
         return (
-          <View style={{ paddingBottom: 40 }}>
+          <View style={{ paddingBottom: 32 }}>
             <AMenuCard
               style={{ marginBottom: 20 }}
               icon={"list"}
@@ -167,11 +223,16 @@ function HomeScreen({ navigation }) {
                 navigation.push("Tambah User");
               }}
             />
-          </View>
-        );
-      case "Admin":
-        return (
-          <View style={{ paddingBottom: 40 }}>
+            <AMenuCard
+              style={{ marginBottom: 20 }}
+              icon={"list"}
+              title={"Daftar permohonan"}
+              desc={"Daftar permohonan yang telah diajukan"}
+              onPress={() => {
+                navigation.push("Daftar", { kondisi: "Diajukan" });
+              }}
+            />
+
             <AMenuCard
               style={{ marginBottom: 20 }}
               icon={"list"}
@@ -179,18 +240,6 @@ function HomeScreen({ navigation }) {
               desc={"Daftar permohonan yang telah selesai"}
               onPress={() => {
                 navigation.push("Daftar", { kondisi: "Selesai" });
-              }}
-            />
-
-            <AMenuCard
-              style={{ marginBottom: 20 }}
-              icon={"check-square"}
-              title={"Persetujuan dokumen"}
-              desc={
-                "Persetujuan dokumen terhadap permohonan yang telah di ajukan"
-              }
-              onPress={() => {
-                navigation.push("Daftar", { kondisi: "Persetujuan" });
               }}
             />
 
@@ -218,13 +267,145 @@ function HomeScreen({ navigation }) {
 
             <AMenuCard
               style={{ marginBottom: 20 }}
+              icon={"map-pin"}
+              title={"Survei lapangan"}
+              desc={"Pengisian data survei lapangan permohonan"}
+              onPress={() => {
+                navigation.push("Daftar", { kondisi: "Survei" });
+              }}
+            />
+
+            <AMenuCard
+              style={{ marginBottom: 20 }}
+              icon={"map-pin"}
+              title={"Survei lapangan mandiri"}
+              desc={
+                "Daftar survei lapangan mandiri yang dilakukan oleh pertugas"
+              }
+              onPress={() => {
+                navigation.push("Survei", { kondisi: "Mandiri" });
+              }}
+            />
+
+            <AMenuCard
+              style={{ marginBottom: 20 }}
+              icon={"list"}
+              title={"Daftar survei lapangan mandiri"}
+              desc={
+                "Daftar survei lapangan mandiri yang dilakukan oleh pertugas"
+              }
+              onPress={() => {
+                navigation.push("Daftar", { kondisi: "Mandiri" });
+              }}
+            />
+            <AMenuCard
+              style={{ marginBottom: 20 }}
               icon={"edit"}
               title={"Pengelolaan produk"}
               desc={
                 "Pengelolaan produk yang diterapkan pada aplikasi andalalin"
               }
               onPress={() => {
-                navigation.push("Pengelolaan");
+                if (context.dataMaster != "master") {
+                  navigation.push("Pengelolaan");
+                }
+              }}
+            />
+            <AMenuCard
+              style={{ marginBottom: 20 }}
+              icon={"clipboard"}
+              title={"Survei kepuasan masyarakat"}
+              desc={
+                "Daftar survei kepuasan yang dilakukan masyarakat terhadap aplikasi"
+              }
+              onPress={() => {
+                navigation.push("Kepuasan");
+              }}
+            />
+          </View>
+        );
+      case "Admin":
+        return (
+          <View style={{ paddingBottom: 32 }}>
+            <AMenuCard
+              style={{ marginBottom: 20 }}
+              icon={"list"}
+              title={"Daftar permohonan selesai"}
+              desc={"Daftar permohonan yang telah selesai"}
+              onPress={() => {
+                navigation.push("Daftar", { kondisi: "Selesai" });
+              }}
+            />
+
+            <AMenuCard
+              style={{ marginBottom: 20 }}
+              icon={"check-square"}
+              title={"Persetujuan dokumen"}
+              desc={
+                "Persetujuan dokumen terhadap permohonan yang telah di ajukan"
+              }
+              onPress={() => {
+                navigation.push("Daftar", { kondisi: "Persetujuan" });
+              }}
+            />
+
+            <AMenuCard
+              style={{ marginBottom: 20 }}
+              icon={"check-circle"}
+              title={"Pengambilan keputusan hasil"}
+              desc={
+                "Pengambilan keputusan terhadap hasil permohonan perlengkapan lalu lintas yang telah di ajukan"
+              }
+              onPress={() => {
+                navigation.push("Daftar", { kondisi: "Keputusan" });
+              }}
+            />
+
+            <AMenuCard
+              style={{ marginBottom: 20 }}
+              icon={"paperclip"}
+              title={"Pengawasan tiket"}
+              desc={
+                "Pengawasan tiket bertujuan untuk menindaklanjuti usulan tindakan terhadap pelaksanaan survei lapangan"
+              }
+              onPress={() => {
+                navigation.push("Daftar", { kondisi: "Pengawasan" });
+              }}
+            />
+
+            <AMenuCard
+              style={{ marginBottom: 20 }}
+              icon={"archive"}
+              title={"Lanjutkan pelaksanaan survei"}
+              desc={"Melanjutkan pelaksanaan survei lapangan yang ditunda"}
+              onPress={() => {
+                navigation.push("Daftar", { kondisi: "Tertunda" });
+              }}
+            />
+
+            <AMenuCard
+              style={{ marginBottom: 20 }}
+              icon={"list"}
+              title={"Daftar survei lapangan mandiri"}
+              desc={
+                "Daftar survei lapangan mandiri yang dilakukan oleh pertugas"
+              }
+              onPress={() => {
+                navigation.push("Daftar", { kondisi: "Mandiri" });
+              }}
+            />
+
+            <AMenuCard
+              style={{ marginBottom: 20 }}
+              icon={"edit"}
+              title={"Pengelolaan produk"}
+              desc={
+                "Pengelolaan produk yang diterapkan pada aplikasi andalalin"
+              }
+              onPress={() => {
+                if (context.dataMaster != "master") {
+                  navigation.push("Pengelolaan");
+                }
               }}
             />
 
@@ -235,6 +416,57 @@ function HomeScreen({ navigation }) {
               desc={
                 "Daftar survei kepuasan yang dilakukan masyarakat terhadap aplikasi"
               }
+              onPress={() => {
+                navigation.push("Kepuasan");
+              }}
+            />
+          </View>
+        );
+      case "Dinas Perhubungan":
+        return (
+          <View style={{ paddingBottom: 32 }}>
+            <AMenuCard
+              style={{ marginBottom: 20 }}
+              icon={"list"}
+              title={"Daftar permohonan"}
+              desc={"Daftar permohonan yang sedang berlangsung"}
+              onPress={() => {
+                navigation.push("Daftar", { kondisi: "Berlangsung" });
+              }}
+            />
+
+            <AMenuCard
+              style={{ marginBottom: 20 }}
+              icon={"list"}
+              title={"Daftar permohonan selesai"}
+              desc={"Daftar permohonan yang telah selesai"}
+              onPress={() => {
+                navigation.push("Daftar", { kondisi: "Selesai" });
+              }}
+            />
+
+            <AMenuCard
+              style={{ marginBottom: 20 }}
+              icon={"list"}
+              title={"Daftar survei lapangan mandiri"}
+              desc={
+                "Daftar survei lapangan mandiri yang dilakukan oleh pertugas"
+              }
+              onPress={() => {
+                navigation.push("Daftar", { kondisi: "Mandiri" });
+              }}
+            />
+
+            <AMenuCard
+              style={{ marginBottom: 20 }}
+              icon={"clipboard"}
+              title={"Survei kepuasan masyarakat"}
+              desc={
+                "Daftar survei kepuasan yang dilakukan masyarakat terhadap aplikasi"
+              }
+              onPress={() => {
+                navigation.push("Kepuasan");
+              }}
             />
           </View>
         );
@@ -246,8 +478,19 @@ function HomeScreen({ navigation }) {
       userMe(context.getUser().access_token, (response) => {
         switch (response.status) {
           case 200:
-            context.toggleLoading(false);
             context.setCheck("userIsChecked");
+            masterAndalalin((response) => {
+              if (response.status === 200) {
+                (async () => {
+                  const result = await response.json();
+                  context.setDataMaster(result.data);
+                  context.toggleLoading(false);
+                })();
+              } else {
+                context.toggleLoading(false);
+                toggleGagal();
+              }
+            });
             break;
           case 424:
             authRefreshToken(context, (response) => {
@@ -266,8 +509,6 @@ function HomeScreen({ navigation }) {
       });
     }
   };
-
-  useEffect(() => {}, []);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -293,8 +534,7 @@ function HomeScreen({ navigation }) {
         <View
           style={{
             flexDirection: "row",
-            paddingHorizontal: 16,
-            height: 64,
+            padding: 16,
             alignItems: "center",
             justifyContent: "space-between",
           }}
@@ -400,13 +640,28 @@ function HomeScreen({ navigation }) {
         }}
       />
       <ADialog
-        title={"Error"}
-        desc={"Telah terjadi sesuatu, silahkan login kembali"}
+        title={"Telah terjadi sesuatu"}
+        desc={"Akun Anda tidak dapat kami validasi, silahkan login kembali"}
         visibleModal={error}
         btnOK={"OK"}
         onPressOKButton={() => {
-          navigation.push("Login");
+          navigation.push("Back Login");
+          remove("authState");
+          context.setCheck();
           toggleError();
+        }}
+      />
+
+      <ADialog
+        title={"Telah terjadi sesuatu"}
+        desc={
+          "Aplikasi gagal disiapkan, silahkan buka kembali aplikasi untuk melanjutkan aktivitas"
+        }
+        visibleModal={gagal}
+        btnOK={"OK"}
+        onPressOKButton={() => {
+          toggleGagal();
+          ExitApp.exitApp();
         }}
       />
     </AScreen>

@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { StyleSheet, View, Modal, Animated, Pressable } from "react-native";
+import { StyleSheet, View, Modal, Animated, Pressable, Dimensions } from "react-native";
 import color from "../../constants/color";
 import AText from "../utility/AText";
 import { UserContext } from "../../context/UserContext";
@@ -56,6 +56,7 @@ function ANoInternetDialog({ visibleModal = false }) {
       visible={visible}
       transparent={true}
       statusBarTranslucent
+      deviceHeight={Dimensions.get('screen').height}
     >
       <View style={styles.container}>
         <View style={styles.horizontal}>

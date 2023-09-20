@@ -42,6 +42,7 @@ function TambahUserScreen({ navigation }) {
     usePasswordVisibility();
 
   const jenis_peran = [
+    { value: "Dinas Perhubungan" },
     { value: "Admin" },
     { value: "Operator" },
     { value: "Petugas" },
@@ -147,14 +148,20 @@ function TambahUserScreen({ navigation }) {
   return (
     <AScreen>
       <View style={styles.header}>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            paddingVertical: 8,
+          }}
+        >
           <ABackButton
             onPress={() => {
               navigation.goBack();
             }}
           />
           <AText
-            style={{ paddingLeft: 8 }}
+            style={{ paddingLeft: 4}}
             size={24}
             color={color.neutral.neutral900}
             weight="normal"
@@ -344,12 +351,10 @@ function TambahUserScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  header: {
-    paddingTop: 16,
-    height: 64,
-  },
+  header: {},
   content: {
-    padding: 16,
+    paddingHorizontal: 16,
+    paddingBottom: 16,
   },
 });
 

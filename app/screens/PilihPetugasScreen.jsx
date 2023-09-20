@@ -8,6 +8,7 @@ import {
   TextInput,
   useWindowDimensions,
   RefreshControl,
+  Pressable,
 } from "react-native";
 import AText from "../component/utility/AText";
 import color from "../constants/color";
@@ -207,7 +208,13 @@ function PilihPetugasScreen({ navigation, route }) {
   return (
     <AScreen style={{ minHeight: Math.round(windowHeight) }}>
       <View style={styles.header}>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            paddingVertical: 8,
+          }}
+        >
           <ABackButton
             onPress={() => {
               setProgressViewOffset(-1000);
@@ -215,7 +222,7 @@ function PilihPetugasScreen({ navigation, route }) {
             }}
           />
           <AText
-            style={{ paddingLeft: 8 }}
+            style={{ paddingLeft: 4 }}
             size={24}
             color={color.neutral.neutral900}
             weight="normal"
@@ -287,33 +294,40 @@ function PilihPetugasScreen({ navigation, route }) {
                           : "unchecked"
                       }
                     />
-                    <Image
-                      style={{
-                        marginLeft: 16,
-                        width: 40,
-                        height: 40,
-                        borderRadius: 150 / 2,
-                        overflow: "hidden",
-                      }} // Set your desired dimensions
-                      source={{ uri: `data:image/png;base64,${item.photo}` }}
-                    />
+                    <Pressable
+                      style={{ flexDirection: "row" }}
+                      onPress={() => {
+                        setPilih(item);
+                      }}
+                    >
+                      <Image
+                        style={{
+                          marginLeft: 16,
+                          width: 40,
+                          height: 40,
+                          borderRadius: 150 / 2,
+                          overflow: "hidden",
+                        }}
+                        source={{ uri: `data:image/png;base64,${item.photo}` }}
+                      />
 
-                    <View style={{ flexDirection: "column" }}>
-                      <AText
-                        style={{ paddingLeft: 20 }}
-                        size={14}
-                        color={color.neutral.neutral900}
-                      >
-                        {item.name}
-                      </AText>
-                      <AText
-                        style={{ paddingLeft: 20 }}
-                        size={12}
-                        color={color.neutral.neutral500}
-                      >
-                        {item.email}
-                      </AText>
-                    </View>
+                      <View style={{ flexDirection: "column" }}>
+                        <AText
+                          style={{ paddingLeft: 20 }}
+                          size={14}
+                          color={color.neutral.neutral900}
+                        >
+                          {item.name}
+                        </AText>
+                        <AText
+                          style={{ paddingLeft: 20 }}
+                          size={12}
+                          color={color.neutral.neutral500}
+                        >
+                          {item.email}
+                        </AText>
+                      </View>
+                    </Pressable>
                   </View>
                 </RadioButton.Group>
               </View>
@@ -430,12 +444,10 @@ function PilihPetugasScreen({ navigation, route }) {
 }
 
 const styles = StyleSheet.create({
-  header: {
-    paddingTop: 16,
-    height: 64,
-  },
+  header: {},
   content: {
-    padding: 16,
+    paddingHorizontal: 16,
+    paddingBottom: 16,
     maxHeight: "81%",
     flex: 1,
   },

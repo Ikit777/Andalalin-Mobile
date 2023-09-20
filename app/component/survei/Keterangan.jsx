@@ -5,12 +5,15 @@ import ATextInput from "../utility/ATextInput";
 import AButton from "../utility/AButton";
 import { UserContext } from "../../context/UserContext";
 import color from "../../constants/color";
-import { andalalinSurveiLapangan } from "../../api/andalalin";
+import {
+  andalalinSurveiLapangan,
+  andalalinSurveiMandiri,
+} from "../../api/andalalin";
 import { authRefreshToken } from "../../api/auth";
 import AConfirmationDialog from "../utility/AConfirmationDialog";
 import ADialog from "../utility/ADialog";
 
-function Keterangan({ navigation, id }) {
+function Keterangan({ navigation, id, kondisi }) {
   const {
     survei: { keterangan, foto1, foto2, foto3, lokasi, lat, long },
     setSurvei,
@@ -56,6 +59,7 @@ function Keterangan({ navigation, id }) {
               navigation.replace("Detail Survei", {
                 id: id,
                 kondisi: "Petugas",
+                jenis: "Permohonan",
               });
             })();
             break;
@@ -63,6 +67,56 @@ function Keterangan({ navigation, id }) {
             authRefreshToken(context, (response) => {
               if (response.status === 200) {
                 simpan();
+              } else {
+                context.toggleLoading(false);
+                toggleKirimGagal();
+              }
+            });
+            break;
+          default:
+            context.toggleLoading(false);
+            toggleKirimGagal();
+        }
+      }
+    );
+  };
+
+  const simpan_mandiri = () => {
+    const foto = {
+      fotoSurvei1: foto1,
+      fotoSurvei2: foto2,
+      fotoSurvei3: foto3,
+    };
+
+    const lokasi_survei = {
+      latitude: parseFloat(lat),
+      longtitude: parseFloat(long),
+      lokasi: lokasi,
+      keterangan: keterangan,
+    };
+
+    andalalinSurveiMandiri(
+      context.getUser().access_token,
+      foto,
+      lokasi_survei,
+      (response) => {
+        switch (response.status) {
+          case 201:
+            (async () => {
+              clearSurvei();
+              setIndexSurvei(1);
+              const result = await response.json();
+              navigation.replace("Detail Survei", {
+                id: result.data.IdSurvey,
+                kondisi: "Petugas",
+                jenis: "Mandiri",
+              });
+            })();
+            break;
+          case 424:
+            authRefreshToken(context, (response) => {
+              if (response.status === 200) {
+                simpan_mandiri();
               } else {
                 context.toggleLoading(false);
                 toggleKirimGagal();
@@ -86,10 +140,11 @@ function Keterangan({ navigation, id }) {
       <ATextInput
         bdColor={color.neutral.neutral300}
         ktype={"default"}
-        hint={"Masukkan keterangan"}
-        title={"Keterangan survey"}
+        hint={"Masukkan keterangan terkait keadaan ataupun situasi survei"}
+        title={"Keterangan survei"}
         rtype={"done"}
         multi={true}
+        max={4}
         value={keteranganText}
         onChangeText={(value) => {
           setKeteranganText(value);
@@ -117,7 +172,11 @@ function Keterangan({ navigation, id }) {
         onPressOKButton={() => {
           toggleComfirm();
           context.toggleLoading(true);
-          simpan();
+          if (kondisi == "Mandiri") {
+            simpan_mandiri();
+          } else {
+            simpan();
+          }
         }}
       />
       <ADialog

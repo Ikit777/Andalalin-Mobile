@@ -55,6 +55,30 @@ const initialState = {
   persyaratan_tambahan: [],
 };
 
+const perlalinInit = {
+  kategori: "",
+  perlengkapan: "",
+  rambu: "",
+  lokasi_pengambilan: "",
+  nik_pemohon: "",
+  tempat_lahir_pemohon: "",
+  tanggal_lahir_pemohon: "",
+  alamat_pemohon: "",
+  jenis_kelamin_pemohon: "",
+  nomer_pemohon: "",
+  nomer_seluler_pemohon: "",
+  jenis_kegiatan: "",
+  peruntukan: "",
+  luas_lahan: "",
+  alamat_persil: "",
+  kelurahan_persil: "",
+  berkas_ktp: "",
+  nama_ktp: "",
+  berkas_surat: "",
+  nama_surat: "",
+  persyaratan_tambahan: [],
+};
+
 const surveiInit = {
   foto1: "Kosong",
   namaFoto1: "",
@@ -65,6 +89,7 @@ const surveiInit = {
   lat: "",
   long: "",
   lokasi: "",
+  jalan: "",
   keterangan: "",
 };
 
@@ -76,6 +101,7 @@ export function UserProvider({ children }) {
 
   const [index, setIndex] = useState(1);
   const [permohonan, dispatch] = useReducer(reducer, initialState);
+  const [perlalin, setPerlalin] = useReducer(reducer, perlalinInit);
 
   const [indexSurvei, setIndexSurvei] = useState(1);
   const [survei, setSurvei] = useReducer(reducer, surveiInit);
@@ -119,6 +145,7 @@ export function UserProvider({ children }) {
   const clear = () => {
     setIndex(1);
     dispatch(initialState);
+    setPerlalin(perlalinInit);
   };
 
   const clearSurvei = () => {
@@ -167,6 +194,8 @@ export function UserProvider({ children }) {
         setIndex,
         permohonan,
         dispatch,
+        perlalin,
+        setPerlalin,
         clear,
         notification,
         setNotification,

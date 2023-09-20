@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { StyleSheet, ScrollView } from "react-native";
+import { StyleSheet, ScrollView, View, Pressable } from "react-native";
 import { useStateToggler } from "../../hooks/useUtility";
 import * as DocumentPicker from "expo-document-picker";
 import ATextInputIcon from "../utility/ATextInputIcon";
@@ -7,6 +7,7 @@ import { UserContext } from "../../context/UserContext";
 import color from "../../constants/color";
 import AButton from "../utility/AButton";
 import AText from "../utility/AText";
+import { Feather } from "@expo/vector-icons";
 
 function Foto({ onPress }) {
   const {
@@ -76,17 +77,29 @@ function Foto({ onPress }) {
       showsVerticalScrollIndicator={false}
       persistentScrollbar={true}
     >
-      <ATextInputIcon
-        bdColor={foto1Error ? color.error.error300 : color.neutral.neutral300}
-        hint={"Masukkan foto"}
-        title={"Foto 1"}
-        icon={"image"}
-        value={nama1}
-        mult={true}
-        onPress={() => {
-          pilih_foto(1);
-        }}
-      />
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <ATextInputIcon
+          bdColor={foto1Error ? color.error.error300 : color.neutral.neutral300}
+          hint={"Masukkan foto"}
+          title={"Foto 1"}
+          icon={"image"}
+          value={nama1}
+          mult={true}
+          width={true}
+          onPress={() => {
+            pilih_foto(1);
+          }}
+        />
+
+        <Pressable style={{ padding: 8, marginTop: 30 }}>
+          <Feather
+            style={{ paddingRight: 14 }}
+            name={"camera"}
+            size={24}
+            color={color.neutral.neutral900}
+          />
+        </Pressable>
+      </View>
 
       {foto1Error ? (
         <AText
@@ -101,31 +114,55 @@ function Foto({ onPress }) {
         ""
       )}
 
-      <ATextInputIcon
-        bdColor={color.neutral.neutral300}
-        hint={"Masukkan foto"}
-        title={"Foto 2 (Opsional)"}
-        icon={"image"}
-        value={nama2}
-        padding={20}
-        mult={true}
-        onPress={() => {
-          pilih_foto(2);
-        }}
-      />
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <ATextInputIcon
+          bdColor={color.neutral.neutral300}
+          hint={"Masukkan foto"}
+          title={"Foto 2 (Opsional)"}
+          icon={"image"}
+          value={nama2}
+          padding={20}
+          mult={true}
+          width={true}
+          onPress={() => {
+            pilih_foto(2);
+          }}
+        />
 
-      <ATextInputIcon
-        bdColor={color.neutral.neutral300}
-        hint={"Masukkan foto"}
-        title={"Foto 3 (Opsional)"}
-        icon={"image"}
-        value={nama3}
-        padding={20}
-        mult={true}
-        onPress={() => {
-          pilih_foto(3);
-        }}
-      />
+        <Pressable style={{ padding: 8, marginTop: 50 }}>
+          <Feather
+            style={{ paddingRight: 14 }}
+            name={"camera"}
+            size={24}
+            color={color.neutral.neutral900}
+          />
+        </Pressable>
+      </View>
+
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <ATextInputIcon
+          bdColor={color.neutral.neutral300}
+          hint={"Masukkan foto"}
+          title={"Foto 3 (Opsional)"}
+          icon={"image"}
+          value={nama3}
+          padding={20}
+          mult={true}
+          width={true}
+          onPress={() => {
+            pilih_foto(3);
+          }}
+        />
+
+        <Pressable style={{ padding: 8, marginTop: 50 }}>
+          <Feather
+            style={{ paddingRight: 14 }}
+            name={"camera"}
+            size={24}
+            color={color.neutral.neutral900}
+          />
+        </Pressable>
+      </View>
 
       <AButton
         style={{ marginTop: 32, marginBottom: 50 }}

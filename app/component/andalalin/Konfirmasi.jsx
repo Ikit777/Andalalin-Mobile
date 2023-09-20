@@ -6,11 +6,14 @@ import { UserContext } from "../../context/UserContext";
 import { useStateToggler } from "../../hooks/useUtility";
 import AButton from "../utility/AButton";
 import AConfirmationDialog from "../utility/AConfirmationDialog";
-import { andalalinPengajuan } from "../../api/andalalin";
+import {
+  andalalinPengajuan,
+  andalalinPengajuanPerlalin,
+} from "../../api/andalalin";
 import { authRefreshToken } from "../../api/auth";
 import ADialog from "../utility/ADialog";
 
-function Konfirmasi({ navigation }) {
+function Konfirmasi({ navigation, kondisi }) {
   const [confirm, toggleComfirm] = useStateToggler();
   const [kirimGagal, toggleKirimGagal] = useStateToggler();
 
@@ -48,11 +51,14 @@ function Konfirmasi({ navigation }) {
       berkas_ktp,
       berkas_akta,
       berkas_surat,
+      persyaratan_tambahan,
     },
+    perlalin,
     user,
     clear,
     setIndex,
   } = useContext(UserContext);
+
   const context = useContext(UserContext);
 
   const kirim = () => {
@@ -93,32 +99,96 @@ function Konfirmasi({ navigation }) {
       tanggal_skrk: tanggal_skrk,
     };
 
-    andalalinPengajuan(user.access_token, pengajuan, file, (response) => {
-      switch (response.status) {
-        case 200:
-          (async () => {
-            const result = await response.json();
-            clear();
-            setIndex(1);
+    andalalinPengajuan(
+      user.access_token,
+      pengajuan,
+      file,
+      persyaratan_tambahan,
+      (response) => {
+        switch (response.status) {
+          case 200:
+            (async () => {
+              const result = await response.json();
+              clear();
+              setIndex(1);
 
-            navigation.replace("Detail", { id: result.data.id_andalalin });
-          })();
-          break;
-        case 424:
-          authRefreshToken(context, (response) => {
-            if (response.status === 200) {
-              kirim();
-            } else {
-              context.toggleLoading(false);
-              toggleKirimGagal();
-            }
-          });
-          break;
-        default:
-          context.toggleLoading(false);
-          toggleKirimGagal();
+              navigation.replace("Detail", { id: result.data.id_andalalin });
+            })();
+            break;
+          case 424:
+            authRefreshToken(context, (response) => {
+              if (response.status === 200) {
+                kirim();
+              } else {
+                context.toggleLoading(false);
+                toggleKirimGagal();
+              }
+            });
+            break;
+          default:
+            context.toggleLoading(false);
+            toggleKirimGagal();
+        }
       }
-    });
+    );
+  };
+
+  const kirimPerlalin = () => {
+    const file = {
+      ktp: perlalin.berkas_ktp,
+      surat: perlalin.berkas_surat,
+    };
+
+    const pengajuan = {
+      kategori: perlalin.kategori,
+      jenis_perlengkapan: perlalin.perlengkapan,
+      lokasi_pengambilan: perlalin.lokasi_pengambilan,
+      nik_pemohon: perlalin.nik_pemohon,
+      tempat_lahir_pemohon: perlalin.tempat_lahir_pemohon,
+      tanggal_lahir_pemohon: perlalin.tanggal_lahir_pemohon,
+      alamat_pemohon: perlalin.alamat_pemohon,
+      jenis_kelamin_pemohon: perlalin.jenis_kelamin_pemohon,
+      nomer_pemohon: perlalin.nomer_pemohon,
+      nomer_seluler_pemohon: perlalin.nomer_seluler_pemohon,
+      jenis_kegiatan: perlalin.jenis_kegiatan,
+      peruntukan: perlalin.peruntukan,
+      luas_lahan: perlalin.luas_lahan,
+      alamat_persil: perlalin.alamat_persil,
+      kelurahan_persil: perlalin.kelurahan_persil,
+    };
+
+    andalalinPengajuanPerlalin(
+      user.access_token,
+      pengajuan,
+      file,
+      perlalin.persyaratan_tambahan,
+      (response) => {
+        switch (response.status) {
+          case 200:
+            (async () => {
+              const result = await response.json();
+              clear();
+              setIndex(1);
+
+              navigation.replace("Detail", { id: result.data.id_andalalin, jenis: result.data.jenis_andalalin});
+            })();
+            break;
+          case 424:
+            authRefreshToken(context, (response) => {
+              if (response.status === 200) {
+                kirim();
+              } else {
+                context.toggleLoading(false);
+                toggleKirimGagal();
+              }
+            });
+            break;
+          default:
+            context.toggleLoading(false);
+            toggleKirimGagal();
+        }
+      }
+    );
   };
 
   return (
@@ -163,7 +233,11 @@ function Konfirmasi({ navigation }) {
         onPressOKButton={() => {
           toggleComfirm();
           context.toggleLoading(true);
-          kirim();
+          if (kondisi == "Andalalin") {
+            kirim();
+          } else {
+            kirimPerlalin();
+          }
         }}
       />
       <ADialog

@@ -8,27 +8,21 @@ import { useStateToggler } from "../../hooks/useUtility";
 import AButton from "../utility/AButton";
 import * as DocumentPicker from "expo-document-picker";
 
-function Persyaratan({ navigation, onPress }) {
+function PersyaratanPerlalin({ navigation, onPress }) {
   const {
-    permohonan: {
+    perlalin: {
       berkas_ktp,
       nama_ktp,
-      berkas_akta,
-      nama_akta,
       berkas_surat,
       nama_surat,
       persyaratan_tambahan,
     },
-    dispatch,
+    setPerlalin,
   } = useContext(UserContext);
   const context = useContext(UserContext);
   const [ktp, setKTP] = useState(berkas_ktp);
   const [namaKtp, setNamaKtp] = useState(nama_ktp);
   const [ktpError, setKTPError] = useStateToggler();
-
-  const [akta, setAkta] = useState(berkas_akta);
-  const [namaAkta, setNamaAkta] = useState(nama_akta);
-  const [aktaError, setAktaError] = useStateToggler();
 
   const [surat, setSurat] = useState(berkas_surat);
   const [namaSurat, setNamaSurat] = useState(nama_surat);
@@ -44,7 +38,7 @@ function Persyaratan({ navigation, onPress }) {
 
   useEffect(() => {
     let persyaratan =
-      context.dataMaster.persyaratan_tambahan.PersyaratanTambahanAndalalin.map(
+      context.dataMaster.persyaratan_tambahan.PersyaratanTambahanPerlalin.map(
         (item) => {
           stateVariables.push({
             persyaratan: item.persyaratan,
@@ -58,11 +52,11 @@ function Persyaratan({ navigation, onPress }) {
 
     setData(persyaratan);
     if (
-      context.dataMaster.persyaratan_tambahan.PersyaratanTambahanAndalalin
-        .length == 0
-    ) {
-      setTambahanNotEmpty(true);
-    }
+        context.dataMaster.persyaratan_tambahan.PersyaratanTambahanPerlalin
+          .length == 0
+      ) {
+        setTambahanNotEmpty(true);
+      }
   }, []);
 
   useEffect(() => {
@@ -125,12 +119,6 @@ function Persyaratan({ navigation, onPress }) {
 
   useEffect(() => {
     {
-      aktaError ? setAktaError() : "";
-    }
-  }, [akta]);
-
-  useEffect(() => {
-    {
       suratError ? setSuratError() : "";
     }
   }, [surat]);
@@ -142,7 +130,7 @@ function Persyaratan({ navigation, onPress }) {
       }
     });
 
-    if (ktp != "" && akta != "" && surat != "") {
+    if (ktp != "" && surat != "") {
       if (tambahanNotEmpty) {
         const tambahanItem = stateVariables.map((item) => {
           return {
@@ -152,11 +140,9 @@ function Persyaratan({ navigation, onPress }) {
           };
         });
 
-        dispatch({
+        setPerlalin({
           berkas_ktp: ktp,
           nama_ktp: namaKtp,
-          berkas_akta: akta,
-          nama_akta: namaAkta,
           berkas_surat: surat,
           nama_surat: namaSurat,
           persyaratan_tambahan: tambahanItem,
@@ -166,9 +152,6 @@ function Persyaratan({ navigation, onPress }) {
     } else {
       {
         ktp == "" ? (ktpError ? "" : setKTPError()) : "";
-      }
-      {
-        akta == "" ? (aktaError ? "" : setAktaError()) : "";
       }
       {
         surat == "" ? (suratError ? "" : setSuratError()) : "";
@@ -190,13 +173,6 @@ function Persyaratan({ navigation, onPress }) {
           setNamaKtp(result.assets[0].name);
           break;
         case 2:
-          {
-            aktaError ? setAktaError() : "";
-          }
-          setAkta(result.assets[0].uri);
-          setNamaAkta(result.assets[0].name);
-          break;
-        case 3:
           {
             suratError ? setSuratError() : "";
           }
@@ -251,44 +227,16 @@ function Persyaratan({ navigation, onPress }) {
 
           <ATextInputIcon
             bdColor={
-              aktaError ? color.error.error300 : color.neutral.neutral300
-            }
-            hint={"Masukkan akta pendirian badan"}
-            title={"Akta pendirian badan"}
-            icon={"file-plus"}
-            mult={true}
-            value={namaAkta}
-            padding={20}
-            onPress={() => {
-              file(2);
-            }}
-          />
-
-          {aktaError ? (
-            <AText
-              style={{ paddingTop: 6 }}
-              color={color.error.error500}
-              size={14}
-              weight="normal"
-            >
-              Berkas akta kosong
-            </AText>
-          ) : (
-            ""
-          )}
-
-          <ATextInputIcon
-            bdColor={
               suratError ? color.error.error300 : color.neutral.neutral300
             }
-            hint={"Masukkan surat kuasa"}
-            title={"Surat kuasa"}
+            hint={"Masukkan surat permohonan"}
+            title={"Surat permohonan"}
             icon={"file-plus"}
             padding={20}
             mult={true}
             value={namaSurat}
             onPress={() => {
-              file(3);
+              file(2);
             }}
           />
 
@@ -299,7 +247,7 @@ function Persyaratan({ navigation, onPress }) {
               size={14}
               weight="normal"
             >
-              Berkas surat kuasa kosong
+              Berkas surat permohonan kosong
             </AText>
           ) : (
             ""
@@ -370,7 +318,7 @@ function Persyaratan({ navigation, onPress }) {
               style={{ flexDirection: "row", paddingLeft: 4 }}
               onPress={() => {
                 navigation.push("Ketentuan", {
-                  kondisi: "Pengajuan andalalin",
+                  kondisi: "Pengajuan perlalin",
                 });
               }}
             >
@@ -407,4 +355,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Persyaratan;
+export default PersyaratanPerlalin;

@@ -70,7 +70,7 @@ function LaporanBAPScreen({ navigation, route }) {
   };
 
   const formatDate = (date) => {
-    return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+    return `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
   };
 
   const berkas = async () => {
@@ -137,7 +137,7 @@ function LaporanBAPScreen({ navigation, route }) {
       {
         fileError ? toggleFileError() : "";
       }
-      laporan()
+      laporan();
     } else {
       {
         dasar == "" ? (dasarError ? "" : toggleDasarError()) : "";
@@ -170,14 +170,20 @@ function LaporanBAPScreen({ navigation, route }) {
   return (
     <AScreen>
       <View style={styles.header}>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            paddingVertical: 8,
+          }}
+        >
           <ABackButton
             onPress={() => {
               navigation.goBack();
             }}
           />
           <AText
-            style={{ paddingLeft: 8 }}
+            style={{ paddingLeft: 4}}
             size={24}
             color={color.neutral.neutral900}
             weight="normal"
@@ -350,12 +356,10 @@ function LaporanBAPScreen({ navigation, route }) {
 }
 
 const styles = StyleSheet.create({
-  header: {
-    paddingTop: 16,
-    height: 64,
-  },
+  header: {},
   content: {
-    padding: 16,
+    paddingHorizontal: 16,
+    paddingBottom: 16,
   },
 });
 

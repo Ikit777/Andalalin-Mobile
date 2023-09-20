@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import { StyleSheet, ScrollView } from "react-native";
-import AText from "../../component/utility/AText";
+import AText from "../utility/AText";
 import color from "../../constants/color";
 import { UserContext } from "../../context/UserContext";
 import ATextInput from "../utility/ATextInput";
@@ -10,11 +10,10 @@ import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 import AButton from "../utility/AButton";
 import ADropDownCostume from "../utility/ADropdownCostume";
 
-function Pemohon({ onPress }) {
+function PemohonPerlalin({ onPress }) {
   const {
-    permohonan: {
+    perlalin: {
       nik_pemohon,
-      jabatan_pemohon,
       jenis_kelamin_pemohon,
       tempat_lahir_pemohon,
       tanggal_lahir_pemohon,
@@ -22,13 +21,12 @@ function Pemohon({ onPress }) {
       nomer_pemohon,
       nomer_seluler_pemohon,
     },
-    dispatch,
+    setPerlalin,
   } = useContext(UserContext);
 
   const nikInput = React.createRef();
   const tempatLahirInput = React.createRef();
   const tanggalLahirInput = React.createRef();
-  const jabatanInput = React.createRef();
   const alamatInput = React.createRef();
   const nomerInput = React.createRef();
   const nomerSelulerInput = React.createRef();
@@ -36,7 +34,6 @@ function Pemohon({ onPress }) {
   const [nik, setNik] = useState(nik_pemohon);
   const [tempat, setTempat] = useState(tempat_lahir_pemohon);
   const [tanggal, setTanggal] = useState(tanggal_lahir_pemohon);
-  const [jabatan, setJabatan] = useState(jabatan_pemohon);
   const [jenis, setJenis] = useState(jenis_kelamin_pemohon);
   const [alamat, setAlamat] = useState(alamat_pemohon);
   const [nomer, setNomer] = useState(nomer_pemohon);
@@ -45,7 +42,6 @@ function Pemohon({ onPress }) {
   const [nikError, togglenikError] = useStateToggler();
   const [tempatError, toggletempatError] = useStateToggler();
   const [tanggalError, toggletanggalError] = useStateToggler();
-  const [jabatanError, togglejabatanError] = useStateToggler();
   const [jenisError, togglejenisError] = useStateToggler();
   const [alamatError, togglealamatError] = useStateToggler();
   const [nomerError, togglenomerError] = useStateToggler();
@@ -80,7 +76,6 @@ function Pemohon({ onPress }) {
   const press = () => {
     if (
       nik != "" &&
-      jabatan != "" &&
       jenis != "" &&
       tempat != "" &&
       tanggal != "" &&
@@ -90,9 +85,6 @@ function Pemohon({ onPress }) {
     ) {
       {
         nikError ? togglenikError() : "";
-      }
-      {
-        jabatanError ? togglejabatanError() : "";
       }
       {
         tempatError ? toggletempatError() : "";
@@ -109,9 +101,8 @@ function Pemohon({ onPress }) {
       {
         nomerSelulerError ? togglenomerSelulerError() : "";
       }
-      dispatch({
+      setPerlalin({
         nik_pemohon: nik,
-        jabatan_pemohon: jabatan,
         jenis_kelamin_pemohon: jenis,
         tempat_lahir_pemohon: tempat,
         tanggal_lahir_pemohon: tanggal,
@@ -123,9 +114,6 @@ function Pemohon({ onPress }) {
     } else {
       {
         nik == "" ? (nikError ? "" : togglenikError()) : "";
-      }
-      {
-        jabatan == "" ? (jabatanError ? "" : togglejabatanError()) : "";
       }
       {
         jenis == "" ? (jenisError ? "" : togglejenisError()) : "";
@@ -171,8 +159,7 @@ function Pemohon({ onPress }) {
         ktype={"number-pad"}
         hint={"Masukkan nik anda"}
         title={"Nik"}
-        rtype={"next"}
-        blur={false}
+        rtype={"done"}
         multi={false}
         value={nik}
         ref={nikInput}
@@ -183,7 +170,6 @@ function Pemohon({ onPress }) {
           {
             nikError ? togglenikError() : "";
           }
-          jabatanInput.current.focus();
         }}
       />
 
@@ -195,39 +181,6 @@ function Pemohon({ onPress }) {
           weight="normal"
         >
           Nik kosong
-        </AText>
-      ) : (
-        ""
-      )}
-
-      <ATextInput
-        bdColor={jabatanError ? color.error.error300 : color.neutral.neutral300}
-        ktype={"default"}
-        hint={"Masukkan jabatan anda"}
-        title={"Jabatan"}
-        rtype={"done"}
-        multi={false}
-        value={jabatan}
-        padding={20}
-        ref={jabatanInput}
-        onChangeText={(value) => {
-          setJabatan(value);
-        }}
-        submit={() => {
-          {
-            jabatanError ? togglejabatanError() : "";
-          }
-        }}
-      />
-
-      {jabatanError ? (
-        <AText
-          style={{ paddingTop: 6 }}
-          color={color.error.error500}
-          size={14}
-          weight="normal"
-        >
-          Jabatan kosong
         </AText>
       ) : (
         ""
@@ -438,4 +391,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Pemohon;
+export default PemohonPerlalin;

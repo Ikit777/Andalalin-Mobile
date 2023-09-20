@@ -30,6 +30,7 @@ const APasswordInput = React.forwardRef((props, ref) =>
           blurOnSubmit={props.blur}
           returnKeyType={props.rtype}
           value={props.value}
+          underlineColorAndroid="transparent"
         />
         <Pressable onPress={props.handlePasswordVisibility}>
           <Feather name={props.rightIcon} size={24} color={color.primary.primary600} />

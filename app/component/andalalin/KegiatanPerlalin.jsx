@@ -3,24 +3,20 @@ import { StyleSheet, ScrollView } from "react-native";
 import AText from "../utility/AText";
 import color from "../../constants/color";
 import ATextInput from "../utility/ATextInput";
-import ATextInputIcon from "../utility/ATextInputIcon";
-import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 import { useStateToggler } from "../../hooks/useUtility";
 import { UserContext } from "../../context/UserContext";
 import AButton from "../utility/AButton";
 
-function Kegiatan({onPress}) {
+function KegiatanPerlalin({onPress}) {
   const {
-    permohonan: {
+    perlalin: {
       jenis_kegiatan,
       peruntukan,
       luas_lahan,
       alamat_persil,
       kelurahan_persil,
-      nomer_skrk,
-      tanggal_skrk,
     },
-    dispatch,
+    setPerlalin,
   } = useContext(UserContext);
 
   const kegiatanInput = React.createRef();
@@ -28,59 +24,28 @@ function Kegiatan({onPress}) {
   const luasInput = React.createRef();
   const alamatInput = React.createRef();
   const kelInput = React.createRef();
-  const nomerInput = React.createRef();
 
   const [kegiatan, setKegiatan] = useState(jenis_kegiatan);
   const [untuk, setPeruntukan] = useState(peruntukan);
   const [luas, setLuas] = useState(luas_lahan);
   const [alamat, setAlamat] = useState(alamat_persil);
   const [kel, setKel] = useState(kelurahan_persil);
-  const [nomer, setNomer] = useState(nomer_skrk);
-  const [tanggal, setTanggal] = useState(tanggal_skrk);
 
   const [kegiatanError, toggleKegiatanError] = useStateToggler();
   const [peruntukanError, togglePeruntukanError] = useStateToggler();
   const [luasError, toggleLuasError] = useStateToggler();
   const [alamatError, toggleAlamatError] = useStateToggler();
   const [kelError, toggleKelError] = useStateToggler();
-  const [nomerError, toggleNomerError] = useStateToggler();
-  const [tanggalError, toggleTanggalError] = useStateToggler();
-
-  const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate;
-    setTanggal(formatDate(currentDate));
-    {
-      tanggalError ? toggleTanggalError() : "";
-    }
-  };
-
-  const showMode = (currentMode) => {
-    DateTimePickerAndroid.open({
-      value: new Date(),
-      onChange,
-      mode: currentMode,
-    });
-  };
-
-  const showDatepicker = () => {
-    showMode("date");
-  };
-
-  const formatDate = (date) => {
-    return `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
-  };
 
   const press = () => {
-    if (kegiatan != "" && untuk != "" && luas != "" && alamat != "" && kel != "" && nomer != "" && tanggal != ""){
+    if (kegiatan != "" && untuk != "" && luas != "" && alamat != "" && kel != ""){
       {kegiatanError ? toggleKegiatanError() : "" };
       {peruntukanError ? togglePeruntukanError() : "" };
       {luasError ? toggleLuasError() : "" };
       {alamatError ? toggleAlamatError() : "" };
       {kelError ? toggleKelError() : "" };
-      {nomerError ? toggleNomerError() : "" };
-      {tanggalError ? toggleTanggalError() : "" };
       
-      dispatch({ jenis_kegiatan: kegiatan, peruntukan: untuk, luas_lahan: luas, alamat_persil: alamat, kelurahan_persil: kel, nomer_skrk: nomer, tanggal_skrk: tanggal});
+      setPerlalin({ jenis_kegiatan: kegiatan, peruntukan: untuk, luas_lahan: luas, alamat_persil: alamat, kelurahan_persil: kel});
       onPress();
     }else{
       {kegiatan == "" ? (kegiatanError ?  "": toggleKegiatanError()) : ""};
@@ -88,8 +53,6 @@ function Kegiatan({onPress}) {
       {luas == "" ? (luasError ?  "": toggleLuasError()) : ""};
       {alamat == "" ? (alamatError ?  "": toggleAlamatError()) : ""};
       {kel == "" ? (kelError ?  "": toggleKelError()) : ""};
-      {nomer == "" ? (nomerError ?  "": toggleNomerError()) : ""};
-      {tanggal == "" ? (tanggalError ?  "": toggleTanggalError()) : ""};
     }
   }
 
@@ -233,7 +196,6 @@ function Kegiatan({onPress}) {
           {
             kelError ? toggleKelError() : "";
           }
-          nomerInput.current.focus();
         }}
       />
 
@@ -245,62 +207,6 @@ function Kegiatan({onPress}) {
           weight="normal"
         >
           Kelurahan persil kosong
-        </AText>
-      ) : (
-        ""
-      )}
-
-      <ATextInput
-        bdColor={nomerError ? color.error.error300 : color.neutral.neutral300}
-        ktype={"default"}
-        hint={"Masukkan nomor SKRK"}
-        title={"Nomor SKRK"}
-        rtype={"done"}
-        multi={false}
-        value={nomer}        
-        padding={20}
-        ref={nomerInput}
-        onChangeText={(value) => {
-          setNomer(value);
-        }}
-        submit={() => {
-          {
-            nomerError ? toggleNomerError() : "";
-          }
-        }}
-      />
-
-      {nomerError ? (
-        <AText
-          style={{ paddingTop: 6 }}
-          color={color.error.error500}
-          size={14}
-          weight="normal"
-        >
-          Nomor SKRK kosong
-        </AText>
-      ) : (
-        ""
-      )}
-
-      <ATextInputIcon
-        bdColor={tanggalError ? color.error.error300 : color.neutral.neutral300}
-        hint={"Masukkan tanggal SKRK"}
-        title={"Tanggal SKRK"}
-        padding={20}
-        icon={"calendar"}
-        value={tanggal}
-        onPress={showDatepicker}
-      />
-
-      {tanggalError ? (
-        <AText
-          style={{ paddingTop: 6 }}
-          color={color.error.error500}
-          size={14}
-          weight="normal"
-        >
-          Tanggal SKRK kosong
         </AText>
       ) : (
         ""
@@ -325,4 +231,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Kegiatan;
+export default KegiatanPerlalin;

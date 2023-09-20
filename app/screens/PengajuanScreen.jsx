@@ -9,10 +9,12 @@ import AConfirmationDialog from "../component/utility/AConfirmationDialog";
 import { useStateToggler } from "../hooks/useUtility";
 import AndalalinNavigator from "../component/andalalin/AndalalinNavigator";
 import { UserContext } from "../context/UserContext";
+import PerlalinNavigator from "../component/andalalin/PerlalinNavigator";
 
-function PengajuanScreen({ navigation }) {
+function PengajuanScreen({ navigation, route }) {
   const [confirm, toggleComfirm] = useStateToggler();
   const context = useContext(UserContext);
+  const kondisi = route.params.kondisi;
 
   useEffect(() => {
     BackHandler.addEventListener("hardwareBackPress", () => {
@@ -28,10 +30,6 @@ function PengajuanScreen({ navigation }) {
     });
   }, [context.index]);
 
-  useEffect(() => {
-    context.masterData();
-  }, []);
-
   const back = () => {
     if (context.index == 1) {
       toggleComfirm();
@@ -46,30 +44,68 @@ function PengajuanScreen({ navigation }) {
   };
 
   const judul = () => {
-    switch (context.index) {
-      case 1:
-        return "Permohonan";
-      case 2:
-        return "Permohonan";
-      case 3:
-        return "Pemohon";
-      case 4:
-        return "Perusahaan";
-      case 5:
-        return "Perusahaan";
-      case 6:
-        return "Kegiatan";
-      case 7:
-        return "Persyaratan";
-      case 8:
-        return "Konfirmasi";
+    if (kondisi == "Andalalin") {
+      switch (context.index) {
+        case 1:
+          return "Permohonan";
+        case 2:
+          return "Permohonan";
+        case 3:
+          return "Pemohon";
+        case 4:
+          return "Perusahaan";
+        case 5:
+          return "Perusahaan";
+        case 6:
+          return "Kegiatan";
+        case 7:
+          return "Persyaratan";
+        case 8:
+          return "Konfirmasi";
+      }
+    } else {
+      switch (context.index) {
+        case 1:
+          return "Permohonan";
+        case 2:
+          return "Permohonan";
+        case 3:
+          return "Pemohon";
+        case 4:
+          return "Kegiatan";
+        case 5:
+          return "Persyaratan";
+        case 6:
+          return "Konfirmasi";
+      }
     }
   };
 
+  const content = () => {
+    if (kondisi == "Andalalin") {
+      return <AndalalinNavigator index={context.index} kondisi={kondisi} />;
+    } else {
+      return <PerlalinNavigator index={context.index} kondisi={kondisi} />;
+    }
+  };
+
+  const item = () => {
+    if (kondisi == "Andalalin") {
+      return 7;
+    } else {
+      return 5;
+    }
+  };
   return (
     <AScreen>
       <View style={styles.header}>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            paddingVertical: 8,
+          }}
+        >
           <ABackButton
             onPress={() => {
               if (context.index == 1) {
@@ -86,7 +122,7 @@ function PengajuanScreen({ navigation }) {
             }}
           />
           <AText
-            style={{ paddingLeft: 8 }}
+            style={{ paddingLeft: 4 }}
             size={24}
             color={color.neutral.neutral900}
             weight="normal"
@@ -95,17 +131,15 @@ function PengajuanScreen({ navigation }) {
           </AText>
         </View>
         {context.index == 1 ? (
-          ""
+          <View style={{ height: 6 }} />
         ) : (
           <AProgressBar
-            progress={Math.floor(((context.index - 1) * 100) / 7)}
+            progress={Math.floor(((context.index - 1) * 100) / item())}
           />
         )}
       </View>
 
-      <View style={styles.content}>
-        <AndalalinNavigator index={context.index} />
-      </View>
+      <View style={styles.content}>{content()}</View>
 
       <AConfirmationDialog
         title={"Kembali?"}
@@ -128,12 +162,8 @@ function PengajuanScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  header: {
-    paddingTop: 16,
-    height: 64,
-  },
+  header: {},
   content: {
-    marginTop: 16,
     flex: 1,
   },
 });

@@ -21,21 +21,27 @@ function FotoViewScreen({ navigation, route }) {
 
   const images = [
     {
-      url: `data:image/png;base64,${route.params.foto}`
-    }
+      url: `data:image/png;base64,${route.params.foto}`,
+    },
   ];
 
   return (
     <AScreen>
       <View style={styles.header}>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            paddingVertical: 8,
+          }}
+        >
           <ABackButton
             onPress={() => {
               navigation.goBack();
             }}
           />
           <AText
-            style={{ paddingLeft: 8 }}
+            style={{ paddingLeft: 4}}
             size={24}
             color={color.neutral.neutral900}
             weight="normal"
@@ -45,17 +51,20 @@ function FotoViewScreen({ navigation, route }) {
         </View>
       </View>
       <View style={styles.content}>
-        <ImageViewer imageUrls={images} backgroundColor="transparent" renderIndicator={() => null} maxOverflow={0} saveToLocalByLongPress={false} />
+        <ImageViewer
+          imageUrls={images}
+          backgroundColor="transparent"
+          renderIndicator={() => null}
+          maxOverflow={0}
+          saveToLocalByLongPress={false}
+        />
       </View>
     </AScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  header: {
-    paddingTop: 16,
-    height: 64,
-  },
+  header: {},
   content: {
     backgroundColor: "transparent",
     flex: 1,

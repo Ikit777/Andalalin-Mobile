@@ -15,6 +15,8 @@ import ACardPermohonan from "../component/utility/ACardPermohonan";
 import {
   andalalinGetAllByTiketLevel2,
   andalalinGetAllSurvei,
+  andalalinGetAllSurveiMandiri,
+  andalalinGetAllSurveiMandiriPetugas,
   andalalinGetByIdUser,
   andalalinGetByStatus,
   andalalinGetByTiketLevel1,
@@ -78,19 +80,30 @@ function DaftarScreen({ navigation, route }) {
           break;
         case "Operator":
           context.toggleLoading(true);
-          if (kondisi == "Diajukan" && kondisi != undefined) {
-            loadDaftarByTiketLevel1();
-          } else {
-            loadPermohonanByStatus("Permohonan selesai");
+          switch (kondisi) {
+            case "Diajukan":
+              loadDaftarByTiketLevel1();
+              break;
+            case "Selesai":
+              loadPermohonanByStatus("Permohonan selesai");
+              break;
+            case "Mandiri":
+              loadSurveiMandiri();
+              break;
           }
-
           break;
         case "Petugas":
           context.toggleLoading(true);
-          if (kondisi == "Survei" && kondisi != undefined) {
-            loadDaftarByTiketLevel2("Buka");
-          } else {
-            loadDaftarSurvei();
+          switch (kondisi) {
+            case "Survei":
+              loadDaftarByTiketLevel2("Buka");
+              break;
+            case "Mandiri":
+              loadSurveiMandiriByPetugas();
+              break;
+            case "Daftar":
+              loadDaftarSurvei();
+              break;
           }
           break;
         case "Admin":
@@ -107,6 +120,49 @@ function DaftarScreen({ navigation, route }) {
               break;
             case "Selesai":
               loadPermohonanByStatus("Permohonan selesai");
+              break;
+            case "Mandiri":
+              loadSurveiMandiri();
+              break;
+            case "Keputusan":
+              loadPermohonanByStatus("Menunggu hasil keputusan");
+              break;
+          }
+          break;
+        case "Dinas Perhubungan":
+          context.toggleLoading(true);
+          switch (kondisi) {
+            case "Berlangsung":
+              loadDaftarByTiketLevel1();
+              break;
+            case "Selesai":
+              loadPermohonanByStatus("Permohonan selesai");
+              break;
+            case "Mandiri":
+              loadSurveiMandiri();
+              break;
+          }
+          break;
+        case "Super Admin":
+          context.toggleLoading(true);
+          switch (kondisi) {
+            case "Mandiri":
+              loadSurveiMandiri();
+              break;
+            case "Selesai":
+              loadPermohonanByStatus("Permohonan selesai");
+              break;
+            case "Diajukan":
+              loadDaftarByTiketLevel1();
+              break;
+            case "Pengawasan":
+              loadUsulanTindakan();
+              break;
+            case "Tertunda":
+              loadAllByTiketLevel2("Tunda");
+              break;
+            case "Survei":
+              loadAllByTiketLevel2("Buka");
               break;
           }
           break;
@@ -130,6 +186,63 @@ function DaftarScreen({ navigation, route }) {
           authRefreshToken(context, (response) => {
             if (response.status === 200) {
               loadPermohonanByStatus();
+            } else {
+              context.toggleLoading(false);
+            }
+          });
+          break;
+        default:
+          context.toggleLoading(false);
+          toggleGagal();
+          break;
+      }
+    });
+  };
+
+  const loadSurveiMandiriByPetugas = () => {
+    andalalinGetAllSurveiMandiriPetugas(
+      context.getUser().access_token,
+      (response) => {
+        switch (response.status) {
+          case 200:
+            (async () => {
+              const result = await response.json();
+              setPermohonan(result.data);
+              context.toggleLoading(false);
+            })();
+            break;
+          case 424:
+            authRefreshToken(context, (response) => {
+              if (response.status === 200) {
+                loadSurveiMandiriByPetugas();
+              } else {
+                context.toggleLoading(false);
+              }
+            });
+            break;
+          default:
+            context.toggleLoading(false);
+            toggleGagal();
+            break;
+        }
+      }
+    );
+  };
+
+  const loadSurveiMandiri = () => {
+    andalalinGetAllSurveiMandiri(context.getUser().access_token, (response) => {
+      switch (response.status) {
+        case 200:
+          (async () => {
+            const result = await response.json();
+            setPermohonan(result.data);
+            context.toggleLoading(false);
+          })();
+          break;
+        case 424:
+          authRefreshToken(context, (response) => {
+            if (response.status === 200) {
+              loadSurveiMandiri();
             } else {
               context.toggleLoading(false);
             }
@@ -318,12 +431,20 @@ function DaftarScreen({ navigation, route }) {
       case "User":
         return "Daftar permohonan";
       case "Operator":
-        return "Daftar permohonan";
+        switch (kondisi) {
+          case "Mandiri":
+            return "Daftar survei mandiri";
+          default:
+            return "Daftar permohonan";
+        }
       case "Petugas":
-        if (kondisi == "Survei") {
-          return "Daftar permohonan";
-        } else {
-          return "Daftar survei";
+        switch (kondisi) {
+          case "Survei":
+            return "Daftar permohonan";
+          case "Mandiri":
+            return "Daftar survei mandiri";
+          case "Daftar":
+            return "Daftar survei";
         }
       case "Admin":
         switch (kondisi) {
@@ -335,6 +456,34 @@ function DaftarScreen({ navigation, route }) {
             return "Daftar tunda";
           case "Selesai":
             return "Daftar permohonan";
+          case "Mandiri":
+            return "Daftar survei mandiri";
+          case "Keputusan":
+            return "Daftar permohonan";
+        }
+      case "Dinas Perhubungan":
+        switch (kondisi) {
+          case "Berlangsung":
+            return "Daftar permohonan";
+          case "Selesai":
+            return "Daftar permohonan";
+          case "Mandiri":
+            return "Daftar survei mandiri";
+        }
+      case "Super Admin":
+        switch (kondisi) {
+          case "Mandiri":
+            return "Daftar survei mandiri";
+          case "Selesai":
+            return "Daftar permohonan";
+          case "Diajukan":
+            return "Daftar permohonan";
+          case "Pengawasan":
+            return "Daftar usulan";
+          case "Tertunda":
+            return "Daftar tunda";
+          case "Survei":
+            return "Daftar permohonan";
         }
     }
   };
@@ -344,17 +493,34 @@ function DaftarScreen({ navigation, route }) {
       case "User":
         return navigation.push("Detail", { id: item.id_andalalin });
       case "Operator":
-        return navigation.push("Detail", { id: item.id_andalalin });
+        switch (kondisi) {
+          case "Mandiri":
+            return navigation.push("Detail Survei", {
+              id: item.IdSurvey,
+              kondisi: "Operator",
+              jenis: "Mandiri",
+            });
+          default:
+            return navigation.push("Detail", { id: item.id_andalalin });
+        }
       case "Petugas":
-        if (kondisi == "Survei") {
-          return navigation.push("Detail", {
-            id: item.id_andalalin,
-          });
-        } else {
-          return navigation.push("Detail Survei", {
-            id: item.id_andalalin,
-            kondisi: "Petugas",
-          });
+        switch (kondisi) {
+          case "Survei":
+            return navigation.push("Detail", {
+              id: item.id_andalalin,
+            });
+          case "Mandiri":
+            return navigation.push("Detail Survei", {
+              id: item.IdSurvey,
+              kondisi: "Petugas",
+              jenis: "Mandiri",
+            });
+          case "Daftar":
+            return navigation.push("Detail Survei", {
+              id: item.id_andalalin,
+              kondisi: "Petugas",
+              jenis: "Permohonan",
+            });
         }
       case "Admin":
         switch (kondisi) {
@@ -368,6 +534,50 @@ function DaftarScreen({ navigation, route }) {
             break;
           case "Selesai":
             return navigation.push("Detail", { id: item.id_andalalin });
+          case "Mandiri":
+            return navigation.push("Detail Survei", {
+              id: item.IdSurvey,
+              kondisi: "Admin",
+              jenis: "Mandiri",
+            });
+          case "Keputusan":
+            return navigation.push("Detail", { id: item.id_andalalin });
+        }
+      case "Dinas Perhubungan":
+        switch (kondisi) {
+          case "Berlangsung":
+            return navigation.push("Detail", { id: item.id_andalalin });
+          case "Selesai":
+            return navigation.push("Detail", { id: item.id_andalalin });
+          case "Mandiri":
+            return navigation.push("Detail Survei", {
+              id: item.IdSurvey,
+              kondisi: "Dinas perhubungan",
+              jenis: "Mandiri",
+            });
+        }
+      case "Super Admin":
+        switch (kondisi) {
+          case "Mandiri":
+            return navigation.push("Detail Survei", {
+              id: item.IdSurvey,
+              kondisi: "Dinas perhubungan",
+              jenis: "Mandiri",
+            });
+          case "Selesai":
+            return navigation.push("Detail", { id: item.id_andalalin });
+          case "Diajukan":
+            return navigation.push("Detail", { id: item.id_andalalin });
+          case "Pengawasan":
+            return navigation.push("Detail Usulan", { id: item.id_andalalin });
+          case "Tertunda":
+            setIdPermohonan(item.id_andalalin);
+            toggleLanjutkanModal();
+            break;
+          case "Survei":
+            return navigation.push("Detail", {
+              id: item.id_andalalin,
+            });
         }
     }
   };
@@ -377,12 +587,20 @@ function DaftarScreen({ navigation, route }) {
       case "User":
         return list("Detail", item);
       case "Operator":
-        return list("Detail", item);
+        switch (kondisi) {
+          case "Mandiri":
+            return list_survei_mandiri("Detail", item);
+          default:
+            return list("Detail", item);
+        }
       case "Petugas":
-        if (kondisi == "Survei") {
-          return list("Detail", item);
-        } else {
-          return list("Detail", item);
+        switch (kondisi) {
+          case "Survei":
+            return list("Detail", item);
+          case "Mandiri":
+            return list_survei_mandiri("Detail", item);
+          case "Daftar":
+            return list("Detail", item);
         }
       case "Admin":
         switch (kondisi) {
@@ -393,6 +611,34 @@ function DaftarScreen({ navigation, route }) {
           case "Tertunda":
             return list("Lanjutkan", item);
           case "Selesai":
+            return list("Detail", item);
+          case "Mandiri":
+            return list_survei_mandiri("Detail", item);
+          case "Keputusan":
+            return list("Detail", item);
+        }
+      case "Dinas Perhubungan":
+        switch (kondisi) {
+          case "Berlangsung":
+            return list("Detail", item);
+          case "Selesai":
+            return list("Detail", item);
+          case "Mandiri":
+            return list_survei_mandiri("Detail", item);
+        }
+      case "Super Admin":
+        switch (kondisi) {
+          case "Mandiri":
+            return list_survei_mandiri("Detail", item);
+          case "Selesai":
+            return list("Detail", item);
+          case "Diajukan":
+            return list("Detail", item);
+          case "Pengawasan":
+            return list("Detail", item);
+          case "Tertunda":
+            return list("Lanjutkan", item);
+          case "Survei":
             return list("Detail", item);
         }
     }
@@ -462,6 +708,23 @@ function DaftarScreen({ navigation, route }) {
     );
   };
 
+  const list_survei_mandiri = (text, item) => {
+    return (
+      <ACardPermohonan
+        style={{ marginBottom: 16 }}
+        tanggal={item.TanggalSurvei}
+        jenis={"Survei mandiri"}
+        status={item.StatusSurvei}
+        kode={item.Petugas}
+        pemohon={item.EmailPetugas}
+        title={text}
+        onPress={() => {
+          doPress(item);
+        }}
+      />
+    );
+  };
+
   const pelaksanaan = () => {
     if (context.getUser().role == "Admin" && kondisi == "Tertunda") {
       return (
@@ -487,13 +750,19 @@ function DaftarScreen({ navigation, route }) {
                   color={color.primary.primary600}
                   status={lanjutkanCheck === "Buka" ? "checked" : "unchecked"}
                 />
-                <AText
-                  style={{ paddingLeft: 4 }}
-                  size={14}
-                  color={color.neutral.neutral700}
+                <Pressable
+                  onPress={() => {
+                    setLanjutanCheck("Buka");
+                  }}
                 >
-                  Lanjutkan pelaksanaan
-                </AText>
+                  <AText
+                    style={{ paddingLeft: 4 }}
+                    size={14}
+                    color={color.neutral.neutral700}
+                  >
+                    Lanjutkan pelaksanaan
+                  </AText>
+                </Pressable>
               </View>
 
               <View
@@ -510,13 +779,19 @@ function DaftarScreen({ navigation, route }) {
                   color={color.primary.primary600}
                   status={lanjutkanCheck === "Batal" ? "checked" : "unchecked"}
                 />
-                <AText
-                  style={{ paddingLeft: 4 }}
-                  size={14}
-                  color={color.neutral.neutral700}
+                <Pressable
+                  onPress={() => {
+                    setLanjutanCheck("Batal");
+                  }}
                 >
-                  Batalkan pelaksanaan
-                </AText>
+                  <AText
+                    style={{ paddingLeft: 4 }}
+                    size={14}
+                    color={color.neutral.neutral700}
+                  >
+                    Batalkan pelaksanaan
+                  </AText>
+                </Pressable>
               </View>
             </RadioButton.Group>
 
@@ -599,7 +874,13 @@ function DaftarScreen({ navigation, route }) {
   return (
     <AScreen>
       <View style={styles.header}>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            paddingVertical: 8,
+          }}
+        >
           <ABackButton
             onPress={() => {
               setProgressViewOffset(-1000);
@@ -608,7 +889,7 @@ function DaftarScreen({ navigation, route }) {
             }}
           />
           <AText
-            style={{ paddingLeft: 8 }}
+            style={{ paddingLeft: 4 }}
             size={24}
             color={color.neutral.neutral900}
             weight="normal"
@@ -618,7 +899,9 @@ function DaftarScreen({ navigation, route }) {
         </View>
       </View>
       <View style={styles.content}>
-        {permohonan != "permohonan" ? (
+        {permohonan != "permohonan" &&
+        permohonan != null &&
+        permohonan.length != 0 ? (
           <FlatList
             data={permohonan}
             overScrollMode="never"
@@ -639,7 +922,7 @@ function DaftarScreen({ navigation, route }) {
         ) : (
           ""
         )}
-        {permohonan == null ? (
+        {permohonan == null || permohonan.length == 0 ? (
           <View
             style={{
               alignItems: "center",
@@ -689,7 +972,7 @@ function DaftarScreen({ navigation, route }) {
         btnOK={"OK"}
         onPressOKButton={() => {
           toggleGagal();
-          navigation.navigate("Home");
+          navigation.replace("Back Home");
         }}
       />
 
@@ -700,7 +983,7 @@ function DaftarScreen({ navigation, route }) {
         btnOK={"OK"}
         onPressOKButton={() => {
           toggleSurveiGagal();
-          navigation.navigate("Home");
+          navigation.replace("Back Home");
         }}
       />
 
@@ -711,7 +994,7 @@ function DaftarScreen({ navigation, route }) {
         btnOK={"OK"}
         onPressOKButton={() => {
           toggleUsulanGagal();
-          navigation.navigate("Home");
+          navigation.replace("Back Home");
         }}
       />
 
@@ -747,14 +1030,11 @@ function DaftarScreen({ navigation, route }) {
 }
 
 const styles = StyleSheet.create({
-  header: {
-    paddingTop: 16,
-    height: 64,
-  },
+  header: {},
   content: {
     flex: 1,
     paddingHorizontal: 16,
-    paddingTop: 16,
+    paddingBottom: 16,
   },
 });
 

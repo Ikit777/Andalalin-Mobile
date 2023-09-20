@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, View, Image, BackHandler } from "react-native";
 import AText from "../component/utility/AText";
 import color from "../constants/color";
@@ -22,7 +22,11 @@ function TentangScreen({ navigation }) {
     <AScreen>
       <View style={styles.header}>
         <View
-          style={{ flexDirection: "row", alignItems: "center" }}
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            paddingVertical: 8,
+          }}
         >
           <ABackButton
             onPress={() => {
@@ -30,7 +34,7 @@ function TentangScreen({ navigation }) {
             }}
           />
           <AText
-            style={{ paddingLeft: 8 }}
+            style={{ paddingLeft: 4}}
             size={24}
             color={color.neutral.neutral900}
             weight="normal"
@@ -43,7 +47,6 @@ function TentangScreen({ navigation }) {
         <View
           style={{
             paddingHorizontal: 5,
-            paddingTop: 10,
             flexDirection: "row",
             alignItems: "center",
           }}
@@ -77,12 +80,10 @@ function TentangScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  header: {
-    paddingTop: 16,
-    height: 64,
-  },
+  header: {},
   content: {
-    padding: 16,
+    paddingHorizontal: 16,
+    paddingBottom: 16,
   },
 });
 

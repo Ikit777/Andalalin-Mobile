@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import React, { useEffect, useState, useCallback, useContext } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 
 import * as Font from "expo-font";
@@ -18,7 +18,6 @@ import Navigator from "./app/navigation/Navigator";
 import ASessionEnd from "./app/component/utility/ASessionEnd";
 import { navigationRef } from "./app/navigation/RootNavigator";
 import ALoading from "./app/component/utility/ALoading";
-import { masterAndalalin } from "./app/api/master";
 
 export default function App() {
   const [isAppReady, setIsAppReady] = useState(false);
@@ -98,18 +97,7 @@ export default function App() {
 }
 
 function LoadMaster({ isLogged, user }) {
-  const { setDataMaster, setUser } = useMyContext();
-
-  const masterData = () => {
-    masterAndalalin((response) => {
-      if (response.status === 200) {
-        (async () => {
-          const result = await response.json();
-          setDataMaster(result.data);
-        })();
-      }
-    });
-  };
+  const { setUser } = useMyContext();
 
   const checkFirstTimeLaunch = () => {
     if (isLogged) {
@@ -118,7 +106,6 @@ function LoadMaster({ isLogged, user }) {
   };
 
   useEffect(() => {
-    masterData();
     checkFirstTimeLaunch();
   }, []);
 }

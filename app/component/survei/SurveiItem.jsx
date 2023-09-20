@@ -10,6 +10,7 @@ export default function SurveiItem({ navigation, route }) {
   const context = useContext(UserContext);
   const index = route.params.index;
   const id = route.params.id;
+  const kondisi = route.params.kondisi;
 
   const onGoToNext = () => {
     if (index < 3) {
@@ -18,7 +19,8 @@ export default function SurveiItem({ navigation, route }) {
 
       navigation.push("SurveiItem", {
         index: newIndex,
-        id: id
+        id: id,
+        kondisi,
       });
     }
   };
@@ -28,9 +30,16 @@ export default function SurveiItem({ navigation, route }) {
       case 1:
         return <Foto onPress={onGoToNext} />;
       case 2:
-        return <Lokasi onPress={onGoToNext} id={id}/>;
+        return <Lokasi onPress={onGoToNext} id={id} />;
       case 3:
-        return <Keterangan onPress={onGoToNext} id={id} navigation={navigation}/>;
+        return (
+          <Keterangan
+            onPress={onGoToNext}
+            id={id}
+            navigation={navigation}
+            kondisi={kondisi}
+          />
+        );
     }
   };
 
