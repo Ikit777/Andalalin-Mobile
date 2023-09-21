@@ -28,7 +28,7 @@ export default function SurveiItem({ navigation, route }) {
   const renderItem = () => {
     switch (index) {
       case 1:
-        return <Foto onPress={onGoToNext} />;
+        return <Foto onPress={onGoToNext} navigation={navigation} />;
       case 2:
         return <Lokasi onPress={onGoToNext} id={id} />;
       case 3:

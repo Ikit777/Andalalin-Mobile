@@ -9,7 +9,7 @@ import AButton from "../utility/AButton";
 import AText from "../utility/AText";
 import { Feather } from "@expo/vector-icons";
 
-function Foto({ onPress }) {
+function Foto({ onPress, navigation }) {
   const {
     survei: { foto1, foto2, foto3, namaFoto1, namaFoto2, namaFoto3 },
     setSurvei,
@@ -91,7 +91,7 @@ function Foto({ onPress }) {
           }}
         />
 
-        <Pressable style={{ padding: 8, marginTop: 30 }}>
+        <Pressable style={{ padding: 8, marginTop: 30 }} onPress={() => {navigation.push("Kamera")}}>
           <Feather
             style={{ paddingRight: 14 }}
             name={"camera"}
