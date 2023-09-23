@@ -18,6 +18,7 @@ import { UserContext } from "../context/UserContext";
 import DetailUser from "../component/detail/DetailUser";
 import DetailNonUser from "../component/detail/DetailNonUser";
 import { useFocusEffect } from "@react-navigation/native";
+import ASnackBar from "../component/utility/ASnackBar";
 
 function DetailScreen({ navigation, route }) {
   const context = useContext(UserContext);
@@ -255,6 +256,17 @@ function DetailScreen({ navigation, route }) {
       >
         {data != "permohonan" ? detail() : ""}
       </ScrollView>
+      <View style={{paddingHorizontal: 16}}>
+        {context.isSnackbarVisible ? (
+          <ASnackBar
+            visible={context.isSnackbarVisible}
+            message={context.message}
+          />
+        ) : (
+          ""
+        )}
+      </View>
+
       <ADialog
         title={"Permohoman gagal dimuat"}
         desc={"Terjadi kesalahan pada server kami, mohon coba lagi lain waktu"}

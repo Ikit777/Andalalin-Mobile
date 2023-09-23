@@ -9,7 +9,7 @@ import AButton from "../utility/AButton";
 import AText from "../utility/AText";
 import { Feather } from "@expo/vector-icons";
 
-function Foto({ onPress, navigation }) {
+function Foto({ onPress, navigation, kondisi, id }) {
   const {
     survei: { foto1, foto2, foto3, namaFoto1, namaFoto2, namaFoto3 },
     setSurvei,
@@ -91,7 +91,16 @@ function Foto({ onPress, navigation }) {
           }}
         />
 
-        <Pressable style={{ padding: 8, marginTop: 30 }} onPress={() => {navigation.push("Kamera")}}>
+        <Pressable
+          style={{ padding: 8, marginTop: 30 }}
+          onPress={() => {
+            navigation.push("Kamera", {
+              kondisi: "foto1",
+              jenis: kondisi,
+              id: id,
+            });
+          }}
+        >
           <Feather
             style={{ paddingRight: 14 }}
             name={"camera"}
@@ -125,11 +134,24 @@ function Foto({ onPress, navigation }) {
           mult={true}
           width={true}
           onPress={() => {
-            pilih_foto(2);
+            if (foto1 != "Kosong") {
+              pilih_foto(2);
+            }
           }}
         />
 
-        <Pressable style={{ padding: 8, marginTop: 50 }}>
+        <Pressable
+          style={{ padding: 8, marginTop: 50 }}
+          onPress={() => {
+            if (foto1 != "Kosong") {
+              navigation.push("Kamera", {
+                kondisi: "foto2",
+                jenis: kondisi,
+                id: id,
+              });
+            }
+          }}
+        >
           <Feather
             style={{ paddingRight: 14 }}
             name={"camera"}
@@ -150,11 +172,24 @@ function Foto({ onPress, navigation }) {
           mult={true}
           width={true}
           onPress={() => {
-            pilih_foto(3);
+            if (foto1 != "Kosong") {
+              pilih_foto(3);
+            }
           }}
         />
 
-        <Pressable style={{ padding: 8, marginTop: 50 }}>
+        <Pressable
+          style={{ padding: 8, marginTop: 50 }}
+          onPress={() => {
+            if (foto1 != "Kosong") {
+              navigation.push("Kamera", {
+                kondisi: "foto3",
+                jenis: kondisi,
+                id: id,
+              });
+            }
+          }}
+        >
           <Feather
             style={{ paddingRight: 14 }}
             name={"camera"}

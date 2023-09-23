@@ -32,15 +32,18 @@ const ATextInput = React.forwardRef((props, ref) => {
           keyboardType={props.ktype}
           selectionColor={color.neutral.neutral400}
           autoComplete="off"
+          autoCapitalize="none"
+          inputMode={props.inputMode}
           multiline={props.multi}
           numberOfLines={props.max}
           textAlignVertical="top"
           returnKeyType={props.rtype}
           onSubmitEditing={props.submit}
+          onBlur={props.onBlur}
           ref={ref}
           blurOnSubmit={props.blur}
           underlineColorAndroid="transparent"
-        ></TextInput>
+        />
       </View>
     </View>
   );

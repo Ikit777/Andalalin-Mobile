@@ -1,27 +1,30 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { StyleSheet, View, Pressable } from "react-native";
 import color from "../../constants/color";
 import AText from "../utility/AText";
 import ADetailView from "../utility/ADetailView";
 import { useStateToggler } from "../../hooks/useUtility";
-import ASnackBar from "../utility/ASnackBar";
 import AConfirmationDialog from "../utility/AConfirmationDialog";
 import * as FileSystem from "expo-file-system";
 import { StorageAccessFramework } from "expo-file-system";
 import AButton from "../utility/AButton";
 import { UserContext } from "../../context/UserContext";
+import { andalalinCekSurveiKepuasan } from "../../api/andalalin";
+import { authRefreshToken } from "../../api/auth";
 
 function DetailUser({ permohonan, navigation }) {
   const context = useContext(UserContext);
   const [konfirmasi, toggleKonfirmasi] = useStateToggler();
-  const [message, setMessage] = useState();
-  const [isSnackbarVisible, setSnackbarVisible] = useStateToggler();
   const [file, setFile] = useState();
   const [namaFile, setNamaFile] = useState();
+  const [survei, setSurvei] = useState();
+  const [surveiDialog, toggleSurveiDialog] = useStateToggler();
 
   const status = () => {
     switch (permohonan.status_andalalin) {
       case "Persyaratan tidak terpenuhi":
+        return color.error.error50;
+      case "Permohonan dibatalkan":
         return color.error.error50;
       case "Permohonan selesai":
         return color.success.success50;
@@ -34,6 +37,8 @@ function DetailUser({ permohonan, navigation }) {
     switch (permohonan.status_andalalin) {
       case "Persyaratan tidak terpenuhi":
         return color.error.error700;
+      case "Permohonan dibatalkan":
+        return color.error.error700;
       case "Permohonan selesai":
         return color.success.success700;
       default:
@@ -42,10 +47,21 @@ function DetailUser({ permohonan, navigation }) {
   };
 
   const showSnackbar = () => {
-    setSnackbarVisible();
+    context.setSnackbarVisible(true);
     setTimeout(() => {
-      setSnackbarVisible();
+      context.setSnackbarVisible(false);
     }, 3000);
+  };
+
+  const uriFile = async () => {
+    const permissions =
+      await StorageAccessFramework.requestDirectoryPermissionsAsync();
+    if (!permissions.granted) {
+      return;
+    }
+
+    context.setUri(permissions.directoryUri);
+    toggleSurveiDialog();
   };
 
   const download = async () => {
@@ -68,14 +84,63 @@ function DetailUser({ permohonan, navigation }) {
       })
       .catch(() => {
         context.toggleLoading(false);
-        setMessage("Berkas gagal di download");
+        context.setMessage("Berkas gagal di download");
         showSnackbar();
       })
       .finally(() => {
         context.toggleLoading(false);
-        setMessage("Berkas berhasil di download");
+        context.setMessage("Berkas berhasil di download");
         showSnackbar();
       });
+  };
+
+  useEffect(() => {
+    if (permohonan != "permohonan" && permohonan.file_sk != null) {
+      cek();
+    }
+  }, [permohonan]);
+
+  const cek = () => {
+    andalalinCekSurveiKepuasan(
+      context.getUser().access_token,
+      permohonan.id_andalalin,
+      (response) => {
+        switch (response.status) {
+          case 200:
+            setSurvei(true);
+            if (context.uri != null) {
+              (async () => {
+                await StorageAccessFramework.createFileAsync(
+                  context.uri,
+                  "Surat keputusan permohonan " +
+                    permohonan.kode_andalalin +
+                    ".pdf",
+                  "application/pdf"
+                ).then(async (uri) => {
+                  await FileSystem.writeAsStringAsync(uri, permohonan.file_sk, {
+                    encoding: FileSystem.EncodingType.Base64,
+                  });
+                  context.setUri();
+                  context.setMessage("Berkas berhasil di download");
+                  showSnackbar();
+                });
+              })();
+            }
+
+            break;
+          case 424:
+            authRefreshToken(context, (response) => {
+              if (response.status === 200) {
+                cek();
+              }
+            });
+            break;
+          default:
+            setSurvei(false);
+            break;
+        }
+      }
+    );
   };
 
   const perlalin = () => {
@@ -114,7 +179,10 @@ function DetailUser({ permohonan, navigation }) {
           </AText>
         </ADetailView>
 
-        <ADetailView style={{ marginTop: 20 }} title={"Kategori perlengkapan lalu lintas"}>
+        <ADetailView
+          style={{ marginTop: 20 }}
+          title={"Kategori perlengkapan lalu lintas"}
+        >
           <AText
             style={{ padding: 16 }}
             size={12}
@@ -125,7 +193,10 @@ function DetailUser({ permohonan, navigation }) {
           </AText>
         </ADetailView>
 
-        <ADetailView style={{ marginTop: 20 }} title={"Jenis perlengkapan lalu lintas"}>
+        <ADetailView
+          style={{ marginTop: 20 }}
+          title={"Jenis perlengkapan lalu lintas"}
+        >
           <AText
             style={{ padding: 16 }}
             size={12}
@@ -346,7 +417,10 @@ function DetailUser({ permohonan, navigation }) {
           </AText>
         </ADetailView>
 
-        <ADetailView style={{ marginTop: 20 }} title={"Kategori rencana pembangunan"}>
+        <ADetailView
+          style={{ marginTop: 20 }}
+          title={"Kategori rencana pembangunan"}
+        >
           <AText
             style={{ padding: 16 }}
             size={12}
@@ -357,7 +431,10 @@ function DetailUser({ permohonan, navigation }) {
           </AText>
         </ADetailView>
 
-        <ADetailView style={{ marginTop: 20 }} title={"Jenis rencana pembangunan"}>
+        <ADetailView
+          style={{ marginTop: 20 }}
+          title={"Jenis rencana pembangunan"}
+        >
           <AText
             style={{ padding: 16 }}
             size={12}
@@ -479,7 +556,7 @@ function DetailUser({ permohonan, navigation }) {
               {permohonan.nama_perusahaan}
             </AText>
           </View>
-          
+
           <View style={styles.separator} />
           <View
             style={{
@@ -563,13 +640,17 @@ function DetailUser({ permohonan, navigation }) {
                 <Pressable
                   style={{ flexDirection: "row", paddingLeft: 4 }}
                   onPress={() => {
-                    setNamaFile(
-                      "Surat keputusan permohonan " +
-                        permohonan.kode_andalalin +
-                        ".pdf"
-                    );
-                    setFile(permohonan.file_sk);
-                    toggleKonfirmasi();
+                    if (survei && survei != null) {
+                      setNamaFile(
+                        "Surat keputusan permohonan " +
+                          permohonan.kode_andalalin +
+                          ".pdf"
+                      );
+                      setFile(permohonan.file_sk);
+                      toggleKonfirmasi();
+                    } else {
+                      uriFile();
+                    }
                   }}
                 >
                   <AText
@@ -624,13 +705,25 @@ function DetailUser({ permohonan, navigation }) {
           }, 500);
         }}
       />
-      <View>
-        {isSnackbarVisible ? (
-          <ASnackBar visible={isSnackbarVisible} message={message} />
-        ) : (
-          ""
-        )}
-      </View>
+
+      <AConfirmationDialog
+        title={"Download"}
+        desc={
+          "Sebelum mendownload berkas surat keputusan Anda harus mengisi survei kepuasan terlebih dahulu "
+        }
+        visibleModal={surveiDialog}
+        btnOK={"OK"}
+        btnBATAL={"Batal"}
+        onPressBATALButton={() => {
+          toggleSurveiDialog();
+        }}
+        onPressOKButton={() => {
+          toggleSurveiDialog();
+          context.clearSurveiKepuasan();
+          context.setIndexSurvei(1);
+          navigation.push("Survei Kepuasan", { id: permohonan.id_andalalin });
+        }}
+      />
     </View>
   );
 }

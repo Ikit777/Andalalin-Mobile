@@ -119,7 +119,6 @@ function Keterangan({ navigation, id, kondisi }) {
                 simpan_mandiri();
               } else {
                 context.toggleLoading(false);
-                toggleKirimGagal();
               }
             });
             break;

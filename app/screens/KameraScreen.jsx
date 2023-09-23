@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import {
   StyleSheet,
   View,
@@ -6,6 +6,9 @@ import {
   TouchableOpacity,
   Dimensions,
   Platform,
+  TouchableHighlight,
+  Pressable,
+  PermissionsAndroid,
 } from "react-native";
 import AText from "../component/utility/AText";
 import color from "../constants/color";
@@ -16,15 +19,19 @@ import { Feather } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import ImageViewer from "react-native-image-zoom-viewer";
 import { manipulateAsync, FlipType, SaveFormat } from "expo-image-manipulator";
+import { UserContext } from "../context/UserContext";
+import ADialog from "../component/utility/ADialog";
+import { useStateToggler } from "../hooks/useUtility";
 
-function KameraScreen({ navigation }) {
-  const [permission, requestPermission] = Camera.useCameraPermissions();
+function KameraScreen({ navigation, route }) {
+  const kondisi = route.params.kondisi;
+  const jenis = route.params.jenis;
+  const id = route.params.id;
   let cameraRef = useRef(null);
   const [capturedPhoto, setCapturedPhoto] = useState(null);
   const [flashMode, setFlashMode] = useState("off");
-  const [cameraType, setCameraType] = React.useState(
-    Camera.Constants.Type.back
-  );
+  const [permission, setPermission] = useState();
+  const [cameraType, setCameraType] = useState(Camera.Constants.Type.back);
 
   const [imagePadding, setImagePadding] = useState(0);
   const [ratio, setRatio] = useState("4:3");
@@ -34,21 +41,38 @@ function KameraScreen({ navigation }) {
 
   const [isReady, setIsReady] = useState(false);
 
-  useEffect(() => {
-    BackHandler.addEventListener("hardwareBackPress", () => {
-      navigation.goBack();
-      return true;
-    });
+  const { setSurvei } = useContext(UserContext);
 
-    return BackHandler.removeEventListener("hardwareBackPress", () => {
-      navigation.goBack();
-      return true;
-    });
-  }, []);
+  const [permissionDialog, togglePermissionDialog] = useStateToggler();
 
   useEffect(() => {
-    requestPermission();
-  }, []);
+    const unsubscribe = navigation.addListener("focus", () => {
+      BackHandler.addEventListener("hardwareBackPress", () => {
+        navigation.replace("Back Survei", { id: id, kondisi: jenis });
+        return true;
+      });
+
+      return BackHandler.removeEventListener("hardwareBackPress", () => {
+        navigation.replaces("Back Survei", { id: id, kondisi: jenis });
+        return true;
+      });
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      (async () => {
+        const hasPermission = await hasPermissionCamera();
+        setPermission(hasPermission);
+
+        console.log(hasPermission);
+      })();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   useEffect(() => {
     (async () => {
@@ -60,14 +84,10 @@ function KameraScreen({ navigation }) {
 
   const prepareRatio = async () => {
     setCameraType("back");
-    let desiredRatio = "4:3"; // Start with the system default
-    // This issue only affects Android
-    if (Platform.OS === "android") {
-      const ratios = await cameraRef.getSupportedRatiosAsync();
+    let desiredRatio = "4:3";
+    if (Platform.OS === "android" && cameraRef.current) {
+      const ratios = await cameraRef.current.getSupportedRatiosAsync();
 
-      // Calculate the width/height of each of the supported camera ratios
-      // These width/height are measured in landscape mode
-      // find the ratio that is closest to the screen ratio without going over
       let distances = {};
       let realRatios = {};
       let minDistance = null;
@@ -75,7 +95,6 @@ function KameraScreen({ navigation }) {
         const parts = ratio.split(":");
         const realRatio = parseInt(parts[0]) / parseInt(parts[1]);
         realRatios[ratio] = realRatio;
-        // ratio can't be taller than screen, so we don't want an abs()
         const distance = screenRatio - realRatio;
         distances[ratio] = realRatio;
         if (minDistance == null) {
@@ -86,17 +105,12 @@ function KameraScreen({ navigation }) {
           }
         }
       }
-      // set the best match
       desiredRatio = minDistance;
-      //  calculate the difference between the camera width and the screen height
       const remainder = Math.floor(
         (height - realRatios[desiredRatio] * width) / 2
       );
-      // set the preview padding and preview ratio
       setImagePadding(remainder);
       setRatio(desiredRatio);
-      // Set a flag so we don't do this
-      // calculation each time the screen refreshes
       setIsRatioSet(true);
     }
   };
@@ -122,8 +136,8 @@ function KameraScreen({ navigation }) {
   };
 
   const capturePhoto = async () => {
-    if (cameraRef) {
-      const photo = await cameraRef.takePictureAsync();
+    if (cameraRef.current) {
+      let photo = await cameraRef.current.takePictureAsync();
 
       if (cameraType === "front") {
         photo = await manipulateAsync(
@@ -133,23 +147,18 @@ function KameraScreen({ navigation }) {
         );
       }
 
-      // Generate a unique file name
-      const fileName = `photo_${Date.now()}.jpeg`;
+      const fileName = `${Date.now()}.jpeg`;
 
-      // Create a directory for saved images (optional)
       const directory = `${FileSystem.documentDirectory}photos/`;
       await FileSystem.makeDirectoryAsync(directory, { intermediates: true });
 
-      // Build the URI for the saved image
       const uri = `${directory}${fileName}`;
 
-      // Move the photo to the specified URI
       await FileSystem.moveAsync({
         from: photo.uri,
         to: uri,
       });
 
-      // Set the captured photo's URI and name
       setCapturedPhoto({ uri, fileName });
       if (flashMode === "torch") {
         setFlashMode("off");
@@ -157,9 +166,57 @@ function KameraScreen({ navigation }) {
     }
   };
 
+  const pilih = () => {
+    switch (kondisi) {
+      case "foto1":
+        setSurvei({
+          foto1: capturedPhoto.uri,
+          namaFoto1: capturedPhoto.fileName,
+        });
+        navigation.push("Back Survei", { id: id, kondisi: jenis });
+        break;
+      case "foto2":
+        setSurvei({
+          foto2: capturedPhoto.uri,
+          namaFoto2: capturedPhoto.fileName,
+        });
+        navigation.push("Back Survei", { id: id, kondisi: jenis });
+        break;
+      case "foto3":
+        setSurvei({
+          foto3: capturedPhoto.uri,
+          namaFoto3: capturedPhoto.fileName,
+        });
+        navigation.push("Back Survei", { id: id, kondisi: jenis });
+        break;
+    }
+  };
+
+  const hasPermissionCamera = async () => {
+    const hasPermission = await PermissionsAndroid.check(
+      PermissionsAndroid.PERMISSIONS.CAMERA
+    );
+
+    if (hasPermission) {
+      return true;
+    }
+
+    const status = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.CAMERA
+    );
+
+    if (status === PermissionsAndroid.RESULTS.GRANTED) {
+      return true;
+    }
+
+    return false;
+  };
+
   return (
     <AScreen>
-      {capturedPhoto == null ? (
+      {capturedPhoto == null &&
+      permission != undefined &&
+      permission != false ? (
         <View style={{ backgroundColor: "#000", flex: 1 }}>
           <Camera
             style={{ flex: 1, marginVertical: imagePadding }}
@@ -167,9 +224,7 @@ function KameraScreen({ navigation }) {
             flashMode={flashMode}
             autoFocus="on"
             focusable
-            ref={(r) => {
-              cameraRef = r;
-            }}
+            ref={cameraRef}
             onCameraReady={() => {
               setIsReady(true);
             }}
@@ -263,7 +318,9 @@ function KameraScreen({ navigation }) {
       ) : (
         ""
       )}
-      {capturedPhoto && (
+      {capturedPhoto != null &&
+      permission != undefined &&
+      permission != false ? (
         <View style={{ flex: 1 }}>
           <ImageViewer
             imageUrls={[{ url: capturedPhoto.uri }]}
@@ -272,7 +329,72 @@ function KameraScreen({ navigation }) {
             maxOverflow={0}
             saveToLocalByLongPress={false}
           />
+          <View
+            style={{
+              alignSelf: "center",
+              flex: 1,
+              alignItems: "center",
+              position: "absolute",
+              top: 20,
+              right: 20,
+              padding: 8,
+            }}
+          >
+            <Pressable
+              onPress={() => {
+                setCapturedPhoto();
+              }}
+            >
+              <Feather name={"x"} size={24} color={color.neutral.neutral900} />
+            </Pressable>
+          </View>
+          <View
+            style={{
+              alignSelf: "center",
+              flex: 1,
+              alignItems: "center",
+              position: "absolute",
+              bottom: 30,
+            }}
+          >
+            <TouchableHighlight
+              onPress={() => {
+                pilih();
+              }}
+              style={{
+                backgroundColor: "#fff",
+                alignItems: "center",
+                justifyContent: "center",
+                paddingHorizontal: 32,
+                paddingVertical: 10,
+                borderRadius: 8,
+                backgroundColor: color.primary.primary500,
+              }}
+              underlayColor={color.primary.primary600}
+            >
+              <AText size={16} color={color.text.white} weight="semibold">
+                Pilih
+              </AText>
+            </TouchableHighlight>
+          </View>
         </View>
+      ) : (
+        ""
+      )}
+
+      {permission != null ? (
+        <ADialog
+          title={"Izin kamera"}
+          desc={"Izin kamera pada perangkat Anda belum di aktifkan"}
+          visibleModal={!permission}
+          btnOK={"OK"}
+          onPressOKButton={() => {
+            setPermission(false);
+            navigation.replace("Back Survei", { id: id, kondisi: jenis });
+          }}
+        />
+      ) : (
+        ""
       )}
     </AScreen>
   );

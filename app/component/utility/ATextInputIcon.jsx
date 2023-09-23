@@ -26,6 +26,7 @@ const ATextInputIcon = React.forwardRef((props, ref) => {
           value={props.value}
           multiline={props.mult}
           placeholder={props.hint}
+          autoCapitalize="none"
           textAlignVertical="top"
           autoComplete="off"
           ref={ref}

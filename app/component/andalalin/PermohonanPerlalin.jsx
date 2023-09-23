@@ -128,13 +128,14 @@ function PermohonanPerlalin({ onPress }) {
       style={styles.content}
       showsVerticalScrollIndicator={false}
       persistentScrollbar={true}
+      nestedScrollEnabled={true}
     >
       <ADropDownCostume
         judul={"Kategori perlengkapan"}
         hint={"Pilih kategori"}
         data={kategoriData}
         selected={setKategoriPerlalin}
-        max={200}
+        max={250}
         saved={kategoriPerlalin}
         bdColor={
           kategoriError ? color.error.error300 : color.neutral.neutral300
@@ -161,7 +162,7 @@ function PermohonanPerlalin({ onPress }) {
           data={jenisData}
           setData={setJenisData}
           dataDefault={jenisDataDefault}
-          max={200}
+          max={400}
           padding={20}
           kategori={kategoriPerlalin}
           selected={setJenisPerlengkapan}
@@ -204,7 +205,7 @@ function PermohonanPerlalin({ onPress }) {
         hint={"Pilih lokasi"}
         data={lokasi}
         selected={setLokasi}
-        max={200}
+        max={250}
         padding={20}
         saved={lokasiPengambilan}
         bdColor={lokasiError ? color.error.error300 : color.neutral.neutral300}

@@ -53,6 +53,10 @@ const environments = {
       PERLALIN_LAPORAN_SURVEI: url + "/api/v1/andalalin/laporansurvei",
       PERLALIN_KEPUTUSAN_HASIL: url + "/api/v1/andalalin/keputusanhasil",
 
+      CEK_SURVEI_KEPUASAN: url + "/api/v1/andalalin/ceksurveikepuasan",
+      SURVEI_KEPUASAN: url + "/api/v1/andalalin/surveikepuasan",
+      HASIL_SURVEI_KEPUASAN: url + "/api/v1/andalalin/hasilsurveikepuasan",
+
       SURVEI_MANDIRI: url + "/api/v1/andalalin/surveimandiri",
       ALL_SURVEI_MANDIRI: url + "/api/v1/andalalin/daftarsurveimandiri",
       DETAIL_SURVEI_MANDIRI: url + "/api/v1/andalalin/detailsurveimandiri",

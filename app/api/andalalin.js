@@ -412,6 +412,7 @@ export const andalalinSimpanSK = async (
 
 export const andalalinSimpanKeputusan = async (
   accessToken,
+  id,
   keputusan,
   pertimbangan,
   andalalinRespone
@@ -680,5 +681,55 @@ export const andalalinTerimaSurveiMandiri = async (
       },
     }
   );
+  andalalinRespone(response);
+};
+
+export const andalalinCekSurveiKepuasan = async (
+  accessToken,
+  id,
+  andalalinRespone
+) => {
+  const response = await fetch(ENDPOINTS.CEK_SURVEI_KEPUASAN + "/" + id, {
+    method: "GET",
+    headers: {
+      Authorization: "Bearer " + accessToken,
+      "Content-Type": "application/json",
+    },
+  });
+  andalalinRespone(response);
+};
+
+export const andalalinHasilSurveiKepuasan = async (
+  accessToken,
+  andalalinRespone
+) => {
+  const response = await fetch(ENDPOINTS.HASIL_SURVEI_KEPUASAN, {
+    method: "GET",
+    headers: {
+      Authorization: "Bearer " + accessToken,
+      "Content-Type": "application/json",
+    },
+  });
+  andalalinRespone(response);
+};
+
+export const andalalinSurveiKepuasan = async (
+  accessToken,
+  id,
+  kritik,
+  data,
+  andalalinRespone
+) => {
+  const response = await fetch(ENDPOINTS.SURVEI_KEPUASAN + "/" + id, {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer " + accessToken,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      saran: kritik,
+      data: data,
+    }),
+  });
   andalalinRespone(response);
 };

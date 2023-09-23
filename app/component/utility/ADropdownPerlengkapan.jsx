@@ -42,6 +42,7 @@ function ADropDownPerlengkapan({
   const [rambu, setRambu] = useState();
   const [load, toggleLoad] = useState(false);
   const [pencarian, setPencarian] = useState();
+  const [viewHeight, setViewHeight] = useState();
 
   const toggleView = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -63,10 +64,14 @@ function ADropDownPerlengkapan({
     toggleLoad(false);
   }, [kategori]);
 
+  useEffect(() => {
+    console.log(viewHeight);
+  }, [viewHeight]);
+
   const handleAllItemsRendered = () => {
     setTimeout(() => {
       toggleLoad(true);
-    }, 1000);
+    }, 1500);
   };
 
   const search = (perlengkapan) => {
@@ -80,6 +85,57 @@ function ADropDownPerlengkapan({
       setData(dataDefault);
       setPencarian(perlengkapan);
     }
+  };
+
+  const onViewLayout = (event) => {
+    const height = event.nativeEvent.layout.height;
+    setViewHeight(height);
+  };
+
+  const getMax = () => {
+    return (
+      <View
+        onLayout={onViewLayout}
+        style={{
+          paddingTop: 10,
+          paddingBottom: 6,
+          position: "absolute",
+          backgroundColor: color.text.trans,
+        }}
+      >
+        {data.map(
+          (item, index) =>
+            index < 6 && (
+              <TouchableOpacity
+                style={{ backgroundColor: color.text.trans }}
+                key={index}
+                disabled
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    paddingVertical: 6,
+                  }}
+                >
+                  <View
+                    style={{
+                      height: 40,
+                    }}
+                  />
+                  <AText
+                    style={{ paddingLeft: 8, width: "90%" }}
+                    size={16}
+                    color={color.text.trans}
+                  >
+                    {item.value}
+                  </AText>
+                </View>
+              </TouchableOpacity>
+            )
+        )}
+      </View>
+    );
   };
 
   return (
@@ -135,6 +191,7 @@ function ADropDownPerlengkapan({
                 }}
                 allowFontScaling={false}
                 value={pencarian}
+                autoCapitalize="none"
                 placeholder="Pencarian"
                 keyboardType="default"
                 selectionColor={color.neutral.neutral400}
@@ -211,11 +268,12 @@ function ADropDownPerlengkapan({
             borderColor: color.neutral.neutral300,
           }}
         >
+          {getMax()}
           <ScrollView
             style={{
               borderRadius: 8,
               backgroundColor: color.text.white,
-              maxHeight: max,
+              maxHeight: viewHeight,
             }}
             onContentSizeChange={handleAllItemsRendered}
             contentContainerStyle={{
@@ -225,6 +283,7 @@ function ADropDownPerlengkapan({
             }}
             showsVerticalScrollIndicator={false}
             persistentScrollbar={true}
+            nestedScrollEnabled={true}
           >
             {!load ? (
               <View>

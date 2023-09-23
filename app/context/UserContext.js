@@ -93,6 +93,22 @@ const surveiInit = {
   keterangan: "",
 };
 
+const kepuasanInit = [
+  { Jenis: "Persyaratan pelayanan", Nilai: "" },
+  { Jenis: "Prosedur pelayanan", Nilai: "" },
+  { Jenis: "Waktu pelayanan", Nilai: "" },
+  { Jenis: "Biaya / tarif pelayanan", Nilai: "" },
+  { Jenis: "Produk pelayanan", Nilai: "" },
+  { Jenis: "Kompetensi pelaksana", Nilai: "" },
+  { Jenis: "Perilaku / sikap petugas", Nilai: "" },
+  { Jenis: "Maklumat pelayanan", Nilai: "" },
+  { Jenis: "Ketersediaan sarana pengaduan", Nilai: "" },
+];
+
+const saran = {
+  kritik: "",
+};
+
 export function UserProvider({ children }) {
   const [loading, toggleLoading] = useState(true);
 
@@ -105,6 +121,8 @@ export function UserProvider({ children }) {
 
   const [indexSurvei, setIndexSurvei] = useState(1);
   const [survei, setSurvei] = useReducer(reducer, surveiInit);
+  const [kepuasan, setKepuasan] = useState(kepuasanInit);
+  const [kritik, setKritik] = useReducer(reducer, saran);
 
   const notificationListener = useRef();
   const responseListener = useRef();
@@ -114,6 +132,11 @@ export function UserProvider({ children }) {
   const [dataMaster, setDataMaster] = useState("master");
 
   const [check, setCheck] = useState();
+
+  const [uri, setUri] = useState();
+
+  const [isSnackbarVisible, setSnackbarVisible] = useState(false);
+  const [message, setMessage] = useState();
 
   Notifications.setNotificationHandler({
     handleNotification: async () => ({
@@ -151,6 +174,12 @@ export function UserProvider({ children }) {
   const clearSurvei = () => {
     setIndexSurvei(1);
     setSurvei(surveiInit);
+  };
+
+  const clearSurveiKepuasan = () => {
+    setIndexSurvei(1);
+    setKepuasan(kepuasanInit);
+    setKritik(saran);
   };
 
   const getUser = () => {
@@ -207,6 +236,17 @@ export function UserProvider({ children }) {
         survei,
         setSurvei,
         clearSurvei,
+        kepuasan,
+        setKepuasan,
+        clearSurveiKepuasan,
+        kritik,
+        setKritik,
+        uri,
+        setUri,
+        isSnackbarVisible,
+        setSnackbarVisible,
+        message,
+        setMessage,
       }}
     >
       {children}

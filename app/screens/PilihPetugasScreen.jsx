@@ -247,6 +247,7 @@ function PilihPetugasScreen({ navigation, route }) {
               placeholder="Pencarian nama"
               selectionColor={color.neutral.neutral400}
               autoComplete="off"
+              autoCapitalize="none"
               returnKeyType="search"
               value={pencarian}
               onChangeText={(value) => {

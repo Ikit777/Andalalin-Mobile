@@ -1,31 +1,28 @@
 import React, { useEffect, useState, useContext } from "react";
-import { StyleSheet, View, BackHandler } from "react-native";
+import { StyleSheet, View, BackHandler, Pressable } from "react-native";
 import AText from "../component/utility/AText";
 import color from "../constants/color";
 import AScreen from "../component/utility/AScreen";
 import ABackButton from "../component/utility/ABackButton";
-import { useStateToggler } from "../hooks/useUtility";
-import { UserContext } from "../context/UserContext";
 import AProgressBar from "../component/utility/AProgressBar";
 import AConfirmationDialog from "../component/utility/AConfirmationDialog";
-import SurveiNavigator from "../component/survei/SurveiNavigator";
+import { useStateToggler } from "../hooks/useUtility";
+import { UserContext } from "../context/UserContext";
+import KepuasanNavigator from "../component/kepuasan/KepuasnNavigator";
+import { Feather } from "@expo/vector-icons";
 
-function SurveiScreen({ navigation, route }) {
+function SurveiKepuasanUserScreen({ navigation, route }) {
+  const id = route.params.id;
   const [confirm, toggleComfirm] = useStateToggler();
   const context = useContext(UserContext);
 
-  const id = route.params.id;
-  const kondisi = route.params.kondisi;
-
   useEffect(() => {
     BackHandler.addEventListener("hardwareBackPress", () => {
-      navigation.setOptions({ animation: "slide_from_right" });
       back();
       return true;
     });
 
     return BackHandler.removeEventListener("hardwareBackPress", () => {
-      navigation.setOptions({ animation: "slide_from_right" });
       back();
       return true;
     });
@@ -38,26 +35,28 @@ function SurveiScreen({ navigation, route }) {
       const newIndex = context.indexSurvei - 1;
       context.setIndexSurvei(newIndex);
 
-      navigation.replace("Back", {
+      navigation.replace("Back Kepuasan", {
         index: newIndex,
+        id: id,
       });
     }
   };
 
-  const judul = () => {
-    switch (context.indexSurvei) {
-      case 1:
-        return "Upload foto";
-      case 2:
-        return "Lokasi survei";
-      case 3:
-        return "Keterangan";
+  const onGoToNext = () => {
+    if (context.indexSurvei < 10) {
+      const newIndex = context.indexSurvei + 1;
+      context.setIndexSurvei(newIndex);
+
+      navigation.push("KepuasanItem", {
+        index: newIndex,
+        id: id,
+      });
     }
   };
 
   return (
     <AScreen>
-      <View style={styles.header}>
+      <View>
         <View
           style={{
             flexDirection: "row",
@@ -67,17 +66,7 @@ function SurveiScreen({ navigation, route }) {
         >
           <ABackButton
             onPress={() => {
-              if (context.indexSurvei == 1) {
-                navigation.setOptions({ animation: "slide_from_right" });
-                toggleComfirm();
-              } else {
-                const newIndex = context.indexSurvei - 1;
-                context.setIndexSurvei(newIndex);
-
-                navigation.replace("Back", {
-                  index: newIndex,
-                });
-              }
+              back();
             }}
           />
           <AText
@@ -86,18 +75,45 @@ function SurveiScreen({ navigation, route }) {
             color={color.neutral.neutral900}
             weight="normal"
           >
-            {judul()}
+            Survei kepuasan
           </AText>
         </View>
-        <AProgressBar progress={Math.floor((context.indexSurvei * 100) / 3)} />
+        <AProgressBar progress={Math.floor((context.indexSurvei * 100) / 10)} />
       </View>
       <View style={styles.content}>
-        <SurveiNavigator
-          index={context.indexSurvei}
-          id={id}
-          kondisi={kondisi}
-        />
+        <KepuasanNavigator index={context.indexSurvei} id={id} />
       </View>
+
+      {context.indexSurvei != 10 ? (
+        <Pressable
+          style={{
+            shadowColor: "rgba(0, 0, 0, 0.30)",
+            elevation: 8,
+            borderRadius: 16,
+            overflow: "hidden",
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: color.primary.primary100,
+            position: "absolute",
+            bottom: 64,
+            right: 16,
+            padding: 16,
+          }}
+          onPress={() => {
+            if (context.kepuasan[context.indexSurvei - 1].Nilai != "") {
+              onGoToNext();
+            }
+          }}
+        >
+          <Feather
+            name="arrow-right"
+            size={24}
+            color={color.neutral.neutral900}
+          />
+        </Pressable>
+      ) : (
+        ""
+      )}
 
       <AConfirmationDialog
         title={"Kembali?"}
@@ -109,15 +125,10 @@ function SurveiScreen({ navigation, route }) {
           toggleComfirm();
         }}
         onPressOKButton={() => {
-          context.setIndexSurvei(1);
-          context.clearSurvei();
           toggleComfirm();
-          
-          if (kondisi == "Mandiri") {
-            navigation.replace("Back Home");
-          }else{
-            navigation.replace("Back Detail", {id: id, kondisi: kondisi});
-          }
+          context.setIndexSurvei(1);
+          context.clearSurveiKepuasan();
+          navigation.goBack();
         }}
       />
     </AScreen>
@@ -125,10 +136,10 @@ function SurveiScreen({ navigation, route }) {
 }
 
 const styles = StyleSheet.create({
-  header: {},
   content: {
-    flex: 1,
+    paddingHorizontal: 16,
+    height: "100%",
   },
 });
 
-export default SurveiScreen;
+export default SurveiKepuasanUserScreen;

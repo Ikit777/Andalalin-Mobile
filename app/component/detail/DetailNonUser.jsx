@@ -90,6 +90,8 @@ function DetailNonUser({ permohonan, navigation }) {
     switch (permohonan.status_andalalin) {
       case "Persyaratan tidak terpenuhi":
         return color.error.error50;
+      case "Permohonan dibatalkan":
+        return color.error.error50;
       case "Permohonan selesai":
         return color.success.success50;
       default:
@@ -100,6 +102,8 @@ function DetailNonUser({ permohonan, navigation }) {
   const statusText = () => {
     switch (permohonan.status_andalalin) {
       case "Persyaratan tidak terpenuhi":
+        return color.error.error700;
+      case "Permohonan dibatalkan":
         return color.error.error700;
       case "Permohonan selesai":
         return color.success.success700;
@@ -310,8 +314,10 @@ function DetailNonUser({ permohonan, navigation }) {
             return tindakan(() => {
               setLaporanModal();
             }, "Laporan survei");
-          case "Menuggu keputusan":
-            return tindakan(() => {}, "Keputusan dokumen");
+          case "Menunggu hasil keputusan":
+            return tindakan(() => {
+              toggleKeputusanModal();
+            }, "Pengambilan keputusan hasil");
         }
         break;
     }

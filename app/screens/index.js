@@ -29,3 +29,5 @@ export { default as DaftarProdukScreen } from "./DaftarProdukScreen";
 export { default as MapScreen } from "./MapScreen";
 export { default as SurveiKepuasanScreen } from "./SurveiKepuasanScreen";
 export { default as KameraScreen } from "./KameraScreen";
+export { default as SurveiKepuasanUserScreen } from "./SurveiKepuasanUserScreen";
+export { default as KomentarScreen } from "./KomentarScreen";

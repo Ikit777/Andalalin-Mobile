@@ -213,6 +213,7 @@ function DaftarPenggunaScreen({ navigation }) {
               autoComplete="off"
               returnKeyType="search"
               value={pencarian}
+              autoCapitalize="none"
               onChangeText={(value) => {
                 search(value);
               }}

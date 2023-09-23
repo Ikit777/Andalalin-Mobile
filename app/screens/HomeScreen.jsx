@@ -151,6 +151,13 @@ function HomeScreen({ navigation }) {
           <View style={{ paddingBottom: 32 }}>
             <AMenuCard
               style={{ marginBottom: 20 }}
+              icon={"alert-triangle"}
+              title={"Pemasangan perlengkapan lalu lintas"}
+              desc={"Pengisian data pemasangan perlengkapan lalu lintas"}
+              onPress={() => {}}
+            />
+            <AMenuCard
+              style={{ marginBottom: 20 }}
               icon={"map-pin"}
               title={"Survei lapangan"}
               desc={"Pengisian data survei lapangan permohonan"}
@@ -267,6 +274,14 @@ function HomeScreen({ navigation }) {
 
             <AMenuCard
               style={{ marginBottom: 20 }}
+              icon={"alert-triangle"}
+              title={"Pemasangan perlengkapan lalu lintas"}
+              desc={"Pengisian data pemasangan perlengkapan lalu lintas"}
+              onPress={() => {}}
+            />
+
+            <AMenuCard
+              style={{ marginBottom: 20 }}
               icon={"map-pin"}
               title={"Survei lapangan"}
               desc={"Pengisian data survei lapangan permohonan"}
@@ -358,6 +373,18 @@ function HomeScreen({ navigation }) {
               }
               onPress={() => {
                 navigation.push("Daftar", { kondisi: "Keputusan" });
+              }}
+            />
+
+            <AMenuCard
+              style={{ marginBottom: 20 }}
+              icon={"trello"}
+              title={"Lanjutkan pemasangan perlengkapan lalu lintas"}
+              desc={
+                "Melanjutkan pemasangan perlengkapan lalu lintas yang tertunda terhadap permohonan telah di ajukan"
+              }
+              onPress={() => {
+                navigation.push("Daftar", { kondisi: "Lanjutkan Pemasangan" });
               }}
             />
 

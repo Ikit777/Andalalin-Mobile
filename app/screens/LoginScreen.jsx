@@ -178,9 +178,7 @@ function LoginScreen({ navigation }) {
   return (
     <AScreen>
       <View style={styles.header}>
-        <ABackButton
-          color={color.text.trans}
-        />
+        <ABackButton color={color.text.trans} />
       </View>
       <View style={styles.content}>
         <AText color={color.neutral.neutral900} size={24} weight="semibold">
@@ -196,10 +194,11 @@ function LoginScreen({ navigation }) {
         </AText>
         <ATextInput
           bdColor={emailError ? color.error.error300 : color.neutral.neutral300}
-          ktype={"default"}
           hint={"Masukkan email anda"}
           title={"Email"}
           rtype={"next"}
+          ktype={"email-address"}
+          inputMode={"email"}
           value={email}
           blur={false}
           multi={false}

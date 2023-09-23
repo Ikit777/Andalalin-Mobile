@@ -132,12 +132,13 @@ function ADropDownCostume({
             }}
             showsVerticalScrollIndicator={false}
             persistentScrollbar={true}
+            nestedScrollEnabled={true}
           >
             {data.map((item, index) => (
               <TouchableOpacity
                 key={index}
-                onPress={toggleView}
-                onPressIn={() => {
+                onPress={() => {
+                  toggleView();
                   setValue(item.value);
                   selected(item.value);
                 }}

@@ -23,6 +23,7 @@ const APasswordInput = React.forwardRef((props, ref) =>
           autoComplete="off"
           onSubmitEditing={props.submit}
           ref={ref}
+          autoCapitalize="none"
           autoCorrect={false}
           textContentType="newPassword"
           enablesReturnKeyAutomatically

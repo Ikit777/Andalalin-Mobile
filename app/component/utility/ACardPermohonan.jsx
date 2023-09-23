@@ -33,6 +33,8 @@ function ACardPermohonan({
     switch (status) {
       case "Persyaratan tidak terpenuhi":
         return color.error.error50;
+      case "Permohonan dibatalkan":
+        return color.error.error50;
       case "Permohonan selesai":
         return color.success.success50;
       case "Survei diterima":
@@ -45,6 +47,8 @@ function ACardPermohonan({
   const statusText = () => {
     switch (status) {
       case "Persyaratan tidak terpenuhi":
+        return color.error.error700;
+      case "Permohonan dibatalkan":
         return color.error.error700;
       case "Permohonan selesai":
         return color.success.success700;

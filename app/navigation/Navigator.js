@@ -32,6 +32,8 @@ import {
   MapScreen,
   SurveiKepuasanScreen,
   KameraScreen,
+  SurveiKepuasanUserScreen,
+  KomentarScreen,
 } from "../screens";
 
 const Stack = createNativeStackNavigator();
@@ -47,6 +49,8 @@ const Navigator = ({
   foto,
   koordinat,
   jenis,
+  uri,
+  komentar,
 }) => {
   return (
     <Stack.Navigator
@@ -165,6 +169,12 @@ const Navigator = ({
         initialParams={{ id, kondisi }}
       />
       <Stack.Screen
+        name="Back Survei"
+        component={SurveiScreen}
+        options={{ animation: "slide_from_left" }}
+        initialParams={{ id, kondisi }}
+      />
+      <Stack.Screen
         name="Ketentuan"
         component={KetentuanScreen}
         initialParams={{ kondisi }}
@@ -198,7 +208,21 @@ const Navigator = ({
         initialParams={{ koordinat }}
       />
       <Stack.Screen name="Kepuasan" component={SurveiKepuasanScreen} />
-      <Stack.Screen name="Kamera" component={KameraScreen} />
+      <Stack.Screen
+        name="Kamera"
+        component={KameraScreen}
+        initialParams={{ kondisi, jenis, id }}
+      />
+      <Stack.Screen
+        name="Survei Kepuasan"
+        component={SurveiKepuasanUserScreen}
+        initialParams={{ id, uri }}
+      />
+      <Stack.Screen
+        name="Komentar"
+        component={KomentarScreen}
+        initialParams={{ komentar }}
+      />
     </Stack.Navigator>
   );
 };

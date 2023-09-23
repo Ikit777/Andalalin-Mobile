@@ -87,10 +87,11 @@ function ForgotPasswordScreen({ navigation }) {
 
         <ATextInput
           bdColor={bd ? color.error.error300 : color.neutral.neutral300}
-          ktype={"default"}
           hint={"Masukkan email anda"}
           title={"Email"}
           rtype={"done"}
+          ktype={"email-address"}
+          inputMode={"email"}
           value={email}
           multi={false}
           submit={() => {

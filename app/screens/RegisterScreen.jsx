@@ -174,7 +174,8 @@ function RegisterScreen({ navigation }) {
 
         <ATextInput
           bdColor={emailError ? color.error.error300 : color.neutral.neutral300}
-          ktype={"default"}
+          ktype={"email-address"}
+          inputMode={"email"}
           hint={"Masukkan email anda"}
           title={"Email"}
           rtype={"next"}
