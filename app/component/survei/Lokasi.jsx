@@ -50,7 +50,6 @@ function Lokasi({ onPress, id }) {
     webViewRef.current.injectJavaScript(`changeTileLayer('${url}');`);
   };
 
-
   const hasLocationPermission = async () => {
     if (Platform.OS === "android" && Platform.Version < 23) {
       return true;
@@ -112,6 +111,7 @@ function Lokasi({ onPress, id }) {
                   }
 
                   changeTileLayer('${tileLayers.OpenStreetMap}');
+                  
                   L.marker([${lat}, ${long}]).addTo(map)
                     .bindPopup('Lokasi saat ini')
                     .openPopup();
@@ -162,9 +162,16 @@ function Lokasi({ onPress, id }) {
                 <div id="map" style="width: 100%; height: 100vh;"></div>
                 <script>
                   var map = L.map('map').setView([${position.coords.latitude}, ${position.coords.longitude}], 20);
-                  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '© OpenStreetMap'
-                  }).addTo(map);
+                  var currentTileLayer;
+
+                  function changeTileLayer(url) {
+                    if (currentTileLayer) {
+                      map.removeLayer(currentTileLayer);
+                    }
+                    currentTileLayer = L.tileLayer(url).addTo(map);
+                  }
+
+                  changeTileLayer('${tileLayers.OpenStreetMap}');
                   L.marker([${position.coords.latitude}, ${position.coords.longitude}]).addTo(map)
                     .bindPopup('Lokasi saat ini')
                     .openPopup();
@@ -211,37 +218,6 @@ function Lokasi({ onPress, id }) {
 
             setLocation(position);
             webViewRef.current.reload();
-            setMaps(`
-            <html>
-              <head>
-              <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
-                <link
-                  rel="stylesheet"
-                  href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
-                />
-                <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-              </head>
-              <body style="margin: 0; padding: 0;">
-                <div id="map" style="width: 100%; height: 100vh;"></div>
-                <script>
-                  var map = L.map('map').setView([${position.coords.latitude}, ${position.coords.longitude}], 20);
-                  var currentTileLayer;
-
-                  function changeTileLayer(url) {
-                    if (currentTileLayer) {
-                      map.removeLayer(currentTileLayer);
-                    }
-                    currentTileLayer = L.tileLayer(url).addTo(map);
-                  }
-
-                  changeTileLayer('${tileLayers.OpenStreetMap}');
-                  L.marker([${position.coords.latitude}, ${position.coords.longitude}]).addTo(map)
-                    .bindPopup('Lokasi saat ini')
-                    .openPopup();
-                </script>
-              </body>
-            </html>
-            `);
           })();
         },
         (error) => {
@@ -325,41 +301,41 @@ function Lokasi({ onPress, id }) {
         )}
 
         {load ? (
-        <Pressable
-          style={{
-            alignSelf: "baseline",
-            position: "absolute",
-            bottom: 32,
-            left: 32,
-            backgroundColor: color.text.white,
-            borderRadius: 8,
-            padding: 6,
-            borderWidth: 1,
-            borderColor: color.neutral.neutral300,
-            shadowColor: "rgba(16, 24, 40, 0.05)",
-            elevation: 8,
-          }}
-          onPress={() => {
-            switch (tile) {
-              case "OpenStreetMap":
-                changeTileLayer("Satelit");
-                break;
-              case "Satelit":
-                changeTileLayer("OpenStreetMap");
-                break;
-            }
-          }}
-        >
-          <Feather
-            style={{ padding: 8 }}
-            name="map"
-            size={20}
-            color={color.primary.main}
-          />
-        </Pressable>
-      ) : (
-        ""
-      )}
+          <Pressable
+            style={{
+              alignSelf: "baseline",
+              position: "absolute",
+              bottom: 32,
+              left: 32,
+              backgroundColor: color.text.white,
+              borderRadius: 8,
+              padding: 6,
+              borderWidth: 1,
+              borderColor: color.neutral.neutral300,
+              shadowColor: "rgba(16, 24, 40, 0.05)",
+              elevation: 8,
+            }}
+            onPress={() => {
+              switch (tile) {
+                case "OpenStreetMap":
+                  changeTileLayer("Satelit");
+                  break;
+                case "Satelit":
+                  changeTileLayer("OpenStreetMap");
+                  break;
+              }
+            }}
+          >
+            <Feather
+              style={{ padding: 8 }}
+              name="map"
+              size={20}
+              color={color.primary.main}
+            />
+          </Pressable>
+        ) : (
+          ""
+        )}
       </View>
       {load ? (
         <View>
