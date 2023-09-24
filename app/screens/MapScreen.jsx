@@ -1,17 +1,20 @@
 import React, { useEffect, useRef, useContext, useState } from "react";
-import { StyleSheet, View, BackHandler } from "react-native";
+import { StyleSheet, View, BackHandler, Pressable } from "react-native";
 import AText from "../component/utility/AText";
 import color from "../constants/color";
 import AScreen from "../component/utility/AScreen";
 import ABackButton from "../component/utility/ABackButton";
 import { WebView } from "react-native-webview";
 import { UserContext } from "../context/UserContext";
+import { Feather } from "@expo/vector-icons";
 
 function MapScreen({ navigation, route }) {
   const koordinat = route.params.koordinat;
   const context = useContext(UserContext);
   const webViewRef = useRef();
   const [maps, setMaps] = useState("");
+  const [tile, setTile] = useState("OpenStreetMap");
+  const [load, toggleLoad] = useState(false);
 
   useEffect(() => {
     BackHandler.addEventListener("hardwareBackPress", () => {
@@ -24,6 +27,18 @@ function MapScreen({ navigation, route }) {
       return true;
     });
   }, []);
+
+  const tileLayers = {
+    OpenStreetMap: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    Satelit:
+      "http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+  };
+
+  const changeTileLayer = (layer) => {
+    setTile(layer);
+    const url = tileLayers[layer];
+    webViewRef.current.injectJavaScript(`changeTileLayer('${url}');`);
+  };
 
   useEffect(() => {
     context.toggleLoading(true);
@@ -40,12 +55,21 @@ function MapScreen({ navigation, route }) {
               <body style="margin: 0; padding: 0;">
                 <div id="map" style="width: 100%; height: 100vh;"></div>
                 <script>
+                  
                   var map = L.map('map').setView([${koordinat.latitude}, ${koordinat.longitude}], 20);
-                  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '© OpenStreetMap'
-                  }).addTo(map);
+                  var currentTileLayer;
+
+                  function changeTileLayer(url) {
+                    if (currentTileLayer) {
+                      map.removeLayer(currentTileLayer);
+                    }
+                    currentTileLayer = L.tileLayer(url).addTo(map);
+                  }
+
+                  changeTileLayer('${tileLayers.OpenStreetMap}');
+                  
                   L.marker([${koordinat.latitude}, ${koordinat.longitude}]).addTo(map)
-                    .bindPopup('Lokasi survei lapangan')
+                    .bindPopup('Lokasi')
                     .openPopup();
                 </script>
               </body>
@@ -69,12 +93,12 @@ function MapScreen({ navigation, route }) {
             }}
           />
           <AText
-            style={{ paddingLeft: 4}}
+            style={{ paddingLeft: 4 }}
             size={24}
             color={color.neutral.neutral900}
             weight="normal"
           >
-            Lokasi survei
+            Lokasi
           </AText>
         </View>
       </View>
@@ -85,6 +109,7 @@ function MapScreen({ navigation, route }) {
             source={{ html: maps }}
             onLoadEnd={() => {
               context.toggleLoading(false);
+              toggleLoad(true);
             }}
             javaScriptEnabled={true}
             domStorageEnabled={true}
@@ -93,6 +118,43 @@ function MapScreen({ navigation, route }) {
           ""
         )}
       </View>
+
+      {load ? (
+        <Pressable
+          style={{
+            alignSelf: "baseline",
+            position: "absolute",
+            bottom: 32,
+            left: 32,
+            backgroundColor: color.text.white,
+            borderRadius: 8,
+            padding: 6,
+            borderWidth: 1,
+            borderColor: color.neutral.neutral300,
+            shadowColor: "rgba(16, 24, 40, 0.05)",
+            elevation: 8,
+          }}
+          onPress={() => {
+            switch (tile) {
+              case "OpenStreetMap":
+                changeTileLayer("Satelit");
+                break;
+              case "Satelit":
+                changeTileLayer("OpenStreetMap");
+                break;
+            }
+          }}
+        >
+          <Feather
+            style={{ padding: 8 }}
+            name="map"
+            size={20}
+            color={color.primary.main}
+          />
+        </Pressable>
+      ) : (
+        ""
+      )}
     </AScreen>
   );
 }

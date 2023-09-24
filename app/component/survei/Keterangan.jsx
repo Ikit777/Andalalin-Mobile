@@ -6,6 +6,7 @@ import AButton from "../utility/AButton";
 import { UserContext } from "../../context/UserContext";
 import color from "../../constants/color";
 import {
+  andalalinPemasangan,
   andalalinSurveiLapangan,
   andalalinSurveiMandiri,
 } from "../../api/andalalin";
@@ -130,6 +131,56 @@ function Keterangan({ navigation, id, kondisi }) {
     );
   };
 
+  const simpan_pemasangan = () => {
+    const foto = {
+      fotoSurvei1: foto1,
+      fotoSurvei2: foto2,
+      fotoSurvei3: foto3,
+    };
+
+    const lokasi_survei = {
+      latitude: parseFloat(lat),
+      longtitude: parseFloat(long),
+      lokasi: lokasi,
+      keterangan: keterangan,
+    };
+
+    andalalinPemasangan(
+      context.getUser().access_token,
+      id,
+      foto,
+      lokasi_survei,
+      (response) => {
+        switch (response.status) {
+          case 201:
+            (async () => {
+              clearSurvei();
+              setIndexSurvei(1);
+              
+              navigation.replace("Detail Survei", {
+                id: id,
+                kondisi: "Petugas",
+                jenis: "Pemasangan",
+              });
+            })();
+            break;
+          case 424:
+            authRefreshToken(context, (response) => {
+              if (response.status === 200) {
+                simpan_pemasangan();
+              } else {
+                context.toggleLoading(false);
+              }
+            });
+            break;
+          default:
+            context.toggleLoading(false);
+            toggleKirimGagal();
+        }
+      }
+    );
+  };
+
   return (
     <ScrollView
       style={styles.content}
@@ -139,8 +190,12 @@ function Keterangan({ navigation, id, kondisi }) {
       <ATextInput
         bdColor={color.neutral.neutral300}
         ktype={"default"}
-        hint={"Masukkan keterangan terkait keadaan ataupun situasi survei"}
-        title={"Keterangan survei"}
+        hint={`Masukkan keterangan terkait keadaan ataupun situasi ${
+          kondisi == "Pemasangan" ? "Pemasangan perlalin" : "Survei lapangan"
+        }`}
+        title={`Keterangan ${
+          kondisi == "Pemasangan" ? "Pemasangan perlalin" : "Survei lapangan"
+        }`}
         rtype={"done"}
         multi={true}
         max={4}
@@ -161,7 +216,11 @@ function Keterangan({ navigation, id, kondisi }) {
 
       <AConfirmationDialog
         title={"Apakah Anda yakin?"}
-        desc={"Data survei akan di simpan"}
+        desc={`Data ${
+          kondisi == "Pemasangan"
+            ? "pemasangan perlengkapan lalu lintas"
+            : "survei lapangan"
+        } kan di simpan"`}
         visibleModal={confirm}
         btnOK={"OK"}
         btnBATAL={"Batal"}
@@ -171,15 +230,23 @@ function Keterangan({ navigation, id, kondisi }) {
         onPressOKButton={() => {
           toggleComfirm();
           context.toggleLoading(true);
-          if (kondisi == "Mandiri") {
-            simpan_mandiri();
-          } else {
-            simpan();
+          switch (kondisi) {
+            case "Permohonan":
+              simpan();
+              break;
+            case "Mandiri":
+              simpan_mandiri();
+              break;
+            case "Pemasangan":
+              simpan_pemasangan();
+              break;
           }
         }}
       />
       <ADialog
-        title={"Survei gagal disimpan"}
+        title={`${
+          kondisi == "Pemasangan" ? "Pemasangan perlalin" : "Survei lapangan"
+        } gagal disimpan`}
         desc={"Terjadi kesalahan pada server kami, mohon coba lagi lain waktu"}
         visibleModal={kirimGagal}
         btnOK={"OK"}

@@ -46,7 +46,7 @@ function FotoViewScreen({ navigation, route }) {
             color={color.neutral.neutral900}
             weight="normal"
           >
-            Foto survei
+            Foto
           </AText>
         </View>
       </View>

@@ -52,6 +52,10 @@ const environments = {
       ANDALALIN_GET_ALL_BY_TIKET_LEVEL2: url + "/api/v1/andalalin/getallandalalintiket",
       PERLALIN_LAPORAN_SURVEI: url + "/api/v1/andalalin/laporansurvei",
       PERLALIN_KEPUTUSAN_HASIL: url + "/api/v1/andalalin/keputusanhasil",
+      GET_PERMOHONAN_PEMASANGAN_PERLALIN: url + "/api/v1/andalalin/getpermohonanpemasangan",
+      PEMASANGAN_PERLALIN: url + "/api/v1/andalalin/pemasanganperlengkapan",
+      GET_PEMASANGAN_PERLALIN: url + "/api/v1/andalalin/getpemasanganperlengkapan",
+      GET_ALL_PEMASANGAN_PERLALIN: url + "/api/v1/andalalin/getallpemasanganperlengkapan",
 
       CEK_SURVEI_KEPUASAN: url + "/api/v1/andalalin/ceksurveikepuasan",
       SURVEI_KEPUASAN: url + "/api/v1/andalalin/surveikepuasan",

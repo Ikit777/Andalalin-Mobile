@@ -37,6 +37,8 @@ function ACardPermohonan({
         return color.error.error50;
       case "Permohonan selesai":
         return color.success.success50;
+case "Pemasangan selesai":
+        return color.success.success50;
       case "Survei diterima":
         return color.success.success50;
       default:
@@ -51,6 +53,8 @@ function ACardPermohonan({
       case "Permohonan dibatalkan":
         return color.error.error700;
       case "Permohonan selesai":
+        return color.success.success700;
+case "Pemasangan selesai":
         return color.success.success700;
       case "Survei diterima":
         return color.success.success700;

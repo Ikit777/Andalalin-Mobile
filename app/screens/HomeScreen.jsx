@@ -151,13 +151,6 @@ function HomeScreen({ navigation }) {
           <View style={{ paddingBottom: 32 }}>
             <AMenuCard
               style={{ marginBottom: 20 }}
-              icon={"alert-triangle"}
-              title={"Pemasangan perlengkapan lalu lintas"}
-              desc={"Pengisian data pemasangan perlengkapan lalu lintas"}
-              onPress={() => {}}
-            />
-            <AMenuCard
-              style={{ marginBottom: 20 }}
               icon={"map-pin"}
               title={"Survei lapangan"}
               desc={"Pengisian data survei lapangan permohonan"}
@@ -172,6 +165,24 @@ function HomeScreen({ navigation }) {
               desc={"Daftar survei yang dilakukan"}
               onPress={() => {
                 navigation.push("Daftar", { kondisi: "Daftar" });
+              }}
+            />
+            <AMenuCard
+              style={{ marginBottom: 20 }}
+              icon={"alert-triangle"}
+              title={"Pemasangan perlengkapan lalu lintas"}
+              desc={"Pengisian data pemasangan perlengkapan lalu lintas"}
+              onPress={() => {
+                navigation.push("Daftar", { kondisi: "Pemasangan" });
+              }}
+            />
+            <AMenuCard
+              style={{ marginBottom: 20 }}
+              icon={"list"}
+              title={"Daftar pemasangan perlengkapan lalu lintas"}
+              desc={"Daftar pemasangan perlengkapan lalu lintas yang dilakukan"}
+              onPress={() => {
+                navigation.push("Daftar", { kondisi: "Daftar Pemasangan" });
               }}
             />
             <AMenuCard
@@ -274,19 +285,13 @@ function HomeScreen({ navigation }) {
 
             <AMenuCard
               style={{ marginBottom: 20 }}
-              icon={"alert-triangle"}
-              title={"Pemasangan perlengkapan lalu lintas"}
-              desc={"Pengisian data pemasangan perlengkapan lalu lintas"}
-              onPress={() => {}}
-            />
-
-            <AMenuCard
-              style={{ marginBottom: 20 }}
-              icon={"map-pin"}
-              title={"Survei lapangan"}
-              desc={"Pengisian data survei lapangan permohonan"}
+              icon={"trello"}
+              title={"Lanjutkan pemasangan perlengkapan lalu lintas"}
+              desc={
+                "Melanjutkan pemasangan perlengkapan lalu lintas yang tertunda terhadap permohonan telah di ajukan"
+              }
               onPress={() => {
-                navigation.push("Daftar", { kondisi: "Survei" });
+                navigation.push("Daftar", { kondisi: "Lanjutkan Pemasangan" });
               }}
             />
 

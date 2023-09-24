@@ -39,6 +39,8 @@ function LanjutanScreen({ navigation, route }) {
         return color.error.error50;
       case "Permohonan selesai":
         return color.success.success50;
+case "Pemasangan selesai":
+        return color.success.success50;
       default:
         return color.secondary.secondary50;
     }
@@ -51,6 +53,8 @@ function LanjutanScreen({ navigation, route }) {
       case "Permohonan dibatalkan":
         return color.error.error700;
       case "Permohonan selesai":
+        return color.success.success700;
+case "Pemasangan selesai":
         return color.success.success700;
       default:
         return color.secondary.secondary700;

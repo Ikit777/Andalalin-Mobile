@@ -94,6 +94,8 @@ function DetailNonUser({ permohonan, navigation }) {
         return color.error.error50;
       case "Permohonan selesai":
         return color.success.success50;
+      case "Pemasangan selesai":
+        return color.success.success50;
       default:
         return color.secondary.secondary50;
     }
@@ -106,6 +108,8 @@ function DetailNonUser({ permohonan, navigation }) {
       case "Permohonan dibatalkan":
         return color.error.error700;
       case "Permohonan selesai":
+        return color.success.success700;
+      case "Pemasangan selesai":
         return color.success.success700;
       default:
         return color.secondary.secondary700;
@@ -120,6 +124,25 @@ function DetailNonUser({ permohonan, navigation }) {
         mode="contained"
         onPress={onPress}
       />
+    );
+  };
+
+  const doubletindakan = (onPress1, title1, onPress2, title2) => {
+    return (
+      <View style={{ flexDirection: "column" }}>
+        <AButton
+          style={{ marginBottom: 16 }}
+          title={title1}
+          mode="contained"
+          onPress={onPress1}
+        />
+        <AButton
+          style={{ marginBottom: 32 }}
+          title={title2}
+          mode="contained"
+          onPress={onPress2}
+        />
+      </View>
     );
   };
 
@@ -168,30 +191,6 @@ function DetailNonUser({ permohonan, navigation }) {
             return tindakan(() => {
               setPersyaratanModal();
             }, "Cek persyaratan");
-          case "Persyaratan terpenuhi":
-            return tindakan(() => {
-              navigation.push("Pilih Petugas", {
-                kondisi: "Pilih",
-                permohonan: permohonan,
-              });
-            }, "Pilih petugas");
-          case "Survey lapangan":
-            switch (permohonan.status_tiket) {
-              case "Buka":
-                return tindakan(() => {
-                  navigation.push("Usulan", {
-                    id: permohonan.id_andalalin,
-                  });
-                }, "Usulan tindakan");
-              case "Batal":
-                return tindakan(() => {
-                  navigation.push("Pilih Petugas", {
-                    kondisi: "Ganti",
-                    permohonan: permohonan,
-                  });
-                }, "Ganti pentugas");
-            }
-            break;
           case "Berita acara pemeriksaan":
             switch (permohonan.persetujuan) {
               case "Dokumen tidak disetujui":
@@ -237,7 +236,7 @@ function DetailNonUser({ permohonan, navigation }) {
                 permohonan: permohonan,
               });
             }, "Pilih petugas");
-          case "Survey lapangan":
+          case "Survei lapangan":
             switch (permohonan.status_tiket) {
               case "Buka":
                 return tindakan(() => {
@@ -258,11 +257,18 @@ function DetailNonUser({ permohonan, navigation }) {
             return tindakan(() => {
               setLaporanModal();
             }, "Laporan survei");
+          case "Pemasangan sedang dilakukan":
+            return tindakan(() => {
+              navigation.push("Pilih Petugas", {
+                kondisi: "Ganti",
+                permohonan: permohonan,
+              });
+            }, "Ganti pentugas");
         }
         break;
       case "Petugas":
         switch (permohonan.status_andalalin) {
-          case "Survey lapangan":
+          case "Survei lapangan":
             return tindakan(() => {
               navigation.push("Survei", {
                 id: permohonan.id_andalalin,
@@ -270,6 +276,14 @@ function DetailNonUser({ permohonan, navigation }) {
               }),
                 context.clearSurvei();
             }, "Survei lapangan");
+          case "Pemasangan sedang dilakukan":
+            return tindakan(() => {
+              navigation.push("Survei", {
+                id: permohonan.id_andalalin,
+                kondisi: "Pemasangan",
+              }),
+                context.clearSurvei();
+            }, "Pemasangan perlengkapan");
         }
         break;
       case "Admin":
@@ -293,14 +307,25 @@ function DetailNonUser({ permohonan, navigation }) {
                 permohonan: permohonan,
               });
             }, "Pilih petugas");
-          case "Survey lapangan":
+          case "Survei lapangan":
             switch (permohonan.status_tiket) {
               case "Buka":
-                return tindakan(() => {
-                  navigation.push("Usulan", {
-                    id: permohonan.id_andalalin,
-                  });
-                }, "Usulan tindakan");
+                return doubletindakan(
+                  () => {
+                    navigation.push("Survei", {
+                      id: permohonan.id_andalalin,
+                      kondisi: "Permohonan",
+                    }),
+                      context.clearSurvei();
+                  },
+                  "Survei lapangan",
+                  () => {
+                    navigation.push("Usulan", {
+                      id: permohonan.id_andalalin,
+                    });
+                  },
+                  "Usulan tindakan"
+                );
               case "Batal":
                 return tindakan(() => {
                   navigation.push("Pilih Petugas", {
@@ -318,6 +343,23 @@ function DetailNonUser({ permohonan, navigation }) {
             return tindakan(() => {
               toggleKeputusanModal();
             }, "Pengambilan keputusan hasil");
+          case "Pemasangan sedang dilakukan":
+            return doubletindakan(
+              () => {
+                navigation.push("Survei", {
+                  id: permohonan.id_andalalin,
+                  kondisi: "Pemasangan",
+                }),
+                  context.clearSurvei();
+              },
+              "Pemasangan perlengkapan",
+              () => {
+                navigation.push("Pilih Petugas", {
+                  kondisi: "Ganti",
+                  permohonan: permohonan,
+                });
+              }, "Ganti pentugas"
+            );
         }
         break;
     }
@@ -826,7 +868,7 @@ function DetailNonUser({ permohonan, navigation }) {
       permohonan.status_andalalin != "Cek persyaratan" &&
       permohonan.status_andalalin != "Persyaratan tidak terpenuhi" &&
       permohonan.status_andalalin != "Persyaratan terpenuhi" &&
-      permohonan.status_andalalin != "Survey lapangan"
+      permohonan.status_andalalin != "Survei lapangan"
     ) {
       return (
         <ADetailView style={{ marginTop: 20 }} title={"Survei lapangan"}>
@@ -1086,22 +1128,14 @@ function DetailNonUser({ permohonan, navigation }) {
       return (
         <View>
           <ADetailView style={{ marginTop: 20 }} title={"Persetujuan dokumen"}>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                padding: 16,
-              }}
+            <AText
+              style={{ padding: 16 }}
+              size={12}
+              color={color.neutral.neutral900}
+              weight="normal"
             >
-              <AText size={12} color={color.neutral.neutral900} weight="normal">
-                Persetujuan dokumen
-              </AText>
-
-              <AText size={12} color={color.neutral.neutral500} weight="normal">
-                {permohonan.persetujuan}
-              </AText>
-            </View>
+              {permohonan.persetujuan}
+            </AText>
           </ADetailView>
           {permohonan.keterangan_persetujuan != "" ? (
             <ADetailView
@@ -1252,6 +1286,49 @@ function DetailNonUser({ permohonan, navigation }) {
                 navigation.push("PDF", {
                   title: "Berita acara pemeriksaan",
                   pdf: permohonan.file_sk,
+                });
+              }}
+            >
+              <AText
+                size={14}
+                color={color.neutral.neutral700}
+                weight="semibold"
+              >
+                Lihat
+              </AText>
+            </Pressable>
+          </View>
+        </ADetailView>
+      );
+    }
+  };
+
+  const pemasangan = () => {
+    if (permohonan.status_andalalin == "Pemasangan selesai") {
+      return (
+        <ADetailView
+          style={{ marginTop: 20 }}
+          title={"Pemasangan perlengkapan lalu lintas"}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: 16,
+            }}
+          >
+            <AText size={12} color={color.neutral.neutral900} weight="normal">
+              Data pemasangan
+            </AText>
+
+            <Pressable
+              style={{ flexDirection: "row", paddingLeft: 4 }}
+              onPress={() => {
+                navigation.push("Detail Survei", {
+                  id: permohonan.id_andalalin,
+                  kondisi: context.getUser().role,
+                  jenis: "Pemasangan",
                 });
               }}
             >
@@ -1991,6 +2068,10 @@ function DetailNonUser({ permohonan, navigation }) {
         </ADetailView>
 
         {survei()}
+
+        {keputusan_hasil()}
+
+        {pemasangan()}
       </View>
     );
   };
@@ -2263,6 +2344,45 @@ function DetailNonUser({ permohonan, navigation }) {
         }
       }
     );
+  };
+
+  const keputusan_hasil = () => {
+    if (permohonan.keputusan_hasil != null) {
+      return (
+        <View>
+          <ADetailView
+            style={{ marginTop: 20 }}
+            title={"Keputusan hasil permohonan"}
+          >
+            <AText
+              style={{ padding: 16 }}
+              size={12}
+              color={color.neutral.neutral900}
+              weight="normal"
+            >
+              {permohonan.keputusan_hasil}
+            </AText>
+          </ADetailView>
+          {permohonan.pertimbangan != null ? (
+            <ADetailView
+              style={{ marginTop: 20 }}
+              title={"Pertimbangan keputusan hasil"}
+            >
+              <AText
+                style={{ padding: 16 }}
+                size={12}
+                color={color.neutral.neutral900}
+                weight="normal"
+              >
+                {permohonan.pertimbangan}
+              </AText>
+            </ADetailView>
+          ) : (
+            ""
+          )}
+        </View>
+      );
+    }
   };
 
   return (

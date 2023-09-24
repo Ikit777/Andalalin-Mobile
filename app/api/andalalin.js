@@ -733,3 +733,92 @@ export const andalalinSurveiKepuasan = async (
   });
   andalalinRespone(response);
 };
+
+export const andalalinGetPermohonanPemasangan = async (
+  accessToken,
+  andalalinRespone
+) => {
+  const response = await fetch(ENDPOINTS.GET_PERMOHONAN_PEMASANGAN_PERLALIN, {
+    method: "GET",
+    headers: {
+      Authorization: "Bearer " + accessToken,
+      "Content-Type": "application/json",
+    },
+  });
+  andalalinRespone(response);
+};
+
+export const andalalinPemasangan = async (
+  accessToken,
+  id,
+  foto,
+  lokasi,
+  andalalinRespone
+) => {
+  const formData = new FormData();
+
+  foto.fotoSurvei1 != "Kosong"
+    ? formData.append("foto1", {
+        uri: foto.fotoSurvei1,
+        name: "foto1.jpg",
+        type: "image/jpeg",
+      })
+    : formData.append("foto1");
+
+  foto.fotoSurvei2 != "Kosong"
+    ? formData.append("foto2", {
+        uri: foto.fotoSurvei2,
+        name: "foto2.jpg",
+        type: "image/jpeg",
+      })
+    : formData.append("foto2");
+
+  foto.fotoSurvei3 != "Kosong"
+    ? formData.append("foto3", {
+        uri: foto.fotoSurvei3,
+        name: "foto3.jpg",
+        type: "image/jpeg",
+      })
+    : formData.append("foto3");
+
+  formData.append("data", JSON.stringify(lokasi));
+
+  const response = await fetch(ENDPOINTS.PEMASANGAN_PERLALIN + "/" + id, {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer " + accessToken,
+      "Content-Type": "multipart/form-data",
+    },
+    body: formData,
+  });
+  andalalinRespone(response);
+};
+
+export const andalalinGetAllPemasangan = async (
+  accessToken,
+  andalalinRespone
+) => {
+  const response = await fetch(ENDPOINTS.GET_ALL_PEMASANGAN_PERLALIN, {
+    method: "GET",
+    headers: {
+      Authorization: "Bearer " + accessToken,
+      "Content-Type": "application/json",
+    },
+  });
+  andalalinRespone(response);
+};
+
+export const andalalinGetPemasangan = async (
+  accessToken,
+  id,
+  andalalinRespone
+) => {
+  const response = await fetch(ENDPOINTS.GET_PEMASANGAN_PERLALIN + "/" + id, {
+    method: "GET",
+    headers: {
+      Authorization: "Bearer " + accessToken,
+      "Content-Type": "application/json",
+    },
+  });
+  andalalinRespone(response);
+};

@@ -12,6 +12,7 @@ import color from "../constants/color";
 import AScreen from "../component/utility/AScreen";
 import ABackButton from "../component/utility/ABackButton";
 import {
+  andalalinGetPemasangan,
   andalalinGetSurvei,
   andalalinGetSurveiMandiri,
   andalalinTerimaSurveiMandiri,
@@ -65,22 +66,63 @@ function DetailSurveiScreen({ navigation, route }) {
     if (context.loading == false) {
       context.toggleLoading(true);
     }
-    if (jenis == "Mandiri") {
-      loadSurveiMandiri();
-    } else {
-      loadSurvei();
+    switch (jenis) {
+      case "Permohonan":
+        loadSurvei();
+        break;
+      case "Mandiri":
+        loadSurveiMandiri();
+        break;
+      case "Pemasangan":
+        loadPemasangan();
+        break;
     }
   }, []);
 
   const back = () => {
     if (context.getUser().role == "Petugas") {
-      if (jenis == "Mandiri") {
-        navigation.replace("Back Daftar", { kondisi: "Mandiri" });
-      } else {
-        navigation.replace("Back Daftar", { kondisi: "Daftar" });
-      }
     } else {
       navigation.goBack();
+    }
+
+    switch (context.getUser().role) {
+      case "Petugas":
+        switch (jenis) {
+          case "Permohonan":
+            navigation.replace("Back Daftar", { kondisi: "Daftar" });
+            break;
+          case "Mandiri":
+            navigation.replace("Back Daftar", { kondisi: "Mandiri" });
+            break;
+          case "Pemasangan":
+            navigation.replace("Back Daftar", { kondisi: "Daftar Pemasangan" });
+            break;
+        }
+        break;
+      case "Super Admin":
+        switch (jenis) {
+          case "Mandiri":
+            navigation.replace("Back Daftar", { kondisi: "Mandiri" });
+            break;
+          default:
+            navigation.replace("Back Detail", { id: route.params.id });
+            break;
+        }
+        break;
+      default:
+        navigation.goBack();
+        break;
+    }
+  };
+
+  const judul = () => {
+    switch (jenis) {
+      case "Permohonan":
+        return "Detail survei";
+      case "Mandiri":
+        return "Detail survei";
+      case "Pemasangan":
+        return "Detail pemasangan";
     }
   };
 
@@ -132,6 +174,37 @@ function DetailSurveiScreen({ navigation, route }) {
             authRefreshToken(context, (response) => {
               if (response.status === 200) {
                 loadSurveiMandiri();
+              } else {
+                context.toggleLoading(false);
+              }
+            });
+            break;
+          default:
+            context.toggleLoading(false);
+            toggleSurveiGagal();
+            break;
+        }
+      }
+    );
+  };
+
+  const loadPemasangan = () => {
+    andalalinGetPemasangan(
+      context.getUser().access_token,
+      route.params.id,
+      (response) => {
+        switch (response.status) {
+          case 201:
+            (async () => {
+              const result = await response.json();
+              setSurvei(result.data);
+              context.toggleLoading(false);
+            })();
+            break;
+          case 424:
+            authRefreshToken(context, (response) => {
+              if (response.status === 200) {
+                loadPemasangan();
               } else {
                 context.toggleLoading(false);
               }
@@ -266,10 +339,16 @@ function DetailSurveiScreen({ navigation, route }) {
     setRefreshing(false);
     setTimeout(() => {
       context.toggleLoading(true);
-      if (jenis == "Mandiri") {
-        loadSurveiMandiri();
-      } else {
-        loadSurvei();
+      switch (jenis) {
+        case "Permohonan":
+          loadSurvei();
+          break;
+        case "Mandiri":
+          loadSurveiMandiri();
+          break;
+        case "Pemasangan":
+          loadPemasangan();
+          break;
       }
     }, 50);
   }, []);
@@ -297,7 +376,7 @@ function DetailSurveiScreen({ navigation, route }) {
             color={color.neutral.neutral900}
             weight="normal"
           >
-            Detail survei
+            {judul()}
           </AText>
         </View>
       </View>
@@ -414,7 +493,8 @@ function DetailSurveiScreen({ navigation, route }) {
                 Waktu
               </AText>
               <AText size={12} color={color.neutral.neutral500} weight="normal">
-                {survei.WaktuSurvei}
+                
+                {jenis == "Pemasangan" ? survei.TanggalPemasangan : survei.TanggalSurvei}
               </AText>
             </View>
             <View style={styles.separator} />
@@ -430,12 +510,14 @@ function DetailSurveiScreen({ navigation, route }) {
                 Tanggal
               </AText>
               <AText size={12} color={color.neutral.neutral500} weight="normal">
-                {survei.TanggalSurvei}
+              { jenis == "Pemasangan" ? survei.WaktuPemasangan : survei.WaktuSurvei}
               </AText>
             </View>
           </ADetailView>
 
-          <ADetailView title={"Foto survei"}>
+          <ADetailView
+            title={`Foto ${jenis == "Pemasangan" ? "Pemasangan" : "Survei"}`}
+          >
             {survei.Foto1 != null ? (
               <View>
                 <View style={styles.separator} />
@@ -552,7 +634,12 @@ function DetailSurveiScreen({ navigation, route }) {
             )}
           </ADetailView>
 
-          <ADetailView style={{ marginTop: 20 }} title={"Koordinat survei"}>
+          <ADetailView
+            style={{ marginTop: 20 }}
+            title={`Koordinat ${
+              jenis == "Pemasangan" ? "Pemasangan" : "Survei"
+            }`}
+          >
             <View
               style={{
                 flexDirection: "row",
@@ -619,7 +706,10 @@ function DetailSurveiScreen({ navigation, route }) {
             </View>
           </ADetailView>
 
-          <ADetailView style={{ marginTop: 20 }} title={"Lokasi survei"}>
+          <ADetailView
+            style={{ marginTop: 20 }}
+            title={`Lokasi ${jenis == "Pemasangan" ? "Pemasangan" : "Survei"}`}
+          >
             <AText
               style={{ padding: 16 }}
               size={12}
@@ -631,7 +721,12 @@ function DetailSurveiScreen({ navigation, route }) {
           </ADetailView>
 
           {survei.Keterangan != "" ? (
-            <ADetailView style={{ marginTop: 20 }} title={"Keterangan survei"}>
+            <ADetailView
+              style={{ marginTop: 20 }}
+              title={`Keterangan ${
+                jenis == "Pemasangan" ? "Pemasangan" : "Survei"
+              }`}
+            >
               <AText
                 style={{ padding: 16 }}
                 size={12}
@@ -689,7 +784,7 @@ function DetailSurveiScreen({ navigation, route }) {
       <ABottomSheet visible={tindakanModal}>{tindakan()}</ABottomSheet>
 
       <ADialog
-        title={"Data survei gagal dimuat"}
+        title={"Data gagal dimuat"}
         desc={"Terjadi kesalahan pada server kami, mohon coba lagi lain waktu"}
         visibleModal={surveiGagal}
         btnOK={"OK"}

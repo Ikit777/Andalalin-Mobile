@@ -69,10 +69,14 @@ function SurveiKepuasanScreen({ navigation }) {
             const result = await response.json();
             setKepuasan(result.data);
             setHasil(result.data.hasil);
-            const data = result.data.komentar.filter((item) => {
-              return item.Komentar != "";
-            });
-            setKomentar(data);
+
+            if (result.data.responden != 0) {
+              const data = result.data.komentar.filter((item) => {
+                return item.Komentar != "";
+              });
+              setKomentar(data);
+            }
+
             context.toggleLoading(false);
           })();
           break;
@@ -140,7 +144,11 @@ function SurveiKepuasanScreen({ navigation }) {
                 alignSelf: "center",
               }}
             >
-              <APolygon skor={kepuasan.indeks_kepuasan} />
+              <APolygon
+                skor={
+                  kepuasan.responden == "0" ? "0" : kepuasan.indeks_kepuasan
+                }
+              />
             </View>
             <AText
               style={{ alignSelf: "center" }}
@@ -222,7 +230,7 @@ function SurveiKepuasanScreen({ navigation }) {
                   color={color.neutral.neutral900}
                   weight="normal"
                 >
-                  {kepuasan.mutu}
+                  {kepuasan.responden == "0" ? "Belum ada" : kepuasan.mutu}
                 </AText>
               </View>
 
@@ -247,7 +255,7 @@ function SurveiKepuasanScreen({ navigation }) {
                   color={color.neutral.neutral900}
                   weight="normal"
                 >
-                  {kepuasan.kinerja}
+                  {kepuasan.responden == "0" ? "Belum ada" : kepuasan.kinerja}
                 </AText>
               </View>
 
@@ -272,7 +280,7 @@ function SurveiKepuasanScreen({ navigation }) {
                   color={color.neutral.neutral900}
                   weight="normal"
                 >
-                  {kepuasan.nilai_interval}
+                  {kepuasan.responden == "0" ? "0" : kepuasan.nilai_interval}
                 </AText>
               </View>
 
@@ -295,7 +303,9 @@ function SurveiKepuasanScreen({ navigation }) {
                 <Pressable
                   style={{ flexDirection: "row", paddingLeft: 4 }}
                   onPress={() => {
-                    navigation.push("Komentar", { komentar: komentar });
+                    kepuasan.responden == "0"
+                      ? ""
+                      : navigation.push("Komentar", { komentar: komentar });
                   }}
                 >
                   <AText
@@ -337,7 +347,7 @@ function SurveiKepuasanScreen({ navigation }) {
                           color={color.neutral.neutral900}
                           weight="normal"
                         >
-                          {item.Hasil}
+                          {kepuasan.responden == "0" ? "0" : item.Hasil}
                         </AText>
                       </View>
                     </View>

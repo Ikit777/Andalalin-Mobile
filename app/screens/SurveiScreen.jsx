@@ -116,7 +116,7 @@ function SurveiScreen({ navigation, route }) {
           if (kondisi == "Mandiri") {
             navigation.replace("Back Home");
           }else{
-            navigation.replace("Back Detail", {id: id, kondisi: kondisi});
+            navigation.replace("Back Detail", {id: id});
           }
         }}
       />

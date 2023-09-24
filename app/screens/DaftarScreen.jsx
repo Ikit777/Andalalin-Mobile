@@ -14,6 +14,7 @@ import ABackButton from "../component/utility/ABackButton";
 import ACardPermohonan from "../component/utility/ACardPermohonan";
 import {
   andalalinGetAllByTiketLevel2,
+  andalalinGetAllPemasangan,
   andalalinGetAllSurvei,
   andalalinGetAllSurveiMandiri,
   andalalinGetAllSurveiMandiriPetugas,
@@ -21,6 +22,7 @@ import {
   andalalinGetByStatus,
   andalalinGetByTiketLevel1,
   andalalinGetByTiketLevel2,
+  andalalinGetPermohonanPemasangan,
   andalalinGetUsulanTindakan,
   andalalinSimpanKeputusan,
   andalalinTindakan,
@@ -38,6 +40,7 @@ import ATextInput from "../component/utility/ATextInput";
 function DaftarScreen({ navigation, route }) {
   const [gagal, toggleGagal] = useStateToggler();
   const [surveiGagal, toggleSurveiGagal] = useStateToggler();
+  const [pemasanganGagal, togglePemasanganGagal] = useStateToggler();
   const [usulanGagal, toggleUsulanGagal] = useStateToggler();
   const [permohonan, setPermohonan] = useState("permohonan");
   const context = useContext(UserContext);
@@ -93,7 +96,7 @@ function DaftarScreen({ navigation, route }) {
               loadDaftarByTiketLevel1();
               break;
             case "Selesai":
-              loadPermohonanByStatus("Permohonan selesai");
+              loadPermohonanSelesai("Permohonan selesai");
               break;
             case "Mandiri":
               loadSurveiMandiri();
@@ -112,6 +115,12 @@ function DaftarScreen({ navigation, route }) {
             case "Daftar":
               loadDaftarSurvei();
               break;
+            case "Pemasangan":
+              loadDaftarPermohonanPemasangan();
+              break;
+            case "Daftar Pemasangan":
+              loadDaftarPemasangan();
+              break;
           }
           break;
         case "Admin":
@@ -127,7 +136,7 @@ function DaftarScreen({ navigation, route }) {
               loadAllByTiketLevel2("Tunda");
               break;
             case "Selesai":
-              loadPermohonanByStatus("Permohonan selesai");
+              loadPermohonanSelesai("Permohonan selesai");
               break;
             case "Mandiri":
               loadSurveiMandiri();
@@ -147,7 +156,7 @@ function DaftarScreen({ navigation, route }) {
               loadDaftarByTiketLevel1();
               break;
             case "Selesai":
-              loadPermohonanByStatus("Permohonan selesai");
+              loadPermohonanSelesai("Permohonan selesai");
               break;
             case "Mandiri":
               loadSurveiMandiri();
@@ -161,7 +170,7 @@ function DaftarScreen({ navigation, route }) {
               loadSurveiMandiri();
               break;
             case "Selesai":
-              loadPermohonanByStatus("Permohonan selesai");
+              loadPermohonanSelesai("Permohonan selesai");
               break;
             case "Diajukan":
               loadDaftarByTiketLevel1();
@@ -171,9 +180,6 @@ function DaftarScreen({ navigation, route }) {
               break;
             case "Tertunda":
               loadAllByTiketLevel2("Tunda");
-              break;
-            case "Survei":
-              loadAllByTiketLevel2("Buka");
               break;
             case "Keputusan":
               loadPermohonanByStatus("Menunggu hasil keputusan");
@@ -197,6 +203,59 @@ function DaftarScreen({ navigation, route }) {
             const result = await response.json();
             setPermohonan(result.data);
             context.toggleLoading(false);
+          })();
+          break;
+        case 424:
+          authRefreshToken(context, (response) => {
+            if (response.status === 200) {
+              loadPermohonanByStatus();
+            } else {
+              context.toggleLoading(false);
+            }
+          });
+          break;
+        default:
+          context.toggleLoading(false);
+          toggleGagal();
+          break;
+      }
+    });
+  };
+
+  const loadPermohonanSelesai = (status) => {
+    andalalinGetByStatus(context.getUser().access_token, status, (response) => {
+      switch (response.status) {
+        case 200:
+          (async () => {
+            const result = await response.json();
+            andalalinGetByStatus(
+              context.getUser().access_token,
+              "Pemasangan selesai",
+              (response) => {
+                switch (response.status) {
+                  case 200:
+                    (async () => {
+                      const result2 = await response.json();
+                      setPermohonan([...result.data, ...result2.data]);
+                      context.toggleLoading(false);
+                    })();
+                    break;
+                  case 424:
+                    authRefreshToken(context, (response) => {
+                      if (response.status === 200) {
+                        loadPermohonanByStatus();
+                      } else {
+                        context.toggleLoading(false);
+                      }
+                    });
+                    break;
+                  default:
+                    context.toggleLoading(false);
+                    toggleGagal();
+                    break;
+                }
+              }
+            );
           })();
           break;
         case 424:
@@ -385,6 +444,63 @@ function DaftarScreen({ navigation, route }) {
     });
   };
 
+  const loadDaftarPemasangan = () => {
+    andalalinGetAllPemasangan(context.getUser().access_token, (response) => {
+      switch (response.status) {
+        case 200:
+          (async () => {
+            const result = await response.json();
+            setPermohonan(result.data);
+            context.toggleLoading(false);
+          })();
+          break;
+        case 424:
+          authRefreshToken(context, (response) => {
+            if (response.status === 200) {
+              loadDaftarPemasangan();
+            } else {
+              context.toggleLoading(false);
+            }
+          });
+          break;
+        default:
+          context.toggleLoading(false);
+          togglePemasanganGagal();
+          break;
+      }
+    });
+  };
+
+  const loadDaftarPermohonanPemasangan = () => {
+    andalalinGetPermohonanPemasangan(
+      context.getUser().access_token,
+      (response) => {
+        switch (response.status) {
+          case 200:
+            (async () => {
+              const result = await response.json();
+              setPermohonan(result.data);
+              context.toggleLoading(false);
+            })();
+            break;
+          case 424:
+            authRefreshToken(context, (response) => {
+              if (response.status === 200) {
+                loadDaftarPermohonanPemasangan();
+              } else {
+                context.toggleLoading(false);
+              }
+            });
+            break;
+          default:
+            context.toggleLoading(false);
+            toggleGagal();
+            break;
+        }
+      }
+    );
+  };
+
   const loadUsulanTindakan = () => {
     andalalinGetUsulanTindakan(context.getUser().access_token, (response) => {
       switch (response.status) {
@@ -462,6 +578,10 @@ function DaftarScreen({ navigation, route }) {
             return "Daftar survei mandiri";
           case "Daftar":
             return "Daftar survei";
+          case "Pemasangan":
+            return "Daftar permohonan";
+          case "Daftar Pemasangan":
+            return "Daftar pemasangan";
         }
       case "Admin":
         switch (kondisi) {
@@ -501,8 +621,6 @@ function DaftarScreen({ navigation, route }) {
             return "Daftar usulan";
           case "Tertunda":
             return "Daftar tunda";
-          case "Survei":
-            return "Daftar permohonan";
           case "Keputusan":
             return "Daftar permohonan";
           case "Lanjutkan Pemasangan":
@@ -543,6 +661,16 @@ function DaftarScreen({ navigation, route }) {
               id: item.id_andalalin,
               kondisi: "Petugas",
               jenis: "Permohonan",
+            });
+          case "Pemasangan":
+            return navigation.push("Detail", {
+              id: item.id_andalalin,
+            });
+          case "Daftar Pemasangan":
+            return navigation.push("Detail Survei", {
+              id: item.id_andalalin,
+              kondisi: "Petugas",
+              jenis: "Pemasangan",
             });
         }
       case "Admin":
@@ -601,10 +729,6 @@ function DaftarScreen({ navigation, route }) {
             setIdPermohonan(item.id_andalalin);
             toggleLanjutkanModal();
             break;
-          case "Survei":
-            return navigation.push("Detail", {
-              id: item.id_andalalin,
-            });
           case "Keputusan":
             return navigation.push("Detail", { id: item.id_andalalin });
           case "Lanjutkan Pemasangan":
@@ -633,6 +757,10 @@ function DaftarScreen({ navigation, route }) {
           case "Mandiri":
             return list_survei_mandiri("Detail", item);
           case "Daftar":
+            return list("Detail", item);
+          case "Pemasangan":
+            return list("Detail", item);
+          case "Daftar Pemasangan":
             return list("Detail", item);
         }
       case "Admin":
@@ -673,8 +801,6 @@ function DaftarScreen({ navigation, route }) {
             return list("Detail", item);
           case "Tertunda":
             return list("Lanjutkan", item);
-          case "Survei":
-            return list("Detail", item);
           case "Keputusan":
             return list("Detail", item);
           case "Lanjutkan Pemasangan":
@@ -696,26 +822,43 @@ function DaftarScreen({ navigation, route }) {
           break;
         case "Operator":
           context.toggleLoading(true);
-          if (kondisi == "Diajukan" && kondisi != undefined) {
-            loadDaftarByTiketLevel1();
-          } else {
-            loadPermohonanByStatus("Permohonan selesai");
+          switch (kondisi) {
+            case "Diajukan":
+              loadDaftarByTiketLevel1();
+              break;
+            case "Selesai":
+              loadPermohonanSelesai("Permohonan selesai");
+              break;
+            case "Mandiri":
+              loadSurveiMandiri();
+              break;
           }
-
           break;
         case "Petugas":
           context.toggleLoading(true);
-          if (kondisi == "Survei" && kondisi != undefined) {
-            loadDaftarByTiketLevel2("Buka");
-          } else {
-            loadDaftarSurvei();
+          switch (kondisi) {
+            case "Survei":
+              loadDaftarByTiketLevel2("Buka");
+              break;
+            case "Mandiri":
+              loadSurveiMandiriByPetugas();
+              break;
+            case "Daftar":
+              loadDaftarSurvei();
+              break;
+            case "Pemasangan":
+              loadDaftarPermohonanPemasangan();
+              break;
+            case "Daftar Pemasangan":
+              loadDaftarPemasangan();
+              break;
           }
           break;
         case "Admin":
           context.toggleLoading(true);
           switch (kondisi) {
             case "Persetujuan":
-              loadPermohonanPersetujuan();
+              loadPermohonanByStatus("Persetujuan dokumen");
               break;
             case "Pengawasan":
               loadUsulanTindakan();
@@ -723,8 +866,31 @@ function DaftarScreen({ navigation, route }) {
             case "Tertunda":
               loadAllByTiketLevel2("Tunda");
               break;
+            case "Selesai":
+              loadPermohonanSelesai("Permohonan selesai");
+              break;
+            case "Mandiri":
+              loadSurveiMandiri();
+              break;
+            case "Keputusan":
+              loadPermohonanByStatus("Menunggu hasil keputusan");
+              break;
             case "Lanjutkan Pemasangan":
               loadPermohonanByStatus("Tunda pemasangan");
+              break;
+          }
+          break;
+        case "Dinas Perhubungan":
+          context.toggleLoading(true);
+          switch (kondisi) {
+            case "Berlangsung":
+              loadDaftarByTiketLevel1();
+              break;
+            case "Selesai":
+              loadPermohonanSelesai("Permohonan selesai");
+              break;
+            case "Mandiri":
+              loadSurveiMandiri();
               break;
           }
           break;
@@ -735,7 +901,7 @@ function DaftarScreen({ navigation, route }) {
               loadSurveiMandiri();
               break;
             case "Selesai":
-              loadPermohonanByStatus("Permohonan selesai");
+              loadPermohonanSelesai("Permohonan selesai");
               break;
             case "Diajukan":
               loadDaftarByTiketLevel1();
@@ -745,9 +911,6 @@ function DaftarScreen({ navigation, route }) {
               break;
             case "Tertunda":
               loadAllByTiketLevel2("Tunda");
-              break;
-            case "Survei":
-              loadAllByTiketLevel2("Buka");
               break;
             case "Keputusan":
               loadPermohonanByStatus("Menunggu hasil keputusan");
@@ -1221,6 +1384,17 @@ function DaftarScreen({ navigation, route }) {
         btnOK={"OK"}
         onPressOKButton={() => {
           toggleSurveiGagal();
+          navigation.replace("Back Home");
+        }}
+      />
+
+      <ADialog
+        title={"Daftar pemasangan gagal dimuat"}
+        desc={"Terjadi kesalahan pada server kami, mohon coba lagi lain waktu"}
+        visibleModal={pemasanganGagal}
+        btnOK={"OK"}
+        onPressOKButton={() => {
+          togglePemasanganGagal();
           navigation.replace("Back Home");
         }}
       />

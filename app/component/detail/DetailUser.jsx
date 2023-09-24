@@ -17,8 +17,9 @@ function DetailUser({ permohonan, navigation }) {
   const [konfirmasi, toggleKonfirmasi] = useStateToggler();
   const [file, setFile] = useState();
   const [namaFile, setNamaFile] = useState();
-  const [survei, setSurvei] = useState();
+  const [kepuasan, setKepuasan] = useState();
   const [surveiDialog, toggleSurveiDialog] = useStateToggler();
+  const [pemasanganDialog, togglePemasanganDialog] = useStateToggler();
 
   const status = () => {
     switch (permohonan.status_andalalin) {
@@ -27,6 +28,8 @@ function DetailUser({ permohonan, navigation }) {
       case "Permohonan dibatalkan":
         return color.error.error50;
       case "Permohonan selesai":
+        return color.success.success50;
+      case "Pemasangan selesai":
         return color.success.success50;
       default:
         return color.secondary.secondary50;
@@ -40,6 +43,8 @@ function DetailUser({ permohonan, navigation }) {
       case "Permohonan dibatalkan":
         return color.error.error700;
       case "Permohonan selesai":
+        return color.success.success700;
+      case "Pemasangan selesai":
         return color.success.success700;
       default:
         return color.secondary.secondary700;
@@ -94,8 +99,51 @@ function DetailUser({ permohonan, navigation }) {
       });
   };
 
+  const pemasangan = () => {
+    if (permohonan.status_andalalin == "Pemasangan selesai") {
+      return (
+        <ADetailView
+          style={{ marginBottom: 50 }}
+          title={"Hasil pemasangan perlalin"}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: 16,
+            }}
+          >
+            <AText size={12} color={color.neutral.neutral900} weight="normal">
+              Data hasil pemasangan
+            </AText>
+
+            <Pressable
+              style={{ flexDirection: "row", paddingLeft: 4 }}
+              onPress={() => {
+                navigation.push("Detail Survei", {
+                  id: permohonan.id_andalalin,
+                  kondisi: context.getUser().role,
+                  jenis: "Pemasangan",
+                });
+              }}
+            >
+              <AText
+                size={14}
+                color={color.neutral.neutral700}
+                weight="semibold"
+              >
+                Lihat
+              </AText>
+            </Pressable>
+          </View>
+        </ADetailView>
+      );
+    }
+  };
+
   useEffect(() => {
-    if (permohonan != "permohonan" && permohonan.file_sk != null) {
+    if (permohonan != "permohonan") {
       cek();
     }
   }, [permohonan]);
@@ -107,8 +155,12 @@ function DetailUser({ permohonan, navigation }) {
       (response) => {
         switch (response.status) {
           case 200:
-            setSurvei(true);
-            if (context.uri != null) {
+            setKepuasan(true);
+            if (
+              context.uri != null &&
+              permohonan.file_sk != null &&
+              permohonan.jenis_andalalin == "Dokumen analisa dampak lalu lintas"
+            ) {
               (async () => {
                 await StorageAccessFramework.createFileAsync(
                   context.uri,
@@ -136,7 +188,13 @@ function DetailUser({ permohonan, navigation }) {
             });
             break;
           default:
-            setSurvei(false);
+            setKepuasan(false);
+            if (
+              permohonan.jenis_andalalin == "Perlengkapan lalu lintas" &&
+              permohonan.status_andalalin == "Pemasangan selesai"
+            ) {
+              togglePemasanganDialog();
+            }
             break;
         }
       }
@@ -324,7 +382,7 @@ function DetailUser({ permohonan, navigation }) {
           style={{
             marginTop: 20,
             marginBottom:
-              permohonan.status_andalalin == "Persyaratan tidak terpenuhi"
+              permohonan.status_andalalin == "Persyaratan tidak terpenuhi" || kepuasan
                 ? 20
                 : 50,
           }}
@@ -364,6 +422,8 @@ function DetailUser({ permohonan, navigation }) {
             </Pressable>
           </View>
         </ADetailView>
+
+        {kepuasan && kepuasan != null ? pemasangan() : ""}
 
         {permohonan.status_andalalin == "Persyaratan tidak terpenuhi" ? (
           <AButton
@@ -640,7 +700,7 @@ function DetailUser({ permohonan, navigation }) {
                 <Pressable
                   style={{ flexDirection: "row", paddingLeft: 4 }}
                   onPress={() => {
-                    if (survei && survei != null) {
+                    if (kepuasan && kepuasan != null) {
                       setNamaFile(
                         "Surat keputusan permohonan " +
                           permohonan.kode_andalalin +
@@ -709,7 +769,7 @@ function DetailUser({ permohonan, navigation }) {
       <AConfirmationDialog
         title={"Download"}
         desc={
-          "Sebelum mendownload berkas surat keputusan Anda harus mengisi survei kepuasan terlebih dahulu "
+          "Sebelum mendownload berkas surat keputusan Anda harus mengisi survei kepuasan terlebih dahulu"
         }
         visibleModal={surveiDialog}
         btnOK={"OK"}
@@ -719,6 +779,26 @@ function DetailUser({ permohonan, navigation }) {
         }}
         onPressOKButton={() => {
           toggleSurveiDialog();
+          context.clearSurveiKepuasan();
+          context.setIndexSurvei(1);
+          navigation.push("Survei Kepuasan", { id: permohonan.id_andalalin });
+        }}
+      />
+
+      <AConfirmationDialog
+        title={"Pemasangan perlengkapan lalu lintas"}
+        desc={
+          "Sebelum melihat hasil Pemasangan perlengkapan lalu lintas Anda harus mengisi survei kepuasan terlebih dahulu "
+        }
+        visibleModal={pemasanganDialog}
+        btnOK={"OK"}
+        btnBATAL={"Batal"}
+        onPressBATALButton={() => {
+          togglePemasanganDialog();
+          navigation.replace("Back Daftar", { kondisi: "Diajukan" });
+        }}
+        onPressOKButton={() => {
+          togglePemasanganDialog();
           context.clearSurveiKepuasan();
           context.setIndexSurvei(1);
           navigation.push("Survei Kepuasan", { id: permohonan.id_andalalin });

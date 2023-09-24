@@ -50,22 +50,34 @@ function DetailScreen({ navigation, route }) {
         navigation.replace("Back Daftar");
         break;
       case "Operator":
-        if (data.status_andalalin == "Permohonan selesai") {
+        if (
+          data.status_andalalin == "Permohonan selesai" ||
+          data.status_andalalin == "Pemasangan selesai"
+        ) {
           navigation.replace("Back Daftar", { kondisi: "Selesai" });
         } else {
           navigation.replace("Back Daftar", { kondisi: "Diajukan" });
         }
         break;
       case "Petugas":
-        navigation.replace("Back Daftar", { kondisi: "Survei" });
+        switch (data.status_andalalin) {
+          case "Survei lapangan":
+            navigation.replace("Back Daftar", { kondisi: "Survei" });
+            break;
+          case "Pemasangan sedang dilakukan":
+            navigation.replace("Back Daftar", { kondisi: "Pemasangan" });
+            break;
+          default:
+            navigation.replace("Back Daftar", { kondisi: "Survei" });
+            break;
+        }
         break;
       case "Admin":
-        if (data.status_andalalin == "Permohonan selesai") {
-        } else {
-        }
-
         switch (data.status_andalalin) {
           case "Permohonan selesai":
+            navigation.replace("Back Daftar", { kondisi: "Selesai" });
+            break;
+          case "Pemasangan selesai":
             navigation.replace("Back Daftar", { kondisi: "Selesai" });
             break;
           default:
@@ -77,17 +89,22 @@ function DetailScreen({ navigation, route }) {
 
             break;
         }
-
         break;
       case "Dinas Perhubungan":
-        if (data.status_andalalin == "Permohonan selesai") {
+        if (
+          data.status_andalalin == "Permohonan selesai" ||
+          data.status_andalalin == "Pemasangan selesai"
+        ) {
           navigation.replace("Back Daftar", { kondisi: "Selesai" });
         } else {
           navigation.replace("Back Daftar", { kondisi: "Berlangsung" });
         }
         break;
       case "Super Admin":
-        if (data.status_andalalin == "Permohonan selesai") {
+        if (
+          data.status_andalalin == "Permohonan selesai" ||
+          data.status_andalalin == "Pemasangan selesai"
+        ) {
           navigation.replace("Back Daftar", { kondisi: "Selesai" });
         } else {
           navigation.replace("Back Daftar", { kondisi: "Diajukan" });
@@ -256,7 +273,7 @@ function DetailScreen({ navigation, route }) {
       >
         {data != "permohonan" ? detail() : ""}
       </ScrollView>
-      <View style={{paddingHorizontal: 16}}>
+      <View style={{ paddingHorizontal: 16 }}>
         {context.isSnackbarVisible ? (
           <ASnackBar
             visible={context.isSnackbarVisible}
