@@ -673,6 +673,7 @@ function DaftarScreen({ navigation, route }) {
               jenis: "Pemasangan",
             });
         }
+        break;
       case "Admin":
         switch (kondisi) {
           case "Persetujuan":
@@ -698,6 +699,7 @@ function DaftarScreen({ navigation, route }) {
             toggleKeputusanModal();
             break;
         }
+        break;
       case "Dinas Perhubungan":
         switch (kondisi) {
           case "Berlangsung":
@@ -711,6 +713,7 @@ function DaftarScreen({ navigation, route }) {
               jenis: "Mandiri",
             });
         }
+        break;
       case "Super Admin":
         switch (kondisi) {
           case "Mandiri":
@@ -736,6 +739,7 @@ function DaftarScreen({ navigation, route }) {
             toggleKeputusanModal();
             break;
         }
+        break;
     }
   };
 
