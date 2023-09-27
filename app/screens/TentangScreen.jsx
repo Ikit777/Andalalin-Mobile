@@ -70,7 +70,7 @@ function TentangScreen({ navigation }) {
           color={color.neutral.neutral500}
           weight="normal"
         >
-          Andalalin adalah sebuah aplikasi yang memiliki kegunaan untuk melakukan
+          Andalalin adalah aplikasi yang memiliki kegunaan untuk melakukan
           permohonan, pengajuan, pengadaan dan pelacakan dokumen analisis dampak lalu lintas atau perlengkapan rambu lalu
           lintas.
         </AText>
