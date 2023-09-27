@@ -62,18 +62,7 @@ export default function App() {
       setLogged(true);
     }
   };
-  
-  const eventListener = (event) => {
-    if (event.type === Updates.UpdateEventType.ERROR) {
-      toggleLoading(false);
-    } else if (event.type === Updates.UpdateEventType.NO_UPDATE_AVAILABLE) {
-      toggleLoading(false);
-    } else if (event.type === Updates.UpdateEventType.UPDATE_AVAILABLE) {
-      toggleLoading(false);
-      toggleUpdateSelesai(true);
-    }
-  };
-  Updates.useUpdateEvents(eventListener);
+
   // const checkVersion = async () => {
   //   try {
   //     const res = await fetch(
@@ -113,6 +102,8 @@ export default function App() {
     try {
       toggleLoading(true);
       await Updates.fetchUpdateAsync();
+      toggleLoading(false);
+      toggleUpdateSelesai(true);
     } catch (error) {
       console.log("Terjadi kesalahan pada saat cek pembaharuan");
     }
