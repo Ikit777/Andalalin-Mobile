@@ -60,6 +60,13 @@ export default function App() {
     }
   };
 
+  Updates.addListener(async (event) => {
+    if (event.type === Updates.EventType.UPDATE_AVAILABLE) {
+      toggleLoading(false);
+      toggleUpdateSelesai(true);
+    }
+  });
+
   const checkUpdate = async () => {
     try {
       const update = await Updates.checkForUpdateAsync();
@@ -75,16 +82,6 @@ export default function App() {
     try {
       toggleLoading(true);
       await Updates.fetchUpdateAsync();
-
-      Updates.addListener(async (event) => {
-        if (event.type === Updates.EventType.UPDATE_AVAILABLE) {
-          const shouldUpdate = await showUpdatePrompt();
-          if (shouldUpdate) {
-            toggleLoading(false);
-            toggleUpdateSelesai(true);
-          }
-        }
-      });
     } catch (error) {
       console.log("Terjadi kesalahan pada saat cek pembaharuan");
     }
