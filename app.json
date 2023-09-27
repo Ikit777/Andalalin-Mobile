@@ -23,6 +23,12 @@
     },
     "web": {
       "favicon": "./app/assets/image/icon.png"
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/2b044a40-5746-4ede-8008-ca66914cc9c6"
     }
   }
 }
