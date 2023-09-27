@@ -75,13 +75,16 @@ export default function App() {
     try {
       toggleLoading(true);
       await Updates.fetchUpdateAsync();
-      const eventListener = async (event) => {
-        if (event.type === Updates.UpdateEventType.UPDATE_AVAILABLE) {
-          toggleLoading(false);
-          toggleUpdateSelesai(true);
+
+      Updates.addListener(async (event) => {
+        if (event.type === Updates.EventType.UPDATE_AVAILABLE) {
+          const shouldUpdate = await showUpdatePrompt();
+          if (shouldUpdate) {
+            toggleLoading(false);
+            toggleUpdateSelesai(true);
+          }
         }
-      };
-      Updates.useUpdateEvents(eventListener);
+      });
     } catch (error) {
       console.log("Terjadi kesalahan pada saat cek pembaharuan");
     }
