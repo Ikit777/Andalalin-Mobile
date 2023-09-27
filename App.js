@@ -18,14 +18,16 @@ import Navigator from "./app/navigation/Navigator";
 import ASessionEnd from "./app/component/utility/ASessionEnd";
 import { navigationRef } from "./app/navigation/RootNavigator";
 import ALoading from "./app/component/utility/ALoading";
+
 import * as Updates from "expo-updates";
 import AUpdateDialog from "./app/component/utility/AUpdateDialog";
 import ADialog from "./app/component/utility/ADialog";
 
-export default async function App() {
+export default function App() {
   const [isAppReady, setIsAppReady] = useState(false);
   const [isLogged, setLogged] = useState(false);
   const [user, setUser] = useState("user");
+
   const [update, toggleUpdate] = useState(false);
   const [loading, toggleLoading] = useState(false);
   const [updateSelesai, toggleUpdateSelesai] = useState(false);
@@ -61,7 +63,6 @@ export default async function App() {
   const checkUpdate = async () => {
     try {
       const update = await Updates.checkForUpdateAsync();
-
       if (update.isAvailable) {
         toggleUpdate(true);
       }
@@ -82,13 +83,21 @@ export default async function App() {
       };
       Updates.useUpdateEvents(eventListener);
     } catch (error) {
-      console.log("Terjadi kesalahan pada saat download pembaharuan");
+      console.log("Terjadi kesalahan pada saat cek pembaharuan");
     }
   };
 
   const reloadApp = async () => {
-    await Updates.reloadAsync();
+    try {
+      await Updates.reloadAsync();
+    } catch (error) {
+      console.log("Terjadi kesalahan pada saat reload aplikasi");
+    }
   };
+
+  useEffect(() => {
+    checkUpdate();
+  }, []);
 
   useEffect(() => {
     prepare();
@@ -96,10 +105,6 @@ export default async function App() {
 
   useEffect(() => {
     checkFirstTimeLaunch();
-  }, []);
-
-  useEffect(() => {
-    checkUpdate();
   }, []);
 
   if (!isAppReady) {
