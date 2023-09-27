@@ -18,11 +18,17 @@ import Navigator from "./app/navigation/Navigator";
 import ASessionEnd from "./app/component/utility/ASessionEnd";
 import { navigationRef } from "./app/navigation/RootNavigator";
 import ALoading from "./app/component/utility/ALoading";
+import * as Updates from "expo-updates";
+import AUpdateDialog from "./app/component/utility/AUpdateDialog";
+import ADialog from "./app/component/utility/ADialog";
 
-export default function App() {
+export default async function App() {
   const [isAppReady, setIsAppReady] = useState(false);
   const [isLogged, setLogged] = useState(false);
   const [user, setUser] = useState("user");
+  const [update, toggleUpdate] = useState(false);
+  const [loading, toggleLoading] = useState(false);
+  const [updateSelesai, toggleUpdateSelesai] = useState(false);
 
   const onLayoutRootView = useCallback(async () => {
     if (isAppReady) {
@@ -52,6 +58,38 @@ export default function App() {
     }
   };
 
+  const checkUpdate = async () => {
+    try {
+      const update = await Updates.checkForUpdateAsync();
+
+      if (update.isAvailable) {
+        toggleUpdate(true);
+      }
+    } catch (error) {
+      console.log("Terjadi kesalahan pada saat cek pembaharuan");
+    }
+  };
+
+  const fetchUpdate = async () => {
+    try {
+      toggleLoading(true);
+      await Updates.fetchUpdateAsync();
+      const eventListener = async (event) => {
+        if (event.type === Updates.UpdateEventType.UPDATE_AVAILABLE) {
+          toggleLoading(false);
+          toggleUpdateSelesai(true);
+        }
+      };
+      Updates.useUpdateEvents(eventListener);
+    } catch (error) {
+      console.log("Terjadi kesalahan pada saat download pembaharuan");
+    }
+  };
+
+  const reloadApp = async () => {
+    await Updates.reloadAsync();
+  };
+
   useEffect(() => {
     prepare();
   }, []);
@@ -60,12 +98,35 @@ export default function App() {
     checkFirstTimeLaunch();
   }, []);
 
+  useEffect(() => {
+    checkUpdate();
+  }, []);
+
   if (!isAppReady) {
     return null;
   }
 
   return (
     <View onLayout={onLayoutRootView} style={{ flex: 1 }}>
+      <AUpdateDialog
+        visibleModal={update}
+        onPressOKButton={() => {
+          toggleUpdate(false);
+          fetchUpdate();
+        }}
+      />
+      <ADialog
+        title={"Update selesai"}
+        desc={"Aplikasi berhasil diperbaharui, silahkan buka kembali aplikasi"}
+        visibleModal={updateSelesai}
+        btnOK={"OK"}
+        onPressOKButton={() => {
+          toggleUpdateSelesai(false);
+          reloadApp();
+        }}
+      />
+      <ALoading visibleModal={loading} />
+
       <NetProvider>
         <UserProvider>
           <LoadMaster isLogged={isLogged} user={user} />
