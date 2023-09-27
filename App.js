@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { View, Linking } from "react-native";
 import React, { useEffect, useState, useCallback } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 
@@ -22,6 +22,8 @@ import ALoading from "./app/component/utility/ALoading";
 import * as Updates from "expo-updates";
 import AUpdateDialog from "./app/component/utility/AUpdateDialog";
 import ADialog from "./app/component/utility/ADialog";
+import Constants from "expo-constants";
+import ExitApp from "react-native-exit-app";
 
 export default function App() {
   const [isAppReady, setIsAppReady] = useState(false);
@@ -31,6 +33,7 @@ export default function App() {
   const [update, toggleUpdate] = useState(false);
   const [loading, toggleLoading] = useState(false);
   const [updateSelesai, toggleUpdateSelesai] = useState(false);
+  const [updateVer, setUpdateVer] = useState();
 
   const onLayoutRootView = useCallback(async () => {
     if (isAppReady) {
@@ -67,10 +70,34 @@ export default function App() {
     }
   });
 
+  // const checkVersion = async () => {
+  //   try {
+  //     const res = await fetch(
+  //       `https://play.google.com/store/apps/details?id=com.andalalin`
+  //     );
+  //     const text = await res.text();
+  //     let latestVersionApp;
+  //     const match = text.match(/\[\[\["([\d.]+?)"\]\]/);
+  //     if (match) {
+  //       latestVersionApp = match[1].trim();
+  //     }
+
+  //     if (Constants.manifest2.runtimeVersion != latestVersionApp) {
+  //       setUpdateVer("Playstore");
+  //       toggleUpdate(true);
+  //     }
+  //   } catch (error) {}
+  // };
+
+  // useEffect(() => {
+  //   checkVersion();
+  // }, []);
+
   const checkUpdate = async () => {
     try {
       const update = await Updates.checkForUpdateAsync();
       if (update.isAvailable) {
+        setUpdateVer("Expo Server");
         toggleUpdate(true);
       }
     } catch (error) {
@@ -116,8 +143,13 @@ export default function App() {
       <AUpdateDialog
         visibleModal={update}
         onPressOKButton={() => {
-          toggleUpdate(false);
-          fetchUpdate();
+          if (updateVer == "Expo Server") {
+            toggleUpdate(false);
+            fetchUpdate();
+          } else {
+            Linking.openURL("market://details?id=com.andalalin");
+            ExitApp.exitApp();
+          }
         }}
       />
       <ADialog
