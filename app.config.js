@@ -10,7 +10,7 @@ module.exports = ({ config }) => {
     },
     android: {
       package: "com.andalalin",
-      versionCode: 3,
+      versionCode: 1,
       googleServicesFile: process.env.GOOGLE_SERVICES_JSON ?? "./google-services.json",
       adaptiveIcon: {
         foregroundImage: "./app/assets/image/icon.png",
