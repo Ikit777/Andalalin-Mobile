@@ -62,14 +62,18 @@ export default function App() {
       setLogged(true);
     }
   };
-
-  Updates.addListener(async (event) => {
-    if (event.type === Updates.EventType.UPDATE_AVAILABLE) {
+  
+  const eventListener = (event) => {
+    if (event.type === Updates.UpdateEventType.ERROR) {
+      toggleLoading(false);
+    } else if (event.type === Updates.UpdateEventType.NO_UPDATE_AVAILABLE) {
+      toggleLoading(false);
+    } else if (event.type === Updates.UpdateEventType.UPDATE_AVAILABLE) {
       toggleLoading(false);
       toggleUpdateSelesai(true);
     }
-  });
-
+  };
+  Updates.useUpdateEvents(eventListener);
   // const checkVersion = async () => {
   //   try {
   //     const res = await fetch(
