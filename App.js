@@ -19,11 +19,10 @@ import ASessionEnd from "./app/component/utility/ASessionEnd";
 import { navigationRef } from "./app/navigation/RootNavigator";
 import ALoading from "./app/component/utility/ALoading";
 
-import * as Updates from "expo-updates";
 import AUpdateDialog from "./app/component/utility/AUpdateDialog";
-import ADialog from "./app/component/utility/ADialog";
 import Constants from "expo-constants";
 import ExitApp from "react-native-exit-app";
+import VersionCheck from 'react-native-version-check-expo'
 
 export default function App() {
   const [isAppReady, setIsAppReady] = useState(false);
@@ -31,9 +30,6 @@ export default function App() {
   const [user, setUser] = useState("user");
 
   const [update, toggleUpdate] = useState(false);
-  const [loading, toggleLoading] = useState(false);
-  const [updateSelesai, toggleUpdateSelesai] = useState(false);
-  const [updateVer, setUpdateVer] = useState();
 
   const onLayoutRootView = useCallback(async () => {
     if (isAppReady) {
@@ -63,62 +59,33 @@ export default function App() {
     }
   };
 
-  // const checkVersion = async () => {
-  //   try {
-  //     const res = await fetch(
-  //       `https://play.google.com/store/apps/details?id=com.andalalin`
-  //     );
-  //     const text = await res.text();
-  //     let latestVersionApp;
-  //     const match = text.match(/\[\[\["([\d.]+?)"\]\]/);
-  //     if (match) {
-  //       latestVersionApp = match[1].trim();
-  //     }
-
-  //     if (Constants.manifest2.runtimeVersion != latestVersionApp) {
-  //       setUpdateVer("Playstore");
-  //       toggleUpdate(true);
-  //     }
-  //   } catch (error) {}
-  // };
-
-  // useEffect(() => {
-  //   checkVersion();
-  // }, []);
-
-  const checkUpdate = async () => {
+  const checkVersion = async () => {
     try {
-      const update = await Updates.checkForUpdateAsync();
-      if (update.isAvailable) {
-        setUpdateVer("Expo Server");
+      const res = await fetch(
+        `https://play.google.com/store/apps/details?id=com.andalalin`
+      );
+      const text = await res.text();
+      let latestVersionApp;
+      const match = text.match(/\[\[\["([\d.]+?)"\]\]/);
+      if (match) {
+        latestVersionApp = match[1].trim();
+      }
+
+      if (Constants.expoConfig.version != latestVersionApp) {
         toggleUpdate(true);
       }
-    } catch (error) {
-      console.log("Terjadi kesalahan pada saat cek pembaharuan");
-    }
-  };
-
-  const fetchUpdate = async () => {
-    try {
-      toggleLoading(true);
-      await Updates.fetchUpdateAsync();
-      toggleLoading(false);
-      toggleUpdateSelesai(true);
-    } catch (error) {
-      console.log("Terjadi kesalahan pada saat cek pembaharuan");
-    }
-  };
-
-  const reloadApp = async () => {
-    try {
-      await Updates.reloadAsync();
-    } catch (error) {
-      console.log("Terjadi kesalahan pada saat reload aplikasi");
-    }
+    } catch (error) {}
   };
 
   useEffect(() => {
-    checkUpdate();
+    // checkVersion();
+
+    // VersionCheck.needUpdate({
+    //   currentVersion: Constants.expoConfig.version,
+    //   latestVersion: "1.0.1",
+    // }).then(() => {
+    //   toggleUpdate(true);
+    // });
   }, []);
 
   useEffect(() => {
@@ -138,26 +105,10 @@ export default function App() {
       <AUpdateDialog
         visibleModal={update}
         onPressOKButton={() => {
-          if (updateVer == "Expo Server") {
-            toggleUpdate(false);
-            fetchUpdate();
-          } else {
-            Linking.openURL("market://details?id=com.andalalin");
-            ExitApp.exitApp();
-          }
+          Linking.openURL("market://details?id=com.andalalin");
+          ExitApp.exitApp();
         }}
       />
-      <ADialog
-        title={"Update selesai"}
-        desc={"Aplikasi berhasil diperbaharui, silahkan buka kembali aplikasi"}
-        visibleModal={updateSelesai}
-        btnOK={"OK"}
-        onPressOKButton={() => {
-          toggleUpdateSelesai(false);
-          reloadApp();
-        }}
-      />
-      <ALoading visibleModal={loading} />
 
       <NetProvider>
         <UserProvider>
