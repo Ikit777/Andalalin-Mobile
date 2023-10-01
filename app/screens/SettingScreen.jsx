@@ -1,5 +1,12 @@
-import React, { useEffect, useContext, useState } from "react";
-import { StyleSheet, View, Image, BackHandler } from "react-native";
+import React, { useEffect, useContext } from "react";
+import {
+  StyleSheet,
+  View,
+  Image,
+  BackHandler,
+  ScrollView,
+  Linking,
+} from "react-native";
 import AScreen from "../component/utility/AScreen";
 import ABackButton from "../component/utility/ABackButton";
 import AText from "../component/utility/AText";
@@ -150,7 +157,7 @@ function SettingScreen({ navigation }) {
             }}
           />
           <AText
-            style={{ paddingLeft: 4}}
+            style={{ paddingLeft: 4 }}
             size={24}
             color={color.neutral.neutral900}
             weight="normal"
@@ -159,7 +166,11 @@ function SettingScreen({ navigation }) {
           </AText>
         </View>
       </View>
-      <View style={styles.content}>
+      <ScrollView
+        style={styles.content}
+        showsVerticalScrollIndicator={false}
+        persistentScrollbar={true}
+      >
         <View
           style={{
             flexDirection: "row",
@@ -205,6 +216,32 @@ function SettingScreen({ navigation }) {
               navigation.navigate("Tentang");
             }}
           />
+          {context.getUser().role == "User" ? (
+            <View>
+              <ASettingItem
+                icon={"shield"}
+                title={"Kebijakan privasi"}
+                onPress={() => {Linking.openURL("https://andalalin.com");}}
+              />
+              <ASettingItem
+                icon={"book-open"}
+                title={"Syarat dan ketentuan"}
+                onPress={() => {
+                  Linking.openURL("https://andalalin.com");
+                }}
+              />
+              <ASettingItem
+                icon={"help-circle"}
+                title={"Bantuan"}
+                onPress={() => {
+                  Linking.openURL(
+                    "mailto:andalalin@gmail.com?subject=Bantuan andalalin");
+                }}
+              />
+            </View>
+          ) : (
+            ""
+          )}
         </View>
 
         <AButton
@@ -215,7 +252,7 @@ function SettingScreen({ navigation }) {
             toggleKonfirmasi();
           }}
         />
-      </View>
+      </ScrollView>
       <AConfirmationDialog
         title={"Keluar"}
         desc={"Apakah Anda yakin ingin keluar?"}

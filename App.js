@@ -22,7 +22,7 @@ import ALoading from "./app/component/utility/ALoading";
 import AUpdateDialog from "./app/component/utility/AUpdateDialog";
 import Constants from "expo-constants";
 import ExitApp from "react-native-exit-app";
-import VersionCheck from 'react-native-version-check-expo'
+import VersionCheck from 'react-native-version-check'
 
 export default function App() {
   const [isAppReady, setIsAppReady] = useState(false);
@@ -70,22 +70,18 @@ export default function App() {
       if (match) {
         latestVersionApp = match[1].trim();
       }
-
-      if (Constants.expoConfig.version != latestVersionApp) {
-        toggleUpdate(true);
-      }
+      
+      VersionCheck.needUpdate({
+        currentVersion: Constants.expoConfig.version,
+        latestVersion: latestVersionApp,
+      }).then((res) => {
+        toggleUpdate(res.isNeeded);
+      });
     } catch (error) {}
   };
 
   useEffect(() => {
     // checkVersion();
-
-    // VersionCheck.needUpdate({
-    //   currentVersion: Constants.expoConfig.version,
-    //   latestVersion: "1.0.1",
-    // }).then(() => {
-    //   toggleUpdate(true);
-    // });
   }, []);
 
   useEffect(() => {

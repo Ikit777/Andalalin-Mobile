@@ -720,7 +720,7 @@ function DetailSurveiScreen({ navigation, route }) {
             </AText>
           </ADetailView>
 
-          {survei.Keterangan != "" ? (
+          {survei.Keterangan != null && survei.Keterangan != "" ? (
             <ADetailView
               style={{ marginTop: 20 }}
               title={`Keterangan ${
@@ -740,7 +740,7 @@ function DetailSurveiScreen({ navigation, route }) {
             ""
           )}
 
-          {survei.KeteranganTindakan != "" && jenis == "Mandiri" ? (
+          {survei.KeteranganTindakan != "" && survei.KeteranganTindakan != null && jenis == "Mandiri" ? (
             <ADetailView
               style={{ marginTop: 20 }}
               title={"Keterangan tambahan"}

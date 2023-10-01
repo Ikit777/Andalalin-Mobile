@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, View, ScrollView, BackHandler } from "react-native";
+import { StyleSheet, View, FlatList, BackHandler } from "react-native";
 import AText from "../component/utility/AText";
 import color from "../constants/color";
 import AScreen from "../component/utility/AScreen";
@@ -49,30 +49,34 @@ function KomentarScreen({ navigation, route }) {
             color={color.neutral.neutral900}
             weight="normal"
           >
-            Apresiasi / Kritik / Saran
+            Apresiasi, Kritik dan Saran
           </AText>
         </View>
       </View>
-      <ScrollView
-        style={styles.content}
-        showsVerticalScrollIndicator={false}
-        persistentScrollbar={true}
-      >
+      <View style={styles.content}>
         {komentar != null ? (
-          komentar.map((item, index) => (
-            <View key={index}>
-              <ADetailView style={{ marginBottom: 20 }} title={item.Nama}>
-                <AText
-                  style={{ padding: 16 }}
-                  size={12}
-                  color={color.neutral.neutral900}
-                  weight="normal"
-                >
-                  {item.Komentar}
-                </AText>
-              </ADetailView>
-            </View>
-          ))
+          <FlatList
+            data={komentar}
+            overScrollMode="never"
+            bounces={false}
+            showsHorizontalScrollIndicator={false}
+            showsVerticalScrollIndicator={false}
+            vertical
+            renderItem={({ item, index }) => {
+              <View key={index}>
+                <ADetailView style={{ marginBottom: 20 }} title={item.Nama}>
+                  <AText
+                    style={{ padding: 16 }}
+                    size={12}
+                    color={color.neutral.neutral900}
+                    weight="normal"
+                  >
+                    {item.Komentar}
+                  </AText>
+                </ADetailView>
+              </View>;
+            }}
+          />
         ) : (
           <View
             style={{
@@ -110,7 +114,7 @@ function KomentarScreen({ navigation, route }) {
             </AText>
           </View>
         )}
-      </ScrollView>
+      </View>
     </AScreen>
   );
 }
