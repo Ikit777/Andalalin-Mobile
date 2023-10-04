@@ -3,7 +3,7 @@ module.exports = ({ config }) => {
     ...config,
     extra: {
       eas: {
-        projectId: "2b044a40-5746-4ede-8008-ca66914cc9c6",
+        projectId: "415722cd-73d6-4d47-93dc-aa14779aa554",
       },
       appStatus: process.env.APP_STATUS ?? "DEVELOPMENT",
       apiURL: process.env.API_URL ?? "https://andalalin-development.up.railway.app",

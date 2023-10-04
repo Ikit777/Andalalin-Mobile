@@ -1,36 +1,26 @@
 {
   "project_info": {
-    "project_number": "199073677624",
-    "project_id": "andalalin-68013",
-    "storage_bucket": "andalalin-68013.appspot.com"
+    "project_number": "1080162866225",
+    "project_id": "andalalin-e198d",
+    "storage_bucket": "andalalin-e198d.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:199073677624:android:68e9656c6d88e24422c1cd",
+        "mobilesdk_app_id": "1:1080162866225:android:eb92b0fe34e9fcdf373110",
         "android_client_info": {
           "package_name": "com.andalalin"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "199073677624-tbrupjmt27t9b2qsqn9osnv13tp9upth.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDos3peTZGwfQ5pTYz3infoYvM77LuZNjk"
+          "current_key": "AIzaSyCXzRrGQLAWNB2KtIKzfC2LqSR_5wRlhtI"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "199073677624-tbrupjmt27t9b2qsqn9osnv13tp9upth.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }
