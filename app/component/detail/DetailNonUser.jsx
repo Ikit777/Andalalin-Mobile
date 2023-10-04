@@ -160,9 +160,9 @@ function DetailNonUser({ permohonan, navigation }) {
                 return tindakan(() => {
                   navigation.push("Berita acara pemeriksaan", {
                     id: permohonan.id_andalalin,
-                    kondisi: "Perbaharui",
+                    kondisi: "perbarui",
                   });
-                }, "Perbaharui laporan");
+                }, "perbarui laporan");
               default:
                 return tindakan(() => {
                   navigation.push("Berita acara pemeriksaan", {
@@ -197,9 +197,9 @@ function DetailNonUser({ permohonan, navigation }) {
                 return tindakan(() => {
                   navigation.push("Berita acara pemeriksaan", {
                     id: permohonan.id_andalalin,
-                    kondisi: "Perbaharui",
+                    kondisi: "perbarui",
                   });
-                }, "Perbaharui laporan");
+                }, "perbarui laporan");
               default:
                 return tindakan(() => {
                   navigation.push("Berita acara pemeriksaan", {

@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState } from "react";
+import React, { useEffect, useContext } from "react";
 import {
   StyleSheet,
   View,
@@ -59,7 +59,7 @@ function HomeScreen({ navigation }) {
   }, [navigation]);
 
   const home = () => {
-    switch (context.getUser().role) {
+    switch (context.user.role) {
       case "User":
         return (
           <View style={{ paddingBottom: 32 }}>
@@ -67,7 +67,7 @@ function HomeScreen({ navigation }) {
               style={{ marginBottom: 20 }}
               icon={"clipboard"}
               title={"Andalalin"}
-              desc={"Ajukan permohonan untuk pelaksanaan andalalin"}
+              desc={"Ajukan permohonan untuk pelaksanaan analisis dampak lalu lintas"}
               onPress={() => {
                 navigation.push("Andalalin", { kondisi: "Andalalin" });
                 context.clear();

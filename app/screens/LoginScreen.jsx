@@ -54,6 +54,10 @@ function LoginScreen({ navigation }) {
     const unsubscribe = navigation.addListener("focus", () => {
       context.toggleLoading(false);
       context.setUser("userLoggin");
+      setEmail("");
+      setPassword("");
+      emailError ? toggleEmailError() : "";
+      passwordError ? togglePasswordError() : "";
 
       BackHandler.addEventListener("hardwareBackPress", () => {
         toggleComfirm();

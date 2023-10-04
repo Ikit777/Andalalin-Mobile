@@ -268,7 +268,7 @@ function ADropDownPerlengkapan({
             borderColor: color.neutral.neutral300,
           }}
         >
-          {getMax()}
+          {data.length != 0 ? getMax() : ""}
           <ScrollView
             style={{
               borderRadius: 8,

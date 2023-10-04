@@ -384,7 +384,7 @@ function DetailUser({ permohonan, navigation }) {
             marginBottom:
               permohonan.status_andalalin == "Persyaratan tidak terpenuhi" || kepuasan
                 ? 20
-                : 50,
+                : 32,
           }}
           title={"Berkas"}
         >
@@ -428,7 +428,7 @@ function DetailUser({ permohonan, navigation }) {
         {permohonan.status_andalalin == "Persyaratan tidak terpenuhi" ? (
           <AButton
             style={{ marginBottom: 32 }}
-            title={"Perbaharui persyaratan"}
+            title={"perbarui persyaratan"}
             mode="contained"
             onPress={() => {
               navigation.push("Update", { permohonan: permohonan });
@@ -641,7 +641,7 @@ function DetailUser({ permohonan, navigation }) {
             marginBottom:
               permohonan.status_andalalin == "Persyaratan tidak terpenuhi"
                 ? 20
-                : 50,
+                : 32,
           }}
           title={"Berkas"}
         >
@@ -731,7 +731,7 @@ function DetailUser({ permohonan, navigation }) {
         {permohonan.status_andalalin == "Persyaratan tidak terpenuhi" ? (
           <AButton
             style={{ marginBottom: 32 }}
-            title={"Perbaharui persyaratan"}
+            title={"perbarui persyaratan"}
             mode="contained"
             onPress={() => {
               navigation.push("Update", { permohonan: permohonan });
@@ -788,7 +788,7 @@ function DetailUser({ permohonan, navigation }) {
       <AConfirmationDialog
         title={"Pemasangan perlengkapan lalu lintas"}
         desc={
-          "Sebelum melihat hasil Pemasangan perlengkapan lalu lintas Anda harus mengisi survei kepuasan terlebih dahulu "
+          "Sebelum melihat hasil Pemasangan perlengkapan lalu lintas, Anda harus mengisi survei kepuasan terlebih dahulu "
         }
         visibleModal={pemasanganDialog}
         btnOK={"OK"}

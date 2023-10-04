@@ -209,7 +209,7 @@ function UpdatePersyaratanScreen({ navigation, route }) {
             color={color.neutral.neutral900}
             weight="normal"
           >
-            Perbaharui persyaratan
+            perbarui persyaratan
           </AText>
         </View>
       </View>
@@ -265,7 +265,7 @@ function UpdatePersyaratanScreen({ navigation, route }) {
       </ScrollView>
       <AConfirmationDialog
         title={"Apakah Anda yakin?"}
-        desc={"Data yang perbaharui akan disimpan"}
+        desc={"Data yang perbarui akan disimpan"}
         visibleModal={confirm}
         btnOK={"OK"}
         btnBATAL={"Batal"}

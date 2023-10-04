@@ -257,6 +257,7 @@ function RegisterScreen({ navigation }) {
           submit={() => {
             {
               konfirmasiError ? toggleKonfirmasiError() : "";
+              passNotSame ? togglePassNotSame() : "";
             }
           }}
           ref={comfirmInput}
@@ -285,7 +286,7 @@ function RegisterScreen({ navigation }) {
             size={14}
             weight="normal"
           >
-            Konfirmasi password tidak sama
+            Konfirmasi password tidak sama dengan password
           </AText>
         ) : (
           ""
@@ -304,6 +305,7 @@ function RegisterScreen({ navigation }) {
           style={{
             flexDirection: "row",
             paddingTop: 32,
+            paddingBottom: 32,
             alignSelf: "center",
           }}
         >

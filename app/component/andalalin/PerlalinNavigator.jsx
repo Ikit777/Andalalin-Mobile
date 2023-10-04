@@ -6,7 +6,7 @@ import PerlalinItem from "./PerlalinItem";
 const Stack = createNativeStackNavigator();
 
 /* A navigator for the exercises that will take the current exercise and passed it the exercise item */
-const PerlalinNavigator = ({ index }) => {
+const PerlalinNavigator = ({ index, kondisi }) => {
   return (
     <Stack.Navigator
       initialRouteName="PerlalinItem"
@@ -17,6 +17,7 @@ const PerlalinNavigator = ({ index }) => {
         component={PerlalinItem}
         initialParams={{
           index,
+          kondisi,
         }}
       />
       <Stack.Screen
@@ -25,6 +26,7 @@ const PerlalinNavigator = ({ index }) => {
         options={{ animation: "slide_from_left" }}
         initialParams={{
           index,
+          kondisi,
         }}
       />
     </Stack.Navigator>

@@ -162,8 +162,8 @@ function LaporanBAPScreen({ navigation, route }) {
     switch (kondisi) {
       case "Laporan":
         return "Laporan BAP";
-      case "Perbaharui":
-        return "Perbaharui laporan";
+      case "perbarui":
+        return "perbarui laporan";
     }
   };
 

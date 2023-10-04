@@ -235,7 +235,7 @@ function SettingScreen({ navigation }) {
                 title={"Bantuan"}
                 onPress={() => {
                   Linking.openURL(
-                    "mailto:andalalin@gmail.com?subject=Bantuan andalalin");
+                    "mailto:andalalin.bjm.v1@gmail.com?subject=Bantuan andalalin");
                 }}
               />
             </View>
@@ -279,8 +279,8 @@ function SettingScreen({ navigation }) {
       />
 
       <ADialog
-        title={"Foto berhasil diperbaharui"}
-        desc={"Foto profil berhasil diperbaharui"}
+        title={"Foto berhasil diperbarui"}
+        desc={"Foto profil berhasil diperbarui"}
         visibleModal={fotoBerhasil}
         btnOK={"OK"}
         onPressOKButton={() => {
@@ -289,7 +289,7 @@ function SettingScreen({ navigation }) {
       />
 
       <ADialog
-        title={"Foto gagal diperbaharui"}
+        title={"Foto gagal diperbarui"}
         desc={"Terjadi kesalahan pada server kami, mohon coba lagi lain waktu"}
         visibleModal={fotoGagal}
         btnOK={"OK"}

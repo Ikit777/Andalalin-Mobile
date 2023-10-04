@@ -80,11 +80,6 @@ function DetailSurveiScreen({ navigation, route }) {
   }, []);
 
   const back = () => {
-    if (context.getUser().role == "Petugas") {
-    } else {
-      navigation.goBack();
-    }
-
     switch (context.getUser().role) {
       case "Petugas":
         switch (jenis) {
