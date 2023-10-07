@@ -8,6 +8,7 @@ import color from "../../constants/color";
 import AButton from "../utility/AButton";
 import AText from "../utility/AText";
 import { Feather } from "@expo/vector-icons";
+import ABottomSheet from "../utility/ABottomSheet";
 
 function Foto({ onPress, navigation, kondisi, id }) {
   const {
@@ -24,6 +25,10 @@ function Foto({ onPress, navigation, kondisi, id }) {
 
   const [fotoSurvei3, setFotoSurvei3] = useState(foto3);
   const [nama3, setNama3] = useState(namaFoto3);
+
+  const [pilihModal, togglePilihModal] = useStateToggler();
+
+  const [foto, setFoto] = useState();
 
   const pilih_foto = async (foto) => {
     const result = await DocumentPicker.getDocumentAsync({
@@ -71,6 +76,94 @@ function Foto({ onPress, navigation, kondisi, id }) {
     }
   };
 
+  const pilih = () => {
+    return (
+      <View>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <AText size={18} color={color.neutral.neutral700} weight="semibold">
+            Pilihan
+          </AText>
+        </View>
+        <Pressable
+          style={{
+            flexDirection: "row",
+            padding: 8,
+            marginTop: 24,
+          }}
+          onPress={() => {
+            togglePilihModal();
+            setTimeout(() => {
+              pilih_foto(foto);
+            }, 500);
+          }}
+        >
+          <Feather name="folder" size={20} color={color.neutral.neutral900} />
+          <AText
+            style={{ paddingLeft: 16 }}
+            size={14}
+            color={color.neutral.neutral700}
+          >
+            Folder
+          </AText>
+        </Pressable>
+
+        <Pressable
+          style={{
+            flexDirection: "row",
+            padding: 8,
+            marginTop: 8,
+            marginBottom: 32,
+          }}
+          onPress={() => {
+            setTimeout(() => {
+              navigation.push("Kamera", {
+                kondisi: "foto" + foto,
+                jenis: kondisi,
+                id: id,
+              });
+            }, 500);
+            togglePilihModal();
+          }}
+        >
+          <Feather name="camera" size={20} color={color.neutral.neutral900} />
+          <AText
+            style={{ paddingLeft: 16 }}
+            size={14}
+            color={color.neutral.neutral700}
+          >
+            Kamera
+          </AText>
+        </Pressable>
+
+        <View
+          style={{
+            flexDirection: "row",
+            alignSelf: "flex-end",
+            marginRight: 16,
+            marginBottom: 16,
+          }}
+        >
+          <Pressable
+            style={{ flexDirection: "row", paddingLeft: 4 }}
+            onPress={() => {
+              togglePilihModal();
+            }}
+          >
+            <AText size={14} color={color.neutral.neutral700} weight="semibold">
+              Batal
+            </AText>
+          </Pressable>
+        </View>
+      </View>
+    );
+  };
+
   return (
     <ScrollView
       style={styles.content}
@@ -85,29 +178,11 @@ function Foto({ onPress, navigation, kondisi, id }) {
           icon={"image"}
           value={nama1}
           mult={true}
-          width={true}
           onPress={() => {
-            pilih_foto(1);
+            setFoto(1);
+            togglePilihModal();
           }}
         />
-
-        <Pressable
-          style={{ padding: 8, marginTop: 30 }}
-          onPress={() => {
-            navigation.push("Kamera", {
-              kondisi: "foto1",
-              jenis: kondisi,
-              id: id,
-            });
-          }}
-        >
-          <Feather
-            style={{ paddingRight: 14 }}
-            name={"camera"}
-            size={24}
-            color={color.neutral.neutral900}
-          />
-        </Pressable>
       </View>
 
       {foto1Error ? (
@@ -132,33 +207,14 @@ function Foto({ onPress, navigation, kondisi, id }) {
           value={nama2}
           padding={20}
           mult={true}
-          width={true}
           onPress={() => {
-            if (foto1 != "Kosong") {
-              pilih_foto(2);
+            if (fotoSurvei1 != "Kosong") {
+              setFoto(2);
+              togglePilihModal();
+              console.log(foto1)
             }
           }}
         />
-
-        <Pressable
-          style={{ padding: 8, marginTop: 50 }}
-          onPress={() => {
-            if (foto1 != "Kosong") {
-              navigation.push("Kamera", {
-                kondisi: "foto2",
-                jenis: kondisi,
-                id: id,
-              });
-            }
-          }}
-        >
-          <Feather
-            style={{ paddingRight: 14 }}
-            name={"camera"}
-            size={24}
-            color={color.neutral.neutral900}
-          />
-        </Pressable>
       </View>
 
       <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -170,33 +226,13 @@ function Foto({ onPress, navigation, kondisi, id }) {
           value={nama3}
           padding={20}
           mult={true}
-          width={true}
           onPress={() => {
-            if (foto1 != "Kosong") {
-              pilih_foto(3);
+            if (fotoSurvei1 != "Kosong" && fotoSurvei2 != "Kosong") {
+              setFoto(3);
+              togglePilihModal();
             }
           }}
         />
-
-        <Pressable
-          style={{ padding: 8, marginTop: 50 }}
-          onPress={() => {
-            if (foto1 != "Kosong") {
-              navigation.push("Kamera", {
-                kondisi: "foto3",
-                jenis: kondisi,
-                id: id,
-              });
-            }
-          }}
-        >
-          <Feather
-            style={{ paddingRight: 14 }}
-            name={"camera"}
-            size={24}
-            color={color.neutral.neutral900}
-          />
-        </Pressable>
       </View>
 
       <AButton
@@ -207,6 +243,7 @@ function Foto({ onPress, navigation, kondisi, id }) {
           selanjutnya();
         }}
       />
+      <ABottomSheet visible={pilihModal}>{pilih()}</ABottomSheet>
     </ScrollView>
   );
 }

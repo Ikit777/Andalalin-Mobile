@@ -221,13 +221,17 @@ function SettingScreen({ navigation }) {
               <ASettingItem
                 icon={"shield"}
                 title={"Kebijakan privasi"}
-                onPress={() => {Linking.openURL("https://andalalin.com");}}
+                onPress={() => {
+                  Linking.openURL(
+                    process.env.APP_WEB + "/kebijakan-privasi"
+                  );
+                }}
               />
               <ASettingItem
                 icon={"book-open"}
                 title={"Syarat dan ketentuan"}
                 onPress={() => {
-                  Linking.openURL("https://andalalin.com");
+                  Linking.openURL(process.env.APP_WEB + "/syarat-ketentuan");
                 }}
               />
               <ASettingItem
@@ -235,7 +239,8 @@ function SettingScreen({ navigation }) {
                 title={"Bantuan"}
                 onPress={() => {
                   Linking.openURL(
-                    "mailto:andalalin.bjm.v1@gmail.com?subject=Bantuan andalalin");
+                    "mailto:andalalin.bjm.v1@gmail.com?subject=Bantuan andalalin"
+                  );
                 }}
               />
             </View>

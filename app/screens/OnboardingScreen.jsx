@@ -1,11 +1,33 @@
-import React from "react";
-import { StyleSheet, Image, View } from "react-native";
+import React, { useEffect } from "react";
+import { StyleSheet, Image, View, BackHandler } from "react-native";
 import AScreen from "../component/utility/AScreen";
 import AText from "../component/utility/AText";
 import AButton from "../component/utility/AButton";
 import color from "../constants/color";
+import AConfirmationDialog from "../component/utility/AConfirmationDialog";
+import { useStateToggler } from "../hooks/useUtility";
+import ExitApp from "react-native-exit-app";
+useEffect
 
 function OnBoardingscreen({ navigation }) {
+  const [confirm, toggleComfirm] = useStateToggler();
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      BackHandler.addEventListener("hardwareBackPress", () => {
+        toggleComfirm();
+        return true;
+      });
+
+      return BackHandler.removeEventListener("hardwareBackPress", () => {
+        toggleComfirm();
+        return true;
+      });
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
   return (
     <AScreen>
       <View style={styles.content}>
@@ -27,6 +49,21 @@ function OnBoardingscreen({ navigation }) {
           <AButton mode="contained" title="Mulai" onPress={() => {navigation.navigate("Login")}} />
         </View>
       </View>
+
+      <AConfirmationDialog
+        title={"Peringatan!"}
+        desc={"Apakah Anda yakin ingin keluar"}
+        visibleModal={confirm}
+        btnOK={"OK"}
+        btnBATAL={"Batal"}
+        onPressBATALButton={() => {
+          toggleComfirm();
+        }}
+        onPressOKButton={() => {
+          ExitApp.exitApp();
+          toggleComfirm();
+        }}
+      />
     </AScreen>
   );
 }

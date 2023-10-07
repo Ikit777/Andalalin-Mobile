@@ -5,6 +5,7 @@ import {
   Pressable,
   BackHandler,
   ScrollView,
+  Linking,
 } from "react-native";
 import AScreen from "../component/utility/AScreen";
 import BackButton from "../component/utility/ABackButton";
@@ -19,6 +20,7 @@ import AConfirmationDialog from "../component/utility/AConfirmationDialog";
 import { authRegister } from "../api/auth";
 import ADialog from "../component/utility/ADialog";
 import { UserContext } from "../context/UserContext";
+import { Checkbox } from "react-native-paper";
 
 function RegisterScreen({ navigation }) {
   const emailInput = React.createRef();
@@ -41,6 +43,7 @@ function RegisterScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setconfirmPassword] = useState("");
+  const [setuju, setSetuju] = useState(false);
 
   useEffect(() => {
     BackHandler.addEventListener("hardwareBackPress", () => {
@@ -292,12 +295,68 @@ function RegisterScreen({ navigation }) {
           ""
         )}
 
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            paddingTop: 20,
+            maxWidth: "90%",
+          }}
+        >
+          <Checkbox
+            uncheckedColor={color.neutral.neutral300}
+            color={color.primary.primary600}
+            status={setuju ? "checked" : "unchecked"}
+            onPress={() => {
+              setSetuju(!setuju);
+            }}
+          />
+
+          <AText
+            style={{ paddingLeft: 4 }}
+            size={14}
+            color={color.neutral.neutral700}
+          >
+            Saya telah menyetejui{" "}
+            <AText
+              size={14}
+              color={color.primary.main}
+              weight="semibold"
+              onPress={() => {
+                Linking.openURL(
+                  process.env.APP_WEB + "/syarat-ketentuan"
+                );
+              }}
+            >
+              Ketentuan{" "}
+            </AText>
+            <AText size={14} color={color.neutral.neutral700}>
+              dan{" "}
+            </AText>
+            <AText
+              size={14}
+              color={color.primary.main}
+              weight="semibold"
+              onPress={() => {
+                Linking.openURL(
+                  process.env.APP_WEB ??
+                    "https://andalalin.com" + "/kebijakan-privasi"
+                );
+              }}
+            >
+              Kebijakan Privasi{" "}
+            </AText>
+          </AText>
+        </View>
+
         <AButton
           style={styles.register}
           mode="contained"
           title="Daftar"
           onPress={() => {
-            doRegister();
+            if (setuju) {
+              doRegister();
+            }
           }}
         />
 

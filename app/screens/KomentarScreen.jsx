@@ -26,6 +26,7 @@ function KomentarScreen({ navigation, route }) {
     if (komentar.length == 0) {
       setKomentar(null);
     }
+    console.log(komentar);
   }, []);
 
   return (
@@ -49,7 +50,7 @@ function KomentarScreen({ navigation, route }) {
             color={color.neutral.neutral900}
             weight="normal"
           >
-            Apresiasi, Kritik dan Saran
+            Masukkan
           </AText>
         </View>
       </View>
@@ -62,7 +63,7 @@ function KomentarScreen({ navigation, route }) {
             showsHorizontalScrollIndicator={false}
             showsVerticalScrollIndicator={false}
             vertical
-            renderItem={({ item, index }) => {
+            renderItem={({ item, index }) => (
               <View key={index}>
                 <ADetailView style={{ marginBottom: 20 }} title={item.Nama}>
                   <AText
@@ -74,8 +75,8 @@ function KomentarScreen({ navigation, route }) {
                     {item.Komentar}
                   </AText>
                 </ADetailView>
-              </View>;
-            }}
+              </View>
+            )}
           />
         ) : (
           <View
@@ -125,6 +126,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 16,
     paddingBottom: 16,
+    height: "100%",
   },
 });
 

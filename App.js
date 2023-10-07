@@ -62,7 +62,7 @@ export default function App() {
   const checkVersion = async () => {
     try {
       const res = await fetch(
-        `https://play.google.com/store/apps/details?id=com.andalalin`
+        process.env.APP_PLAYSTORE ?? `https://play.google.com/store/apps/details?id=com.andalalin`
       );
       const text = await res.text();
       let latestVersionApp;
