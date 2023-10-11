@@ -105,7 +105,14 @@ function DetailSurveiScreen({ navigation, route }) {
         }
         break;
       default:
-        navigation.goBack();
+        switch (jenis) {
+          case "Mandiri":
+            navigation.replace("Back Daftar", { kondisi: "Mandiri" });
+            break;
+          default:
+            navigation.goBack();
+            break;
+        }
         break;
     }
   };
@@ -488,8 +495,9 @@ function DetailSurveiScreen({ navigation, route }) {
                 Waktu
               </AText>
               <AText size={12} color={color.neutral.neutral500} weight="normal">
-                
-                {jenis == "Pemasangan" ? survei.TanggalPemasangan : survei.TanggalSurvei}
+                {jenis == "Pemasangan"
+                  ? survei.WaktuPemasangan
+                  : survei.WaktuSurvei}
               </AText>
             </View>
             <View style={styles.separator} />
@@ -505,7 +513,9 @@ function DetailSurveiScreen({ navigation, route }) {
                 Tanggal
               </AText>
               <AText size={12} color={color.neutral.neutral500} weight="normal">
-              { jenis == "Pemasangan" ? survei.WaktuPemasangan : survei.WaktuSurvei}
+                {jenis == "Pemasangan"
+                  ? survei.TanggalPemasangan
+                  : survei.TanggalSurvei}
               </AText>
             </View>
           </ADetailView>
@@ -735,7 +745,9 @@ function DetailSurveiScreen({ navigation, route }) {
             ""
           )}
 
-          {survei.KeteranganTindakan != "" && survei.KeteranganTindakan != null && jenis == "Mandiri" ? (
+          {survei.KeteranganTindakan != "" &&
+          survei.KeteranganTindakan != null &&
+          jenis == "Mandiri" ? (
             <ADetailView
               style={{ marginTop: 20 }}
               title={"Keterangan tambahan"}

@@ -5,13 +5,13 @@ module.exports = ({ config }) => {
       eas: {
         projectId: "415722cd-73d6-4d47-93dc-aa14779aa554",
       },
-      appStatus: process.env.APP_STATUS,
-      apiURL: process.env.API_URL,
+      appStatus: process.env.APP_STATUS ?? "DEVELOPMENT",
+      apiURL: process.env.API_URL ?? "https://andalalin-development.up.railway.app",
     },
     android: {
       package: "com.andalalin",
       versionCode: 1,
-      googleServicesFile: process.env.GOOGLE_SERVICES_JSON,
+      googleServicesFile: process.env.GOOGLE_SERVICES_JSON ?? "./google-services.json",
       adaptiveIcon: {
         foregroundImage: "./app/assets/image/icon.png",
         backgroundColor: "#ffffff",

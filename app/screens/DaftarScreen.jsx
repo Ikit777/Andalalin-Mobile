@@ -964,122 +964,118 @@ function DaftarScreen({ navigation, route }) {
   };
 
   const pelaksanaan = () => {
-    if (context.getUser().role == "Admin" && kondisi == "Tertunda") {
-      return (
-        <ABottomSheet visible={lanjutkanModal}>
-          <View style={{ height: 278 }}>
-            <AText
-              style={{ paddingBottom: 16 }}
-              size={18}
-              color={color.neutral.neutral700}
-              weight="semibold"
-            >
-              Apakah Anda ingin melanjutkan{"\n"}permohonan ini?
-            </AText>
+    return (
+      <ABottomSheet visible={lanjutkanModal}>
+        <View style={{ height: 278 }}>
+          <AText
+            style={{ paddingBottom: 16 }}
+            size={18}
+            color={color.neutral.neutral700}
+            weight="semibold"
+          >
+            Apakah Anda ingin melanjutkan{"\n"}permohonan ini?
+          </AText>
 
-            <RadioButton.Group
-              onValueChange={(value) => setLanjutanCheck(value)}
-            >
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <RadioButton
-                  label="Buka"
-                  value="Buka"
-                  uncheckedColor={color.neutral.neutral300}
-                  color={color.primary.primary600}
-                  status={lanjutkanCheck === "Buka" ? "checked" : "unchecked"}
-                />
-                <Pressable
-                  onPress={() => {
-                    setLanjutanCheck("Buka");
-                  }}
-                >
-                  <AText
-                    style={{ paddingLeft: 4 }}
-                    size={14}
-                    color={color.neutral.neutral700}
-                  >
-                    Lanjutkan pelaksanaan
-                  </AText>
-                </Pressable>
-              </View>
-
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  paddingTop: 8,
+          <RadioButton.Group onValueChange={(value) => setLanjutanCheck(value)}>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <RadioButton
+                label="Buka"
+                value="Buka"
+                uncheckedColor={color.neutral.neutral300}
+                color={color.primary.primary600}
+                status={lanjutkanCheck === "Buka" ? "checked" : "unchecked"}
+              />
+              <Pressable
+                onPress={() => {
+                  setLanjutanCheck("Buka");
                 }}
               >
-                <RadioButton
-                  label="Batal"
-                  value="Batal"
-                  uncheckedColor={color.neutral.neutral300}
-                  color={color.primary.primary600}
-                  status={lanjutkanCheck === "Batal" ? "checked" : "unchecked"}
-                />
-                <Pressable
-                  onPress={() => {
-                    setLanjutanCheck("Batal");
-                  }}
+                <AText
+                  style={{ paddingLeft: 4 }}
+                  size={14}
+                  color={color.neutral.neutral700}
                 >
-                  <AText
-                    style={{ paddingLeft: 4 }}
-                    size={14}
-                    color={color.neutral.neutral700}
-                  >
-                    Batalkan pelaksanaan
-                  </AText>
-                </Pressable>
-              </View>
-            </RadioButton.Group>
+                  Lanjutkan pelaksanaan
+                </AText>
+              </Pressable>
+            </View>
 
             <View
               style={{
                 flexDirection: "row",
-                alignSelf: "flex-end",
-                position: "absolute",
-                bottom: 32,
-                right: 16,
+                alignItems: "center",
+                paddingTop: 8,
               }}
             >
+              <RadioButton
+                label="Batal"
+                value="Batal"
+                uncheckedColor={color.neutral.neutral300}
+                color={color.primary.primary600}
+                status={lanjutkanCheck === "Batal" ? "checked" : "unchecked"}
+              />
               <Pressable
-                style={{ flexDirection: "row", paddingLeft: 4 }}
                 onPress={() => {
-                  setIdPermohonan(null);
-                  setLanjutanCheck(null);
-                  toggleLanjutkanModal();
+                  setLanjutanCheck("Batal");
                 }}
               >
                 <AText
+                  style={{ paddingLeft: 4 }}
                   size={14}
                   color={color.neutral.neutral700}
-                  weight="semibold"
                 >
-                  Batal
-                </AText>
-              </Pressable>
-              <Pressable
-                style={{ flexDirection: "row", paddingLeft: 4, marginLeft: 32 }}
-                onPress={() => {
-                  if (lanjutkanCheck != null) {
-                    toggleLanjutkanModal();
-                    toggleComfirm();
-                  }
-                }}
-              >
-                <AText
-                  size={14}
-                  color={color.neutral.neutral700}
-                  weight="semibold"
-                >
-                  Simpan
+                  Batalkan pelaksanaan
                 </AText>
               </Pressable>
             </View>
+          </RadioButton.Group>
+
+          <View
+            style={{
+              flexDirection: "row",
+              alignSelf: "flex-end",
+              position: "absolute",
+              bottom: 32,
+              right: 16,
+            }}
+          >
+            <Pressable
+              style={{ flexDirection: "row", paddingLeft: 4 }}
+              onPress={() => {
+                setIdPermohonan(null);
+                setLanjutanCheck(null);
+                toggleLanjutkanModal();
+              }}
+            >
+              <AText
+                size={14}
+                color={color.neutral.neutral700}
+                weight="semibold"
+              >
+                Batal
+              </AText>
+            </Pressable>
+            <Pressable
+              style={{ flexDirection: "row", paddingLeft: 4, marginLeft: 32 }}
+              onPress={() => {
+                if (lanjutkanCheck != null) {
+                  toggleLanjutkanModal();
+                  toggleComfirm();
+                }
+              }}
+            >
+              <AText
+                size={14}
+                color={color.neutral.neutral700}
+                weight="semibold"
+              >
+                Simpan
+              </AText>
+            </Pressable>
           </View>
-        </ABottomSheet>
-      );
-    }
+        </View>
+      </ABottomSheet>
+    );
   };
 
   const tindakan = () => {
