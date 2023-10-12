@@ -443,7 +443,7 @@ function DetailSurveiScreen({ navigation, route }) {
                   color={color.neutral.neutral900}
                   weight="normal"
                 >
-                  Nama
+                  Email
                 </AText>
                 <AText
                   size={12}
