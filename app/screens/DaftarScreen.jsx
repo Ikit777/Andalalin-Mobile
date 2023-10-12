@@ -963,9 +963,15 @@ function DaftarScreen({ navigation, route }) {
     );
   };
 
+  const closePelaksanaan = () => {
+    setIdPermohonan(null);
+    setLanjutanCheck(null);
+    toggleLanjutkanModal();
+  };
+
   const pelaksanaan = () => {
     return (
-      <ABottomSheet visible={lanjutkanModal}>
+      <ABottomSheet visible={lanjutkanModal} close={closePelaksanaan}>
         <View style={{ height: 278 }}>
           <AText
             style={{ paddingBottom: 16 }}
@@ -1103,6 +1109,13 @@ function DaftarScreen({ navigation, route }) {
         }
       }
     );
+  };
+
+  const closeLanjutkanPemasangan = () => {
+    setKeputusan(null);
+    setKeputusanLanjut(null);
+    setKeputusan(null);
+    toggleKeputusanModal();
   };
 
   const lanjutkan_pemasangan = () => {
@@ -1362,7 +1375,7 @@ function DaftarScreen({ navigation, route }) {
 
       {pelaksanaan()}
 
-      <ABottomSheet visible={keputusanModal}>
+      <ABottomSheet visible={keputusanModal} close={closeLanjutkanPemasangan}>
         {lanjutkan_pemasangan()}
       </ABottomSheet>
 

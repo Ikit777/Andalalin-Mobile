@@ -76,6 +76,10 @@ function Foto({ onPress, navigation, kondisi, id }) {
     }
   };
 
+  const closeTindakan = () => {
+    togglePilihModal();
+  };
+
   const pilih = () => {
     return (
       <View>
@@ -211,7 +215,7 @@ function Foto({ onPress, navigation, kondisi, id }) {
             if (fotoSurvei1 != "Kosong") {
               setFoto(2);
               togglePilihModal();
-              console.log(foto1)
+              console.log(foto1);
             }
           }}
         />
@@ -243,7 +247,9 @@ function Foto({ onPress, navigation, kondisi, id }) {
           selanjutnya();
         }}
       />
-      <ABottomSheet visible={pilihModal}>{pilih()}</ABottomSheet>
+      <ABottomSheet visible={pilihModal} close={closeTindakan}>
+        {pilih()}
+      </ABottomSheet>
     </ScrollView>
   );
 }

@@ -358,10 +358,24 @@ function DetailNonUser({ permohonan, navigation }) {
                   kondisi: "Ganti",
                   permohonan: permohonan,
                 });
-              }, "Ganti pentugas"
+              },
+              "Ganti pentugas"
             );
         }
         break;
+    }
+  };
+
+  const closeCekPersyaratan = () => {
+    setChecked(null);
+    setKtp(null);
+    setAkta(null);
+    setSurat(null);
+    setSyarat(null);
+    setTidakSesuai([]);
+    setPersyaratanModal();
+    if (lanjut == true) {
+      toggleLanjut();
     }
   };
 
@@ -520,13 +534,24 @@ function DetailNonUser({ permohonan, navigation }) {
                 }
               }}
             />
-            <AText
-              style={{ paddingLeft: 4 }}
-              size={14}
-              color={color.neutral.neutral700}
+            <Pressable
+              onPress={() => {
+                setKtp(!ktp);
+                if (!ktp) {
+                  addItem("Kartu tanda penduduk");
+                } else {
+                  removeItem("Kartu tanda penduduk");
+                }
+              }}
             >
-              Kartu tanda penduduk
-            </AText>
+              <AText
+                style={{ paddingLeft: 4 }}
+                size={14}
+                color={color.neutral.neutral700}
+              >
+                Kartu tanda penduduk
+              </AText>
+            </Pressable>
           </View>
 
           <View
@@ -549,13 +574,24 @@ function DetailNonUser({ permohonan, navigation }) {
                 }
               }}
             />
-            <AText
-              style={{ paddingLeft: 4 }}
-              size={14}
-              color={color.neutral.neutral700}
+            <Pressable
+              onPress={() => {
+                setAkta(!akta);
+                if (!akta) {
+                  addItem("Akta pendirian badan");
+                } else {
+                  removeItem("Akta pendirian badan");
+                }
+              }}
             >
-              Akta pendirian badan
-            </AText>
+              <AText
+                style={{ paddingLeft: 4 }}
+                size={14}
+                color={color.neutral.neutral700}
+              >
+                Akta pendirian badan
+              </AText>
+            </Pressable>
           </View>
 
           <View
@@ -578,13 +614,24 @@ function DetailNonUser({ permohonan, navigation }) {
                 }
               }}
             />
-            <AText
-              style={{ paddingLeft: 4 }}
-              size={14}
-              color={color.neutral.neutral700}
+            <Pressable
+              onPress={() => {
+                setSurat(!surat);
+                if (!surat) {
+                  addItem("Surat kuasa");
+                } else {
+                  removeItem("Surat kuasa");
+                }
+              }}
             >
-              Surat kuasa
-            </AText>
+              <AText
+                style={{ paddingLeft: 4 }}
+                size={14}
+                color={color.neutral.neutral700}
+              >
+                Surat kuasa
+              </AText>
+            </Pressable>
           </View>
 
           {permohonan.persyaratan_tambahan != null
@@ -625,13 +672,33 @@ function DetailNonUser({ permohonan, navigation }) {
                         }
                       }}
                     />
-                    <AText
-                      style={{ paddingLeft: 4 }}
-                      size={14}
-                      color={color.neutral.neutral700}
+                    <Pressable
+                      onPress={() => {
+                        handleChangeCheck(
+                          item.Persyaratan,
+                          !stateVariables.find((variabel) => {
+                            return variabel.persyaratan == item.Persyaratan;
+                          }).state
+                        );
+                        if (
+                          !stateVariables.find((variabel) => {
+                            return variabel.persyaratan == item.Persyaratan;
+                          }).state
+                        ) {
+                          addItem(item.Persyaratan);
+                        } else {
+                          removeItem(item.Persyaratan);
+                        }
+                      }}
                     >
-                      {item.Persyaratan}
-                    </AText>
+                      <AText
+                        style={{ paddingLeft: 4 }}
+                        size={14}
+                        color={color.neutral.neutral700}
+                      >
+                        {item.Persyaratan}
+                      </AText>
+                    </Pressable>
                   </View>
                 </View>
               ))
@@ -667,13 +734,24 @@ function DetailNonUser({ permohonan, navigation }) {
                 }
               }}
             />
-            <AText
-              style={{ paddingLeft: 4 }}
-              size={14}
-              color={color.neutral.neutral700}
+            <Pressable
+              onPress={() => {
+                setKtp(!ktp);
+                if (!ktp) {
+                  addItem("Kartu tanda penduduk");
+                } else {
+                  removeItem("Kartu tanda penduduk");
+                }
+              }}
             >
-              Kartu tanda penduduk
-            </AText>
+              <AText
+                style={{ paddingLeft: 4 }}
+                size={14}
+                color={color.neutral.neutral700}
+              >
+                Kartu tanda penduduk
+              </AText>
+            </Pressable>
           </View>
 
           <View
@@ -696,13 +774,24 @@ function DetailNonUser({ permohonan, navigation }) {
                 }
               }}
             />
-            <AText
-              style={{ paddingLeft: 4 }}
-              size={14}
-              color={color.neutral.neutral700}
+            <Pressable
+              onPress={() => {
+                setSurat(!surat);
+                if (!surat) {
+                  addItem("Surat permohonan");
+                } else {
+                  removeItem("Surat permohonan");
+                }
+              }}
             >
-              Surat permohonan
-            </AText>
+              <AText
+                style={{ paddingLeft: 4 }}
+                size={14}
+                color={color.neutral.neutral700}
+              >
+                Surat permohonan
+              </AText>
+            </Pressable>
           </View>
 
           {permohonan.persyaratan_tambahan != null
@@ -743,13 +832,33 @@ function DetailNonUser({ permohonan, navigation }) {
                         }
                       }}
                     />
-                    <AText
-                      style={{ paddingLeft: 4 }}
-                      size={14}
-                      color={color.neutral.neutral700}
+                    <Pressable
+                      onPress={() => {
+                        handleChangeCheck(
+                          item.Persyaratan,
+                          !stateVariables.find((variabel) => {
+                            return variabel.persyaratan == item.Persyaratan;
+                          }).state
+                        );
+                        if (
+                          !stateVariables.find((variabel) => {
+                            return variabel.persyaratan == item.Persyaratan;
+                          }).state
+                        ) {
+                          addItem(item.Persyaratan);
+                        } else {
+                          removeItem(item.Persyaratan);
+                        }
+                      }}
                     >
-                      {item.Persyaratan}
-                    </AText>
+                      <AText
+                        style={{ paddingLeft: 4 }}
+                        size={14}
+                        color={color.neutral.neutral700}
+                      >
+                        {item.Persyaratan}
+                      </AText>
+                    </Pressable>
                   </View>
                 </View>
               ))
@@ -948,6 +1057,13 @@ function DetailNonUser({ permohonan, navigation }) {
         </ADetailView>
       );
     }
+  };
+
+  const closePeretujuanDokumen = () => {
+    setPersetujuanDokumen(null);
+    setSetujuLanjut(null);
+    setKeteranganPersetujuan(null);
+    setPersetujuanModal();
   };
 
   const persetujuan = () => {
@@ -1167,6 +1283,12 @@ function DetailNonUser({ permohonan, navigation }) {
       setFileSK(result.assets[0].uri);
       setNamaFileSK(result.assets[0].name);
     }
+  };
+
+  const closePembuatanSK = () => {
+    setFileSK(null);
+    setNamaFileSK(null);
+    setSKModal();
   };
 
   const pembuatan_sk = () => {
@@ -2086,6 +2208,12 @@ function DetailNonUser({ permohonan, navigation }) {
     }
   };
 
+  const closeLaporanSurvei = () => {
+    setLaporanFile(null);
+    setLaporanNamaFile(null);
+    setLaporanModal();
+  };
+
   const laporan_survei = () => {
     return (
       <View style={{ height: 250 }}>
@@ -2179,6 +2307,13 @@ function DetailNonUser({ permohonan, navigation }) {
         }
       }
     );
+  };
+
+  const closeKeputuan = () => {
+    setKeputusan(null);
+    setKeputusanLanjut(null);
+    setKeputusan(null);
+    toggleKeputusanModal();
   };
 
   const keputusan_modal = () => {
@@ -2424,15 +2559,25 @@ function DetailNonUser({ permohonan, navigation }) {
       {permohonan.jenis_andalalin == "Dokumen analisa dampak lalu lintas"
         ? buttonAndalalin()
         : buttonPerlalin()}
-      <ABottomSheet visible={persyaratanModal}>{persyaratan()}</ABottomSheet>
+      <ABottomSheet visible={persyaratanModal} close={closeCekPersyaratan}>
+        {persyaratan()}
+      </ABottomSheet>
 
-      <ABottomSheet visible={persetujuanModal}>{persetujuan()}</ABottomSheet>
+      <ABottomSheet visible={persetujuanModal} close={closePeretujuanDokumen}>
+        {persetujuan()}
+      </ABottomSheet>
 
-      <ABottomSheet visible={skModal}>{pembuatan_sk()}</ABottomSheet>
+      <ABottomSheet visible={skModal} close={closePembuatanSK}>
+        {pembuatan_sk()}
+      </ABottomSheet>
 
-      <ABottomSheet visible={laporanModal}>{laporan_survei()}</ABottomSheet>
+      <ABottomSheet visible={laporanModal} close={closeLaporanSurvei}>
+        {laporan_survei()}
+      </ABottomSheet>
 
-      <ABottomSheet visible={keputusanModal}>{keputusan_modal()}</ABottomSheet>
+      <ABottomSheet visible={keputusanModal} close={closeKeputuan}>
+        {keputusan_modal()}
+      </ABottomSheet>
 
       <ADialog
         title={"Menyimpan gagal"}

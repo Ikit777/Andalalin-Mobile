@@ -138,6 +138,11 @@ function DetailUsulanScreen({ navigation, route }) {
     );
   };
 
+  const closeTindakan = () => {
+    setUsulanCheck(null);
+    toggleUsulanModal();
+  };
+
   return (
     <AScreen>
       <View style={styles.header}>
@@ -244,7 +249,7 @@ function DetailUsulanScreen({ navigation, route }) {
         ""
       )}
 
-      <ABottomSheet visible={usulanModal}>
+      <ABottomSheet visible={usulanModal} close={closeTindakan}>
         <View style={{ height: 250 }}>
           <AText
             style={{ paddingBottom: 16 }}

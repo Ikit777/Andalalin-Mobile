@@ -9,7 +9,7 @@ import {
   Platform,
   UIManager,
   Image,
-  Dimensions
+  Dimensions,
 } from "react-native";
 import AText from "../component/utility/AText";
 import color from "../constants/color";
@@ -1101,10 +1101,15 @@ function DaftarProdukScreen({ navigation, route }) {
       type: "image/*",
     });
     if (!result.canceled) {
-      setRambuName(result.assets[0].name)
-      setRambuFile(result.assets[0].uri)
+      setRambuName(result.assets[0].name);
+      setRambuFile(result.assets[0].uri);
     }
   };
+
+  const closeTambah = () => {
+    setInput("");
+                  toggleTambah();
+  }
 
   const tambah_view = () => {
     switch (kondisi) {
@@ -1457,16 +1462,16 @@ function DaftarProdukScreen({ navigation, route }) {
               max={300}
             />
             <ATextInputIcon
-                bdColor={color.neutral.neutral300}
-                hint={"Masukkan rambu lalu lintas"}
-                icon={"image"}
-                padding={16}
-                mult={true}
-                value={rambuName}
-                onPress={() => {
-                  file()
-                }}
-                />
+              bdColor={color.neutral.neutral300}
+              hint={"Masukkan rambu lalu lintas"}
+              icon={"image"}
+              padding={16}
+              mult={true}
+              value={rambuName}
+              onPress={() => {
+                file();
+              }}
+            />
             <View style={{ paddingBottom: 16 }} />
             <ATextInput
               bdColor={color.neutral.neutral300}
@@ -1482,7 +1487,6 @@ function DaftarProdukScreen({ navigation, route }) {
               }}
             />
 
-              
             <View
               style={{
                 flexDirection: "row",
@@ -1717,6 +1721,14 @@ function DaftarProdukScreen({ navigation, route }) {
           </View>
         );
         break;
+    }
+  };
+
+  const closeTindakan = () => {
+    toggleTindakan();
+    if (edit == true){
+      toggleEdit();
+      setInput("");
     }
   };
 
@@ -2050,9 +2062,9 @@ function DaftarProdukScreen({ navigation, route }) {
                 mult={true}
                 value={rambuName}
                 onPress={() => {
-                  file()
+                  file();
                 }}
-                />
+              />
               <View style={{ paddingBottom: 16 }} />
               <ATextInput
                 bdColor={color.neutral.neutral300}
@@ -3295,9 +3307,13 @@ function DaftarProdukScreen({ navigation, route }) {
         {data != null ? list() : ""}
         {dataOn ? kosong() : ""}
 
-        <ABottomSheet visible={tambah}>{tambah_view()}</ABottomSheet>
+        <ABottomSheet visible={tambah} close={closeTambah}>
+          {tambah_view()}
+        </ABottomSheet>
 
-        <ABottomSheet visible={tindakan}>{tindakan_view()}</ABottomSheet>
+        <ABottomSheet visible={tindakan} close={closeTindakan}>
+          {tindakan_view()}
+        </ABottomSheet>
       </View>
 
       {data != null || dataOn ? (
@@ -3343,7 +3359,7 @@ function DaftarProdukScreen({ navigation, route }) {
           animationOutTiming={300}
           statusBarTranslucent
           coverScreen={true}
-          deviceHeight={Dimensions.get('screen').height}
+          deviceHeight={Dimensions.get("screen").height}
           backdropTransitionOutTiming={0}
           onBackButtonPress={() => {
             setImageUri();

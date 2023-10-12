@@ -9,7 +9,6 @@ function ANoInternetDialog({ visibleModal = false }) {
   const context = useContext(UserContext);
   const [visible, setVisible] = React.useState(visibleModal);
   const scaleValue = React.useRef(new Animated.Value(0)).current;
-  const [button, setButton] = React.useState(false);
 
   React.useEffect(() => {
     toggleModal();

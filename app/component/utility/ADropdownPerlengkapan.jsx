@@ -29,7 +29,6 @@ function ADropDownPerlengkapan({
   selected,
   padding,
   bdColor,
-  max,
   notFound,
   kategori,
   setData,

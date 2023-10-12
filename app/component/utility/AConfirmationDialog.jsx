@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View, Modal, Pressable, Animated, Dimensions } from "react-native";
+import { StyleSheet, View, Modal, Pressable, Animated, Dimensions, TouchableOpacity } from "react-native";
 import color from "../../constants/color";
 import AText from "../utility/AText";
 
@@ -41,8 +41,9 @@ function AConfirmationDialog({
       transparent={true}
       statusBarTranslucent
       deviceHeight={Dimensions.get('screen').height}
+      onRequestClose={() => {onPressBATALButton()}}
     >
-      <View style={styles.container}>
+      <TouchableOpacity style={styles.container} activeOpacity={1} onPressOut={() => {onPressBATALButton()}}>
         <View style={styles.horizontal}>
           <AText color={color.neutral.neutral900} size={18} weight="semibold">
             {title}
@@ -81,7 +82,7 @@ function AConfirmationDialog({
             </Pressable>
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
     </Modal>
   );
 }

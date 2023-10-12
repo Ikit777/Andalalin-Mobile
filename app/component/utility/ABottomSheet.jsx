@@ -8,7 +8,7 @@ import {
 import color from "../../constants/color";
 import Modal from "react-native-modal";
 
-function ABottomSheet({ visible, children }) {
+function ABottomSheet({ visible, close, children }) {
   return (
     <Modal
       isVisible={visible}
@@ -18,6 +18,8 @@ function ABottomSheet({ visible, children }) {
       coverScreen={true}
       deviceHeight={Dimensions.get('screen').height}
       backdropTransitionOutTiming={0}
+      onRequestClose={() => {close()}}
+      onBackdropPress={() => {close()}}
     >
       <KeyboardAvoidingView behavior={"padding"}>
         <View style={styles.inside}>{children}</View>

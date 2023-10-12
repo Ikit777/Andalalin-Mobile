@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View, Modal, Pressable, Animated, Dimensions } from "react-native";
+import { StyleSheet, View, Modal, Pressable, Animated, Dimensions, TouchableOpacity } from "react-native";
 import color from "../../constants/color";
 import AText from "../utility/AText";
 
@@ -33,8 +33,9 @@ function ADialog({ visibleModal = false, title, desc, onPressOKButton, btnOK }) 
       transparent={true}
       statusBarTranslucent
       deviceHeight={Dimensions.get('screen').height}
+      onRequestClose={() => {onPressOKButton()}}
     >
-      <View style={styles.container}>
+      <TouchableOpacity style={styles.container} activeOpacity={1} onPressOut={() => {onPressOKButton()}}>
         <View style={styles.horizontal}>
           <AText color={color.neutral.neutral900} size={18} weight="semibold">
             {title}
@@ -62,7 +63,7 @@ function ADialog({ visibleModal = false, title, desc, onPressOKButton, btnOK }) 
             </AText>
           </Pressable>
         </View>
-      </View>
+      </TouchableOpacity>
     </Modal>
   );
 }

@@ -255,6 +255,11 @@ function DetailSurveiScreen({ navigation, route }) {
     );
   };
 
+  const closeTindakan = () => {
+    setKeteranganTindakan(null);
+    toggleTindakanModal();
+  };
+
   const tindakan = () => {
     return (
       <View style={{ height: 250 }}>
@@ -788,7 +793,9 @@ function DetailSurveiScreen({ navigation, route }) {
         ""
       )}
 
-      <ABottomSheet visible={tindakanModal}>{tindakan()}</ABottomSheet>
+      <ABottomSheet visible={tindakanModal} close={closeTindakan}>
+        {tindakan()}
+      </ABottomSheet>
 
       <ADialog
         title={"Data gagal dimuat"}

@@ -52,7 +52,7 @@ function DaftarPenggunaScreen({ navigation }) {
         navigation.goBack();
         return true;
       });
-  
+
       return BackHandler.removeEventListener("hardwareBackPress", () => {
         setProgressViewOffset(-1000);
         navigation.goBack();
@@ -169,6 +169,11 @@ function DaftarPenggunaScreen({ navigation }) {
     }, 50);
   }, []);
 
+  const closePilih = () => {
+    toggleHapusModal();
+    setPilih("");
+  };
+
   return (
     <AScreen style={{ minHeight: Math.round(windowHeight) }}>
       <View style={styles.header}>
@@ -186,7 +191,7 @@ function DaftarPenggunaScreen({ navigation }) {
             }}
           />
           <AText
-            style={{ paddingLeft: 4}}
+            style={{ paddingLeft: 4 }}
             size={24}
             color={color.neutral.neutral900}
             weight="normal"
@@ -360,7 +365,7 @@ function DaftarPenggunaScreen({ navigation }) {
             padding: 16,
           }}
           onPress={() => {
-            navigation.push("Tambah User")
+            navigation.push("Tambah User");
           }}
         >
           <Feather name="plus" size={24} color={color.neutral.neutral900} />
@@ -369,7 +374,7 @@ function DaftarPenggunaScreen({ navigation }) {
         ""
       )}
 
-      <ABottomSheet visible={hapusModal}>
+      <ABottomSheet visible={hapusModal} close={closePilih}>
         <View>
           <View
             style={{
