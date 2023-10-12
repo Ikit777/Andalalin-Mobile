@@ -16,8 +16,7 @@
     "production": {
       "android": {
         "buildType": "app-bundle",
-        "distribution": "internal",
-        "releaseTrack": "production"
+        "distribution": "internal"
       }
     }
   },
