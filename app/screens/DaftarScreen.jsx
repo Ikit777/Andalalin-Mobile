@@ -83,115 +83,112 @@ function DaftarScreen({ navigation, route }) {
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
+      context.toggleLoading(true);
       setPermohonan("permohonan");
-      switch (context.getUser().role) {
-        case "User":
-          context.toggleLoading(true);
-          loadDaftarPermohonan();
-          break;
-        case "Operator":
-          context.toggleLoading(true);
-          switch (kondisi) {
-            case "Diajukan":
-              loadDaftarByTiketLevel1();
-              break;
-            case "Selesai":
-              loadPermohonanSelesai("Permohonan selesai");
-              break;
-            case "Mandiri":
-              loadSurveiMandiri();
-              break;
-          }
-          break;
-        case "Petugas":
-          context.toggleLoading(true);
-          switch (kondisi) {
-            case "Survei":
-              loadDaftarByTiketLevel2("Buka");
-              break;
-            case "Mandiri":
-              loadSurveiMandiriByPetugas();
-              break;
-            case "Daftar":
-              loadDaftarSurvei();
-              break;
-            case "Pemasangan":
-              loadDaftarPermohonanPemasangan();
-              break;
-            case "Daftar Pemasangan":
-              loadDaftarPemasangan();
-              break;
-          }
-          break;
-        case "Admin":
-          context.toggleLoading(true);
-          switch (kondisi) {
-            case "Persetujuan":
-              loadPermohonanByStatus("Persetujuan dokumen");
-              break;
-            case "Pengawasan":
-              loadUsulanTindakan();
-              break;
-            case "Tertunda":
-              loadAllByTiketLevel2("Tunda");
-              break;
-            case "Selesai":
-              loadPermohonanSelesai("Permohonan selesai");
-              break;
-            case "Mandiri":
-              loadSurveiMandiri();
-              break;
-            case "Keputusan":
-              loadPermohonanByStatus("Menunggu hasil keputusan");
-              break;
-            case "Lanjutkan Pemasangan":
-              loadPermohonanByStatus("Tunda pemasangan");
-              break;
-          }
-          break;
-        case "Dinas Perhubungan":
-          context.toggleLoading(true);
-          switch (kondisi) {
-            case "Berlangsung":
-              loadDaftarByTiketLevel1();
-              break;
-            case "Selesai":
-              loadPermohonanSelesai("Permohonan selesai");
-              break;
-            case "Mandiri":
-              loadSurveiMandiri();
-              break;
-          }
-          break;
-        case "Super Admin":
-          context.toggleLoading(true);
-          switch (kondisi) {
-            case "Mandiri":
-              loadSurveiMandiri();
-              break;
-            case "Selesai":
-              loadPermohonanSelesai("Permohonan selesai");
-              break;
-            case "Diajukan":
-              loadDaftarByTiketLevel1();
-              break;
-            case "Pengawasan":
-              loadUsulanTindakan();
-              break;
-            case "Tertunda":
-              loadAllByTiketLevel2("Tunda");
-              break;
-            case "Keputusan":
-              loadPermohonanByStatus("Menunggu hasil keputusan");
-              break;
-            case "Lanjutkan Pemasangan":
-              loadPermohonanByStatus("Tunda pemasangan");
-              break;
-          }
-          break;
-      }
+      setTimeout(() => {        
+        setPermohonan("permohonan");
+        switch (context.getUser().role) {
+          case "User":
+            loadDaftarPermohonan();
+            break;
+          case "Operator":
+            switch (kondisi) {
+              case "Diajukan":
+                loadDaftarByTiketLevel1();
+                break;
+              case "Selesai":
+                loadPermohonanSelesai("Permohonan selesai");
+                break;
+              case "Mandiri":
+                loadSurveiMandiri();
+                break;
+            }
+            break;
+          case "Petugas":
+            switch (kondisi) {
+              case "Survei":
+                loadDaftarByTiketLevel2("Buka");
+                break;
+              case "Mandiri":
+                loadSurveiMandiriByPetugas();
+                break;
+              case "Daftar":
+                loadDaftarSurvei();
+                break;
+              case "Pemasangan":
+                loadDaftarPermohonanPemasangan();
+                break;
+              case "Daftar Pemasangan":
+                loadDaftarPemasangan();
+                break;
+            }
+            break;
+          case "Admin":
+            switch (kondisi) {
+              case "Persetujuan":
+                loadPermohonanByStatus("Persetujuan dokumen");
+                break;
+              case "Pengawasan":
+                loadUsulanTindakan();
+                break;
+              case "Tertunda":
+                loadAllByTiketLevel2("Tunda");
+                break;
+              case "Selesai":
+                loadPermohonanSelesai("Permohonan selesai");
+                break;
+              case "Mandiri":
+                loadSurveiMandiri();
+                break;
+              case "Keputusan":
+                loadPermohonanByStatus("Menunggu hasil keputusan");
+                break;
+              case "Lanjutkan Pemasangan":
+                loadPermohonanByStatus("Tunda pemasangan");
+                break;
+            }
+            break;
+          case "Dinas Perhubungan":
+            switch (kondisi) {
+              case "Berlangsung":
+                loadDaftarByTiketLevel1();
+                break;
+              case "Selesai":
+                loadPermohonanSelesai("Permohonan selesai");
+                break;
+              case "Mandiri":
+                loadSurveiMandiri();
+                break;
+            }
+            break;
+          case "Super Admin":
+            switch (kondisi) {
+              case "Mandiri":
+                loadSurveiMandiri();
+                break;
+              case "Selesai":
+                loadPermohonanSelesai("Permohonan selesai");
+                break;
+              case "Diajukan":
+                loadDaftarByTiketLevel1();
+                break;
+              case "Pengawasan":
+                loadUsulanTindakan();
+                break;
+              case "Tertunda":
+                loadAllByTiketLevel2("Tunda");
+                break;
+              case "Keputusan":
+                loadPermohonanByStatus("Menunggu hasil keputusan");
+                break;
+              case "Lanjutkan Pemasangan":
+                loadPermohonanByStatus("Tunda pemasangan");
+                break;
+            }
+            break;
+        }
+      }, 300);
     });
-
     return unsubscribe;
   }, [navigation]);
 
