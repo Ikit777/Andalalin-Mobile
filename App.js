@@ -22,7 +22,9 @@ import ALoading from "./app/component/utility/ALoading";
 import AUpdateDialog from "./app/component/utility/AUpdateDialog";
 import Constants from "expo-constants";
 import ExitApp from "react-native-exit-app";
-import VersionCheck from 'react-native-version-check'
+import VersionCheck from "react-native-version-check";
+import { health } from "./app/api/user";
+import AServer from "./app/component/utility/AServer";
 
 export default function App() {
   const [isAppReady, setIsAppReady] = useState(false);
@@ -62,7 +64,8 @@ export default function App() {
   const checkVersion = async () => {
     try {
       const res = await fetch(
-        process.env.APP_PLAYSTORE ?? `https://play.google.com/store/apps/details?id=com.andalalin`
+        process.env.APP_PLAYSTORE ??
+          `https://play.google.com/store/apps/details?id=com.andalalin`
       );
       const text = await res.text();
       let latestVersionApp;
@@ -70,7 +73,7 @@ export default function App() {
       if (match) {
         latestVersionApp = match[1].trim();
       }
-      
+
       VersionCheck.needUpdate({
         currentVersion: Constants.expoConfig.version,
         latestVersion: latestVersionApp,
@@ -115,6 +118,10 @@ export default function App() {
             </NetContext.Consumer>
 
             <UserContext.Consumer>
+              {(value) => <AServer visibleModal={value.getServer()} />}
+            </UserContext.Consumer>
+
+            <UserContext.Consumer>
               {(value) => <ASessionEnd visibleModal={value.getSession()} />}
             </UserContext.Consumer>
 
@@ -137,7 +144,7 @@ export default function App() {
 }
 
 function LoadMaster({ isLogged, user }) {
-  const { setUser } = useMyContext();
+  const { setUser, setServer } = useMyContext();
 
   const checkFirstTimeLaunch = () => {
     if (isLogged) {
@@ -145,7 +152,18 @@ function LoadMaster({ isLogged, user }) {
     }
   };
 
+  const checkServer = () => {
+    health((response) => {
+      if (response.status === 200) {
+        setServer(false);
+      } else {
+        setServer(true);
+      }
+    });
+  };
+
   useEffect(() => {
     checkFirstTimeLaunch();
+    checkServer();
   }, []);
 }

@@ -89,6 +89,8 @@ const environments = {
       TAMBAH_PERSYARATAN_PERLALIN: url + "/api/v1/master/tambahpersyaratanperlalin",
       HAPUS_PERSYARATAN_PERLALIN: url + "/api/v1/master/hapuspersyaratanperlalin",
       EDIT_PERSYARATAN_PERLALIN: url + "/api/v1/master/editpersyaratanperlalin",
+
+      CEK_SERVER: url + "/api/v1/healthchecker",
     },
   },
   STAGING: {

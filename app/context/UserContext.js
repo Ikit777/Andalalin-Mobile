@@ -138,6 +138,8 @@ export function UserProvider({ children }) {
   const [isSnackbarVisible, setSnackbarVisible] = useState(false);
   const [message, setMessage] = useState();
 
+  const [server, setServer] = useState(false);
+
   Notifications.setNotificationHandler({
     handleNotification: async () => ({
       shouldShowAlert: true,
@@ -184,6 +186,10 @@ export function UserProvider({ children }) {
 
   const getUser = () => {
     return user;
+  };
+
+  const getServer = () => {
+    return server;
   };
 
   const getSession = () => {
@@ -247,6 +253,9 @@ export function UserProvider({ children }) {
         setSnackbarVisible,
         message,
         setMessage,
+        server,
+        setServer,
+        getServer,
       }}
     >
       {children}

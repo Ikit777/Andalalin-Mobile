@@ -76,7 +76,7 @@ export const tambahUser = async (accessToken, user, userRespone) => {
       email: user.email,
       name: user.nama,
       role: user.peran,
-      password: user.password
+      password: user.password,
     }),
   });
   userRespone(response);
@@ -104,6 +104,13 @@ export const userDelete = async (accessToken, user, userRespone) => {
       id: user.id,
       role: user.role,
     }),
+  });
+  userRespone(response);
+};
+
+export const health = async (userRespone) => {
+  const response = await fetch(ENDPOINTS.CEK_SERVER, {
+    method: "GET",
   });
   userRespone(response);
 };
