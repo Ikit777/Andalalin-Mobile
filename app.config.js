@@ -16,6 +16,7 @@ module.exports = ({ config }) => {
         foregroundImage: "./app/assets/image/icon.png",
         backgroundColor: "#ffffff",
       },
+      targetSdkVersion: "28",
       permissions: [
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE",
@@ -24,7 +25,7 @@ module.exports = ({ config }) => {
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION",
         "android.permission.FOREGROUND_SERVICE",
-        "android.permission.NOTIFICATIONS",
+        "NOTIFICATIONS",
       ],
     },
   };

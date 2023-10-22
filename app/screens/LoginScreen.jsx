@@ -19,6 +19,7 @@ import * as Notifications from "expo-notifications";
 import Constants from "expo-constants";
 import ExitApp from "react-native-exit-app";
 import ABackButton from "../component/utility/ABackButton";
+import { Permissions } from 'expo';
 
 function LoginScreen({ navigation }) {
   const { passwordVisibility, rightIcon, handlePasswordVisibility } =
@@ -86,7 +87,7 @@ function LoginScreen({ navigation }) {
         await Notifications.getPermissionsAsync();
       let finalStatus = existingStatus;
       if (existingStatus !== "granted") {
-        const { status } = await Notifications.requestPermissionsAsync();
+        const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
         finalStatus = status;
       }
       if (finalStatus !== "granted") {
