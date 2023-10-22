@@ -1,5 +1,14 @@
 import React from "react";
-import { StyleSheet, View, Modal, Pressable, Animated, Dimensions, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Modal,
+  Pressable,
+  Animated,
+  Dimensions,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+} from "react-native";
 import color from "../../constants/color";
 import AText from "../utility/AText";
 
@@ -40,48 +49,61 @@ function AConfirmationDialog({
       visible={visible}
       transparent={true}
       statusBarTranslucent
-      deviceHeight={Dimensions.get('screen').height}
-      onRequestClose={() => {onPressBATALButton()}}
+      deviceHeight={Dimensions.get("screen").height}
+      onRequestClose={() => {
+        onPressBATALButton();
+      }}
     >
-      <TouchableOpacity style={styles.container} activeOpacity={1} onPressOut={() => {onPressBATALButton()}}>
-        <View style={styles.horizontal}>
-          <AText color={color.neutral.neutral900} size={18} weight="semibold">
-            {title}
-          </AText>
-          <AText
-            style={{ paddingTop: 16 }}
-            color={color.neutral.neutral500}
-            size={14}
-          >
-            {desc}
-          </AText>
-          <View style={{ flexDirection: "row", alignSelf: "flex-end" }}>
-            <Pressable
-              style={{ marginVertical: 24 }}
-              onPress={onPressBATALButton}
+      <TouchableOpacity
+        style={styles.container}
+        activeOpacity={1}
+        onPressOut={() => {
+          onPressBATALButton();
+        }}
+      >
+        <TouchableWithoutFeedback>
+          <View style={styles.horizontal}>
+            <AText color={color.neutral.neutral900} size={18} weight="semibold">
+              {title}
+            </AText>
+            <AText
+              style={{ paddingTop: 16 }}
+              color={color.neutral.neutral500}
+              size={14}
             >
-              <AText
-                style={{ paddingHorizontal: 20, paddingVertical: 5 }}
-                size={14}
-                color={color.primary.primary700}
-                weight="semibold"
+              {desc}
+            </AText>
+            <View style={{ flexDirection: "row", alignSelf: "flex-end" }}>
+              <Pressable
+                style={{ marginVertical: 24 }}
+                onPress={onPressBATALButton}
               >
-                {btnBATAL}
-              </AText>
-            </Pressable>
+                <AText
+                  style={{ paddingHorizontal: 20, paddingVertical: 5 }}
+                  size={14}
+                  color={color.primary.primary700}
+                  weight="semibold"
+                >
+                  {btnBATAL}
+                </AText>
+              </Pressable>
 
-            <Pressable style={{ marginVertical: 24 }} onPress={onPressOKButton}>
-              <AText
-                style={{ paddingHorizontal: 20, paddingVertical: 5 }}
-                size={14}
-                color={color.primary.primary700}
-                weight="semibold"
+              <Pressable
+                style={{ marginVertical: 24 }}
+                onPress={onPressOKButton}
               >
-                {btnOK}
-              </AText>
-            </Pressable>
+                <AText
+                  style={{ paddingHorizontal: 20, paddingVertical: 5 }}
+                  size={14}
+                  color={color.primary.primary700}
+                  weight="semibold"
+                >
+                  {btnOK}
+                </AText>
+              </Pressable>
+            </View>
           </View>
-        </View>
+        </TouchableWithoutFeedback>
       </TouchableOpacity>
     </Modal>
   );

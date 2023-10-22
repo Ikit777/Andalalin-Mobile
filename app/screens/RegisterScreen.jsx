@@ -325,7 +325,7 @@ function RegisterScreen({ navigation }) {
               onPress={() => {
                 Linking.openURL(
                   process.env.APP_WEB ??
-                    "https://andalalin.com" + "/syarat-ketentuan"
+                    "https://andalalin.me" + "/syarat-ketentuan"
                 );
               }}
             >
@@ -341,7 +341,7 @@ function RegisterScreen({ navigation }) {
               onPress={() => {
                 Linking.openURL(
                   process.env.APP_WEB ??
-                    "https://andalalin.com" + "/kebijakan-privasi"
+                    "https://andalalin.me" + "/kebijakan-privasi"
                 );
               }}
             >

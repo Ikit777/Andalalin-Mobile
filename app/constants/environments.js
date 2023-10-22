@@ -91,6 +91,7 @@ const environments = {
       EDIT_PERSYARATAN_PERLALIN: url + "/api/v1/master/editpersyaratanperlalin",
 
       CEK_SERVER: url + "/api/v1/healthchecker",
+      CEK_MASTER: url + "/api/v1/master/check",
     },
   },
   STAGING: {
@@ -178,6 +179,8 @@ const environments = {
       TAMBAH_PERSYARATAN_PERLALIN: url + "/api/v1/master/tambahpersyaratanperlalin",
       HAPUS_PERSYARATAN_PERLALIN: url + "/api/v1/master/hapuspersyaratanperlalin",
       EDIT_PERSYARATAN_PERLALIN: url + "/api/v1/master/editpersyaratanperlalin",
+
+      CEK_SERVER: url + "/api/v1/healthchecker",
     },
   },
   PRODUCTION: {
@@ -265,6 +268,8 @@ const environments = {
       TAMBAH_PERSYARATAN_PERLALIN: url + "/api/v1/master/tambahpersyaratanperlalin",
       HAPUS_PERSYARATAN_PERLALIN: url + "/api/v1/master/hapuspersyaratanperlalin",
       EDIT_PERSYARATAN_PERLALIN: url + "/api/v1/master/editpersyaratanperlalin",
+
+      CEK_SERVER: url + "/api/v1/healthchecker",
     },
   },
 };

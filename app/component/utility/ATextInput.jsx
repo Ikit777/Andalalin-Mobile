@@ -35,6 +35,7 @@ const ATextInput = React.forwardRef((props, ref) => {
           autoCapitalize="none"
           inputMode={props.inputMode}
           multiline={props.multi}
+          maxLength={props.maksimal}
           numberOfLines={props.max}
           textAlignVertical="top"
           returnKeyType={props.rtype}

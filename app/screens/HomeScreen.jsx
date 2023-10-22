@@ -21,14 +21,17 @@ import { authRefreshToken } from "../api/auth";
 import { userMe } from "../api/user";
 import ExitApp from "react-native-exit-app";
 import { useFocusEffect } from "@react-navigation/native";
-import { masterAndalalin } from "../api/master";
-import { remove } from "../utils/local-storage";
+import { checkMaster, masterAndalalin } from "../api/master";
+import { get, remove, store } from "../utils/local-storage";
+import AKategoriBangkitan from "../component/utility/AKategoriBangkitan";
+import * as FileSystem from "expo-file-system";
 
 function HomeScreen({ navigation }) {
   const context = useContext(UserContext);
   const [confirm, toggleComfirm] = useStateToggler();
   const [error, toggleError] = useStateToggler();
   const [gagal, toggleGagal] = useStateToggler();
+  const [kategoriBangkitan, toggleKategoriBangkitan] = useStateToggler();
 
   useEffect(() => {
     navigation.addListener("beforeRemove", (e) => {
@@ -67,11 +70,12 @@ function HomeScreen({ navigation }) {
               style={{ marginBottom: 20 }}
               icon={"clipboard"}
               title={"Andalalin"}
-              desc={"Ajukan permohonan untuk pelaksanaan analisis dampak lalu lintas"}
+              desc={
+                "Ajukan permohonan untuk pelaksanaan analisis dampak lalu lintas"
+              }
               onPress={() => {
-                navigation.push("Andalalin", { kondisi: "Andalalin" });
                 context.clear();
-                context.setIndex(1);
+                masterData("Andalalin");
               }}
             />
             <AMenuCard
@@ -82,9 +86,7 @@ function HomeScreen({ navigation }) {
                 "Ajukan permohonan untuk pelaksanaan pengadaan perlengkapan lalu lintas"
               }
               onPress={() => {
-                navigation.push("Andalalin", { kondisi: "Perlalin" });
-                context.clear();
-                context.setIndex(1);
+                masterData("Perlalin");
               }}
             />
             <AMenuCard
@@ -326,6 +328,7 @@ function HomeScreen({ navigation }) {
                 "Pengelolaan produk yang diterapkan pada aplikasi andalalin"
               }
               onPress={() => {
+                context.masterData();
                 if (context.dataMaster != "master") {
                   navigation.push("Pengelolaan");
                 }
@@ -435,6 +438,7 @@ function HomeScreen({ navigation }) {
                 "Pengelolaan produk yang diterapkan pada aplikasi andalalin"
               }
               onPress={() => {
+                context.masterData();
                 if (context.dataMaster != "master") {
                   navigation.push("Pengelolaan");
                 }
@@ -505,24 +509,112 @@ function HomeScreen({ navigation }) {
     }
   };
 
+  const masterData = async (kondisi) => {
+    context.toggleLoading(true);
+
+    const value = await get("master");
+
+    if (!value) {
+      masterAndalalin((response) => {
+        if (response.status === 200) {
+          (async () => {
+            const result = await response.json();
+            store("master", result.data.update);
+            const jsonString = JSON.stringify(result.data);
+            const filePath = `${FileSystem.documentDirectory}data.json`;
+
+            FileSystem.writeAsStringAsync(filePath, jsonString, {
+              encoding: FileSystem.EncodingType.UTF8,
+            })
+              .then(() => {
+                console.log("Data saved to file successfully.");
+              })
+              .catch((error) => {
+                console.error("Error saving data:", error);
+              });
+
+            context.toggleLoading(false);
+            if (kondisi == "Andalalin") {
+              toggleKategoriBangkitan();
+            } else {
+              navigation.push("Andalalin", { kondisi: "Perlalin" });
+              context.clear();
+              context.setIndex(1);
+            }
+            context.getDataMaster();
+          })();
+        } else {
+          context.toggleLoading(false);
+          toggleGagal();
+        }
+      });
+    } else {
+      checkMaster((response) => {
+        if (response.status === 200) {
+          (async () => {
+            const result = await response.json();
+
+            if (result.data.update != value) {
+              masterAndalalin((response) => {
+                if (response.status === 200) {
+                  (async () => {
+                    const result = await response.json();
+                    store("master", result.data.update);
+                    const jsonString = JSON.stringify(result.data);
+                    const filePath = `${FileSystem.documentDirectory}data.json`;
+        
+                    FileSystem.writeAsStringAsync(filePath, jsonString, {
+                      encoding: FileSystem.EncodingType.UTF8,
+                    })
+                      .then(() => {
+                        console.log("Data saved to file successfully.");
+                      })
+                      .catch((error) => {
+                        console.error("Error saving data:", error);
+                      });
+        
+                    context.toggleLoading(false);
+                    if (kondisi == "Andalalin") {
+                      toggleKategoriBangkitan();
+                    } else {
+                      navigation.push("Andalalin", { kondisi: "Perlalin" });
+                      context.clear();
+                      context.setIndex(1);
+                    }
+                    context.getDataMaster();
+                  })();
+                } else {
+                  context.toggleLoading(false);
+                  toggleGagal();
+                }
+              });
+            } else {
+              context.toggleLoading(false);
+              if (kondisi == "Andalalin") {
+                toggleKategoriBangkitan();
+              } else {
+                navigation.push("Andalalin", { kondisi: "Perlalin" });
+                context.clear();
+                context.setIndex(1);
+              }
+              context.getDataMaster();
+            }
+          })();
+        } else {
+          context.toggleLoading(false);
+          toggleGagal();
+        }
+      });
+    }
+  };
+
   const me = () => {
     if (context.getUser() != "user") {
       userMe(context.getUser().access_token, (response) => {
         switch (response.status) {
           case 200:
             context.setCheck("userIsChecked");
-            masterAndalalin((response) => {
-              if (response.status === 200) {
-                (async () => {
-                  const result = await response.json();
-                  context.setDataMaster(result.data);
-                  context.toggleLoading(false);
-                })();
-              } else {
-                context.toggleLoading(false);
-                toggleGagal();
-              }
-            });
+            context.toggleLoading(false);
             break;
           case 424:
             authRefreshToken(context, (response) => {
@@ -694,6 +786,21 @@ function HomeScreen({ navigation }) {
         onPressOKButton={() => {
           toggleGagal();
           ExitApp.exitApp();
+        }}
+      />
+
+      <AKategoriBangkitan
+        visibleModal={kategoriBangkitan}
+        btnOK={"OK"}
+        btnBATAL={"Batal"}
+        onPressBATALButton={() => {
+          toggleKategoriBangkitan();
+        }}
+        onPressOKButton={() => {
+          navigation.push("Andalalin", { kondisi: "Andalalin" });
+          
+          context.setIndex(1);
+          toggleKategoriBangkitan();
         }}
       />
     </AScreen>

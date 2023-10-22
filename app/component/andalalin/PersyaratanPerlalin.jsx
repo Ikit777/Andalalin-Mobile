@@ -207,6 +207,7 @@ function PersyaratanPerlalin({ navigation, onPress }) {
             icon={"file-plus"}
             value={namaKtp}
             mult={true}
+            width={true}
             onPress={() => {
               file(1);
             }}
@@ -233,6 +234,7 @@ function PersyaratanPerlalin({ navigation, onPress }) {
             title={"Surat permohonan"}
             icon={"file-plus"}
             padding={20}
+            width={true}
             mult={true}
             value={namaSurat}
             onPress={() => {
@@ -268,6 +270,7 @@ function PersyaratanPerlalin({ navigation, onPress }) {
                 icon={"file-plus"}
                 padding={20}
                 mult={true}
+                width={true}
                 value={
                   stateVariables.find((variabel) => {
                     return variabel.persyaratan == item;

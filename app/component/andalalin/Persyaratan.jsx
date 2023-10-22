@@ -231,6 +231,7 @@ function Persyaratan({ navigation, onPress }) {
             icon={"file-plus"}
             value={namaKtp}
             mult={true}
+            width={true}
             onPress={() => {
               file(1);
             }}
@@ -243,7 +244,7 @@ function Persyaratan({ navigation, onPress }) {
               size={14}
               weight="normal"
             >
-              Berkas KTP kosong
+              Berkas KTP wajib
             </AText>
           ) : (
             ""
@@ -259,6 +260,7 @@ function Persyaratan({ navigation, onPress }) {
             mult={true}
             value={namaAkta}
             padding={20}
+            width={true}
             onPress={() => {
               file(2);
             }}
@@ -271,7 +273,7 @@ function Persyaratan({ navigation, onPress }) {
               size={14}
               weight="normal"
             >
-              Berkas akta kosong
+              Berkas akta wajib
             </AText>
           ) : (
             ""
@@ -285,6 +287,7 @@ function Persyaratan({ navigation, onPress }) {
             title={"Surat kuasa"}
             icon={"file-plus"}
             padding={20}
+            width={true}
             mult={true}
             value={namaSurat}
             onPress={() => {
@@ -299,7 +302,7 @@ function Persyaratan({ navigation, onPress }) {
               size={14}
               weight="normal"
             >
-              Berkas surat kuasa kosong
+              Berkas surat kuasa wajib
             </AText>
           ) : (
             ""
@@ -320,6 +323,7 @@ function Persyaratan({ navigation, onPress }) {
                 icon={"file-plus"}
                 padding={20}
                 mult={true}
+                width={true}
                 value={
                   stateVariables.find((variabel) => {
                     return variabel.persyaratan == item;
@@ -339,7 +343,7 @@ function Persyaratan({ navigation, onPress }) {
                   size={14}
                   weight="normal"
                 >
-                  Berkas {item.toLowerCase()} kosong
+                  Berkas {item.toLowerCase()} wajib
                 </AText>
               ) : (
                 ""

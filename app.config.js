@@ -6,7 +6,7 @@ module.exports = ({ config }) => {
         projectId: "415722cd-73d6-4d47-93dc-aa14779aa554",
       },
       appStatus: process.env.APP_STATUS ?? "DEVELOPMENT",
-      apiURL: process.env.API_URL ?? "https://andalalin-development.up.railway.app",
+      apiURL: process.env.API_URL ?? "https://andalalin.me",
     },
     android: {
       package: "com.andalalin",
@@ -24,6 +24,7 @@ module.exports = ({ config }) => {
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION",
         "android.permission.FOREGROUND_SERVICE",
+        "android.permission.NOTIFICATIONS",
       ],
     },
   };

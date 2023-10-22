@@ -71,8 +71,8 @@ function OnBoardingscreen({ navigation }) {
 const styles = StyleSheet.create({
   content: {
     padding: 16,
-    position: "absolute", //Here is the trick
-    bottom: 0, //Here is the trick
+    flex: 1,
+    justifyContent: "flex-end"
   },
   stretch: {
     width: 145,

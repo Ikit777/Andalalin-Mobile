@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { StyleSheet, ScrollView } from "react-native";
 import AText from "../../component/utility/AText";
 import color from "../../constants/color";
@@ -16,36 +16,38 @@ import ADialog from "../utility/ADialog";
 function Konfirmasi({ navigation, kondisi }) {
   const [confirm, toggleComfirm] = useStateToggler();
   const [kirimGagal, toggleKirimGagal] = useStateToggler();
+  const [data, setData] = useState("");
 
   const {
     permohonan: {
+      bangkitan,
+      pemohon,
       jenis,
       rencana_pembangunan,
       lokasi_pengambilan,
       nik_pemohon,
       tempat_lahir_pemohon,
       tanggal_lahir_pemohon,
+      wilayah_administratif_pemohon,
       alamat_pemohon,
       jenis_kelamin_pemohon,
       nomer_pemohon,
-      nomer_seluler_pemohon,
       jabatan_pemohon,
       nama_perusahaan,
+      wilayah_administratif_perusahaan,
       alamat_perusahaan,
       nomer_perusahaan,
       email_perusahaan,
-      provinsi_perusahaan,
-      kabupaten_perusahaan,
-      kecamatan_perusahaan,
-      kelurahan_perusahaan,
       nama_pimpinan,
       jabatan_pimpinan,
       jenis_kelamin_pimpinan,
-      jenis_kegiatan,
+      aktivitas,
       peruntukan,
-      luas_lahan,
-      alamat_persil,
-      kelurahan_persil,
+      kriteria_khusus,
+      nilai_kriteria,
+      lokasi_bangunan,
+      lat_bangunan,
+      long_bangunan,
       nomer_skrk,
       tanggal_skrk,
       berkas_ktp,
@@ -57,9 +59,28 @@ function Konfirmasi({ navigation, kondisi }) {
     user,
     clear,
     setIndex,
+    dataMaster,
   } = useContext(UserContext);
 
   const context = useContext(UserContext);
+
+  const dataSet = () => {
+    let findData = dataMaster.rencana_pembangunan.find((item) => {
+      return item.Kategori == jenis;
+    });
+
+    if (findData != null) {
+      let rencana = findData.JenisRencana.find((item) => {
+        return item.Jenis == rencana_pembangunan;
+      });
+
+      setData(rencana);
+    }
+  };
+
+  useEffect(() => {
+    dataSet();
+  }, []);
 
   const kirim = () => {
     const file = {
@@ -68,33 +89,34 @@ function Konfirmasi({ navigation, kondisi }) {
       surat: berkas_surat,
     };
     const pengajuan = {
+      kategori_bangkitan: bangkitan,
+      kategori_pemohon: pemohon,
       kategori: jenis,
       jenis_rencana_pembangunan: rencana_pembangunan,
       lokasi_pengambilan: lokasi_pengambilan,
       nik_pemohon: nik_pemohon,
       tempat_lahir_pemohon: tempat_lahir_pemohon,
       tanggal_lahir_pemohon: tanggal_lahir_pemohon,
+      wilayah_administratif_pemohon: wilayah_administratif_pemohon,
       alamat_pemohon: alamat_pemohon,
       jenis_kelamin_pemohon: jenis_kelamin_pemohon,
       nomer_pemohon: nomer_pemohon,
-      nomer_seluler_pemohon: nomer_seluler_pemohon,
       jabatan_pemohon: jabatan_pemohon,
       nama_perusahaan: nama_perusahaan,
+      wilayah_administratif_perusahaan: wilayah_administratif_perusahaan,
       alamat_perusahaan: alamat_perusahaan,
       nomer_perusahaan: nomer_perusahaan,
       email_perusahaan: email_perusahaan,
-      provinsi_perusahaan: provinsi_perusahaan,
-      kabupaten_perusahaan: kabupaten_perusahaan,
-      kecamatan_perusahaan: kecamatan_perusahaan,
-      kelurahan_perusahaan: kelurahan_perusahaan,
       nama_pimpinan: nama_pimpinan,
       jabatan_pimpinan: jabatan_pimpinan,
       jenis_kelamin_pimpinan: jenis_kelamin_pimpinan,
-      jenis_kegiatan: jenis_kegiatan,
+      aktivitas: aktivitas,
       peruntukan: peruntukan,
-      luas_lahan: luas_lahan,
-      alamat_persil: alamat_persil,
-      kelurahan_persil: kelurahan_persil,
+      kriteria_khusus: kriteria_khusus,
+      nilai_kriteria: nilai_kriteria+ " " + data.Satuan.toLowerCase(),
+      latitude: lat_bangunan,
+      longtitude: long_bangunan,
+      lokasi_bangunan: lokasi_bangunan,
       nomer_skrk: nomer_skrk,
       tanggal_skrk: tanggal_skrk,
     };

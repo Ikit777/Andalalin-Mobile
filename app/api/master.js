@@ -9,6 +9,13 @@ export const masterAndalalin = async (masterRespone) => {
   masterRespone(response);
 };
 
+export const checkMaster = async (masterRespone) => {
+  const response = await fetch(ENDPOINTS.CEK_MASTER, {
+    method: "GET",
+  });
+  masterRespone(response);
+};
+
 export const masterTambahLokasiPengambilan = async (accessToken, id, lokasi, masterRespone) => {
   const response = await fetch(ENDPOINTS.TAMBAH_LOKASI_PENGAMBILAN+ "/" + id + "/" + lokasi, {
     method: "POST",

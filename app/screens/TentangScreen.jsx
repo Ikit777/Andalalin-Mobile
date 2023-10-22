@@ -4,6 +4,7 @@ import AText from "../component/utility/AText";
 import color from "../constants/color";
 import AScreen from "../component/utility/AScreen";
 import ABackButton from "../component/utility/ABackButton";
+import Constants from "expo-constants";
 
 function TentangScreen({ navigation }) {
   useEffect(() => {
@@ -34,7 +35,7 @@ function TentangScreen({ navigation }) {
             }}
           />
           <AText
-            style={{ paddingLeft: 4}}
+            style={{ paddingLeft: 4 }}
             size={24}
             color={color.neutral.neutral900}
             weight="normal"
@@ -60,7 +61,7 @@ function TentangScreen({ navigation }) {
               Andalalin
             </AText>
             <AText size={14} color={color.neutral.neutral500} weight="normal">
-              1.0.0
+              {Constants.expoConfig.version}
             </AText>
           </View>
         </View>
@@ -71,8 +72,8 @@ function TentangScreen({ navigation }) {
           weight="normal"
         >
           Andalalin adalah aplikasi yang memiliki kegunaan untuk melakukan
-          permohonan, pengajuan, pengadaan dan pelacakan dokumen analisis dampak lalu lintas atau perlengkapan rambu lalu
-          lintas.
+          permohonan, pengajuan, pengadaan dan pelacakan dokumen analisis dampak
+          lalu lintas atau perlengkapan rambu lalu lintas.
         </AText>
       </View>
     </AScreen>

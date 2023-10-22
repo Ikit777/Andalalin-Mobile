@@ -12,6 +12,9 @@ function AUpdateDialog({ visibleModal = false, onPressOKButton }) {
   const toggleModal = () => {
     if (visibleModal) {
       setVisible(true);
+      if (context.loading == true) {
+        context.toggleLoading(false);
+      }
       Animated.spring(scaleValue, {
         toValue: 1,
         duration: 1000,

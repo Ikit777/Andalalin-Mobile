@@ -45,23 +45,39 @@ function PengajuanScreen({ navigation, route }) {
 
   const judul = () => {
     if (kondisi == "Andalalin") {
-      switch (context.index) {
-        case 1:
-          return "Permohonan";
-        case 2:
-          return "Permohonan";
-        case 3:
-          return "Pemohon";
-        case 4:
-          return "Perusahaan";
-        case 5:
-          return "Perusahaan";
-        case 6:
-          return "Kegiatan";
-        case 7:
-          return "Persyaratan";
-        case 8:
-          return "Konfirmasi";
+      
+      if (context.permohonan.pemohon == "Perorangan") {
+        switch (context.index) {
+          case 1:
+            return "Permohonan";
+          case 2:
+            return "Permohonan";
+          case 3:
+            return "Pemohon";
+          case 4:
+            return "Kegiatan";
+          case 5:
+            return "Persyaratan";
+          case 6:
+            return "Konfirmasi";
+        }
+      } else {
+        switch (context.index) {
+          case 1:
+            return "Permohonan";
+          case 2:
+            return "Permohonan";
+          case 3:
+            return "Pemohon";
+          case 4:
+            return "Perusahaan";
+          case 5:
+            return "Kegiatan";
+          case 6:
+            return "Persyaratan";
+          case 7:
+            return "Konfirmasi";
+        }
       }
     } else {
       switch (context.index) {
@@ -91,7 +107,11 @@ function PengajuanScreen({ navigation, route }) {
 
   const item = () => {
     if (kondisi == "Andalalin") {
-      return 7;
+      if (context.permohonan.pemohon == "Perorangan") {
+        return 5;
+      } else {
+        return 6;
+      }
     } else {
       return 5;
     }

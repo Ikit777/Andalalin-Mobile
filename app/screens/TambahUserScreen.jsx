@@ -211,7 +211,6 @@ function TambahUserScreen({ navigation }) {
 
         <ATextInput
           bdColor={emailError ? color.error.error300 : color.neutral.neutral300}
-          ktype={"default"}
           hint={"Masukkan email"}
           title={"Email"}
           rtype={"done"}
@@ -219,6 +218,8 @@ function TambahUserScreen({ navigation }) {
           multi={false}
           value={email}
           ref={emailRef}
+          ktype={"email-address"}
+          inputMode={"email"}
           onChangeText={(value) => {
             setEmail(value);
           }}

@@ -9,6 +9,7 @@ import React, {
 
 import * as Notifications from "expo-notifications";
 import { masterAndalalin } from "../api/master";
+import * as FileSystem from "expo-file-system";
 
 export const UserContext = createContext();
 
@@ -16,34 +17,35 @@ function reducer(state, action) {
   return { ...state, ...action };
 }
 
-const initialState = {
+const andalalinInit = {
+  bangkitan: "",
+  pemohon: "",
   jenis: "",
   rencana_pembangunan: "",
   lokasi_pengambilan: "",
   nik_pemohon: "",
   tempat_lahir_pemohon: "",
   tanggal_lahir_pemohon: "",
+  wilayah_administratif_pemohon: "",
   alamat_pemohon: "",
   jenis_kelamin_pemohon: "",
   nomer_pemohon: "",
-  nomer_seluler_pemohon: "",
   jabatan_pemohon: "",
   nama_perusahaan: "",
+  wilayah_administratif_perusahaan: "",
   alamat_perusahaan: "",
   nomer_perusahaan: "",
   email_perusahaan: "",
-  provinsi_perusahaan: "",
-  kabupaten_perusahaan: "",
-  kecamatan_perusahaan: "",
-  kelurahan_perusahaan: "",
   nama_pimpinan: "",
   jabatan_pimpinan: "",
   jenis_kelamin_pimpinan: "",
-  jenis_kegiatan: "",
+  aktivitas: "",
   peruntukan: "",
-  luas_lahan: "",
-  alamat_persil: "",
-  kelurahan_persil: "",
+  kriteria_khusus: "",
+  nilai_kriteria: "",
+  lokasi_bangunan: "",
+  lat_bangunan: "",
+  long_bangunan: "",
   nomer_skrk: "",
   tanggal_skrk: "",
   berkas_ktp: "",
@@ -116,7 +118,7 @@ export function UserProvider({ children }) {
   const [session, setSession] = useState(false);
 
   const [index, setIndex] = useState(1);
-  const [permohonan, dispatch] = useReducer(reducer, initialState);
+  const [permohonan, dispatch] = useReducer(reducer, andalalinInit);
   const [perlalin, setPerlalin] = useReducer(reducer, perlalinInit);
 
   const [indexSurvei, setIndexSurvei] = useState(1);
@@ -169,7 +171,7 @@ export function UserProvider({ children }) {
 
   const clear = () => {
     setIndex(1);
-    dispatch(initialState);
+    dispatch(andalalinInit);
     setPerlalin(perlalinInit);
   };
 
@@ -200,12 +202,26 @@ export function UserProvider({ children }) {
     return loading;
   };
 
+  const getDataMaster = async () => {
+    const filePath = `${FileSystem.documentDirectory}data.json`;
+
+    const fileContents = await FileSystem.readAsStringAsync(filePath, {
+      encoding: FileSystem.EncodingType.UTF8,
+    });
+
+    const loadedData = JSON.parse(fileContents);
+    setDataMaster(loadedData);
+    return dataMaster;
+  };
+
   const masterData = () => {
+    toggleLoading(true);
     masterAndalalin((response) => {
       if (response.status === 200) {
         (async () => {
           const result = await response.json();
           setDataMaster(result.data);
+          toggleLoading(false);
         })();
       }
     });
@@ -237,6 +253,7 @@ export function UserProvider({ children }) {
         dataMaster,
         setDataMaster,
         masterData,
+        getDataMaster,
         indexSurvei,
         setIndexSurvei,
         survei,

@@ -17,9 +17,9 @@ export default function AndalalinItem({ navigation, route }) {
   const kondisi = route.params.kondisi;
 
   const onGoToNext = () => {
-    if (index < 8) {
+    if (index < 7) {
       const newIndex = index + 1;
-      
+
       context.setIndex(newIndex);
 
       navigation.push("AndalalinItem", {
@@ -31,7 +31,13 @@ export default function AndalalinItem({ navigation, route }) {
   const renderItem = () => {
     switch (index) {
       case 1:
-        return <Informasi onPress={onGoToNext} navigation={navigation} kondisi={kondisi} />;
+        return (
+          <Informasi
+            onPress={onGoToNext}
+            navigation={navigation}
+            kondisi={kondisi}
+          />
+        );
       case 2:
         return <Permohonan onPress={onGoToNext} />;
       case 3:
@@ -39,17 +45,44 @@ export default function AndalalinItem({ navigation, route }) {
       case 4:
         return <Perusahaan onPress={onGoToNext} />;
       case 5:
-        return <LokasiPerusahaan onPress={onGoToNext} />;
-      case 6:
         return <Kegiatan onPress={onGoToNext} />;
-      case 7:
+      case 6:
         return <Persyaratan onPress={onGoToNext} navigation={navigation} />;
-      case 8:
+      case 7:
         return <Konfirmasi navigation={navigation} kondisi={kondisi} />;
     }
   };
 
-  return <View style={styles.container}>{renderItem()}</View>;
+  const renderItemPerorangan = () => {
+    switch (index) {
+      case 1:
+        return (
+          <Informasi
+            onPress={onGoToNext}
+            navigation={navigation}
+            kondisi={kondisi}
+          />
+        );
+      case 2:
+        return <Permohonan onPress={onGoToNext} />;
+      case 3:
+        return <Pemohon onPress={onGoToNext} />;
+      case 4:
+        return <Kegiatan onPress={onGoToNext} />;
+      case 5:
+        return <Persyaratan onPress={onGoToNext} navigation={navigation} />;
+      case 6:
+        return <Konfirmasi navigation={navigation} kondisi={kondisi} />;
+    }
+  };
+
+  return (
+    <View style={styles.container}>
+      {context.permohonan.pemohon == "Perorangan"
+        ? renderItemPerorangan()
+        : renderItem()}
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({

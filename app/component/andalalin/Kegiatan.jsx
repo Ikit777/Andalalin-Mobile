@@ -1,5 +1,5 @@
-import React, { useContext, useState } from "react";
-import { StyleSheet, ScrollView } from "react-native";
+import React, { useContext, useState, useEffect } from "react";
+import { StyleSheet, ScrollView, View } from "react-native";
 import AText from "../utility/AText";
 import color from "../../constants/color";
 import ATextInput from "../utility/ATextInput";
@@ -8,43 +8,52 @@ import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 import { useStateToggler } from "../../hooks/useUtility";
 import { UserContext } from "../../context/UserContext";
 import AButton from "../utility/AButton";
+import ALokasi from "../utility/ALokasi";
 
-function Kegiatan({onPress}) {
+function Kegiatan({ onPress }) {
   const {
     permohonan: {
-      jenis_kegiatan,
+      aktivitas,
       peruntukan,
-      luas_lahan,
-      alamat_persil,
-      kelurahan_persil,
+      kriteria_khusus,
+      nilai_kriteria,
+      lokasi_bangunan,
       nomer_skrk,
       tanggal_skrk,
+      lat_bangunan,
+      long_bangunan,
+      jenis,
+      rencana_pembangunan,
     },
     dispatch,
+    dataMaster,
   } = useContext(UserContext);
 
   const kegiatanInput = React.createRef();
   const peruntukanInput = React.createRef();
   const luasInput = React.createRef();
   const alamatInput = React.createRef();
-  const kelInput = React.createRef();
   const nomerInput = React.createRef();
 
-  const [kegiatan, setKegiatan] = useState(jenis_kegiatan);
+  const [kegiatan, setKegiatan] = useState(aktivitas);
   const [untuk, setPeruntukan] = useState(peruntukan);
-  const [luas, setLuas] = useState(luas_lahan);
-  const [alamat, setAlamat] = useState(alamat_persil);
-  const [kel, setKel] = useState(kelurahan_persil);
+  const [luas, setLuas] = useState(nilai_kriteria);
+  const [alamat, setAlamat] = useState(lokasi_bangunan);
   const [nomer, setNomer] = useState(nomer_skrk);
   const [tanggal, setTanggal] = useState(tanggal_skrk);
+  const [lat, setLat] = useState(lat_bangunan);
+  const [long, setLong] = useState(long_bangunan);
 
   const [kegiatanError, toggleKegiatanError] = useStateToggler();
   const [peruntukanError, togglePeruntukanError] = useStateToggler();
   const [luasError, toggleLuasError] = useStateToggler();
   const [alamatError, toggleAlamatError] = useStateToggler();
-  const [kelError, toggleKelError] = useStateToggler();
   const [nomerError, toggleNomerError] = useStateToggler();
   const [tanggalError, toggleTanggalError] = useStateToggler();
+
+  const [lokasiModal, toggleLokasiModal] = useStateToggler();
+
+  const [data, setData] = useState("");
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate;
@@ -71,27 +80,137 @@ function Kegiatan({onPress}) {
   };
 
   const press = () => {
-    if (kegiatan != "" && untuk != "" && luas != "" && alamat != "" && kel != "" && nomer != "" && tanggal != ""){
-      {kegiatanError ? toggleKegiatanError() : "" };
-      {peruntukanError ? togglePeruntukanError() : "" };
-      {luasError ? toggleLuasError() : "" };
-      {alamatError ? toggleAlamatError() : "" };
-      {kelError ? toggleKelError() : "" };
-      {nomerError ? toggleNomerError() : "" };
-      {tanggalError ? toggleTanggalError() : "" };
-      
-      dispatch({ jenis_kegiatan: kegiatan, peruntukan: untuk, luas_lahan: luas, alamat_persil: alamat, kelurahan_persil: kel, nomer_skrk: nomer, tanggal_skrk: tanggal});
-      onPress();
-    }else{
-      {kegiatan == "" ? (kegiatanError ?  "": toggleKegiatanError()) : ""};
-      {untuk == "" ? (peruntukanError ?  "": togglePeruntukanError()) : ""};
-      {luas == "" ? (luasError ?  "": toggleLuasError()) : ""};
-      {alamat == "" ? (alamatError ?  "": toggleAlamatError()) : ""};
-      {kel == "" ? (kelError ?  "": toggleKelError()) : ""};
-      {nomer == "" ? (nomerError ?  "": toggleNomerError()) : ""};
-      {tanggal == "" ? (tanggalError ?  "": toggleTanggalError()) : ""};
+    if (data.Kriteria == "" && data.Kriteria == null) {
+      if (
+        kegiatan != "" &&
+        untuk != "" &&
+        alamat != "" &&
+        nomer != "" &&
+        tanggal != ""
+      ) {
+        {
+          kegiatanError ? toggleKegiatanError() : "";
+        }
+        {
+          peruntukanError ? togglePeruntukanError() : "";
+        }
+        {
+          alamatError ? toggleAlamatError() : "";
+        }
+        {
+          nomerError ? toggleNomerError() : "";
+        }
+        {
+          tanggalError ? toggleTanggalError() : "";
+        }
+
+        dispatch({
+          aktivitas: kegiatan,
+          peruntukan: untuk,
+          lokasi_bangunan: alamat,
+          nomer_skrk: nomer,
+          tanggal_skrk: tanggal,
+          lat_bangunan: lat,
+          long_bangunan: long,
+        });
+        onPress();
+      } else {
+        {
+          kegiatan == "" ? (kegiatanError ? "" : toggleKegiatanError()) : "";
+        }
+        {
+          untuk == "" ? (peruntukanError ? "" : togglePeruntukanError()) : "";
+        }
+        {
+          alamat == "" ? (alamatError ? "" : toggleAlamatError()) : "";
+        }
+        {
+          nomer == "" ? (nomerError ? "" : toggleNomerError()) : "";
+        }
+        {
+          tanggal == "" ? (tanggalError ? "" : toggleTanggalError()) : "";
+        }
+      }
+    } else {
+      if (
+        kegiatan != "" &&
+        untuk != "" &&
+        luas != "" &&
+        alamat != "" &&
+        nomer != "" &&
+        tanggal != ""
+      ) {
+        {
+          kegiatanError ? toggleKegiatanError() : "";
+        }
+        {
+          peruntukanError ? togglePeruntukanError() : "";
+        }
+        {
+          luasError ? toggleLuasError() : "";
+        }
+        {
+          alamatError ? toggleAlamatError() : "";
+        }
+        {
+          nomerError ? toggleNomerError() : "";
+        }
+        {
+          tanggalError ? toggleTanggalError() : "";
+        }
+
+        dispatch({
+          aktivitas: kegiatan,
+          peruntukan: untuk,
+          kriteria_khusus: data.Kriteria,
+          nilai_kriteria: luas,
+          lokasi_bangunan: alamat,
+          nomer_skrk: nomer,
+          tanggal_skrk: tanggal,
+          lat_bangunan: lat,
+          long_bangunan: long,
+        });
+        onPress();
+      } else {
+        {
+          kegiatan == "" ? (kegiatanError ? "" : toggleKegiatanError()) : "";
+        }
+        {
+          untuk == "" ? (peruntukanError ? "" : togglePeruntukanError()) : "";
+        }
+        {
+          luas == "" ? (luasError ? "" : toggleLuasError()) : "";
+        }
+        {
+          alamat == "" ? (alamatError ? "" : toggleAlamatError()) : "";
+        }
+        {
+          nomer == "" ? (nomerError ? "" : toggleNomerError()) : "";
+        }
+        {
+          tanggal == "" ? (tanggalError ? "" : toggleTanggalError()) : "";
+        }
+      }
     }
-  }
+  };
+
+  const dataSet = () => {
+    let findData = dataMaster.rencana_pembangunan.find((item) => {
+      return item.Kategori == jenis;
+    });
+
+    if (findData != null) {
+      let rencana = findData.JenisRencana.find((item) => {
+        return item.Jenis == rencana_pembangunan;
+      });
+
+      setData(rencana);
+    }
+  };
+
+  useEffect(() => {
+    dataSet();
+  }, []);
 
   return (
     <ScrollView
@@ -99,12 +218,13 @@ function Kegiatan({onPress}) {
       showsVerticalScrollIndicator={false}
       persistentScrollbar={true}
     >
-
-    <ATextInput
-        bdColor={kegiatanError ? color.error.error300 : color.neutral.neutral300}
+      <ATextInput
+        bdColor={
+          kegiatanError ? color.error.error300 : color.neutral.neutral300
+        }
         ktype={"default"}
-        hint={"Masukkan jenis kegiatan"}
-        title={"Jenis kegiatan"}
+        hint={"Masukkan aktivitas"}
+        title={"Aktivitas"}
         multi={true}
         value={kegiatan}
         ref={kegiatanInput}
@@ -120,14 +240,16 @@ function Kegiatan({onPress}) {
           size={14}
           weight="normal"
         >
-          Jenis kegiatan kosong
+          Aktivitas wajib
         </AText>
       ) : (
         ""
       )}
 
       <ATextInput
-        bdColor={peruntukanError ? color.error.error300 : color.neutral.neutral300}
+        bdColor={
+          peruntukanError ? color.error.error300 : color.neutral.neutral300
+        }
         ktype={"default"}
         hint={"Peruntukan"}
         title={"Peruntukan"}
@@ -147,59 +269,64 @@ function Kegiatan({onPress}) {
           size={14}
           weight="normal"
         >
-          Peruntukan kosong
+          Peruntukan wajib
         </AText>
       ) : (
         ""
       )}
 
-      <ATextInput
-        bdColor={luasError ? color.error.error300 : color.neutral.neutral300}
-        ktype={"number-pad"}
-        hint={"Masukkan luas lahan"}
-        title={"Luas lahan"}
-        rtype={"next"}
-        blur={false}
-        multi={false}
-        padding={20}
-        value={luas}
-        ref={luasInput}
-        onChangeText={(value) => {
-          setLuas(value);
-        }}
-        submit={() => {
-          {
-            luasError ? toggleLuasError() : "";
-          }
-          alamatInput.current.focus();
-        }}
-      />
+      {data.Kriteria != "" && data.Kriteria != null ? (
+        <View>
+          <ATextInput
+            bdColor={
+              luasError ? color.error.error300 : color.neutral.neutral300
+            }
+            ktype={"number-pad"}
+            hint={"Masukkan " + data.Kriteria.toLowerCase()}
+            title={data.Kriteria + " " + "(" + data.Satuan.toLowerCase() + ")"}
+            rtype={"done"}
+            blur={true}
+            multi={false}
+            padding={20}
+            value={luas}
+            ref={luasInput}
+            onChangeText={(value) => {
+              setLuas(value);
+            }}
+            submit={() => {
+              {
+                luasError ? toggleLuasError() : "";
+              }
+            }}
+          />
 
-      {luasError ? (
-        <AText
-          style={{ paddingTop: 6 }}
-          color={color.error.error500}
-          size={14}
-          weight="normal"
-        >
-          Luas lahan kosong
-        </AText>
+          {luasError ? (
+            <AText
+              style={{ paddingTop: 6 }}
+              color={color.error.error500}
+              size={14}
+              weight="normal"
+            >
+              {data.Kriteria} wajib
+            </AText>
+          ) : (
+            ""
+          )}
+        </View>
       ) : (
         ""
       )}
 
-      <ATextInput
+      <ATextInputIcon
         bdColor={alamatError ? color.error.error300 : color.neutral.neutral300}
-        ktype={"default"}
-        hint={"Masukkan alamat persil"}
-        title={"Alamat persil"}
-        multi={true}
+        hint={"Pilih lokasi bangunan"}
+        title={"Lokasi bangunan"}
         padding={20}
+        mult={true}
+        width={true}
+        icon={"map-pin"}
         value={alamat}
-        ref={alamatInput}
-        onChangeText={(value) => {
-          setAlamat(value);
-        }}
+        onPress={toggleLokasiModal}
       />
 
       {alamatError ? (
@@ -209,42 +336,7 @@ function Kegiatan({onPress}) {
           size={14}
           weight="normal"
         >
-          Alamat persil kosong
-        </AText>
-      ) : (
-        ""
-      )}
-
-      <ATextInput
-        bdColor={kelError ? color.error.error300 : color.neutral.neutral300}
-        ktype={"default"}
-        hint={"Masukkan kelurahan persil"}
-        title={"Kelurahan persil"}
-        rtype={"next"}
-        blur={false}
-        multi={false}
-        value={kel}
-        padding={20}
-        ref={kelInput}
-        onChangeText={(value) => {
-          setKel(value);
-        }}
-        submit={() => {
-          {
-            kelError ? toggleKelError() : "";
-          }
-          nomerInput.current.focus();
-        }}
-      />
-
-      {kelError ? (
-        <AText
-          style={{ paddingTop: 6 }}
-          color={color.error.error500}
-          size={14}
-          weight="normal"
-        >
-          Kelurahan persil kosong
+          Lokasi bangunan wajib
         </AText>
       ) : (
         ""
@@ -257,7 +349,7 @@ function Kegiatan({onPress}) {
         title={"Nomor SKRK"}
         rtype={"done"}
         multi={false}
-        value={nomer}        
+        value={nomer}
         padding={20}
         ref={nomerInput}
         onChangeText={(value) => {
@@ -277,7 +369,7 @@ function Kegiatan({onPress}) {
           size={14}
           weight="normal"
         >
-          Nomor SKRK kosong
+          Nomor SKRK wajib
         </AText>
       ) : (
         ""
@@ -300,7 +392,7 @@ function Kegiatan({onPress}) {
           size={14}
           weight="normal"
         >
-          Tanggal SKRK kosong
+          Tanggal SKRK wajib
         </AText>
       ) : (
         ""
@@ -310,7 +402,19 @@ function Kegiatan({onPress}) {
         style={{ marginTop: 32, marginBottom: 50 }}
         title={"Lanjut"}
         mode="contained"
-        onPress={() => {press();}}
+        onPress={() => {
+          press();
+        }}
+      />
+
+      <ALokasi
+        visibleModal={lokasiModal}
+        setLokasi={setAlamat}
+        setLat={setLat}
+        setLong={setLong}
+        onPressOKButton={() => {
+          toggleLokasiModal();
+        }}
       />
     </ScrollView>
   );

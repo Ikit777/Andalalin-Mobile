@@ -29,7 +29,6 @@ function ANoInternetDialog({ visibleModal = false }) {
   };
 
   const ok = () => {
-    context.masterData();
     setTimeout(() => setVisible(false), 200);
     Animated.spring(scaleValue, {
       toValue: 0,

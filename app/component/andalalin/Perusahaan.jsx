@@ -7,12 +7,15 @@ import { UserContext } from "../../context/UserContext";
 import { useStateToggler } from "../../hooks/useUtility";
 import AButton from "../utility/AButton";
 import ADropDownCostume from "../utility/ADropdownCostume";
+import ATextInputIcon from "../utility/ATextInputIcon";
+import AInputAlamat from "../utility/AInputAlamat";
 
 function Perusahaan({ onPress }) {
   const {
     permohonan: {
       nama_perusahaan,
       alamat_perusahaan,
+      wilayah_administratif_perusahaan,
       nomer_perusahaan,
       email_perusahaan,
       nama_pimpinan,
@@ -20,6 +23,7 @@ function Perusahaan({ onPress }) {
       jenis_kelamin_pimpinan,
     },
     dispatch,
+    dataMaster,
   } = useContext(UserContext);
 
   const namaInput = React.createRef();
@@ -31,6 +35,7 @@ function Perusahaan({ onPress }) {
 
   const [nama, setNama] = useState(nama_perusahaan);
   const [alamat, setAlamat] = useState(alamat_perusahaan);
+  const [wilayah, setWilayah] = useState(wilayah_administratif_perusahaan);
   const [nomer, setNomer] = useState(nomer_perusahaan);
   const [email, setEmail] = useState(email_perusahaan);
   const [pimpinan, setPimpinan] = useState(nama_pimpinan);
@@ -39,11 +44,14 @@ function Perusahaan({ onPress }) {
 
   const [namaError, toggleNamaError] = useStateToggler();
   const [alamatError, toggleAlamatError] = useStateToggler();
+  const [wilayahError, toggleWilayahError] = useStateToggler();
   const [nomerError, toggleNomerError] = useStateToggler();
   const [emailError, toggleEmailError] = useStateToggler();
   const [pimpinanError, togglePimpinanError] = useStateToggler();
   const [jabatanError, toggleJabatanError] = useStateToggler();
   const [jenisError, toggleJenisError] = useStateToggler();
+
+  const [wilayahModal, toggleWilayahModal] = useStateToggler();
 
   const jenis_kelamin = [{ value: "Laki-laki" }, { value: "Perempuan" }];
 
@@ -64,6 +72,9 @@ function Perusahaan({ onPress }) {
         alamatError ? toggleAlamatError() : "";
       }
       {
+        wilayahError ? toggleWilayahError() : "";
+      }
+      {
         nomerError ? toggleNomerError() : "";
       }
       {
@@ -78,6 +89,7 @@ function Perusahaan({ onPress }) {
       dispatch({
         nama_perusahaan: nama,
         alamat_perusahaan: alamat,
+        wilayah_administratif_perusahaan: wilayah,
         nomer_perusahaan: nomer,
         email_perusahaan: email,
         nama_pimpinan: pimpinan,
@@ -91,6 +103,9 @@ function Perusahaan({ onPress }) {
       }
       {
         alamat == "" ? (alamatError ? "" : toggleAlamatError()) : "";
+      }
+      {
+        wilayah == "" ? (wilayahError ? "" : toggleWilayahError()) : "";
       }
       {
         nomer == "" ? (nomerError ? "" : toggleNomerError()) : "";
@@ -118,6 +133,12 @@ function Perusahaan({ onPress }) {
     }
   }, [jenis]);
 
+  useEffect(() => {
+    {
+      wilayahError ? toggleWilayahError() : "";
+    }
+  }, [wilayah]);
+
   return (
     <ScrollView
       style={styles.content}
@@ -129,8 +150,8 @@ function Perusahaan({ onPress }) {
         ktype={"default"}
         hint={"Masukkan nama"}
         title={"Nama perusahaan"}
-        rtype={"next"}
-        blur={false}
+        rtype={"done"}
+        blur={true}
         multi={false}
         value={nama}
         ref={namaInput}
@@ -141,7 +162,6 @@ function Perusahaan({ onPress }) {
           {
             namaError ? toggleNamaError() : "";
           }
-          alamatInput.current.focus();
         }}
       />
 
@@ -152,7 +172,32 @@ function Perusahaan({ onPress }) {
           size={14}
           weight="normal"
         >
-          Nama kosong
+          Nama perusahaan wajib
+        </AText>
+      ) : (
+        ""
+      )}
+
+      <ATextInputIcon
+        bdColor={wilayahError ? color.error.error300 : color.neutral.neutral300}
+        hint={"Pilih wilayah administratif"}
+        title={"Wilayah administratif perusahaan"}
+        padding={20}
+        mult={true}
+        width={true}
+        icon={"map-pin"}
+        value={wilayah}
+        onPress={toggleWilayahModal}
+      />
+
+      {wilayahError ? (
+        <AText
+          style={{ paddingTop: 6 }}
+          color={color.error.error500}
+          size={14}
+          weight="normal"
+        >
+          Wilayah adiminstratif perusahaan wajib
         </AText>
       ) : (
         ""
@@ -179,7 +224,7 @@ function Perusahaan({ onPress }) {
           size={14}
           weight="normal"
         >
-          Alamat kosong
+          Alamat perusahaan wajib
         </AText>
       ) : (
         ""
@@ -223,7 +268,7 @@ function Perusahaan({ onPress }) {
           size={14}
           weight="normal"
         >
-          Nomer telepon kosong
+          Nomer telepon perusahaan wajib
         </AText>
       ) : (
         ""
@@ -231,12 +276,13 @@ function Perusahaan({ onPress }) {
 
       <ATextInput
         bdColor={emailError ? color.error.error300 : color.neutral.neutral300}
-        ktype={"default"}
         hint={"Masukkan email"}
         title={"Email perusahaan"}
         rtype={"next"}
         blur={false}
         padding={20}
+        ktype={"email-address"}
+        inputMode={"email"}
         multi={false}
         value={email}
         ref={emailInput}
@@ -258,7 +304,7 @@ function Perusahaan({ onPress }) {
           size={14}
           weight="normal"
         >
-          Email kosong
+          Email perusahaan wajib
         </AText>
       ) : (
         ""
@@ -295,7 +341,7 @@ function Perusahaan({ onPress }) {
           size={14}
           weight="normal"
         >
-          Nama pimpinan kosong
+          Nama pimpinan wajib
         </AText>
       ) : (
         ""
@@ -328,7 +374,7 @@ function Perusahaan({ onPress }) {
           size={14}
           weight="normal"
         >
-          Jabatan pimpinan kosong
+          Jabatan pimpinan wajib
         </AText>
       ) : (
         ""
@@ -350,7 +396,7 @@ function Perusahaan({ onPress }) {
           size={14}
           weight="normal"
         >
-          Jenis kelamin belum dipilih
+          Jenis kelamin wajib
         </AText>
       ) : (
         ""
@@ -362,6 +408,20 @@ function Perusahaan({ onPress }) {
         mode="contained"
         onPress={() => {
           press();
+        }}
+      />
+
+      <AInputAlamat
+        visibleModal={wilayahModal}
+        master={dataMaster}
+        setAlamat1={setWilayah}
+        btnOK={"OK"}
+        btnBATAL={"Batal"}
+        onPressBATALButton={() => {
+          toggleWilayahModal();
+        }}
+        onPressOKButton={() => {
+          toggleWilayahModal();
         }}
       />
     </ScrollView>

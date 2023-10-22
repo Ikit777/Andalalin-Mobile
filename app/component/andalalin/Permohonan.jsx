@@ -10,7 +10,7 @@ import ADropDownCostume from "../utility/ADropdownCostume";
 
 function Permohonan({ onPress }) {
   const {
-    permohonan: { jenis, rencana_pembangunan, lokasi_pengambilan },
+    permohonan: { jenis, rencana_pembangunan, lokasi_pengambilan, pemohon },
     dispatch,
     dataMaster,
   } = useContext(UserContext);
@@ -25,6 +25,9 @@ function Permohonan({ onPress }) {
   const [jenisError, toggleJenisError] = useStateToggler();
   const [lokasiError, toggleLokasiError] = useStateToggler();
   const [rencanaError, toggleRencanaError] = useStateToggler();
+
+  const [kategoriPemohon, setKategoriPemohon] = useState(pemohon);
+  const [pemohonError, togglePemohonError] = useStateToggler();
 
   let lokasi = dataMaster.lokasi_pengambilan.map((item) => {
     return { value: item };
@@ -51,7 +54,7 @@ function Permohonan({ onPress }) {
 
     if (pusat != null) {
       let jenis_rencana = pusat.JenisRencana.map((item) => {
-        return { value: item };
+        return { value: item.Jenis };
       });
 
       setRencana(jenis_rencana);
@@ -66,7 +69,7 @@ function Permohonan({ onPress }) {
       rencanaPembangunan();
     }
     if (jenisRencana != jenis) {
-      setrencanaJenisPembangunan("")
+      setrencanaJenisPembangunan("");
     }
   }, [jenisRencana]);
 
@@ -78,6 +81,12 @@ function Permohonan({ onPress }) {
 
   useEffect(() => {
     {
+      pemohonError ? togglePemohonError() : "";
+    }
+  }, [kategoriPemohon]);
+
+  useEffect(() => {
+    {
       rencanaError ? toggleRencanaError() : "";
     }
   }, [rencanaJenisPembangunan]);
@@ -86,12 +95,14 @@ function Permohonan({ onPress }) {
     if (
       jenisRencana != "" &&
       lokasiPengambilan != "" &&
-      rencanaJenisPembangunan != ""
+      rencanaJenisPembangunan != "" &&
+      kategoriPemohon != ""
     ) {
       dispatch({
         jenis: jenisRencana,
         rencana_pembangunan: rencanaJenisPembangunan,
         lokasi_pengambilan: lokasiPengambilan,
+        pemohon: kategoriPemohon,
       });
       onPress();
     } else {
@@ -108,8 +119,13 @@ function Permohonan({ onPress }) {
       {
         lokasiPengambilan == "" ? (lokasiError ? "" : toggleLokasiError()) : "";
       }
+      {
+        kategoriPemohon == "" ? (pemohonError ? "" : togglePemohonError()) : "";
+      }
     }
   };
+
+  const kategori = [{ value: "Perorangan" }, { value: "Non-perorangan" }];
 
   return (
     <ScrollView
@@ -118,11 +134,34 @@ function Permohonan({ onPress }) {
       persistentScrollbar={true}
     >
       <ADropDownCostume
+        judul={"Kategori pemohon"}
+        hint={"Pilih kategori"}
+        data={kategori}
+        selected={setKategoriPemohon}
+        max={200}
+        saved={kategoriPemohon}
+        bdColor={pemohonError ? color.error.error300 : color.neutral.neutral300}
+      />
+      {pemohonError ? (
+        <AText
+          style={{ paddingTop: 6 }}
+          color={color.error.error500}
+          size={14}
+          weight="normal"
+        >
+          Kategori pemohon wajib
+        </AText>
+      ) : (
+        ""
+      )}
+
+      <ADropDownCostume
         judul={"Kategori jenis rencana pembangunan"}
         hint={"Pilih jenis"}
         data={jenis_rencana}
         selected={setJenisRencana}
         max={200}
+        padding={20}
         saved={jenisRencana}
         bdColor={jenisError ? color.error.error300 : color.neutral.neutral300}
       />
@@ -133,7 +172,7 @@ function Permohonan({ onPress }) {
           size={14}
           weight="normal"
         >
-          Kategori belum dipilih
+          Kategori jenis wajib
         </AText>
       ) : (
         ""
@@ -151,7 +190,7 @@ function Permohonan({ onPress }) {
           padding={20}
           selected={setrencanaJenisPembangunan}
           saved={rencanaJenisPembangunan}
-          notFound={"Kategori belum dipilih"}
+          notFound={"Kategori jenis belum dipilih"}
         />
       ) : (
         <ATextInput
@@ -178,7 +217,7 @@ function Permohonan({ onPress }) {
           size={14}
           weight="normal"
         >
-          Rencana pembangunan kosong
+          Jenis rencana pembangunan wajib
         </AText>
       ) : (
         ""
@@ -201,7 +240,7 @@ function Permohonan({ onPress }) {
           size={14}
           weight="normal"
         >
-          Lokasi belum dipilih
+          Lokasi pengambilan wajib
         </AText>
       ) : (
         ""

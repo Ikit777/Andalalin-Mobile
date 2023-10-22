@@ -221,13 +221,13 @@ function SettingScreen({ navigation }) {
               <ASettingItem
                 icon={"shield"}
                 title={"Kebijakan privasi"}
-                onPress={() => {Linking.openURL(process.env.APP_WEB ?? "https://andalalin.com" + "/kebijakan-privasi");}}
+                onPress={() => {Linking.openURL(process.env.APP_WEB ?? "https://andalalin.me" + "/kebijakan-privasi");}}
               />
               <ASettingItem
                 icon={"book-open"}
                 title={"Syarat dan ketentuan"}
                 onPress={() => {
-                  Linking.openURL(process.env.APP_WEB ?? "https://andalalin.com" + "/syarat-ketentuan");
+                  Linking.openURL(process.env.APP_WEB ?? "https://andalalin.me" + "/syarat-ketentuan");
                 }}
               />
               <ASettingItem
