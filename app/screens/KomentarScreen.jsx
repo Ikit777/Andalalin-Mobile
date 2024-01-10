@@ -26,7 +26,6 @@ function KomentarScreen({ navigation, route }) {
     if (komentar.length == 0) {
       setKomentar(null);
     }
-    console.log(komentar);
   }, []);
 
   return (
@@ -44,9 +43,9 @@ function KomentarScreen({ navigation, route }) {
               navigation.goBack();
             }}
           />
-          <AText
-            style={{ paddingLeft: 4 }}
-            size={24}
+         <AText
+            style={{ paddingLeft: 4}}
+            size={20}
             color={color.neutral.neutral900}
             weight="normal"
           >
@@ -82,7 +81,7 @@ function KomentarScreen({ navigation, route }) {
           <View
             style={{
               alignItems: "center",
-              height: "100%",
+              height: "80%",
               justifyContent: "center",
               paddingBottom: 16,
             }}

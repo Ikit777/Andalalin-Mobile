@@ -1,14 +1,14 @@
 import React from "react";
-import { StyleSheet, TouchableWithoutFeedback, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 function ABackButton({ onPress, style, color = "#210A0A" }) {
   return (
-    <TouchableWithoutFeedback onPress={onPress} style={[style]}>
+    <TouchableOpacity onPress={onPress} style={[style]}>
       <View style={styles.back}>
         <MaterialCommunityIcons name="arrow-left" size={28} color={color} />
       </View>
-    </TouchableWithoutFeedback>
+    </TouchableOpacity>
   );
 }
 

@@ -3,7 +3,6 @@ import {
   StyleSheet,
   View,
   Modal,
-  Pressable,
   Animated,
   Dimensions,
   TouchableOpacity,
@@ -21,7 +20,11 @@ function AInputAlamat({
   btnOK,
   btnBATAL,
   master,
-  setAlamat1,
+  setWilayah,
+  setProvinsi,
+  setKabupaten,
+  setKecamatan,
+  setKelurahan,
 }) {
   const [visible, setVisible] = React.useState(visibleModal);
   const [alamat, setAlamat] = React.useState("");
@@ -31,7 +34,7 @@ function AInputAlamat({
 
   const [data, setData] = React.useState();
 
-  const scaleValue = React.useRef(new Animated.Value(0)).current;
+  
 
   React.useEffect(() => {
     toggleModal();
@@ -40,18 +43,10 @@ function AInputAlamat({
   const toggleModal = () => {
     if (visibleModal) {
       setVisible(true);
-      Animated.spring(scaleValue, {
-        toValue: 1,
-        duration: 1000,
-        useNativeDriver: true,
-      }).start();
+      
     } else {
       setTimeout(() => setVisible(false), 200);
-      Animated.spring(scaleValue, {
-        toValue: 0,
-        duration: 300,
-        useNativeDriver: true,
-      }).start();
+      
     }
   };
 
@@ -115,7 +110,7 @@ function AInputAlamat({
   const okPress = () => {
     if (tahap == "Selesai") {
       onPressOKButton();
-      setAlamat1(alamat);
+      setWilayah(alamat);
     }
   };
 
@@ -158,7 +153,7 @@ function AInputAlamat({
 
             <View style={{ paddingTop: 8 }}>
               <AText color={color.neutral.neutral900} size={14} weight="normal">
-              Wilayah administratif dipilih
+                Wilayah administratif dipilih
               </AText>
 
               <View style={{ flexDirection: "row" }}>
@@ -212,11 +207,30 @@ function AInputAlamat({
               style={{ maxHeight: "55%", paddingVertical: 8 }}
               renderItem={({ item }) => (
                 <TouchableOpacity
+                  style={{
+                    paddingVertical: 5,
+                  }}
                   onPress={() => {
                     press(item.Id);
                     setAlamat(
                       alamat + item.Name + (tahap == "Kelurahan" ? "" : ", ")
                     );
+
+                    if (tahap == "Provinsi") {
+                      setProvinsi(item.Name);
+                    }
+
+                    if (tahap == "Kabupaten") {
+                      setKabupaten(item.Name);
+                    }
+
+                    if (tahap == "Kecamatan") {
+                      setKecamatan(item.Name);
+                    }
+
+                    if (tahap == "Kelurahan") {
+                      setKelurahan(item.Name);
+                    }
                   }}
                 >
                   <AText
@@ -240,7 +254,7 @@ function AInputAlamat({
                 right: 24,
               }}
             >
-              <Pressable
+              <TouchableOpacity
                 onPress={() => {
                   batalPress();
                 }}
@@ -253,9 +267,9 @@ function AInputAlamat({
                 >
                   {btnBATAL}
                 </AText>
-              </Pressable>
+              </TouchableOpacity>
 
-              <Pressable
+              <TouchableOpacity
                 onPress={() => {
                   okPress();
                 }}
@@ -268,7 +282,7 @@ function AInputAlamat({
                 >
                   {btnOK}
                 </AText>
-              </Pressable>
+              </TouchableOpacity>
             </View>
           </View>
         </TouchableWithoutFeedback>

@@ -37,7 +37,7 @@ export default function PerlalinItem({ navigation, route }) {
           />
         );
       case 2:
-        return <PermohonanPerlalin onPress={onGoToNext} />;
+        return <PermohonanPerlalin onPress={onGoToNext} navigation={navigation} />;
       case 3:
         return <PemohonPerlalin onPress={onGoToNext} />;
       case 4:

@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import {
   StyleSheet,
   View,
-  Pressable,
+  TouchableOpacity,
   BackHandler,
   ScrollView,
 } from "react-native";
@@ -33,8 +33,6 @@ function UpdatePersyaratanScreen({ navigation, route }) {
 
   const [stateVariables, setStateVariables] = useState([]);
 
-  const [updateNoEmpyt, setUpdateNotEmpty] = useState(false);
-
   const [data, setData] = useState();
 
   useEffect(() => {
@@ -52,20 +50,20 @@ function UpdatePersyaratanScreen({ navigation, route }) {
   useEffect(() => {
     let val = permohonan.persyaratan_tidak_sesuai.map((item) => {
       stateVariables.push({
-        persyaratan: item,
+        berkas: item.persyaratan,
         stateError,
         namaFile,
         berkasFile,
+        tipe: item.tipe,
       });
       return item;
     });
     setData(val);
   }, []);
 
-  const handleChangeFile = (persyaratan, name, uri) => {
+  const handleChangeFile = (berkas, name, uri) => {
     const updateItems = stateVariables.map((item) => {
-      if (item.persyaratan === persyaratan && uri !== null) {
-        setUpdateNotEmpty(true);
+      if (item.berkas === berkas && uri !== null) {
         return { ...item, namaFile: name, berkasFile: uri, stateError: false };
       }
       return item;
@@ -77,34 +75,50 @@ function UpdatePersyaratanScreen({ navigation, route }) {
   const handleChangeAllError = (cond) => {
     const updateItems = stateVariables.map((item) => {
       if (item.berkasFile === "") {
-        return { ...item, stateError: cond };
+        return { ...item, stateError: true };
       }
       return item;
     });
     setStateVariables(updateItems);
   };
 
-  const file = async (persyaratan) => {
-    const result = await DocumentPicker.getDocumentAsync({
-      type: "application/pdf",
-    });
-    if (!result.canceled) {
-      handleChangeFile(
-        persyaratan,
-        result.assets[0].name,
-        result.assets[0].uri
-      );
+  const file = async (persyaratan, type) => {
+    switch (type) {
+      case "Pdf":
+        const resultPdf = await DocumentPicker.getDocumentAsync({
+          type: "application/pdf",
+        });
+        if (!resultPdf.canceled) {
+          handleChangeFile(
+            persyaratan,
+            resultPdf.assets[0].name,
+            resultPdf.assets[0].uri
+          );
+        }
+        break;
+      case "Word":
+        const resultWord = await DocumentPicker.getDocumentAsync({
+          type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        });
+        if (!resultWord.canceled) {
+          handleChangeFile(
+            persyaratan,
+            resultWord.assets[0].name,
+            resultWord.assets[0].uri
+          );
+        }
+        break;
     }
   };
 
   const doSimpan = () => {
-    stateVariables.forEach((state) => {
-      if (state.berkasFile === "") {
-        handleChangeAllError(true);
-      }
+    handleChangeAllError();
+
+    let not_empty = stateVariables.filter((item) => {
+      return item.berkasFile == "";
     });
 
-    if (updateNoEmpyt) {
+    if (not_empty.length == 0) {
       toggleComfirm();
     }
   };
@@ -118,7 +132,7 @@ function UpdatePersyaratanScreen({ navigation, route }) {
         switch (response.status) {
           case 200:
             (async () => {
-              navigation.replace("Back Detail", {
+              navigation.replace("Detail", {
                 id: permohonan.id_andalalin,
               });
             })();
@@ -145,30 +159,31 @@ function UpdatePersyaratanScreen({ navigation, route }) {
       return (
         <View>
           {data.map((item, index) => (
-            <View key={index} style={{ paddingTop: 32 }}>
+            <View key={index} style={{ paddingTop: 20 }}>
               <ATextInputIcon
                 bdColor={
                   stateVariables.find((variabel) => {
-                    return variabel.persyaratan == item;
+                    return variabel.berkas == item.persyaratan;
                   }).stateError
                     ? color.error.error300
                     : color.neutral.neutral300
                 }
-                hint={"Masukkan " + item.toLowerCase()}
-                title={item}
+                hint={"Masukkan berkas " + item.tipe.toLowerCase()}
+                title={item.persyaratan}
+                mult={true}
                 icon={"file-plus"}
                 value={
                   stateVariables.find((variabel) => {
-                    return variabel.persyaratan == item;
+                    return variabel.berkas == item.persyaratan;
                   }).namaFile
                 }
                 onPress={() => {
-                  file(item);
+                  file(item.persyaratan, item.tipe);
                 }}
               />
 
               {stateVariables.find((variabel) => {
-                return variabel.persyaratan == item;
+                return variabel.berkas == item.persyaratan;
               }).stateError ? (
                 <AText
                   style={{ paddingTop: 6 }}
@@ -176,7 +191,7 @@ function UpdatePersyaratanScreen({ navigation, route }) {
                   size={14}
                   weight="normal"
                 >
-                  {item} kosong
+                  {item.persyaratan} wajib
                 </AText>
               ) : (
                 ""
@@ -203,13 +218,13 @@ function UpdatePersyaratanScreen({ navigation, route }) {
               navigation.goBack();
             }}
           />
-          <AText
-            style={{ paddingLeft: 4 }}
-            size={24}
+         <AText
+            style={{ paddingLeft: 4}}
+            size={20}
             color={color.neutral.neutral900}
             weight="normal"
           >
-            perbarui persyaratan
+            Perbarui persyaratan
           </AText>
         </View>
       </View>
@@ -249,23 +264,23 @@ function UpdatePersyaratanScreen({ navigation, route }) {
             Lupa ketentuan persyaratan?
           </AText>
 
-          <Pressable
+          <TouchableOpacity
             style={{ flexDirection: "row", paddingLeft: 4 }}
             onPress={() => {
-              permohonan.jenis_andalalin == "Dokumen analisa dampak lalu lintas"
-                ? navigation.push("Ketentuan", { kondisi: "Update andalalin" })
+              permohonan.jenis_andalalin == "Dokumen analisis dampak lalu lintas"
+                ? navigation.push("Ketentuan", { kondisi: "Update andalalin", kategori: permohonan.kategori_bangkitan })
                 : navigation.push("Ketentuan", { kondisi: "Update perlalin" });
             }}
           >
             <AText size={14} color={color.neutral.neutral700} weight="semibold">
               Lihat disini
             </AText>
-          </Pressable>
+          </TouchableOpacity>
         </View>
       </ScrollView>
       <AConfirmationDialog
-        title={"Apakah Anda yakin?"}
-        desc={"Data yang perbarui akan disimpan"}
+        title={"Simpan"}
+        desc={"Pembaruan persyaratan akan disimpan"}
         visibleModal={confirm}
         btnOK={"OK"}
         btnBATAL={"Batal"}
@@ -279,8 +294,8 @@ function UpdatePersyaratanScreen({ navigation, route }) {
         }}
       />
       <ADialog
-        title={"Persyaratan gagal diperbaharuui"}
-        desc={"Terjadi kesalahan pada server kami, mohon coba lagi lain waktu"}
+        title={"Persyaratan gagal diperbarui"}
+        desc={"Terjadi kesalahan pada server, mohon coba lagi lain waktu"}
         visibleModal={kirimGagal}
         btnOK={"OK"}
         onPressOKButton={() => {

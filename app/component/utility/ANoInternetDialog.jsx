@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { StyleSheet, View, Modal, Animated, Pressable, Dimensions } from "react-native";
+import { StyleSheet, View, Modal, Animated, TouchableOpacity, Dimensions } from "react-native";
 import color from "../../constants/color";
 import AText from "../utility/AText";
 import { UserContext } from "../../context/UserContext";
@@ -8,7 +8,7 @@ import * as RootNavigation from "../../navigation/RootNavigator.js";
 function ANoInternetDialog({ visibleModal = false }) {
   const context = useContext(UserContext);
   const [visible, setVisible] = React.useState(visibleModal);
-  const scaleValue = React.useRef(new Animated.Value(0)).current;
+  
 
   React.useEffect(() => {
     toggleModal();
@@ -20,23 +20,15 @@ function ANoInternetDialog({ visibleModal = false }) {
         context.toggleLoading(false);
       }
       setVisible(true);
-      Animated.spring(scaleValue, {
-        toValue: 1,
-        duration: 1000,
-        useNativeDriver: true,
-      }).start();
+      
     }
   };
 
   const ok = () => {
     setTimeout(() => setVisible(false), 200);
-    Animated.spring(scaleValue, {
-      toValue: 0,
-      duration: 300,
-      useNativeDriver: true,
-    }).start();
+    
     if (context.getUser() != "user") {
-      RootNavigation.replace("Back Home");
+      RootNavigation.navigate("Home");
     }
   };
 
@@ -69,7 +61,7 @@ function ANoInternetDialog({ visibleModal = false }) {
             Harap periksa koneksi internet Anda untuk melanjutkan aktivitas
           </AText>
           {visibleModal == false ? (
-            <Pressable
+            <TouchableOpacity
               style={{ alignItems: "flex-end", marginBottom: 24 }}
               onPress={() => {
                 ok();
@@ -83,7 +75,7 @@ function ANoInternetDialog({ visibleModal = false }) {
               >
                 OK
               </AText>
-            </Pressable>
+            </TouchableOpacity>
           ) : (
             ""
           )}

@@ -2,10 +2,10 @@ import React, { useEffect, useState, useContext } from "react";
 import {
   StyleSheet,
   View,
-  Pressable,
   BackHandler,
   ScrollView,
   Linking,
+  TouchableOpacity,
 } from "react-native";
 import AScreen from "../component/utility/AScreen";
 import BackButton from "../component/utility/ABackButton";
@@ -24,6 +24,7 @@ import { Checkbox } from "react-native-paper";
 
 function RegisterScreen({ navigation }) {
   const emailInput = React.createRef();
+  const nomorInput = React.createRef();
   const passwordInput = React.createRef();
   const comfirmInput = React.createRef();
   const context = useContext(UserContext);
@@ -36,11 +37,14 @@ function RegisterScreen({ navigation }) {
   const [passNotSame, togglePassNotSame] = useStateToggler();
   const [nameError, toggleNameError] = useStateToggler();
   const [emailError, toggleEmailError] = useStateToggler();
+  const [nomorError, toggleNomorError] = useStateToggler();
   const [passwordError, togglePasswordError] = useStateToggler();
   const [konfirmasiError, toggleKonfirmasiError] = useStateToggler();
+  const [emailNotExist, toggleEmailNotExist] = useStateToggler();
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [nomor, setNomor] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setconfirmPassword] = useState("");
   const [setuju, setSetuju] = useState(false);
@@ -57,10 +61,10 @@ function RegisterScreen({ navigation }) {
     });
   }, []);
 
-  const register = (name, email, password, confirmPassword) => {
+  const register = (name, email, nomor, password, confirmPassword) => {
     context.toggleLoading(true);
 
-    authRegister(name, email, password, confirmPassword, (response) => {
+    authRegister(name, email, nomor, password, confirmPassword, (response) => {
       switch (response.status) {
         case 201:
           context.toggleLoading(false);
@@ -69,6 +73,10 @@ function RegisterScreen({ navigation }) {
         case 409:
           context.toggleLoading(false);
           toggleEmailExist();
+          break;
+        case 204:
+          context.toggleLoading(false);
+          toggleEmailNotExist();
           break;
         case 502:
           context.toggleLoading(false);
@@ -83,7 +91,7 @@ function RegisterScreen({ navigation }) {
   };
 
   const doRegister = () => {
-    if (name != "" && email != "" && password != "" && confirmPassword != "") {
+    if (name != "" && email != "" && nomor != "" && password != "" && confirmPassword != "") {
       {
         nameError ? toggleNameError() : "";
       }
@@ -91,18 +99,24 @@ function RegisterScreen({ navigation }) {
         emailError ? toggleEmailError() : "";
       }
       {
+        nomorError ? toggleNomorError() : "";
+      }
+      {
         passwordError ? togglePasswordError() : "";
       }
       {
         konfirmasiError ? toggleKonfirmasiError() : "";
       }
-      register(name, email, password, confirmPassword);
+      register(name, email, nomor, password, confirmPassword);
     } else {
       {
         name == "" ? (nameError ? "" : toggleNameError()) : "";
       }
       {
         email == "" ? (emailError ? "" : toggleEmailError()) : "";
+      }
+      {
+        nomor == "" ? (nomorError ? "" : toggleNomorError()) : "";
       }
       {
         password == "" ? (passwordError ? "" : togglePasswordError()) : "";
@@ -147,10 +161,11 @@ function RegisterScreen({ navigation }) {
           bdColor={nameError ? color.error.error300 : color.neutral.neutral300}
           ktype={"default"}
           hint={"Masukkan nama anda"}
-          title={"Nama"}
+          title={"Nama lengkap"}
           rtype={"next"}
           blur={false}
           multi={false}
+          value={name}
           onChangeText={(value) => {
             setName(value);
           }}
@@ -169,7 +184,7 @@ function RegisterScreen({ navigation }) {
             size={14}
             weight="normal"
           >
-            Nama kosong
+            Nama lengkap wajib
           </AText>
         ) : (
           ""
@@ -185,6 +200,7 @@ function RegisterScreen({ navigation }) {
           blur={false}
           padding={20}
           multi={false}
+          value={email}
           onChangeText={(value) => {
             setEmail(value);
           }}
@@ -193,7 +209,7 @@ function RegisterScreen({ navigation }) {
             {
               emailError ? toggleEmailError() : "";
             }
-            passwordInput.current.focus();
+            nomorInput.current.focus();
           }}
         />
 
@@ -204,7 +220,42 @@ function RegisterScreen({ navigation }) {
             size={14}
             weight="normal"
           >
-            Email kosong
+            Email wajib
+          </AText>
+        ) : (
+          ""
+        )}
+
+        <ATextInput
+          bdColor={nomorError ? color.error.error300 : color.neutral.neutral300}
+          ktype={"number-pad"}
+          hint={"Masukkan nomor anda"}
+          title={"Nomor telepon"}
+          rtype={"next"}
+          blur={false}
+          padding={20}
+          multi={false}
+          value={nomor}
+          onChangeText={(value) => {
+            setNomor(value);
+          }}
+          ref={nomorInput}
+          submit={() => {
+            {
+              nomorError ? toggleNomorError() : "";
+            }
+            passwordInput.current.focus();
+          }}
+        />
+
+        {nomorError ? (
+          <AText
+            style={{ paddingTop: 6 }}
+            color={color.error.error500}
+            size={14}
+            weight="normal"
+          >
+            Nomor telepon kosong
           </AText>
         ) : (
           ""
@@ -222,6 +273,7 @@ function RegisterScreen({ navigation }) {
           onChangeText={(value) => {
             setPassword(value);
           }}
+          value={password}
           passwordVisibility={passwordVisibility}
           handlePasswordVisibility={handlePasswordVisibility}
           rightIcon={rightIcon}
@@ -263,6 +315,7 @@ function RegisterScreen({ navigation }) {
               passNotSame ? togglePassNotSame() : "";
             }
           }}
+          value={confirmPassword}
           ref={comfirmInput}
           passwordVisibility={passwordVisibility}
           handlePasswordVisibility={handlePasswordVisibility}
@@ -373,7 +426,7 @@ function RegisterScreen({ navigation }) {
             Sudah punya akun?
           </AText>
 
-          <Pressable
+          <TouchableOpacity
             style={{ flexDirection: "row", paddingLeft: 4 }}
             onPress={() => {
               navigation.push("Back Login");
@@ -382,14 +435,14 @@ function RegisterScreen({ navigation }) {
             <AText size={14} color={color.neutral.neutral700} weight="semibold">
               Log in
             </AText>
-          </Pressable>
+          </TouchableOpacity>
         </View>
       </ScrollView>
       <AConfirmationDialog
-        title={"Kembali?"}
-        desc={"Apakah Anda yakin ingin kembali, perubahan tidak akan disimpan"}
+        title={"Peringatan!"}
+        desc={"Apakah Anda yakin ingin kembali, data tidak akan disimpan"}
         visibleModal={confirm}
-        btnOK={"Kembali"}
+        btnOK={"OK"}
         btnBATAL={"Batal"}
         onPressBATALButton={() => {
           toggleComfirm();
@@ -413,11 +466,23 @@ function RegisterScreen({ navigation }) {
       />
       <ADialog
         title={"Peringatan!"}
-        desc={"Terjadi kesalahan pada server kami, mohon coba lagi lain waktu"}
+        desc={"Terjadi kesalahan pada server, mohon coba lagi lain waktu"}
         visibleModal={something}
         btnOK={"OK"}
         onPressOKButton={() => {
           toggleSomething();
+        }}
+      />
+
+      <ADialog
+        title={"Peringatan!"}
+        desc={
+          "Email tidak dapat ditemukan, silahkan masukkan email dengan benar"
+        }
+        visibleModal={emailNotExist}
+        btnOK={"OK"}
+        onPressOKButton={() => {
+          toggleEmailNotExist();
         }}
       />
     </AScreen>

@@ -8,44 +8,156 @@ import { UserContext } from "../../context/UserContext";
 import ATextInput from "../utility/ATextInput";
 import ADropDownCostume from "../utility/ADropdownCostume";
 import ADropDownPerlengkapan from "../utility/ADropdownPerlengkapan";
+import ADropdownJalan from "../utility/ADropdownJalan";
+import ATextInputIcon from "../utility/ATextInputIcon";
+import AWilayahProyek from "../utility/AWilayahProyek";
+import { useFocusEffect } from "@react-navigation/native";
 
-function PermohonanPerlalin({ onPress }) {
+function PermohonanPerlalin({ onPress, navigation }) {
   const {
-    perlalin: { kategori, rambu, perlengkapan, lokasi_pengambilan },
+    perlalin: {
+      kategori_utama,
+      kategori,
+      rambu,
+      perlengkapan,
+      lokasi_pengambilan,
+      wilayah_administratif_pemasangan,
+      nama_jalan,
+      alamat_pemasangan,
+      provinsi_pemasangan,
+      kabupaten_pemasangan,
+      kecamatan_pemasangan,
+      kelurahan_pemasangan,
+      kode,
+      titik_pemasangan,
+      lat_pemasangan,
+      long_pemasangan,
+    },
     setPerlalin,
     dataMaster,
   } = useContext(UserContext);
 
+  const alamatInput = React.createRef();
+  const [KategoriUtama, setKategoriUtama] = useState(kategori_utama);
   const [kategoriPerlalin, setKategoriPerlalin] = useState(kategori);
   const [lokasiPengambilan, setLokasi] = useState(lokasi_pengambilan);
   const [jenisPerlengkapan, setJenisPerlengkapan] = useState(perlengkapan);
   const [rambulalin, setRambulalin] = useState(rambu);
+  const [titik, setTitik] = useState(titik_pemasangan);
+  const [lat, setLat] = useState(lat_pemasangan);
+  const [long, setLong] = useState(long_pemasangan);
+
+  const [wilayah, setWilayah] = useState(wilayah_administratif_pemasangan);
+  const [alamat, setAlamat] = useState(alamat_pemasangan);
+  const [jalan, setJalan] = useState(nama_jalan);
+  const [kodeJalan, setKodeJalan] = useState(kode);
+  const [provinsi, setProvinsi] = useState(provinsi_pemasangan);
+  const [kabupaten, setKabupaten] = useState(kabupaten_pemasangan);
+  const [kecamatan, setKecamatan] = useState(kecamatan_pemasangan);
+  const [kelurahan, setKelurahan] = useState(kelurahan_pemasangan);
+  const [titikError, toggletitikError] = useStateToggler();
+
+  const [jalanItem, setJalanItem] = useState("");
+  const [jalanItemDefault, setJalanItemDefault] = useState("");
 
   const [kategoriData, setKategoriData] = useState("");
+  const [kategoriUtamaData, setKategoriUtamaData] = useState("");
   const [jenisData, setJenisData] = useState("");
   const [jenisDataDefault, setJenisDataDefault] = useState("");
 
+  const [kategoriUtamaError, toggleKategoriUtamaError] = useStateToggler();
   const [kategoriError, toggleKategoriError] = useStateToggler();
   const [lokasiError, toggleLokasiError] = useStateToggler();
   const [jenisError, toggleJenisError] = useStateToggler();
+  const [wilayahError, toggleWilayahError] = useStateToggler();
+  const [alamatError, toggleAlamatError] = useStateToggler();
+  const [jalanError, toggleJalanError] = useStateToggler();
+
+  const [wilayahModal, toggleWilayahModal] = useStateToggler();
 
   let lokasi = dataMaster.lokasi_pengambilan.map((item) => {
     return { value: item };
   });
 
+  const filter_jalan = () => {
+    let jalanan = dataMaster.jalan.filter((item) => {
+      return item.Kelurahan.toLowerCase() == kelurahan.toLowerCase();
+    });
+
+    if (jalanan != null) {
+      let jalan_item = jalanan.map((item) => {
+        return { value: item.Nama, kode: item.KodeJalan };
+      });
+
+      setJalanItem(jalan_item);
+      setJalanItemDefault(jalan_item);
+    }
+  };
+
   useEffect(() => {
-    let kategori = dataMaster.perlengkapan.filter((item) => {
-      return item.Perlengkapan != null;
+    {
+      jalanError ? toggleJalanError() : "";
+    }
+    if (alamatInput.current) {
+      alamatInput.current.blur();
+    }
+  }, [jalan]);
+
+  useEffect(() => {
+    {
+      wilayahError ? toggleWilayahError() : "";
+    }
+    if (alamatInput.current) {
+      alamatInput.current.blur();
+    }
+
+    if (kelurahan != kelurahan) {
+      setJalanItem("");
+    }
+
+    setTimeout(() => {
+      if (kelurahan != "") {
+        filter_jalan();
+      }
+    }, 500);
+  }, [wilayah]);
+
+  useEffect(() => {
+    let kategori = dataMaster.kategori_utama.filter((item) => {
+      return item != null;
     });
 
     let kategoriperlengkapan = kategori.map((item) => {
-      return { value: item.Kategori };
+      return { value: item };
     });
 
-    kategoriperlengkapan.push({ value: "Lainnya" });
-
-    setKategoriData(kategoriperlengkapan);
+    setKategoriUtamaData(kategoriperlengkapan);
   }, []);
+
+  useEffect(() => {
+    {
+      kategoriUtamaError ? toggleKategoriUtamaError() : "";
+    }
+
+    if (KategoriUtama != kategori_utama) {
+      setKategoriPerlalin("");
+    }
+    setTimeout(() => {
+      if (KategoriUtama != "") {
+        let kategori = dataMaster.kategori_perlengkapan.find((item) => {
+          return item.KategoriUtama == KategoriUtama;
+        });
+
+        if (kategori != null) {
+          let kategoriperlengkapan = kategori.Kategori.map((item) => {
+            return { value: item };
+          });
+
+          setKategoriData(kategoriperlengkapan);
+        }
+      }
+    }, 300);
+  }, [KategoriUtama]);
 
   const perlengkapanData = () => {
     let perlengkapan = dataMaster.perlengkapan.find((item) => {
@@ -72,6 +184,7 @@ function PermohonanPerlalin({ onPress }) {
 
     if (kategoriPerlalin != kategori) {
       setJenisPerlengkapan("");
+      setRambulalin("");
     }
 
     setTimeout(() => {
@@ -95,18 +208,45 @@ function PermohonanPerlalin({ onPress }) {
 
   const press = () => {
     if (
+      KategoriUtama != "" &&
       kategoriPerlalin != "" &&
       lokasiPengambilan != "" &&
-      jenisPerlengkapan != ""
+      jenisPerlengkapan != "" &&
+      wilayah != "" &&
+      alamat != "" &&
+      titik != "" &&
+      jalan != ""
     ) {
+      {
+        titikError ? toggletitikError() : "";
+      }
       setPerlalin({
+        kategori_utama: KategoriUtama,
         kategori: kategoriPerlalin,
         perlengkapan: jenisPerlengkapan,
         lokasi_pengambilan: lokasiPengambilan,
         rambu: rambulalin,
+        wilayah_administratif_pemasangan: wilayah,
+        alamat_pemasangan: alamat,
+        provinsi_pemasangan: provinsi,
+        kabupaten_pemasangan: kabupaten,
+        kecamatan_pemasangan: kecamatan,
+        kelurahan_pemasangan: kelurahan,
+        nama_jalan: jalan,
+        kode: kodeJalan,
+        titik_pemasangan: titik,
+        lat_pemasangan: lat,
+        long_pemasangan: long,
       });
       onPress();
     } else {
+      {
+        KategoriUtama == ""
+          ? kategoriUtamaError
+            ? ""
+            : toggleKategoriUtamaError()
+          : "";
+      }
       {
         kategoriPerlalin == ""
           ? kategoriError
@@ -120,8 +260,50 @@ function PermohonanPerlalin({ onPress }) {
       {
         lokasiPengambilan == "" ? (lokasiError ? "" : toggleLokasiError()) : "";
       }
+      {
+        wilayah == "" ? (wilayahError ? "" : toggleWilayahError()) : "";
+      }
+      {
+        alamat == "" ? (alamatError ? "" : toggleAlamatError()) : "";
+      }
+      {
+        jalan == "" ? (jalanError ? "" : toggleJalanError()) : "";
+      }
+      {
+        titik == "" ? (titikError ? "" : toggletitikError()) : "";
+      }
     }
   };
+
+  const press_titik = () => {
+    setPerlalin({
+      kategori: kategoriPerlalin,
+      perlengkapan: jenisPerlengkapan,
+      lokasi_pengambilan: lokasiPengambilan,
+      rambu: rambulalin,
+      wilayah_administratif_pemasangan: wilayah,
+      alamat_pemasangan: alamat,
+      provinsi_pemasangan: provinsi,
+      kabupaten_pemasangan: kabupaten,
+      kecamatan_pemasangan: kecamatan,
+      kelurahan_pemasangan: kelurahan,
+      nama_jalan: jalan,
+      kode: kodeJalan,
+      titik_pemasangan: titik,
+      lat_pemasangan: lat,
+      long_pemasangan: long,
+    });
+
+    navigation.push("Pilih Lokasi", { kondisi: "Pengajuan perlalin" });
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      setTitik(titik_pemasangan);
+      setLat(lat_pemasangan);
+      setLong(long_pemasangan);
+    }, [titik_pemasangan])
+  );
 
   return (
     <ScrollView
@@ -131,11 +313,36 @@ function PermohonanPerlalin({ onPress }) {
       nestedScrollEnabled={true}
     >
       <ADropDownCostume
+        judul={"Kategori utama perlengkapan"}
+        hint={"Pilih kategori"}
+        data={kategoriUtamaData}
+        selected={setKategoriUtama}
+        max={250}
+        saved={KategoriUtama}
+        bdColor={
+          kategoriUtamaError ? color.error.error300 : color.neutral.neutral300
+        }
+      />
+      {kategoriUtamaError ? (
+        <AText
+          style={{ paddingTop: 6 }}
+          color={color.error.error500}
+          size={14}
+          weight="normal"
+        >
+          Kategori utama wajib
+        </AText>
+      ) : (
+        ""
+      )}
+
+      <ADropDownCostume
         judul={"Kategori perlengkapan"}
         hint={"Pilih kategori"}
         data={kategoriData}
         selected={setKategoriPerlalin}
         max={250}
+        padding={20}
         saved={kategoriPerlalin}
         bdColor={
           kategoriError ? color.error.error300 : color.neutral.neutral300
@@ -148,44 +355,28 @@ function PermohonanPerlalin({ onPress }) {
           size={14}
           weight="normal"
         >
-          Kategori belum dipilih
+          Kategori perlengkapan wajib
         </AText>
       ) : (
         ""
       )}
 
-      {kategoriPerlalin != "Lainnya" ? (
-        <ADropDownPerlengkapan
-          bdColor={jenisError ? color.error.error300 : color.neutral.neutral300}
-          judul={"Jenis perlengkapan"}
-          hint={"Pilih perlengkapan"}
-          data={jenisData}
-          setData={setJenisData}
-          dataDefault={jenisDataDefault}
-          max={400}
-          padding={20}
-          kategori={kategoriPerlalin}
-          selected={setJenisPerlengkapan}
-          rambulalin={rambulalin}
-          rambuSelect={setRambulalin}
-          saved={jenisPerlengkapan}
-          notFound={"Kategori belum dipilih"}
-        />
-      ) : (
-        <ATextInput
-          bdColor={jenisError ? color.error.error300 : color.neutral.neutral300}
-          ktype={"default"}
-          hint={"Masukkan Jenis perlengkapan"}
-          title={"Jenis perlengkapan lainnya"}
-          rtype={"done"}
-          multi={false}
-          padding={20}
-          value={jenisPerlengkapan}
-          onChangeText={(value) => {
-            setJenisPerlengkapan(value);
-          }}
-        />
-      )}
+      <ADropDownPerlengkapan
+        bdColor={jenisError ? color.error.error300 : color.neutral.neutral300}
+        judul={"Jenis perlengkapan"}
+        hint={"Pilih perlengkapan"}
+        data={jenisData}
+        setData={setJenisData}
+        dataDefault={jenisDataDefault}
+        max={400}
+        padding={20}
+        kategori={kategoriPerlalin}
+        selected={setJenisPerlengkapan}
+        rambulalin={rambulalin}
+        rambuSelect={setRambulalin}
+        saved={jenisPerlengkapan}
+        notFound={"Kategori belum dipilih"}
+      />
 
       {jenisError ? (
         <AText
@@ -194,7 +385,114 @@ function PermohonanPerlalin({ onPress }) {
           size={14}
           weight="normal"
         >
-          Perlengkapan kosong
+          Jenis perlengkapan wajib
+        </AText>
+      ) : (
+        ""
+      )}
+
+      <ATextInputIcon
+        bdColor={wilayahError ? color.error.error300 : color.neutral.neutral300}
+        hint={"Pilih wilayah administratif"}
+        title={"Wilayah administratif pemasangan"}
+        padding={20}
+        mult={true}
+        width={true}
+        icon={"map-pin"}
+        value={wilayah}
+        onPress={toggleWilayahModal}
+      />
+
+      {wilayahError ? (
+        <AText
+          style={{ paddingTop: 6 }}
+          color={color.error.error500}
+          size={14}
+          weight="normal"
+        >
+          Wilayah adiminstratif wajib
+        </AText>
+      ) : (
+        ""
+      )}
+
+      <ADropdownJalan
+        bdColor={jalanError ? color.error.error300 : color.neutral.neutral300}
+        judul={"Jalan pemasangan"}
+        hint={"Pilih jalan"}
+        data={jalanItem}
+        setData={setJalanItem}
+        dataDefault={jalanItemDefault}
+        max={300}
+        padding={20}
+        kode={setKodeJalan}
+        kategori={kelurahan}
+        selected={setJalan}
+        saved={jalan}
+        notFound={"Wilayah administratif belum dipilih"}
+      />
+
+      {jalanError ? (
+        <AText
+          style={{ paddingTop: 6 }}
+          color={color.error.error500}
+          size={14}
+          weight="normal"
+        >
+          Jalan wajib
+        </AText>
+      ) : (
+        ""
+      )}
+
+      <ATextInput
+        bdColor={alamatError ? color.error.error300 : color.neutral.neutral300}
+        ktype={"default"}
+        hint={"Masukkan alamat pemasangan"}
+        title={"Alamat pemasangan"}
+        rtype={"done"}
+        padding={20}
+        multi={true}
+        ref={alamatInput}
+        value={alamat}
+        onChangeText={(value) => {
+          setAlamat(value);
+        }}
+      />
+
+      {alamatError ? (
+        <AText
+          style={{ paddingTop: 6 }}
+          color={color.error.error500}
+          size={14}
+          weight="normal"
+        >
+          Alamat wajib
+        </AText>
+      ) : (
+        ""
+      )}
+
+      <ATextInputIcon
+        bdColor={titikError ? color.error.error300 : color.neutral.neutral300}
+        hint={"Pilih lokasi pemasangan"}
+        title={"Lokasi pemasangan"}
+        padding={20}
+        mult={true}
+        width={true}
+        icon={"map-pin"}
+        value={titik}
+        onPress={press_titik}
+      />
+
+      {titikError ? (
+        <AText
+          style={{ paddingTop: 6 }}
+          color={color.error.error500}
+          size={14}
+          weight="normal"
+        >
+          Lokasi pemasangan wajib
         </AText>
       ) : (
         ""
@@ -217,18 +515,36 @@ function PermohonanPerlalin({ onPress }) {
           size={14}
           weight="normal"
         >
-          Lokasi belum dipilih
+          Lokasi pengambilan wajib
         </AText>
       ) : (
         ""
       )}
-      
+
       <AButton
         style={{ marginTop: 32, marginBottom: 50 }}
         title={"Lanjut"}
         mode="contained"
         onPress={() => {
           press();
+        }}
+      />
+
+      <AWilayahProyek
+        visibleModal={wilayahModal}
+        master={dataMaster}
+        setWilayah={setWilayah}
+        setProvinsi={setProvinsi}
+        setKabupaten={setKabupaten}
+        setKecamatan={setKecamatan}
+        setKelurahan={setKelurahan}
+        btnOK={"OK"}
+        btnBATAL={"Batal"}
+        onPressBATALButton={() => {
+          toggleWilayahModal();
+        }}
+        onPressOKButton={() => {
+          toggleWilayahModal();
         }}
       />
     </ScrollView>

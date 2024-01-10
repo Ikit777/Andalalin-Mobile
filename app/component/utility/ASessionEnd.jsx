@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { StyleSheet, View, Modal, Pressable, Animated, Dimensions } from "react-native";
+import { StyleSheet, View, Modal, TouchableOpacity, Animated, Dimensions } from "react-native";
 import color from "../../constants/color";
 import AText from "../utility/AText";
 import { UserContext } from "../../context/UserContext";
@@ -8,7 +8,7 @@ import * as RootNavigation from '../../navigation/RootNavigator.js';
 
 function ASessionEnd({ visibleModal = false }) {
   const [visible, setVisible] = React.useState(visibleModal);
-  const scaleValue = React.useRef(new Animated.Value(0)).current;
+  
   const context = useContext(UserContext);
   React.useEffect(() => {
     toggleModal();
@@ -19,18 +19,10 @@ function ASessionEnd({ visibleModal = false }) {
       if (context.loading == true) {
         context.toggleLoading(false);
       }
-      Animated.spring(scaleValue, {
-        toValue: 1,
-        duration: 1000,
-        useNativeDriver: true,
-      }).start();
+      
     } else {
       setTimeout(() => setVisible(false), 200);
-      Animated.spring(scaleValue, {
-        toValue: 0,
-        duration: 300,
-        useNativeDriver: true,
-      }).start();
+      
     }
   };
   return (
@@ -53,7 +45,7 @@ function ASessionEnd({ visibleModal = false }) {
           >
             Session anda telah berakhir, silahkan login kembali
           </AText>
-          <Pressable
+          <TouchableOpacity
             style={{ alignItems: "flex-end", marginVertical: 24 }}
             onPress={() => {
               context.setSession(false);
@@ -71,7 +63,7 @@ function ASessionEnd({ visibleModal = false }) {
             >
               OK
             </AText>
-          </Pressable>
+          </TouchableOpacity>
         </View>
       </View>
     </Modal>

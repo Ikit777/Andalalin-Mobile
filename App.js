@@ -45,7 +45,7 @@ export default function App() {
       await Font.loadAsync(AFonts);
       await new Promise((resolve) => setTimeout(resolve, 2000));
     } catch (err) {
-      console.warn(err);
+      console.log(err);
     } finally {
       setIsAppReady(true);
     }
@@ -157,6 +157,7 @@ function LoadMaster({ isLogged, user }) {
       if (response.status === 200) {
         setServer(false);
       } else {
+        context.toggleLoading(false);
         setServer(true);
       }
     });

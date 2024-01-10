@@ -16,11 +16,21 @@ function Perusahaan({ onPress }) {
       nama_perusahaan,
       alamat_perusahaan,
       wilayah_administratif_perusahaan,
+      provinsi_perusahaan,
+      kabupaten_perusahaan,
+      kecamatan_perusahaan,
+      kelurahan_perusahaan,
       nomer_perusahaan,
       email_perusahaan,
       nama_pimpinan,
       jabatan_pimpinan,
       jenis_kelamin_pimpinan,
+      wilayah_administratif_pimpinan,
+      provinsi_pimpinan_perusahaan,
+      kabupaten_pimpinan_perusahaan,
+      kecamatan_pimpinan_perusahaan,
+      kelurahan_pimpinan_perusahaan,
+      alamat_pimpinan,
     },
     dispatch,
     dataMaster,
@@ -36,11 +46,31 @@ function Perusahaan({ onPress }) {
   const [nama, setNama] = useState(nama_perusahaan);
   const [alamat, setAlamat] = useState(alamat_perusahaan);
   const [wilayah, setWilayah] = useState(wilayah_administratif_perusahaan);
+  const [provinsi, setProvinsi] = useState(provinsi_perusahaan);
+  const [kabupaten, setKabupaten] = useState(kabupaten_perusahaan);
+  const [kecamatan, setKecamatan] = useState(kecamatan_perusahaan);
+  const [kelurahan, setKelurahan] = useState(kelurahan_perusahaan);
   const [nomer, setNomer] = useState(nomer_perusahaan);
   const [email, setEmail] = useState(email_perusahaan);
   const [pimpinan, setPimpinan] = useState(nama_pimpinan);
   const [jabatan, setJabatan] = useState(jabatan_pimpinan);
   const [jenis, setJenis] = useState(jenis_kelamin_pimpinan);
+  const [wilayahPimpinan, setWilayahPimpinan] = useState(
+    wilayah_administratif_pimpinan
+  );
+  const [provinsiPimpinan, setProvinsiPimpinan] = useState(
+    provinsi_pimpinan_perusahaan
+  );
+  const [kabupatenPimpinan, setKabupatenPimpinan] = useState(
+    kabupaten_pimpinan_perusahaan
+  );
+  const [kecamatanPimpinan, setKecamatanPimpinan] = useState(
+    kecamatan_pimpinan_perusahaan
+  );
+  const [kelurahanPimpinan, setKelurahanPimpinan] = useState(
+    kelurahan_pimpinan_perusahaan
+  );
+  const [alamatPimpinan, setAlamatPimpinan] = useState(alamat_pimpinan);
 
   const [namaError, toggleNamaError] = useStateToggler();
   const [alamatError, toggleAlamatError] = useStateToggler();
@@ -50,8 +80,11 @@ function Perusahaan({ onPress }) {
   const [pimpinanError, togglePimpinanError] = useStateToggler();
   const [jabatanError, toggleJabatanError] = useStateToggler();
   const [jenisError, toggleJenisError] = useStateToggler();
+  const [wilayahPimpinanError, toggleWilayahPimpinanError] = useStateToggler();
+  const [alamatPimpinanError, toggleAlamatPimpinanError] = useStateToggler();
 
   const [wilayahModal, toggleWilayahModal] = useStateToggler();
+  const [wilayahPimpinanModal, toggleWilayahPimpinanModal] = useStateToggler();
 
   const jenis_kelamin = [{ value: "Laki-laki" }, { value: "Perempuan" }];
 
@@ -63,7 +96,9 @@ function Perusahaan({ onPress }) {
       email != "" &&
       pimpinan != "" &&
       jabatan != "" &&
-      jenis != ""
+      jenis != "" &&
+      wilayahPimpinan != "" &&
+      alamatPimpinan != ""
     ) {
       {
         namaError ? toggleNamaError() : "";
@@ -86,15 +121,28 @@ function Perusahaan({ onPress }) {
       {
         jabatanError ? toggleJabatanError() : "";
       }
+      {
+        alamatPimpinanError ? toggleAlamatPimpinanError() : "";
+      }
       dispatch({
         nama_perusahaan: nama,
         alamat_perusahaan: alamat,
         wilayah_administratif_perusahaan: wilayah,
+        provinsi_perusahaan: provinsi,
+        kabupaten_perusahaan: kabupaten,
+        kecamatan_perusahaan: kecamatan,
+        kelurahan_perusahaan: kelurahan,
         nomer_perusahaan: nomer,
         email_perusahaan: email,
         nama_pimpinan: pimpinan,
         jabatan_pimpinan: jabatan,
         jenis_kelamin_pimpinan: jenis,
+        wilayah_administratif_pimpinan: wilayahPimpinan,
+        provinsi_pimpinan_perusahaan: provinsiPimpinan,
+        kabupaten_pimpinan_perusahaan: kabupatenPimpinan,
+        kecamatan_pimpinan_perusahaan: kecamatanPimpinan,
+        kelurahan_pimpinan_perusahaan: kelurahanPimpinan,
+        alamat_pimpinan: alamatPimpinan,
       });
       onPress();
     } else {
@@ -122,14 +170,26 @@ function Perusahaan({ onPress }) {
       {
         jenis == "" ? (jenisError ? "" : toggleJenisError()) : "";
       }
+      {
+        wilayahPimpinan == ""
+          ? wilayahPimpinanError
+            ? ""
+            : toggleWilayahPimpinanError()
+          : "";
+      }
+      {
+        alamatPimpinan == ""
+          ? alamatPimpinanError
+            ? ""
+            : toggleAlamatPimpinanError()
+          : "";
+      }
     }
   };
 
   useEffect(() => {
     {
-      {
-        jenisError ? toggleJenisError() : "";
-      }
+      jenisError ? toggleJenisError() : "";
     }
   }, [jenis]);
 
@@ -138,6 +198,12 @@ function Perusahaan({ onPress }) {
       wilayahError ? toggleWilayahError() : "";
     }
   }, [wilayah]);
+
+  useEffect(() => {
+    {
+      wilayahPimpinanError ? toggleWilayahPimpinanError() : "";
+    }
+  }, [wilayahPimpinan]);
 
   return (
     <ScrollView
@@ -233,8 +299,8 @@ function Perusahaan({ onPress }) {
       <ATextInput
         bdColor={nomerError ? color.error.error300 : color.neutral.neutral300}
         ktype={"number-pad"}
-        hint={"Masukkan nomor telepon"}
-        title={"Nomor telepon perusahaan"}
+        hint={"Masukkan nomor"}
+        title={"Nomor telepon/Fax perusahaan"}
         rtype={"next"}
         blur={false}
         multi={false}
@@ -402,6 +468,61 @@ function Perusahaan({ onPress }) {
         ""
       )}
 
+      <ATextInputIcon
+        bdColor={
+          wilayahPimpinanError ? color.error.error300 : color.neutral.neutral300
+        }
+        hint={"Pilih wilayah administratif"}
+        title={"Wilayah administratif pimpinan"}
+        padding={20}
+        mult={true}
+        width={true}
+        icon={"map-pin"}
+        value={wilayahPimpinan}
+        onPress={toggleWilayahPimpinanModal}
+      />
+
+      {wilayahPimpinanError ? (
+        <AText
+          style={{ paddingTop: 6 }}
+          color={color.error.error500}
+          size={14}
+          weight="normal"
+        >
+          Wilayah adiminstratif pimpinan wajib
+        </AText>
+      ) : (
+        ""
+      )}
+
+      <ATextInput
+        bdColor={
+          alamatPimpinanError ? color.error.error300 : color.neutral.neutral300
+        }
+        ktype={"default"}
+        hint={"Masukkan alamat"}
+        title={"Alamat pimpinan"}
+        multi={true}
+        padding={20}
+        value={alamatPimpinan}
+        onChangeText={(value) => {
+          setAlamatPimpinan(value);
+        }}
+      />
+
+      {alamatPimpinanError ? (
+        <AText
+          style={{ paddingTop: 6 }}
+          color={color.error.error500}
+          size={14}
+          weight="normal"
+        >
+          Alamat pimpinan wajib
+        </AText>
+      ) : (
+        ""
+      )}
+
       <AButton
         style={{ marginTop: 32, marginBottom: 50 }}
         title={"Lanjut"}
@@ -414,7 +535,11 @@ function Perusahaan({ onPress }) {
       <AInputAlamat
         visibleModal={wilayahModal}
         master={dataMaster}
-        setAlamat1={setWilayah}
+        setWilayah={setWilayah}
+        setProvinsi={setProvinsi}
+        setKabupaten={setKabupaten}
+        setKecamatan={setKecamatan}
+        setKelurahan={setKelurahan}
         btnOK={"OK"}
         btnBATAL={"Batal"}
         onPressBATALButton={() => {
@@ -422,6 +547,24 @@ function Perusahaan({ onPress }) {
         }}
         onPressOKButton={() => {
           toggleWilayahModal();
+        }}
+      />
+
+      <AInputAlamat
+        visibleModal={wilayahPimpinanModal}
+        master={dataMaster}
+        setWilayah={setWilayahPimpinan}
+        setProvinsi={setProvinsiPimpinan}
+        setKabupaten={setKabupatenPimpinan}
+        setKecamatan={setKecamatanPimpinan}
+        setKelurahan={setKelurahanPimpinan}
+        btnOK={"OK"}
+        btnBATAL={"Batal"}
+        onPressBATALButton={() => {
+          toggleWilayahPimpinanModal();
+        }}
+        onPressOKButton={() => {
+          toggleWilayahPimpinanModal();
         }}
       />
     </ScrollView>

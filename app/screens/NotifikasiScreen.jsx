@@ -4,7 +4,7 @@ import {
   View,
   FlatList,
   BackHandler,
-  Pressable,
+  TouchableOpacity,
   RefreshControl,
 } from "react-native";
 import AText from "../component/utility/AText";
@@ -50,7 +50,7 @@ function NotifikasiScreen({ navigation }) {
       switch (response.status) {
         case 200:
           (async () => {
-            const result = await response.json();
+            const result = await response.data;
             if (result.results == 0) {
               setDataOn(true);
               context.toggleLoading(false);
@@ -134,29 +134,26 @@ function NotifikasiScreen({ navigation }) {
           />
           <AText
             style={{ paddingLeft: 4}}
-            size={24}
+            size={20}
             color={color.neutral.neutral900}
             weight="normal"
           >
             Notifikasi
           </AText>
-        </View>
-        {notification != "notifikasi" ? (
-          <Pressable
-            style={{ marginRight: 8, padding: 8 }}
+          {notification != "notifikasi" ? (
+          <TouchableOpacity
+            style={{ marginRight: 8, padding: 8, position: "absolute", right: 0 }}
             onPress={() => {
               toggleComfirmasi();
             }}
           >
-            <Feather
-              name="x"
-              size={28}
-              color={color.neutral.neutral900}
-            />
-          </Pressable>
+            <Feather name="x" size={28} color={color.neutral.neutral900} />
+          </TouchableOpacity>
         ) : (
           ""
-        )}
+        )} 
+        </View>
+       
       </View>
       <View style={styles.content}>
         {notification != "notifikasi" ? (
@@ -233,12 +230,12 @@ function NotifikasiScreen({ navigation }) {
         btnOK={"OK"}
         onPressOKButton={() => {
           toggleGagal();
-          navigation.navigate("Home");
+          navigation.goBack();
         }}
       />
       <ADialog
         title={"Hapus notifikasi gagal"}
-        desc={"Terjadi kesalahan pada server kami, mohon coba lagi lain waktu"}
+        desc={"Terjadi kesalahan pada server, mohon coba lagi lain waktu"}
         visibleModal={hapusGagal}
         btnOK={"OK"}
         onPressOKButton={() => {
@@ -266,8 +263,6 @@ function NotifikasiScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   header: {
-    flexDirection: "row",
-    alignItems: "center",
     justifyContent: "space-between",
   },
   content: {

@@ -3,7 +3,7 @@ import {
   StyleSheet,
   View,
   Modal,
-  Pressable,
+  TouchableOpacity,
   Animated,
   Dimensions,
 } from "react-native";
@@ -14,7 +14,7 @@ import ExitApp from "react-native-exit-app";
 
 function AServer({ visibleModal = false }) {
   const [visible, setVisible] = React.useState(visibleModal);
-  const scaleValue = React.useRef(new Animated.Value(0)).current;
+  
   const context = useContext(UserContext);
   React.useEffect(() => {
     toggleModal();
@@ -22,18 +22,10 @@ function AServer({ visibleModal = false }) {
   const toggleModal = () => {
     if (visibleModal) {
       setVisible(true);
-      Animated.spring(scaleValue, {
-        toValue: 1,
-        duration: 1000,
-        useNativeDriver: true,
-      }).start();
+      
     } else {
       setTimeout(() => setVisible(false), 200);
-      Animated.spring(scaleValue, {
-        toValue: 0,
-        duration: 300,
-        useNativeDriver: true,
-      }).start();
+      
     }
   };
   return (
@@ -56,7 +48,7 @@ function AServer({ visibleModal = false }) {
           >
             Layanan kami sedang dalam perbaikan, silahkan mencoba kembali nanti
           </AText>
-          <Pressable
+          <TouchableOpacity
             style={{ alignItems: "flex-end", marginVertical: 24 }}
             onPress={() => {
               context.setServer(false);
@@ -72,7 +64,7 @@ function AServer({ visibleModal = false }) {
             >
               OK
             </AText>
-          </Pressable>
+          </TouchableOpacity>
         </View>
       </View>
     </Modal>

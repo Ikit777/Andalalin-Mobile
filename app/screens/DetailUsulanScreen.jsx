@@ -5,6 +5,7 @@ import {
   BackHandler,
   ScrollView,
   Pressable,
+  TouchableOpacity,
 } from "react-native";
 import AText from "../component/utility/AText";
 import color from "../constants/color";
@@ -39,12 +40,12 @@ function DetailUsulanScreen({ navigation, route }) {
 
   useEffect(() => {
     BackHandler.addEventListener("hardwareBackPress", () => {
-      navigation.replace("Back Daftar", { kondisi: "Pengawasan" });
+      navigation.navigate("Daftar", { kondisi: "Pengawasan" });
       return true;
     });
 
     return BackHandler.removeEventListener("hardwareBackPress", () => {
-      navigation.replace("Back Daftar", { kondisi: "Pengawasan" });
+      navigation.navigate("Daftar", { kondisi: "Pengawasan" });
       return true;
     });
   }, []);
@@ -61,7 +62,7 @@ function DetailUsulanScreen({ navigation, route }) {
       switch (response.status) {
         case 201:
           (async () => {
-            const result = await response.json();
+            const result = await response.data;
             setUsulan(result.data);
             context.toggleLoading(false);
           })();
@@ -88,7 +89,7 @@ function DetailUsulanScreen({ navigation, route }) {
       switch (response.status) {
         case 201:
           (async () => {
-            navigation.replace("Back Daftar", {
+            navigation.navigate("Daftar", {
               kondisi: "Pengawasan",
             });
           })();
@@ -117,7 +118,7 @@ function DetailUsulanScreen({ navigation, route }) {
       (response) => {
         switch (response.status) {
           case 201:
-            navigation.replace("Back Daftar", {
+            navigation.navigate("Daftar", {
               kondisi: "Pengawasan",
             });
             break;
@@ -155,12 +156,12 @@ function DetailUsulanScreen({ navigation, route }) {
         >
           <ABackButton
             onPress={() => {
-              navigation.replace("Back Daftar", { kondisi: "Pengawasan" });
+              navigation.navigate("Daftar", { kondisi: "Pengawasan" });
             }}
           />
           <AText
             style={{ paddingLeft: 4 }}
-            size={24}
+            size={20}
             color={color.neutral.neutral900}
             weight="normal"
           >
@@ -194,7 +195,7 @@ function DetailUsulanScreen({ navigation, route }) {
               {usulan.pertimbangan}
             </AText>
           </ADetailView>
-          {usulan.keterangan != null ? (
+          {usulan.keterangan != null && usulan.keterangan != "" ? (
             <ADetailView style={{ marginTop: 20 }} title={"Keterangan usulan"}>
               <AText
                 style={{ padding: 16 }}
@@ -229,7 +230,7 @@ function DetailUsulanScreen({ navigation, route }) {
               Usulan tidak tidak diperlukan
             </AText>
 
-            <Pressable
+            <TouchableOpacity
               style={{ flexDirection: "row", paddingLeft: 4 }}
               onPress={() => {
                 toggleHapus();
@@ -242,7 +243,7 @@ function DetailUsulanScreen({ navigation, route }) {
               >
                 Hapus usulan
               </AText>
-            </Pressable>
+            </TouchableOpacity>
           </View>
         </ScrollView>
       ) : (
@@ -250,7 +251,7 @@ function DetailUsulanScreen({ navigation, route }) {
       )}
 
       <ABottomSheet visible={usulanModal} close={closeTindakan}>
-        <View style={{ height: 250 }}>
+        <View>
           <AText
             style={{ paddingBottom: 16 }}
             size={18}
@@ -318,12 +319,12 @@ function DetailUsulanScreen({ navigation, route }) {
             style={{
               flexDirection: "row",
               alignSelf: "flex-end",
-              position: "absolute",
-              bottom: 24,
-              right: 16,
+              marginTop: 52,
+              marginRight: 16,
+              marginBottom: 16,
             }}
           >
-            <Pressable
+            <TouchableOpacity
               style={{ flexDirection: "row", paddingLeft: 4 }}
               onPress={() => {
                 setUsulanCheck(null);
@@ -337,8 +338,8 @@ function DetailUsulanScreen({ navigation, route }) {
               >
                 Batal
               </AText>
-            </Pressable>
-            <Pressable
+            </TouchableOpacity>
+            <TouchableOpacity
               style={{ flexDirection: "row", paddingLeft: 4, marginLeft: 32 }}
               onPress={() => {
                 if (usulanCheck != null) {
@@ -354,25 +355,25 @@ function DetailUsulanScreen({ navigation, route }) {
               >
                 Simpan
               </AText>
-            </Pressable>
+            </TouchableOpacity>
           </View>
         </View>
       </ABottomSheet>
 
       <ADialog
         title={"Data usulan gagal dimuat"}
-        desc={"Terjadi kesalahan pada server kami, mohon coba lagi lain waktu"}
+        desc={"Terjadi kesalahan pada server, mohon coba lagi lain waktu"}
         visibleModal={usulanGagal}
         btnOK={"OK"}
         onPressOKButton={() => {
           toggleUsulanGagal();
-          navigation.replace("Back Daftar", { kondisi: "Pengawasan" });
+          navigation.navigate("Daftar", { kondisi: "Pengawasan" });
         }}
       />
 
       <AConfirmationDialog
-        title={"Apakah Anda yakin?"}
-        desc={"Tindakan akan dikirim"}
+        title={"Simpan"}
+        desc={"Tindakan akan disimpan"}
         visibleModal={confirm}
         btnOK={"OK"}
         btnBATAL={"Batal"}
@@ -388,8 +389,8 @@ function DetailUsulanScreen({ navigation, route }) {
       />
 
       <ADialog
-        title={"Tindakan gagal dikirim"}
-        desc={"Terjadi kesalahan pada server kami, mohon coba lagi lain waktu"}
+        title={"Tindakan gagal disimpan"}
+        desc={"Terjadi kesalahan pada server, mohon coba lagi lain waktu"}
         visibleModal={gagal}
         btnOK={"OK"}
         onPressOKButton={() => {
@@ -398,7 +399,7 @@ function DetailUsulanScreen({ navigation, route }) {
       />
 
       <AConfirmationDialog
-        title={"Apakah Anda yakin?"}
+        title={"Hapus"}
         desc={"Usulan tindakan akan dihapus"}
         visibleModal={hapus}
         btnOK={"OK"}
@@ -415,7 +416,7 @@ function DetailUsulanScreen({ navigation, route }) {
 
       <ADialog
         title={"Usulan tindakan gagal dihapus"}
-        desc={"Terjadi kesalahan pada server kami, mohon coba lagi lain waktu"}
+        desc={"Terjadi kesalahan pada server, mohon coba lagi lain waktu"}
         visibleModal={hapusGagal}
         btnOK={"OK"}
         onPressOKButton={() => {

@@ -19,7 +19,13 @@ function AKetentuanDropdown({ bottom, hint, data, padding, bdColor }) {
   const [open, setOpen] = useStateToggler();
 
   const toggleView = () => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    const linearConfig = LayoutAnimation.create(
+      300, // Duration in milliseconds
+      LayoutAnimation.Types.linear,
+      LayoutAnimation.Properties.opacity
+    );
+
+    LayoutAnimation.configureNext(linearConfig);
     setOpen();
   };
 
@@ -35,7 +41,7 @@ function AKetentuanDropdown({ bottom, hint, data, padding, bdColor }) {
           toggleView();
         }}
       >
-        <AText size={16} color={color.neutral.neutral900}>
+        <AText style={{width: "80%"}} size={16} color={color.neutral.neutral900}>
           {hint}
         </AText>
         {open ? (

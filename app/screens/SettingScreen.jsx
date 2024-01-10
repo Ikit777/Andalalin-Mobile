@@ -53,7 +53,7 @@ function SettingScreen({ navigation }) {
           context.toggleLoading(false);
           remove("authState");
           context.setCheck();
-          navigation.replace("Back Login");
+          navigation.push("Back Login");
           break;
         case 424:
           authRefreshToken(context, (response) => {
@@ -88,15 +88,17 @@ function SettingScreen({ navigation }) {
         case 200:
           context.toggleLoading(false);
           (async () => {
-            const result = await response.json();
+            const result = await response.data;
             const newAuthState = {
               access_token: context.getUser().access_token,
               refresh_token: context.getUser().refresh_token,
               id: context.getUser().id,
               nama: context.getUser().nama,
               email: context.getUser().email,
+              nomor: context.getUser().nomor,
               role: context.getUser().role,
               photo: result.photo,
+              nip: context.getUser().nip,
             };
             Object.assign(context.user, newAuthState);
             context.setUser(newAuthState);
@@ -158,7 +160,7 @@ function SettingScreen({ navigation }) {
           />
           <AText
             style={{ paddingLeft: 4 }}
-            size={24}
+            size={20}
             color={color.neutral.neutral900}
             weight="normal"
           >
@@ -197,18 +199,30 @@ function SettingScreen({ navigation }) {
         </View>
 
         <View style={{ paddingTop: 32 }}>
+          {context.getUser().role != "Super Admin" ? (
+            <ASettingItem
+              onPress={() => {
+                navigation.navigate("Edit Akun");
+              }}
+              icon={"user"}
+              title={"Perbarui akun"}
+            />
+          ) : (
+            ""
+          )}
+          <ASettingItem
+            icon={"image"}
+            title={"Perbarui foto profil"}
+            onPress={() => {
+              profile();
+            }}
+          />
           <ASettingItem
             onPress={() => forgot(context.getUser().email)}
             icon={"lock"}
             title={"Reset password"}
           />
-          <ASettingItem
-            icon={"image"}
-            title={"Ubah foto profil"}
-            onPress={() => {
-              profile();
-            }}
-          />
+
           <ASettingItem
             icon={"info"}
             title={"Tentang"}
@@ -221,13 +235,21 @@ function SettingScreen({ navigation }) {
               <ASettingItem
                 icon={"shield"}
                 title={"Kebijakan privasi"}
-                onPress={() => {Linking.openURL(process.env.APP_WEB ?? "https://andalalin.me" + "/kebijakan-privasi");}}
+                onPress={() => {
+                  Linking.openURL(
+                    process.env.APP_WEB ??
+                      "https://andalalin.me" + "/kebijakan-privasi"
+                  );
+                }}
               />
               <ASettingItem
                 icon={"book-open"}
                 title={"Syarat dan ketentuan"}
                 onPress={() => {
-                  Linking.openURL(process.env.APP_WEB ?? "https://andalalin.me" + "/syarat-ketentuan");
+                  Linking.openURL(
+                    process.env.APP_WEB ??
+                      "https://andalalin.me" + "/syarat-ketentuan"
+                  );
                 }}
               />
               <ASettingItem
@@ -235,7 +257,8 @@ function SettingScreen({ navigation }) {
                 title={"Bantuan"}
                 onPress={() => {
                   Linking.openURL(
-                    "mailto:andalalin.bjm.v1@gmail.com?subject=Bantuan andalalin");
+                    "mailto:andalalin.bjm.v1@gmail.com?subject=Bantuan andalalin"
+                  );
                 }}
               />
             </View>
@@ -255,7 +278,7 @@ function SettingScreen({ navigation }) {
       </ScrollView>
       <AConfirmationDialog
         title={"Keluar"}
-        desc={"Apakah Anda yakin ingin keluar?"}
+        desc={"Apakah Anda yakin ingin keluar dari akun ini?"}
         visibleModal={konfirmasi}
         btnOK={"Keluar"}
         btnBATAL={"Batal"}

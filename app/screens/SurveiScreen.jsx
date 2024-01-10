@@ -9,6 +9,7 @@ import { UserContext } from "../context/UserContext";
 import AProgressBar from "../component/utility/AProgressBar";
 import AConfirmationDialog from "../component/utility/AConfirmationDialog";
 import SurveiNavigator from "../component/survei/SurveiNavigator";
+import { useFocusEffect } from "@react-navigation/native";
 
 function SurveiScreen({ navigation, route }) {
   const [confirm, toggleComfirm] = useStateToggler();
@@ -17,19 +18,19 @@ function SurveiScreen({ navigation, route }) {
   const id = route.params.id;
   const kondisi = route.params.kondisi;
 
-  useEffect(() => {
-    BackHandler.addEventListener("hardwareBackPress", () => {
-      navigation.setOptions({ animation: "slide_from_right" });
-      back();
-      return true;
-    });
-
-    return BackHandler.removeEventListener("hardwareBackPress", () => {
-      navigation.setOptions({ animation: "slide_from_right" });
-      back();
-      return true;
-    });
-  }, [context.indexSurvei]);
+  useFocusEffect(
+    React.useCallback(() => {
+      BackHandler.addEventListener("hardwareBackPress", () => {
+        back();
+        return true;
+      });
+  
+      return BackHandler.removeEventListener("hardwareBackPress", () => {
+        back();
+        return true;
+      });
+    }, [context.indexSurvei])
+  );
 
   const back = () => {
     if (context.indexSurvei == 1) {
@@ -68,7 +69,6 @@ function SurveiScreen({ navigation, route }) {
           <ABackButton
             onPress={() => {
               if (context.indexSurvei == 1) {
-                navigation.setOptions({ animation: "slide_from_right" });
                 toggleComfirm();
               } else {
                 const newIndex = context.indexSurvei - 1;
@@ -80,9 +80,9 @@ function SurveiScreen({ navigation, route }) {
               }
             }}
           />
-          <AText
-            style={{ paddingLeft: 4 }}
-            size={24}
+         <AText
+            style={{ paddingLeft: 4}}
+            size={20}
             color={color.neutral.neutral900}
             weight="normal"
           >
@@ -100,7 +100,7 @@ function SurveiScreen({ navigation, route }) {
       </View>
 
       <AConfirmationDialog
-        title={"Kembali?"}
+        title={"Peringatan!"}
         desc={"Data yang Anda masukkan akan hilang"}
         visibleModal={confirm}
         btnOK={"OK"}
@@ -114,9 +114,9 @@ function SurveiScreen({ navigation, route }) {
           toggleComfirm();
           
           if (kondisi == "Mandiri") {
-            navigation.replace("Back Home");
+            navigation.goBack();
           }else{
-            navigation.replace("Back Detail", {id: id});
+            navigation.navigate("Detail", {id: id});
           }
         }}
       />

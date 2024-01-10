@@ -19,7 +19,13 @@ function AJenisDropdown({ hint, padding, bdColor, children }) {
   const [open, setOpen] = useStateToggler();
 
   const toggleView = () => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    const linearConfig = LayoutAnimation.create(
+      300, // Duration in milliseconds
+      LayoutAnimation.Types.linear,
+      LayoutAnimation.Properties.opacity
+    );
+
+    LayoutAnimation.configureNext(linearConfig);
     setOpen();
   };
 

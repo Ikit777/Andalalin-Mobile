@@ -1,5 +1,5 @@
 import React, { useState, Fragment, useEffect, useContext } from "react";
-import { StyleSheet, View, Pressable, Text, BackHandler } from "react-native";
+import { StyleSheet, View, TouchableOpacity, Text, BackHandler } from "react-native";
 import AScreen from "../component/utility/AScreen";
 import AText from "../component/utility/AText";
 import AButton from "../component/utility/AButton";
@@ -169,7 +169,7 @@ function VerifikasiScreen({ navigation, route }) {
             Tidak menerima kode?
           </AText>
 
-          <Pressable
+          <TouchableOpacity
             style={{ flexDirection: "row", paddingLeft: 4 }}
             onPress={() => {
               resend(route.params.email.toLowerCase());
@@ -178,7 +178,7 @@ function VerifikasiScreen({ navigation, route }) {
             <AText size={14} color={color.neutral.neutral700} weight="semibold">
               Kirim ulang
             </AText>
-          </Pressable>
+          </TouchableOpacity>
         </View>
       </View>
       <ADialog

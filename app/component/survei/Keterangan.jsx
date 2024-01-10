@@ -42,7 +42,7 @@ function Keterangan({ navigation, id, kondisi }) {
       latitude: parseFloat(lat),
       longtitude: parseFloat(long),
       lokasi: lokasi,
-      keterangan: keterangan,
+      catatan: keterangan,
     };
 
     andalalinSurveiLapangan(
@@ -93,7 +93,7 @@ function Keterangan({ navigation, id, kondisi }) {
       latitude: parseFloat(lat),
       longtitude: parseFloat(long),
       lokasi: lokasi,
-      keterangan: keterangan,
+      catatan: keterangan,
     };
 
     andalalinSurveiMandiri(
@@ -101,12 +101,13 @@ function Keterangan({ navigation, id, kondisi }) {
       foto,
       lokasi_survei,
       (response) => {
+        console.log(response)
         switch (response.status) {
           case 201:
             (async () => {
               clearSurvei();
               setIndexSurvei(1);
-              const result = await response.json();
+              const result = await response.data;
               navigation.replace("Detail Survei", {
                 id: result.data.IdSurvey,
                 kondisi: "Petugas",
@@ -142,7 +143,7 @@ function Keterangan({ navigation, id, kondisi }) {
       latitude: parseFloat(lat),
       longtitude: parseFloat(long),
       lokasi: lokasi,
-      keterangan: keterangan,
+      catatan: keterangan,
     };
 
     andalalinPemasangan(
@@ -190,11 +191,11 @@ function Keterangan({ navigation, id, kondisi }) {
       <ATextInput
         bdColor={color.neutral.neutral300}
         ktype={"default"}
-        hint={`Masukkan keterangan terkait keadaan ataupun situasi ${
-          kondisi == "Pemasangan" ? "Pemasangan perlalin" : "Survei lapangan"
+        hint={`Masukkan catatan terkait keadaan ataupun situasi ${
+          kondisi == "Pemasangan" ? "pemasangan perlalin" : "survei lapangan"
         }`}
-        title={`Keterangan ${
-          kondisi == "Pemasangan" ? "Pemasangan perlalin" : "Survei lapangan"
+        title={`Catatan ${
+          kondisi == "Pemasangan" ? "pemasangan perlalin" : "survei lapangan"
         }`}
         rtype={"done"}
         multi={true}
@@ -215,12 +216,12 @@ function Keterangan({ navigation, id, kondisi }) {
       />
 
       <AConfirmationDialog
-        title={"Apakah Anda yakin?"}
+        title={"Simpan"}
         desc={`Data ${
           kondisi == "Pemasangan"
             ? "pemasangan perlengkapan lalu lintas"
             : "survei lapangan"
-        } kan di simpan"`}
+        } kan di simpan`}
         visibleModal={confirm}
         btnOK={"OK"}
         btnBATAL={"Batal"}
@@ -247,7 +248,7 @@ function Keterangan({ navigation, id, kondisi }) {
         title={`${
           kondisi == "Pemasangan" ? "Pemasangan perlalin" : "Survei lapangan"
         } gagal disimpan`}
-        desc={"Terjadi kesalahan pada server kami, mohon coba lagi lain waktu"}
+        desc={"Terjadi kesalahan pada server, mohon coba lagi lain waktu"}
         visibleModal={kirimGagal}
         btnOK={"OK"}
         onPressOKButton={() => {

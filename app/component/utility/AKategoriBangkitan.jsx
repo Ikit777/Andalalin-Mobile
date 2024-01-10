@@ -24,29 +24,20 @@ function AKategoriBangkitan({
   const [visible, setVisible] = React.useState(visibleModal);
   const [checked, setChecked] = React.useState("");
 
-  const {
-    dispatch,
-  } = useContext(UserContext);
+  const { dispatch } = useContext(UserContext);
 
-  const scaleValue = React.useRef(new Animated.Value(0)).current;
+  
   React.useEffect(() => {
     toggleModal();
   }, [visibleModal]);
   const toggleModal = () => {
     if (visibleModal) {
       setVisible(true);
-      Animated.spring(scaleValue, {
-        toValue: 1,
-        duration: 1000,
-        useNativeDriver: true,
-      }).start();
+      setChecked("");
+      
     } else {
       setTimeout(() => setVisible(false), 200);
-      Animated.spring(scaleValue, {
-        toValue: 0,
-        duration: 300,
-        useNativeDriver: true,
-      }).start();
+      
     }
   };
 
@@ -181,7 +172,7 @@ function AKategoriBangkitan({
             </View>
 
             <View style={{ flexDirection: "row", alignSelf: "flex-end" }}>
-              <Pressable
+              <TouchableOpacity
                 style={{ marginVertical: 24 }}
                 onPress={() => {
                   batalPress();
@@ -195,9 +186,9 @@ function AKategoriBangkitan({
                 >
                   {btnBATAL}
                 </AText>
-              </Pressable>
+              </TouchableOpacity>
 
-              <Pressable
+              <TouchableOpacity
                 style={{ marginVertical: 24 }}
                 onPress={() => {
                   okPress();
@@ -211,7 +202,7 @@ function AKategoriBangkitan({
                 >
                   {btnOK}
                 </AText>
-              </Pressable>
+              </TouchableOpacity>
             </View>
           </View>
         </TouchableWithoutFeedback>

@@ -40,9 +40,11 @@ function UsulanPengelolaanScreen({ navigation, route }) {
 
   const simpan = () => {
     if (pertimbangan != "") {
-      pertimbanganError ? togglePertimbanganError() : "";
-      context.toggleLoading(true);
-      simpan_tindakan();
+      {
+        pertimbanganError ? togglePertimbanganError() : "";
+      }
+      
+      toggleComfirm();
     } else {
       pertimbangan == ""
         ? pertimbanganError
@@ -53,6 +55,7 @@ function UsulanPengelolaanScreen({ navigation, route }) {
   };
 
   const simpan_tindakan = () => {
+    context.toggleLoading(true);
     const tindakan = {
       pertimbangan: pertimbangan,
       keterangan: keterangan,
@@ -64,7 +67,7 @@ function UsulanPengelolaanScreen({ navigation, route }) {
       (response) => {
         switch (response.status) {
           case 200:
-            navigation.replace("Back Detail", { id: id });
+            navigation.replace("Daftar", { kondisi: "Survei" });
             break;
           case 424:
             authRefreshToken(context, (response) => {
@@ -104,8 +107,8 @@ function UsulanPengelolaanScreen({ navigation, route }) {
             }}
           />
           <AText
-            style={{ paddingLeft: 4}}
-            size={24}
+            style={{ paddingLeft: 4 }}
+            size={20}
             color={color.neutral.neutral900}
             weight="normal"
           >
@@ -139,7 +142,7 @@ function UsulanPengelolaanScreen({ navigation, route }) {
             size={14}
             weight="normal"
           >
-            Pertimbangan kosong
+            Pertimbangan wajib
           </AText>
         ) : (
           ""
@@ -163,14 +166,14 @@ function UsulanPengelolaanScreen({ navigation, route }) {
           title={"Simpan"}
           mode="contained"
           onPress={() => {
-            toggleComfirm();
+            simpan();
           }}
         />
       </ScrollView>
 
       <AConfirmationDialog
-        title={"Apakah Anda yakin?"}
-        desc={"Usulan tindakan akan dikirim"}
+        title={"Simpan"}
+        desc={"Usulan tindakan akan disimpan"}
         visibleModal={confirm}
         btnOK={"OK"}
         btnBATAL={"Batal"}
@@ -179,12 +182,12 @@ function UsulanPengelolaanScreen({ navigation, route }) {
         }}
         onPressOKButton={() => {
           toggleComfirm();
-          simpan();
+          simpan_tindakan();
         }}
       />
 
       <ADialog
-        title={"Usulan gagal dikirim"}
+        title={"Usulan gagal disimpan"}
         desc={"Usulan tindakan sudah ada untuk permohonan ini"}
         visibleModal={exist}
         btnOK={"OK"}
@@ -194,8 +197,8 @@ function UsulanPengelolaanScreen({ navigation, route }) {
       />
 
       <ADialog
-        title={"Usulan gagal dikirim"}
-        desc={"Terjadi kesalahan pada server kami, mohon coba lagi lain waktu"}
+        title={"Usulan gagal disimpan"}
+        desc={"Terjadi kesalahan pada server, mohon coba lagi lain waktu"}
         visibleModal={kirimGagal}
         btnOK={"OK"}
         onPressOKButton={() => {

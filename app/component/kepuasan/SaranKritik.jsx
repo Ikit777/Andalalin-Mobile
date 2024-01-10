@@ -35,7 +35,7 @@ export default function SaranKritik({ id, navigation }) {
               clearSurveiKepuasan();
               setIndexSurvei(1);
 
-              navigation.replace("Back Detail", { id: id });
+              navigation.navigate("Detail", { id: id });
             })();
             break;
           case 424:
@@ -89,7 +89,7 @@ export default function SaranKritik({ id, navigation }) {
       />
 
       <AConfirmationDialog
-        title={"Apakah Anda yakin?"}
+        title={"Simpan"}
         desc={"Data survei akan di simpan"}
         visibleModal={confirm}
         btnOK={"OK"}
@@ -106,7 +106,7 @@ export default function SaranKritik({ id, navigation }) {
 
       <ADialog
         title={"Survei gagal disimpan"}
-        desc={"Terjadi kesalahan pada server kami, mohon coba lagi lain waktu"}
+        desc={"Terjadi kesalahan pada server, mohon coba lagi lain waktu"}
         visibleModal={kirimGagal}
         btnOK={"OK"}
         onPressOKButton={() => {

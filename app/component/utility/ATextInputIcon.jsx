@@ -9,16 +9,34 @@ const ATextInputIcon = React.forwardRef((props, ref) => {
   return (
     <View style={{ flexDirection: "column", paddingTop: props.padding }}>
       {props.title != null ? (
-        <AText color={color.neutral.neutral700} size={14}>
-          {props.title}
-        </AText>
+        <View style={{ flexDirection: "row" }}>
+          <AText
+            color={color.neutral.neutral700}
+            size={14}
+            style={{ paddingRight: 2 }}
+          >
+            {props.title}{" "}
+            <AText color={color.error.error500} size={14}>
+              {props.wajib}
+            </AText>
+          </AText>
+        </View>
       ) : (
         ""
       )}
-      <Pressable onPress={props.onPress} style={[styles.border, { borderColor: props.bdColor }]}>
+      <Pressable
+        onPress={props.onPress}
+        style={[styles.border, { borderColor: props.bdColor }]}
+      >
         <TextInput
           editable={false}
-          style={[styles.input, {maxHeight: props.maxHeight, width: props.width == null ? "100%" : "90%"}]}
+          style={[
+            styles.input,
+            {
+              maxHeight: props.maxHeight,
+              width: props.width == null ? "100%" : "90%",
+            },
+          ]}
           numberOfLines={props.max}
           placeholderTextColor={color.neutral.neutral500}
           onChangeText={props.onChangeText}

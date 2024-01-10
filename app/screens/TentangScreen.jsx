@@ -35,8 +35,8 @@ function TentangScreen({ navigation }) {
             }}
           />
           <AText
-            style={{ paddingLeft: 4 }}
-            size={24}
+            style={{ paddingLeft: 4}}
+            size={20}
             color={color.neutral.neutral900}
             weight="normal"
           >

@@ -22,21 +22,29 @@ function TambahUserScreen({ navigation }) {
   const [emailExist, toggleEmailExist] = useStateToggler();
   const [something, toggleSomething] = useStateToggler();
   const [berhasil, toggleBerhasil] = useStateToggler();
+  const [emailNotExist, toggleEmailNotExist] = useStateToggler();
   const context = useContext(UserContext);
   const [message, setMessage] = useState();
+
   const [nama, setNama] = useState("");
   const [email, setEmail] = useState("");
+  const [nomor, setNomor] = useState("");
   const [peran, setPeran] = useState("");
+  const [nip, setNip] = useState("");
   const [password, setPassword] = useState("");
 
   const [namaError, setNamaError] = useStateToggler();
   const [emailError, setEmailError] = useStateToggler();
+  const [nomorError, setNomorError] = useStateToggler();
   const [peranError, setPeranError] = useStateToggler();
+  const [nipError, setNipError] = useStateToggler();
   const [passwordError, setPasswordError] = useStateToggler();
 
   const namaRef = React.createRef();
   const emailRef = React.createRef();
   const passwordRef = React.createRef();
+  const nipRef = React.createRef();
+  const nomorRef = React.createRef();
 
   const { passwordVisibility, rightIcon, handlePasswordVisibility } =
     usePasswordVisibility();
@@ -62,32 +70,88 @@ function TambahUserScreen({ navigation }) {
   }, []);
 
   const tambah = () => {
-    if (nama != "" && email != "" && peran != "" && password != "") {
-      {
-        namaError ? setNamaError() : "";
+    if (peran != "" && peran != "User") {
+      if (
+        nama != "" &&
+        email != "" &&
+        nomor != "" &&
+        peran != "" &&
+        nip != "" &&
+        password != ""
+      ) {
+        {
+          namaError ? setNamaError() : "";
+        }
+        {
+          emailError ? setEmailError() : "";
+        }
+        {
+          nomorError ? setNomorError() : "";
+        }
+        {
+          peranError ? setPeranError() : "";
+        }
+        {
+          passwordError ? setPasswordError() : "";
+        }
+        {
+          nipError ? setNipError() : "";
+        }
+        tambah_pengguna();
+      } else {
+        {
+          nama == "" ? (namaError ? "" : setNamaError()) : "";
+        }
+        {
+          email == "" ? (emailError ? "" : setEmailError()) : "";
+        }
+        {
+          nomor == "" ? (nomorError ? "" : setNomorError()) : "";
+        }
+        {
+          peran == "" ? (peranError ? "" : setPeranError()) : "";
+        }
+        {
+          nip == "" ? (nipError ? "" : setNipError()) : "";
+        }
+        {
+          password == "" ? (passwordError ? "" : setPasswordError()) : "";
+        }
       }
-      {
-        emailError ? setEmailError() : "";
-      }
-      {
-        peranError ? setPeranError() : "";
-      }
-      {
-        passwordError ? setPasswordError() : "";
-      }
-      tambah_pengguna();
     } else {
-      {
-        nama == "" ? (namaError ? "" : setNamaError()) : "";
-      }
-      {
-        email == "" ? (emailError ? "" : setEmailError()) : "";
-      }
-      {
-        peran == "" ? (peranError ? "" : setPeranError()) : "";
-      }
-      {
-        password == "" ? (passwordError ? "" : setPasswordError()) : "";
+      if (nama != "" && email != "" && nomor != "" && peran != "" && password != "") {
+        {
+          namaError ? setNamaError() : "";
+        }
+        {
+          emailError ? setEmailError() : "";
+        }
+        {
+          nomorError ? setNomorError() : "";
+        }
+        {
+          peranError ? setPeranError() : "";
+        }
+        {
+          passwordError ? setPasswordError() : "";
+        }
+        tambah_pengguna();
+      } else {
+        {
+          nama == "" ? (namaError ? "" : setNamaError()) : "";
+        }
+        {
+          email == "" ? (emailError ? "" : setEmailError()) : "";
+        }
+        {
+          nomor == "" ? (nomorError ? "" : setNomorError()) : "";
+        }
+        {
+          peran == "" ? (peranError ? "" : setPeranError()) : "";
+        }
+        {
+          password == "" ? (passwordError ? "" : setPasswordError()) : "";
+        }
       }
     }
   };
@@ -96,8 +160,11 @@ function TambahUserScreen({ navigation }) {
     toggleBerhasil();
     setNama("");
     setEmail("");
+    setNomor("");
     setPeran("");
+    setNomor("");
     setPassword("");
+    setNip("");
     setTimeout(() => {
       toggleBerhasil();
     }, 3000);
@@ -109,7 +176,9 @@ function TambahUserScreen({ navigation }) {
     const user = {
       nama: nama,
       email: email,
+      nomor: nomor,
       peran: peran,
+      nip: nip,
       password: password,
     };
 
@@ -123,6 +192,10 @@ function TambahUserScreen({ navigation }) {
         case 409:
           context.toggleLoading(false);
           toggleEmailExist();
+          break;
+        case 204:
+          context.toggleLoading(false);
+          toggleEmailNotExist();
           break;
         case 424:
           authRefreshToken(context, (response) => {
@@ -160,9 +233,9 @@ function TambahUserScreen({ navigation }) {
               navigation.goBack();
             }}
           />
-          <AText
+         <AText
             style={{ paddingLeft: 4}}
-            size={24}
+            size={20}
             color={color.neutral.neutral900}
             weight="normal"
           >
@@ -175,12 +248,35 @@ function TambahUserScreen({ navigation }) {
         showsVerticalScrollIndicator={false}
         persistentScrollbar={true}
       >
+        <ADropDownCostume
+          bdColor={peranError ? color.error.error300 : color.neutral.neutral300}
+          judul={"Peran"}
+          hint={"Pilih peran"}
+          data={jenis_peran}
+          selected={setPeran}
+          max={400}
+          saved={peran}
+        />
+        {peranError ? (
+          <AText
+            style={{ paddingTop: 6 }}
+            color={color.error.error500}
+            size={14}
+            weight="normal"
+          >
+            Peran wajib
+          </AText>
+        ) : (
+          ""
+        )}
+
         <ATextInput
           bdColor={namaError ? color.error.error300 : color.neutral.neutral300}
           ktype={"default"}
           hint={"Masukkan nama"}
-          title={"Nama"}
+          title={"Nama lengkap"}
           rtype={"next"}
+          padding={20}
           blur={false}
           multi={false}
           value={nama}
@@ -192,7 +288,9 @@ function TambahUserScreen({ navigation }) {
             {
               namaError ? setNamaError() : "";
             }
-            emailRef.current.focus();
+            {
+              nama != "" ? emailRef.current.focus() : "";
+            }
           }}
         />
 
@@ -203,7 +301,7 @@ function TambahUserScreen({ navigation }) {
             size={14}
             weight="normal"
           >
-            Nama kosong
+            Nama wajib
           </AText>
         ) : (
           ""
@@ -213,8 +311,9 @@ function TambahUserScreen({ navigation }) {
           bdColor={emailError ? color.error.error300 : color.neutral.neutral300}
           hint={"Masukkan email"}
           title={"Email"}
-          rtype={"done"}
+          rtype={"next"}
           padding={20}
+          blur={false}
           multi={false}
           value={email}
           ref={emailRef}
@@ -227,6 +326,10 @@ function TambahUserScreen({ navigation }) {
             {
               emailError ? setEmailError() : "";
             }
+
+              {
+                email != "" ? nomorRef.current.focus() : "";
+              }
           }}
         />
 
@@ -237,31 +340,97 @@ function TambahUserScreen({ navigation }) {
             size={14}
             weight="normal"
           >
-            Email kosong
+            Email wajib
           </AText>
         ) : (
           ""
         )}
 
-        <ADropDownCostume
-          bdColor={peranError ? color.error.error300 : color.neutral.neutral300}
-          judul={"Peran"}
-          hint={"Pilih peran"}
-          data={jenis_peran}
+        <ATextInput
+          bdColor={nomorError ? color.error.error300 : color.neutral.neutral300}
+          hint={"Masukkan nomor"}
+          title={"Nomor telepon"}
+          rtype={"next"}
           padding={20}
-          selected={setPeran}
-          max={400}
-          saved={peran}
+          blur={false}
+          multi={false}
+          value={nomor}
+          ref={nomorRef}
+          ktype={"number-pad"}
+          onChangeText={(value) => {
+            setNomor(value);
+          }}
+          submit={() => {
+            {
+              nomorError ? setNomorError() : "";
+            }
+
+            if (peran != "" && peran != "User") {
+              {
+                nomor != "" ? nipRef.current.focus() : "";
+              }
+            } else {
+              {
+                nomor != "" ? passwordRef.current.focus() : "";
+              }
+            }
+          }}
         />
-        {peranError ? (
+
+        {nomorError ? (
           <AText
             style={{ paddingTop: 6 }}
             color={color.error.error500}
             size={14}
             weight="normal"
           >
-            Peran belum dipilih
+            Nomor telepon wajib
           </AText>
+        ) : (
+          ""
+        )}
+
+        {peran != "User" && peran != "" ? (
+          <View>
+            <ATextInput
+              bdColor={
+                nipError ? color.error.error300 : color.neutral.neutral300
+              }
+              hint={"Masukkan nip"}
+              title={"NIP"}
+              rtype={"next"}
+              padding={20}
+              blur={false}
+              multi={false}
+              value={nip}
+              ref={nipRef}
+              ktype={"number-pad"}
+              onChangeText={(value) => {
+                setNip(value);
+              }}
+              submit={() => {
+                {
+                  nipError ? setNipError() : "";
+                }
+                {
+                  nip != "" ? passwordRef.current.focus() : "";
+                }
+              }}
+            />
+
+            {nipError ? (
+              <AText
+                style={{ paddingTop: 6 }}
+                color={color.error.error500}
+                size={14}
+                weight="normal"
+              >
+                NIP wajib
+              </AText>
+            ) : (
+              ""
+            )}
+          </View>
         ) : (
           ""
         )}
@@ -340,11 +509,23 @@ function TambahUserScreen({ navigation }) {
 
       <ADialog
         title={"Tambah pengguna gagal"}
-        desc={"Terjadi kesalahan pada server kami, mohon coba lagi lain waktu"}
+        desc={"Terjadi kesalahan pada server, mohon coba lagi lain waktu"}
         visibleModal={something}
         btnOK={"OK"}
         onPressOKButton={() => {
           toggleSomething();
+        }}
+      />
+
+      <ADialog
+        title={"Tambah pengguna gagal"}
+        desc={
+          "Email tidak dapat ditemukan, silahkan masukkan email dengan benar"
+        }
+        visibleModal={emailNotExist}
+        btnOK={"OK"}
+        onPressOKButton={() => {
+          toggleEmailNotExist();
         }}
       />
     </AScreen>

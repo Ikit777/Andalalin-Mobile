@@ -2,10 +2,10 @@ import React, { useEffect, useContext } from "react";
 import {
   StyleSheet,
   View,
-  Pressable,
   Image,
   BackHandler,
   ScrollView,
+  TouchableOpacity,
 } from "react-native";
 import AScreen from "../component/utility/AScreen";
 import AMenuCard from "../component/utility/AMenuCard";
@@ -25,6 +25,8 @@ import { checkMaster, masterAndalalin } from "../api/master";
 import { get, remove, store } from "../utils/local-storage";
 import AKategoriBangkitan from "../component/utility/AKategoriBangkitan";
 import * as FileSystem from "expo-file-system";
+import { Buffer } from "buffer";
+import { deflate, inflate } from "react-native-gzip";
 
 function HomeScreen({ navigation }) {
   const context = useContext(UserContext);
@@ -95,7 +97,7 @@ function HomeScreen({ navigation }) {
               title={"Daftar permohonan"}
               desc={"Daftar permohonan yang telah diajukan"}
               onPress={() => {
-                navigation.push("Daftar");
+                masterData("Daftar");
               }}
             />
           </View>
@@ -109,17 +111,7 @@ function HomeScreen({ navigation }) {
               title={"Daftar permohonan"}
               desc={"Daftar permohonan yang telah diajukan"}
               onPress={() => {
-                navigation.push("Daftar", { kondisi: "Diajukan" });
-              }}
-            />
-
-            <AMenuCard
-              style={{ marginBottom: 20 }}
-              icon={"list"}
-              title={"Daftar permohonan selesai"}
-              desc={"Daftar permohonan yang telah selesai"}
-              onPress={() => {
-                navigation.push("Daftar", { kondisi: "Selesai" });
+                masterData("Daftar Operator");
               }}
             />
 
@@ -163,8 +155,8 @@ function HomeScreen({ navigation }) {
             <AMenuCard
               style={{ marginBottom: 20 }}
               icon={"list"}
-              title={"Daftar survei"}
-              desc={"Daftar survei yang dilakukan"}
+              title={"Daftar survei lapangan"}
+              desc={"Daftar survei lapangan yang dilakukan"}
               onPress={() => {
                 navigation.push("Daftar", { kondisi: "Daftar" });
               }}
@@ -172,7 +164,7 @@ function HomeScreen({ navigation }) {
             <AMenuCard
               style={{ marginBottom: 20 }}
               icon={"alert-triangle"}
-              title={"Pemasangan perlengkapan lalu lintas"}
+              title={"Pemasangan perlalin"}
               desc={"Pengisian data pemasangan perlengkapan lalu lintas"}
               onPress={() => {
                 navigation.push("Daftar", { kondisi: "Pemasangan" });
@@ -181,7 +173,7 @@ function HomeScreen({ navigation }) {
             <AMenuCard
               style={{ marginBottom: 20 }}
               icon={"list"}
-              title={"Daftar pemasangan perlengkapan lalu lintas"}
+              title={"Daftar pemasangan perlalin"}
               desc={"Daftar pemasangan perlengkapan lalu lintas yang dilakukan"}
               onPress={() => {
                 navigation.push("Daftar", { kondisi: "Daftar Pemasangan" });
@@ -243,23 +235,14 @@ function HomeScreen({ navigation }) {
                 navigation.push("Tambah User");
               }}
             />
+
             <AMenuCard
               style={{ marginBottom: 20 }}
               icon={"list"}
               title={"Daftar permohonan"}
               desc={"Daftar permohonan yang telah diajukan"}
               onPress={() => {
-                navigation.push("Daftar", { kondisi: "Diajukan" });
-              }}
-            />
-
-            <AMenuCard
-              style={{ marginBottom: 20 }}
-              icon={"list"}
-              title={"Daftar permohonan selesai"}
-              desc={"Daftar permohonan yang telah selesai"}
-              onPress={() => {
-                navigation.push("Daftar", { kondisi: "Selesai" });
+                masterData("Daftar Super Admin");
               }}
             />
 
@@ -272,28 +255,6 @@ function HomeScreen({ navigation }) {
               }
               onPress={() => {
                 navigation.push("Daftar", { kondisi: "Pengawasan" });
-              }}
-            />
-
-            <AMenuCard
-              style={{ marginBottom: 20 }}
-              icon={"archive"}
-              title={"Lanjutkan pelaksanaan survei"}
-              desc={"Melanjutkan pelaksanaan survei lapangan yang ditunda"}
-              onPress={() => {
-                navigation.push("Daftar", { kondisi: "Tertunda" });
-              }}
-            />
-
-            <AMenuCard
-              style={{ marginBottom: 20 }}
-              icon={"trello"}
-              title={"Lanjutkan pemasangan perlengkapan lalu lintas"}
-              desc={
-                "Melanjutkan pemasangan perlengkapan lalu lintas yang tertunda terhadap permohonan telah di ajukan"
-              }
-              onPress={() => {
-                navigation.push("Daftar", { kondisi: "Lanjutkan Pemasangan" });
               }}
             />
 
@@ -328,10 +289,7 @@ function HomeScreen({ navigation }) {
                 "Pengelolaan produk yang diterapkan pada aplikasi andalalin"
               }
               onPress={() => {
-                context.masterData();
-                if (context.dataMaster != "master") {
-                  navigation.push("Pengelolaan");
-                }
+                navigation.push("Pengelolaan");
               }}
             />
             <AMenuCard
@@ -353,46 +311,10 @@ function HomeScreen({ navigation }) {
             <AMenuCard
               style={{ marginBottom: 20 }}
               icon={"list"}
-              title={"Daftar permohonan selesai"}
-              desc={"Daftar permohonan yang telah selesai"}
+              title={"Daftar permohonan"}
+              desc={"Daftar permohonan yang telah diajukan"}
               onPress={() => {
-                navigation.push("Daftar", { kondisi: "Selesai" });
-              }}
-            />
-
-            <AMenuCard
-              style={{ marginBottom: 20 }}
-              icon={"check-square"}
-              title={"Persetujuan dokumen"}
-              desc={
-                "Persetujuan dokumen terhadap permohonan yang telah di ajukan"
-              }
-              onPress={() => {
-                navigation.push("Daftar", { kondisi: "Persetujuan" });
-              }}
-            />
-
-            <AMenuCard
-              style={{ marginBottom: 20 }}
-              icon={"check-circle"}
-              title={"Pengambilan keputusan hasil"}
-              desc={
-                "Pengambilan keputusan terhadap hasil permohonan perlengkapan lalu lintas yang telah di ajukan"
-              }
-              onPress={() => {
-                navigation.push("Daftar", { kondisi: "Keputusan" });
-              }}
-            />
-
-            <AMenuCard
-              style={{ marginBottom: 20 }}
-              icon={"trello"}
-              title={"Lanjutkan pemasangan perlengkapan lalu lintas"}
-              desc={
-                "Melanjutkan pemasangan perlengkapan lalu lintas yang tertunda terhadap permohonan telah di ajukan"
-              }
-              onPress={() => {
-                navigation.push("Daftar", { kondisi: "Lanjutkan Pemasangan" });
+                navigation.push("Daftar", { kondisi: "Diajukan" });
               }}
             />
 
@@ -405,16 +327,6 @@ function HomeScreen({ navigation }) {
               }
               onPress={() => {
                 navigation.push("Daftar", { kondisi: "Pengawasan" });
-              }}
-            />
-
-            <AMenuCard
-              style={{ marginBottom: 20 }}
-              icon={"archive"}
-              title={"Lanjutkan pelaksanaan survei"}
-              desc={"Melanjutkan pelaksanaan survei lapangan yang ditunda"}
-              onPress={() => {
-                navigation.push("Daftar", { kondisi: "Tertunda" });
               }}
             />
 
@@ -438,10 +350,7 @@ function HomeScreen({ navigation }) {
                 "Pengelolaan produk yang diterapkan pada aplikasi andalalin"
               }
               onPress={() => {
-                context.masterData();
-                if (context.dataMaster != "master") {
-                  navigation.push("Pengelolaan");
-                }
+                navigation.push("Pengelolaan");
               }}
             />
 
@@ -465,19 +374,9 @@ function HomeScreen({ navigation }) {
               style={{ marginBottom: 20 }}
               icon={"list"}
               title={"Daftar permohonan"}
-              desc={"Daftar permohonan yang sedang berlangsung"}
+              desc={"Daftar permohonan yang telah diajukan"}
               onPress={() => {
-                navigation.push("Daftar", { kondisi: "Berlangsung" });
-              }}
-            />
-
-            <AMenuCard
-              style={{ marginBottom: 20 }}
-              icon={"list"}
-              title={"Daftar permohonan selesai"}
-              desc={"Daftar permohonan yang telah selesai"}
-              onPress={() => {
-                navigation.push("Daftar", { kondisi: "Selesai" });
+                navigation.push("Daftar", { kondisi: "Diajukan" });
               }}
             />
 
@@ -509,6 +408,17 @@ function HomeScreen({ navigation }) {
     }
   };
 
+  const decompressInflate = async (compressedData) => {
+    try {
+      const decompressedData = await inflate(compressedData);
+      const decompressedString =
+        Buffer.from(decompressedData).toString("utf-8");
+      return JSON.parse(decompressedString);
+    } catch (error) {
+      throw new Error(`Error decompressing data: ${error}`);
+    }
+  };
+
   const masterData = async (kondisi) => {
     context.toggleLoading(true);
 
@@ -518,91 +428,138 @@ function HomeScreen({ navigation }) {
       masterAndalalin((response) => {
         if (response.status === 200) {
           (async () => {
-            const result = await response.json();
-            store("master", result.data.update);
-            const jsonString = JSON.stringify(result.data);
-            const filePath = `${FileSystem.documentDirectory}data.json`;
+            const result = await response.data;
 
-            FileSystem.writeAsStringAsync(filePath, jsonString, {
-              encoding: FileSystem.EncodingType.UTF8,
-            })
-              .then(() => {
-                console.log("Data saved to file successfully.");
+            // Decompress the data using react-native-gzip
+            decompressInflate(result.data)
+              .then((jsonData) => {
+                store("master", jsonData.update);
+
+                context.setDataMaster(jsonData);
+
+                switch (kondisi) {
+                  case "Andalalin":
+                    context.toggleLoading(false);
+                    toggleKategoriBangkitan();
+                    break;
+                  case "Perlalin":
+                    context.toggleLoading(false);
+                    navigation.push("Andalalin", {
+                      kondisi: "Perlalin",
+                    });
+                    context.clear();
+                    context.setIndex(1);
+                    break;
+                  case "Daftar":
+                    navigation.push("Daftar");
+                    break;
+                  case "Daftar Operator":
+                    navigation.push("Daftar", { kondisi: "Diajukan" });
+                    break;
+                  case "Daftar Super Admin":
+                    navigation.push("Daftar", { kondisi: "Diajukan" });
+                    break;
+                }
               })
               .catch((error) => {
-                console.error("Error saving data:", error);
+                if (context.server == false) {
+                  context.toggleLoading(false);
+                  toggleGagal();
+                }
               });
-
-            context.toggleLoading(false);
-            if (kondisi == "Andalalin") {
-              toggleKategoriBangkitan();
-            } else {
-              navigation.push("Andalalin", { kondisi: "Perlalin" });
-              context.clear();
-              context.setIndex(1);
-            }
-            context.getDataMaster();
           })();
         } else {
-          context.toggleLoading(false);
-          toggleGagal();
+          if (context.server == false) {
+            context.toggleLoading(false);
+            toggleGagal();
+          }
         }
       });
     } else {
       checkMaster((response) => {
         if (response.status === 200) {
           (async () => {
-            const result = await response.json();
-
+            const result = await response.data;
             if (result.data.update != value) {
               masterAndalalin((response) => {
                 if (response.status === 200) {
                   (async () => {
-                    const result = await response.json();
-                    store("master", result.data.update);
-                    const jsonString = JSON.stringify(result.data);
-                    const filePath = `${FileSystem.documentDirectory}data.json`;
-        
-                    FileSystem.writeAsStringAsync(filePath, jsonString, {
-                      encoding: FileSystem.EncodingType.UTF8,
-                    })
-                      .then(() => {
-                        console.log("Data saved to file successfully.");
+                    const result = await response.data;
+
+                    // Decompress the data using react-native-gzip
+                    decompressInflate(result.data)
+                      .then((jsonData) => {
+                        store("master", jsonData.update);
+
+                        context.setDataMaster(jsonData);
+
+                        switch (kondisi) {
+                          case "Andalalin":
+                            context.toggleLoading(false);
+                            toggleKategoriBangkitan();
+                            break;
+                          case "Perlalin":
+                            context.toggleLoading(false);
+                            navigation.push("Andalalin", {
+                              kondisi: "Perlalin",
+                            });
+                            context.clear();
+                            context.setIndex(1);
+                            break;
+                          case "Daftar":
+                            navigation.push("Daftar");
+                            break;
+                          case "Daftar Operator":
+                            navigation.push("Daftar", { kondisi: "Diajukan" });
+                            break;
+                          case "Daftar Super Admin":
+                            navigation.push("Daftar", { kondisi: "Diajukan" });
+                            break;
+                        }
                       })
                       .catch((error) => {
-                        console.error("Error saving data:", error);
+                        if (context.server == false) {
+                          context.toggleLoading(false);
+                          toggleGagal();
+                        }
                       });
-        
-                    context.toggleLoading(false);
-                    if (kondisi == "Andalalin") {
-                      toggleKategoriBangkitan();
-                    } else {
-                      navigation.push("Andalalin", { kondisi: "Perlalin" });
-                      context.clear();
-                      context.setIndex(1);
-                    }
-                    context.getDataMaster();
                   })();
                 } else {
-                  context.toggleLoading(false);
-                  toggleGagal();
+                  if (context.server == false) {
+                    context.toggleLoading(false);
+                    toggleGagal();
+                  }
                 }
               });
             } else {
-              context.toggleLoading(false);
-              if (kondisi == "Andalalin") {
-                toggleKategoriBangkitan();
-              } else {
-                navigation.push("Andalalin", { kondisi: "Perlalin" });
-                context.clear();
-                context.setIndex(1);
+              switch (kondisi) {
+                case "Andalalin":
+                  context.toggleLoading(false);
+                  toggleKategoriBangkitan();
+                  break;
+                case "Perlalin":
+                  context.toggleLoading(false);
+                  navigation.push("Andalalin", { kondisi: "Perlalin" });
+                  context.clear();
+                  context.setIndex(1);
+                  break;
+                case "Daftar":
+                  navigation.push("Daftar");
+                  break;
+                case "Daftar Operator":
+                  navigation.push("Daftar", { kondisi: "Diajukan" });
+                  break;
+                case "Daftar Super Admin":
+                  navigation.push("Daftar", { kondisi: "Diajukan" });
+                  break;
               }
-              context.getDataMaster();
             }
           })();
         } else {
-          context.toggleLoading(false);
-          toggleGagal();
+          if (context.server == false) {
+            context.toggleLoading(false);
+            toggleGagal();
+          }
         }
       });
     }
@@ -670,7 +627,7 @@ function HomeScreen({ navigation }) {
             {context.getUser().role == "User" ||
             context.getUser().role == "Operator" ||
             context.getUser().role == "Petugas" ? (
-              <Pressable
+              <TouchableOpacity
                 style={{ padding: 8, flexDirection: "row" }}
                 onPress={() => {
                   navigation.push("Notifikasi");
@@ -691,19 +648,19 @@ function HomeScreen({ navigation }) {
                 ) : (
                   ""
                 )}
-              </Pressable>
+              </TouchableOpacity>
             ) : (
               ""
             )}
 
-            <Pressable
+            <TouchableOpacity
               style={{ alignItems: "center", padding: 8 }}
               onPress={() => {
                 navigation.push("Setting");
               }}
             >
               <Feather name="settings" size={18} color="white" />
-            </Pressable>
+            </TouchableOpacity>
           </View>
         </View>
 
@@ -751,7 +708,7 @@ function HomeScreen({ navigation }) {
       </ScrollView>
       <AConfirmationDialog
         title={"Peringatan!"}
-        desc={"Apakah Anda yakin ingin keluar"}
+        desc={"Apakah Anda yakin ingin keluar aplikasi"}
         visibleModal={confirm}
         btnOK={"OK"}
         btnBATAL={"Batal"}
@@ -798,7 +755,6 @@ function HomeScreen({ navigation }) {
         }}
         onPressOKButton={() => {
           navigation.push("Andalalin", { kondisi: "Andalalin" });
-          
           context.setIndex(1);
           toggleKategoriBangkitan();
         }}

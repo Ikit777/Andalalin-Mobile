@@ -1,5 +1,11 @@
 import React, { useEffect, useState, useContext } from "react";
-import { StyleSheet, View, Pressable, BackHandler } from "react-native";
+import {
+  StyleSheet,
+  View,
+  BackHandler,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 import AScreen from "../component/utility/AScreen";
 import AText from "../component/utility/AText";
 import color from "../constants/color";
@@ -19,7 +25,6 @@ import * as Notifications from "expo-notifications";
 import Constants from "expo-constants";
 import ExitApp from "react-native-exit-app";
 import ABackButton from "../component/utility/ABackButton";
-import { Permissions } from 'expo';
 
 function LoginScreen({ navigation }) {
   const { passwordVisibility, rightIcon, handlePasswordVisibility } =
@@ -76,7 +81,11 @@ function LoginScreen({ navigation }) {
 
   useEffect(() => {
     registerForPushNotificationsAsync()
-      .then((token) => setToken(token))
+      .then((token) => {
+        if (token != undefined) {
+          setToken(token.data);
+        }
+      })
       .catch(console.log("Network Failed"));
   }, []);
 
@@ -87,16 +96,14 @@ function LoginScreen({ navigation }) {
         await Notifications.getPermissionsAsync();
       let finalStatus = existingStatus;
       if (existingStatus !== "granted") {
-        const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+        const { status } = await Notifications.requestPermissionsAsync();
         finalStatus = status;
       }
-      if (finalStatus !== "granted") {
-        alert("Failed to get push token for push notification!");
-        return;
+      if (finalStatus === "granted") {
+        token = await Notifications.getExpoPushTokenAsync({
+          projectId: Constants.expoConfig.extra.eas.projectId,
+        });
       }
-      token = await Notifications.getExpoPushTokenAsync({
-        projectId: Constants.expoConfig.extra.eas.projectId,
-      });
     } else {
       console.log("filed get token");
     }
@@ -124,11 +131,11 @@ function LoginScreen({ navigation }) {
 
   const login = () => {
     context.toggleLoading(true);
-    authLogin(email, password, token.data, (response) => {
+    authLogin(email, password, token, (response) => {
       switch (response.status) {
         case 200:
           (async () => {
-            const result = await response.json();
+            const result = await response.data;
 
             const newAuthState = {
               access_token: result.data.access_token,
@@ -136,8 +143,10 @@ function LoginScreen({ navigation }) {
               id: result.data.id,
               nama: result.data.name,
               email: result.data.email,
+              nomor: result.data.nomor,
               role: result.data.role,
               photo: result.data.photo,
+              nip: result.data.nip,
             };
 
             context.setUser(newAuthState);
@@ -185,7 +194,11 @@ function LoginScreen({ navigation }) {
       <View style={styles.header}>
         <ABackButton color={color.text.trans} />
       </View>
-      <View style={styles.content}>
+      <ScrollView
+        style={styles.content}
+        showsVerticalScrollIndicator={false}
+        persistentScrollbar={true}
+      >
         <AText color={color.neutral.neutral900} size={24} weight="semibold">
           Log in
         </AText>
@@ -263,10 +276,10 @@ function LoginScreen({ navigation }) {
           ""
         )}
 
-        <Pressable
+        <TouchableOpacity
           style={{
             flexDirection: "row",
-            paddingLeft: 4,
+            paddingHorizontal: 4,
             alignSelf: "flex-end",
             marginTop: 24,
           }}
@@ -279,7 +292,7 @@ function LoginScreen({ navigation }) {
           <AText size={14} color={color.neutral.neutral700} weight="semibold">
             Lupa password
           </AText>
-        </Pressable>
+        </TouchableOpacity>
         <AButton
           style={styles.login}
           mode="contained"
@@ -300,7 +313,7 @@ function LoginScreen({ navigation }) {
             Belum memiliki akun?
           </AText>
 
-          <Pressable
+          <TouchableOpacity
             style={{ flexDirection: "row", paddingLeft: 4 }}
             onPress={() => {
               setEmail("");
@@ -311,12 +324,12 @@ function LoginScreen({ navigation }) {
             <AText size={14} color={color.neutral.neutral700} weight="semibold">
               Daftar
             </AText>
-          </Pressable>
+          </TouchableOpacity>
         </View>
-      </View>
+      </ScrollView>
       <AConfirmationDialog
         title={"Peringatan!"}
-        desc={"Apakah Anda yakin ingin keluar"}
+        desc={"Apakah Anda yakin ingin keluar aplikasi"}
         visibleModal={confirm}
         btnOK={"OK"}
         btnBATAL={"Batal"}
@@ -363,6 +376,7 @@ const styles = StyleSheet.create({
   content: {
     paddingHorizontal: 16,
     paddingBottom: 16,
+    flexGrow: 1,
   },
   lupaPassword: {
     alignItems: "flex-end",

@@ -10,25 +10,26 @@ import { useStateToggler } from "../hooks/useUtility";
 import AndalalinNavigator from "../component/andalalin/AndalalinNavigator";
 import { UserContext } from "../context/UserContext";
 import PerlalinNavigator from "../component/andalalin/PerlalinNavigator";
+import { useFocusEffect } from "@react-navigation/native";
 
 function PengajuanScreen({ navigation, route }) {
   const [confirm, toggleComfirm] = useStateToggler();
   const context = useContext(UserContext);
   const kondisi = route.params.kondisi;
 
-  useEffect(() => {
-    BackHandler.addEventListener("hardwareBackPress", () => {
-      navigation.setOptions({ animation: "slide_from_right" });
-      back();
-      return true;
-    });
-
-    return BackHandler.removeEventListener("hardwareBackPress", () => {
-      navigation.setOptions({ animation: "slide_from_right" });
-      back();
-      return true;
-    });
-  }, [context.index]);
+  useFocusEffect(
+    React.useCallback(() => {
+      BackHandler.addEventListener("hardwareBackPress", () => {
+        back();
+        return true;
+      });
+  
+      return BackHandler.removeEventListener("hardwareBackPress", () => {
+        back();
+        return true;
+      });
+    }, [context.index])
+  );
 
   const back = () => {
     if (context.index == 1) {
@@ -45,7 +46,6 @@ function PengajuanScreen({ navigation, route }) {
 
   const judul = () => {
     if (kondisi == "Andalalin") {
-      
       if (context.permohonan.pemohon == "Perorangan") {
         switch (context.index) {
           case 1:
@@ -53,12 +53,16 @@ function PengajuanScreen({ navigation, route }) {
           case 2:
             return "Permohonan";
           case 3:
-            return "Pemohon";
+            return "Proyek";
           case 4:
-            return "Kegiatan";
+            return "Pemohon";
           case 5:
-            return "Persyaratan";
+            return "Pengembang";
           case 6:
+            return "Kegiatan";
+          case 7:
+            return "Persyaratan";
+          case 8:
             return "Konfirmasi";
         }
       } else {
@@ -68,14 +72,18 @@ function PengajuanScreen({ navigation, route }) {
           case 2:
             return "Permohonan";
           case 3:
-            return "Pemohon";
+            return "Proyek";
           case 4:
-            return "Perusahaan";
+            return "Pemohon";
           case 5:
-            return "Kegiatan";
+            return "Perusahaan";
           case 6:
-            return "Persyaratan";
+            return "Pengembang";
           case 7:
+            return "Kegiatan";
+          case 8:
+            return "Persyaratan";
+          case 9:
             return "Konfirmasi";
         }
       }
@@ -108,9 +116,9 @@ function PengajuanScreen({ navigation, route }) {
   const item = () => {
     if (kondisi == "Andalalin") {
       if (context.permohonan.pemohon == "Perorangan") {
-        return 5;
+        return 7;
       } else {
-        return 6;
+        return 8;
       }
     } else {
       return 5;
@@ -129,7 +137,6 @@ function PengajuanScreen({ navigation, route }) {
           <ABackButton
             onPress={() => {
               if (context.index == 1) {
-                navigation.setOptions({ animation: "slide_from_right" });
                 toggleComfirm();
               } else {
                 const newIndex = context.index - 1;
@@ -141,9 +148,9 @@ function PengajuanScreen({ navigation, route }) {
               }
             }}
           />
-          <AText
-            style={{ paddingLeft: 4 }}
-            size={24}
+         <AText
+            style={{ paddingLeft: 4}}
+            size={20}
             color={color.neutral.neutral900}
             weight="normal"
           >
@@ -162,7 +169,7 @@ function PengajuanScreen({ navigation, route }) {
       <View style={styles.content}>{content()}</View>
 
       <AConfirmationDialog
-        title={"Kembali?"}
+        title={"Peringatan!"}
         desc={"Data yang Anda masukkan akan hilang"}
         visibleModal={confirm}
         btnOK={"OK"}
@@ -171,7 +178,7 @@ function PengajuanScreen({ navigation, route }) {
           toggleComfirm();
         }}
         onPressOKButton={() => {
-          navigation.replace("Back Home");
+          navigation.goBack();
           context.setIndex(1);
           context.clear();
           toggleComfirm();

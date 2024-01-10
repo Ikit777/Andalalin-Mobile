@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { StyleSheet, View, Pressable, BackHandler } from "react-native";
+import { StyleSheet, View, TouchableOpacity, BackHandler } from "react-native";
 import AScreen from "../component/utility/AScreen";
 import BackButton from "../component/utility/ABackButton";
 import AText from "../component/utility/AText";
@@ -178,7 +178,7 @@ function ForgotPasswordScreen({ navigation }) {
             Belum memiliki akun?
           </AText>
 
-          <Pressable
+          <TouchableOpacity
             style={{ flexDirection: "row", paddingLeft: 4 }}
             onPress={() => {
               setEmail("");
@@ -188,7 +188,7 @@ function ForgotPasswordScreen({ navigation }) {
             <AText size={14} color={color.neutral.neutral700} weight="semibold">
               Daftar
             </AText>
-          </Pressable>
+          </TouchableOpacity>
         </View>
       </View>
     </AScreen>

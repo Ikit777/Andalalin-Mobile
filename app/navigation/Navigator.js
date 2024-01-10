@@ -34,6 +34,15 @@ import {
   KameraScreen,
   SurveiKepuasanUserScreen,
   KomentarScreen,
+  PilihLokasiScreen,
+  EditAkunScreen,
+  CekAdministrasiScreen,
+  PembuatanSuratPernyataanScreen,
+  PembuatanSuratKeputusanScreen,
+  CekKelengkapanAkhirScreen,
+  UpdateKelengkapanScreen,
+  PembuatanPenyusunDokumenScreen,
+  CekAdministrasiPerlalinScreen,
 } from "../screens";
 
 const Stack = createNativeStackNavigator();
@@ -42,8 +51,7 @@ const Navigator = ({
   email,
   isLogged,
   id,
-  title,
-  pdf,
+  dokumen,
   permohonan,
   kondisi,
   foto,
@@ -51,18 +59,14 @@ const Navigator = ({
   jenis,
   uri,
   komentar,
+  kategori,
 }) => {
   return (
     <Stack.Navigator
       initialRouteName={isLogged ? "Home" : "Onboarding"}
-      screenOptions={{ headerShown: false, animation: "slide_from_right" }}
+      screenOptions={{ headerShown: false, animation: "slide_from_right", animationTypeForReplace: "pop" }}
     >
       <Stack.Screen name="Home" component={HomeScreen} />
-      <Stack.Screen
-        name="Back Home"
-        component={HomeScreen}
-        options={{ animation: "slide_from_left" }}
-      />
       <Stack.Screen name="Setting" component={SettingScreen} />
 
       <Stack.Screen name="Onboarding" component={OnBoardingScreen} />
@@ -91,26 +95,8 @@ const Navigator = ({
         initialParams={{ kondisi }}
       />
       <Stack.Screen
-        name="Back Andalalin"
-        component={PengajuanScreen}
-        options={{ animation: "slide_from_left" }}
-        initialParams={{ kondisi }}
-      />
-      <Stack.Screen
         name="Detail"
         component={DetailScreen}
-        initialParams={{ id }}
-      />
-      <Stack.Screen
-        name="Back Detail"
-        component={DetailScreen}
-        options={{ animation: "slide_from_left" }}
-        initialParams={{ id }}
-      />
-      <Stack.Screen
-        name="Reload Detail"
-        component={DetailScreen}
-        options={{ animation: "none" }}
         initialParams={{ id }}
       />
       <Stack.Screen
@@ -119,29 +105,15 @@ const Navigator = ({
         initialParams={{ id, kondisi, jenis }}
       />
       <Stack.Screen
-        name="Reload Survei"
-        component={DetailSurveiScreen}
-        options={{ animation: "none" }}
-        initialParams={{ id, kondisi, jenis }}
-      />
-      <Stack.Screen
         name="Daftar"
         component={DaftarScreen}
         initialParams={{ kondisi }}
-      />
-      <Stack.Screen
-        name="Back Daftar"
-        component={DaftarScreen}
-        options={{ animation: "slide_from_left" }}
-        initialParams={{
-          kondisi,
-        }}
       />
       <Stack.Screen name="Notifikasi" component={NotifikasiScreen} />
       <Stack.Screen
         name="PDF"
         component={PdfViewSreen}
-        initialParams={{ title, pdf }}
+        initialParams={{ id, dokumen }}
       />
       <Stack.Screen
         name="Foto"
@@ -151,7 +123,7 @@ const Navigator = ({
       <Stack.Screen
         name="Lanjutan"
         component={LanjutanScreen}
-        initialParams={{ permohonan }}
+        initialParams={{ permohonan, kondisi }}
       />
       <Stack.Screen
         name="Update"
@@ -169,23 +141,18 @@ const Navigator = ({
         initialParams={{ id, kondisi }}
       />
       <Stack.Screen
-        name="Back Survei"
-        component={SurveiScreen}
-        options={{ animation: "slide_from_left" }}
-        initialParams={{ id, kondisi }}
-      />
-      <Stack.Screen
         name="Ketentuan"
         component={KetentuanScreen}
+        initialParams={{ kondisi, kategori }}
+      />
+      <Stack.Screen
+        name="Pilih Lokasi"
+        component={PilihLokasiScreen}
         initialParams={{ kondisi }}
       />
       <Stack.Screen name="Tambah User" component={TambahUserScreen} />
       <Stack.Screen name="Daftar User" component={DaftarPenggunaScreen} />
-      <Stack.Screen
-        name="Berita acara pemeriksaan"
-        component={LaporanBAPScreen}
-        initialParams={{ id, kondisi }}
-      />
+      <Stack.Screen name="Edit Akun" component={EditAkunScreen} />
       <Stack.Screen
         name="Usulan"
         component={UsulanPengelolaanScreen}
@@ -222,6 +189,35 @@ const Navigator = ({
         name="Komentar"
         component={KomentarScreen}
         initialParams={{ komentar }}
+      />
+      <Stack.Screen
+        name="Administrasi"
+        component={CekAdministrasiScreen}
+      />
+      <Stack.Screen
+        name="Administrasi Perlalin"
+        component={CekAdministrasiPerlalinScreen}
+      />
+      <Stack.Screen
+        name="Pernyataan"
+        component={PembuatanSuratPernyataanScreen}
+      />
+      <Stack.Screen
+        name="Keputusan"
+        component={PembuatanSuratKeputusanScreen}
+      />
+      <Stack.Screen
+        name="Kelengkapan"
+        component={CekKelengkapanAkhirScreen}
+      />
+      <Stack.Screen
+        name="Update Kelengkapan"
+        component={UpdateKelengkapanScreen}
+        initialParams={{ permohonan }}
+      />
+      <Stack.Screen
+        name="Penyusun"
+        component={PembuatanPenyusunDokumenScreen}
       />
     </Stack.Navigator>
   );

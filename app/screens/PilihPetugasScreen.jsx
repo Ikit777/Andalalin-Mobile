@@ -82,16 +82,10 @@ function PilihPetugasScreen({ navigation, route }) {
       switch (response.status) {
         case 200:
           (async () => {
-            const result = await response.json();
-            if (result.results == 0) {
-              setDataOn(true);
-              context.toggleLoading(false);
-            } else {
-              setPetugas(result.data);
-              setPetugasDefault(result.data);
-              setDataOn(false);
-              context.toggleLoading(false);
-            }
+            const result = await response.data;
+            setPetugas(result.data);
+            setPetugasDefault(result.data);
+            context.toggleLoading(false);
           })();
           break;
         case 424:
@@ -113,11 +107,16 @@ function PilihPetugasScreen({ navigation, route }) {
 
   const search = (nama) => {
     if (nama) {
-      const newData = petugasDefault.filter(function (item) {
-        return item.name.indexOf(nama) > -1;
-      });
-      setPetugas(newData);
-      setPencarian(nama);
+      if (petugasDefault != null && petugasDefault.length != 0) {
+        const newData = petugasDefault.filter(function (item) {
+          return item.name.toLowerCase().indexOf(nama.toLowerCase()) > -1;
+        });
+        setPetugas(newData);
+        setPencarian(nama);
+      } else {
+        setPetugas(petugasDefault);
+        setPencarian(nama);
+      }
     } else {
       setPetugas(petugasDefault);
       setPencarian(nama);
@@ -134,8 +133,8 @@ function PilihPetugasScreen({ navigation, route }) {
           (response) => {
             switch (response.status) {
               case 200:
-                navigation.replace("Back Detail", {
-                  id: permohonan.id_andalalin,
+                navigation.replace("Detail", {
+                  id: context.detailPermohonan.id_andalalin,
                 });
                 break;
               case 424:
@@ -163,7 +162,7 @@ function PilihPetugasScreen({ navigation, route }) {
           (response) => {
             switch (response.status) {
               case 200:
-                navigation.replace("Back Detail", {
+                navigation.navigate("Detail", {
                   id: permohonan.id_andalalin,
                 });
                 break;
@@ -223,7 +222,7 @@ function PilihPetugasScreen({ navigation, route }) {
           />
           <AText
             style={{ paddingLeft: 4 }}
-            size={24}
+            size={20}
             color={color.neutral.neutral900}
             weight="normal"
           >
@@ -260,7 +259,7 @@ function PilihPetugasScreen({ navigation, route }) {
           ""
         )}
 
-        {petugas != "petugas" ? (
+        {petugas != "petugas" && petugas != null && petugas.length != 0 ? (
           <FlatList
             data={petugas}
             overScrollMode="never"
@@ -338,12 +337,12 @@ function PilihPetugasScreen({ navigation, route }) {
           ""
         )}
 
-        {dataOn ? (
+        {petugas == null || petugas.length == 0 ? (
           <View
             style={{
               alignItems: "center",
-              height: "80%",
-              justifyContent: "center",
+              marginTop: "60%",
+              paddingBottom: 16,
             }}
           >
             <View

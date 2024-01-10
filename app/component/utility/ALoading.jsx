@@ -12,25 +12,17 @@ import AText from "../utility/AText";
 
 function ALoading({ visibleModal = false }) {
   const [visible, setVisible] = React.useState(visibleModal);
-  const scaleValue = React.useRef(new Animated.Value(0)).current;
+  
   React.useEffect(() => {
     toggleModal();
   }, [visibleModal]);
   const toggleModal = () => {
     if (visibleModal) {
       setVisible(true);
-      Animated.spring(scaleValue, {
-        toValue: 1,
-        duration: 1000,
-        useNativeDriver: true,
-      }).start();
+      
     } else {
       setTimeout(() => setVisible(false), 200);
-      Animated.spring(scaleValue, {
-        toValue: 0,
-        duration: 300,
-        useNativeDriver: true,
-      }).start();
+      
     }
   };
   return (
@@ -51,7 +43,7 @@ function ALoading({ visibleModal = false }) {
             borderRadius: 12,
           }}
         />
-        <AText color={color.neutral.neutral50} size={16}>
+        <AText color={color.neutral.neutral50} size={16} weight="semibold">
           Loading
         </AText>
       </View>

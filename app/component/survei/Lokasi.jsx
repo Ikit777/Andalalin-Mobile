@@ -272,6 +272,11 @@ function Lokasi({ onPress, id }) {
 
         {load ? (
           <Pressable
+            android_ripple={{
+              color: "rgba(0, 0, 0, 0.1)",
+              borderless: false,
+              radius: 32,
+            }}
             style={{
               alignSelf: "baseline",
               position: "absolute",
@@ -302,6 +307,11 @@ function Lokasi({ onPress, id }) {
 
         {load ? (
           <Pressable
+            android_ripple={{
+              color: "rgba(0, 0, 0, 0.1)",
+              borderless: false,
+              radius: 32,
+            }}
             style={{
               alignSelf: "baseline",
               position: "absolute",
@@ -405,12 +415,12 @@ function Lokasi({ onPress, id }) {
 
       <ADialog
         title={"Lokasi gagal dimuat"}
-        desc={"Terjadi kesalahan pada server kami, mohon coba lagi lain waktu"}
+        desc={"Terjadi kesalahan pada server, mohon coba lagi lain waktu"}
         visibleModal={gagal}
         btnOK={"OK"}
         onPressOKButton={() => {
           toggleGagal();
-          RootNavigation.replace("Back Detail", { id: id });
+          RootNavigation.navigate("Detail", { id: id });
           context.setIndexSurvei(1);
         }}
       />

@@ -1,11 +1,11 @@
 import React from "react";
-import { StyleSheet, View, Modal, Pressable, Animated, Dimensions } from "react-native";
+import { StyleSheet, View, Modal, TouchableOpacity, Animated, Dimensions } from "react-native";
 import color from "../../constants/color";
 import AText from "../utility/AText";
 
 function AUpdateDialog({ visibleModal = false, onPressOKButton }) {
   const [visible, setVisible] = React.useState(visibleModal);
-  const scaleValue = React.useRef(new Animated.Value(0)).current;
+  
   React.useEffect(() => {
     toggleModal();
   }, [visibleModal]);
@@ -15,18 +15,10 @@ function AUpdateDialog({ visibleModal = false, onPressOKButton }) {
       if (context.loading == true) {
         context.toggleLoading(false);
       }
-      Animated.spring(scaleValue, {
-        toValue: 1,
-        duration: 1000,
-        useNativeDriver: true,
-      }).start();
+      
     } else {
       setTimeout(() => setVisible(false), 200);
-      Animated.spring(scaleValue, {
-        toValue: 0,
-        duration: 300,
-        useNativeDriver: true,
-      }).start();
+      
     }
   };
   return (
@@ -49,7 +41,7 @@ function AUpdateDialog({ visibleModal = false, onPressOKButton }) {
           >
             Pembaharuan aplikasi tersedia, silahkan update aplikasi Andalalin Anda
           </AText>
-          <Pressable
+          <TouchableOpacity
             style={{ alignItems: "flex-end", marginVertical: 24 }}
             onPress={
               onPressOKButton
@@ -63,7 +55,7 @@ function AUpdateDialog({ visibleModal = false, onPressOKButton }) {
             >
               Update
             </AText>
-          </Pressable>
+          </TouchableOpacity>
         </View>
       </View>
     </Modal>

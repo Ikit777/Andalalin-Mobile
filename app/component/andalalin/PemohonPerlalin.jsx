@@ -6,9 +6,11 @@ import { UserContext } from "../../context/UserContext";
 import ATextInput from "../utility/ATextInput";
 import { useStateToggler } from "../../hooks/useUtility";
 import ATextInputIcon from "../utility/ATextInputIcon";
-import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 import AButton from "../utility/AButton";
 import ADropDownCostume from "../utility/ADropdownCostume";
+import AInputAlamat from "../utility/AInputAlamat";
+
+import ADatePicker from "../utility/ADatePicker";
 
 function PemohonPerlalin({ onPress }) {
   const {
@@ -17,10 +19,15 @@ function PemohonPerlalin({ onPress }) {
       jenis_kelamin_pemohon,
       tempat_lahir_pemohon,
       tanggal_lahir_pemohon,
+      wilayah_administratif_pemohon,
+      provinsi_pemohon,
+      kabupaten_pemohon,
+      kecamatan_pemohon,
+      kelurahan_pemohon,
       alamat_pemohon,
       nomer_pemohon,
-      nomer_seluler_pemohon,
     },
+    dataMaster,
     setPerlalin,
   } = useContext(UserContext);
 
@@ -29,49 +36,32 @@ function PemohonPerlalin({ onPress }) {
   const tanggalLahirInput = React.createRef();
   const alamatInput = React.createRef();
   const nomerInput = React.createRef();
-  const nomerSelulerInput = React.createRef();
 
   const [nik, setNik] = useState(nik_pemohon);
   const [tempat, setTempat] = useState(tempat_lahir_pemohon);
   const [tanggal, setTanggal] = useState(tanggal_lahir_pemohon);
   const [jenis, setJenis] = useState(jenis_kelamin_pemohon);
+  const [alamatModal, setAlamatModal] = useState(wilayah_administratif_pemohon);
+  const [provinsi, setProvinsi] = useState(provinsi_pemohon);
+  const [kabupaten, setKabupaten] = useState(kabupaten_pemohon);
+  const [kecamatan, setKecamatan] = useState(kecamatan_pemohon);
+  const [kelurahan, setKelurahan] = useState(kelurahan_pemohon);
   const [alamat, setAlamat] = useState(alamat_pemohon);
   const [nomer, setNomer] = useState(nomer_pemohon);
-  const [nomerSeluler, setNomerSeluler] = useState(nomer_seluler_pemohon);
 
   const [nikError, togglenikError] = useStateToggler();
   const [tempatError, toggletempatError] = useStateToggler();
   const [tanggalError, toggletanggalError] = useStateToggler();
   const [jenisError, togglejenisError] = useStateToggler();
   const [alamatError, togglealamatError] = useStateToggler();
+  const [alamat1Error, togglealamat1Error] = useStateToggler();
   const [nomerError, togglenomerError] = useStateToggler();
-  const [nomerSelulerError, togglenomerSelulerError] = useStateToggler();
+
+  const [alamatInputModal, toggleAlamatInputModal] = useStateToggler();
+
+  const [dateModal, toggleDateModal] = useStateToggler();
 
   const jenis_kelamin = [{ value: "Laki-laki" }, { value: "Perempuan" }];
-
-  const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate;
-    setTanggal(formatDate(currentDate));
-    {
-      tanggalError ? toggletanggalError() : "";
-    }
-  };
-
-  const showMode = (currentMode) => {
-    DateTimePickerAndroid.open({
-      value: new Date(),
-      onChange,
-      mode: currentMode,
-    });
-  };
-
-  const showDatepicker = () => {
-    showMode("date");
-  };
-
-  const formatDate = (date) => {
-    return `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
-  };
 
   const press = () => {
     if (
@@ -80,8 +70,8 @@ function PemohonPerlalin({ onPress }) {
       tempat != "" &&
       tanggal != "" &&
       alamat != "" &&
-      nomer != "" &&
-      nomerSeluler != ""
+      alamatModal != "" &&
+      nomer != ""
     ) {
       {
         nikError ? togglenikError() : "";
@@ -99,16 +89,20 @@ function PemohonPerlalin({ onPress }) {
         nomerError ? togglenomerError() : "";
       }
       {
-        nomerSelulerError ? togglenomerSelulerError() : "";
+        alamat1Error ? togglealamat1Error() : "";
       }
       setPerlalin({
         nik_pemohon: nik,
         jenis_kelamin_pemohon: jenis,
         tempat_lahir_pemohon: tempat,
         tanggal_lahir_pemohon: tanggal,
+        wilayah_administratif_pemohon: alamatModal,
+        provinsi_pemohon: provinsi,
+        kabupaten_pemohon: kabupaten,
+        kecamatan_pemohon: kecamatan,
+        kelurahan_pemohon: kelurahan,
         alamat_pemohon: alamat,
         nomer_pemohon: nomer,
-        nomer_seluler_pemohon: nomerSeluler,
       });
       onPress();
     } else {
@@ -128,14 +122,10 @@ function PemohonPerlalin({ onPress }) {
         alamat == "" ? (alamatError ? "" : togglealamatError()) : "";
       }
       {
-        nomer == "" ? (nomerError ? "" : togglenomerError()) : "";
+        alamatModal == "" ? (alamat1Error ? "" : togglealamat1Error()) : "";
       }
       {
-        nomerSeluler == ""
-          ? nomerSelulerError
-            ? ""
-            : togglenomerSelulerError()
-          : "";
+        nomer == "" ? (nomerError ? "" : togglenomerError()) : "";
       }
     }
   };
@@ -147,6 +137,12 @@ function PemohonPerlalin({ onPress }) {
       }
     }
   }, [jenis]);
+
+  useEffect(() => {
+    {
+      alamat1Error ? togglealamat1Error() : "";
+    }
+  }, [alamatModal]);
 
   return (
     <ScrollView
@@ -160,6 +156,7 @@ function PemohonPerlalin({ onPress }) {
         hint={"Masukkan nik anda"}
         title={"Nik"}
         rtype={"done"}
+        maksimal={16}
         multi={false}
         value={nik}
         ref={nikInput}
@@ -180,7 +177,7 @@ function PemohonPerlalin({ onPress }) {
           size={14}
           weight="normal"
         >
-          Nik kosong
+          Nik wajib
         </AText>
       ) : (
         ""
@@ -202,7 +199,7 @@ function PemohonPerlalin({ onPress }) {
           size={14}
           weight="normal"
         >
-          Jenis kelamin belum dipilih
+          Jenis kelamin wajib
         </AText>
       ) : (
         ""
@@ -235,7 +232,7 @@ function PemohonPerlalin({ onPress }) {
           size={14}
           weight="normal"
         >
-          Tempat lahir kosong
+          Tempat lahir wajib
         </AText>
       ) : (
         ""
@@ -249,7 +246,9 @@ function PemohonPerlalin({ onPress }) {
         icon={"calendar"}
         value={tanggal}
         ref={tanggalLahirInput}
-        onPress={showDatepicker}
+        onPress={() => {
+          toggleDateModal();
+        }}
       />
 
       {tanggalError ? (
@@ -259,7 +258,32 @@ function PemohonPerlalin({ onPress }) {
           size={14}
           weight="normal"
         >
-          Tanggal lahir kosong
+          Tanggal lahir wajib
+        </AText>
+      ) : (
+        ""
+      )}
+
+      <ATextInputIcon
+        bdColor={alamat1Error ? color.error.error300 : color.neutral.neutral300}
+        hint={"Pilih wilayah administratif"}
+        title={"Wilayah administratif"}
+        padding={20}
+        mult={true}
+        width={true}
+        icon={"map-pin"}
+        value={alamatModal}
+        onPress={toggleAlamatInputModal}
+      />
+
+      {alamat1Error ? (
+        <AText
+          style={{ paddingTop: 6 }}
+          color={color.error.error500}
+          size={14}
+          weight="normal"
+        >
+          Wilayah adiminstratif wajib
         </AText>
       ) : (
         ""
@@ -286,7 +310,7 @@ function PemohonPerlalin({ onPress }) {
           size={14}
           weight="normal"
         >
-          Alamat kosong
+          Alamat wajib
         </AText>
       ) : (
         ""
@@ -296,8 +320,8 @@ function PemohonPerlalin({ onPress }) {
         bdColor={nomerError ? color.error.error300 : color.neutral.neutral300}
         ktype={"number-pad"}
         hint={"Masukkan nomer"}
-        title={"Nomer telepon rumah/kabel"}
-        rtype={"next"}
+        title={"Nomer telepon/Fax"}
+        rtype={"done"}
         multi={false}
         value={nomer}
         padding={20}
@@ -309,7 +333,6 @@ function PemohonPerlalin({ onPress }) {
           {
             nomerError ? togglenomerError() : "";
           }
-          nomerSelulerInput.current.focus();
         }}
       />
 
@@ -329,42 +352,7 @@ function PemohonPerlalin({ onPress }) {
           size={14}
           weight="normal"
         >
-          Nomer telepon kosong
-        </AText>
-      ) : (
-        ""
-      )}
-
-      <ATextInput
-        bdColor={
-          nomerSelulerError ? color.error.error300 : color.neutral.neutral300
-        }
-        ktype={"number-pad"}
-        hint={"Masukkan nomer seluler"}
-        title={"Nomer telepon seluler"}
-        rtype={"done"}
-        value={nomerSeluler}
-        multi={false}
-        padding={20}
-        ref={nomerSelulerInput}
-        onChangeText={(value) => {
-          setNomerSeluler(value);
-        }}
-        submit={() => {
-          {
-            nomerSelulerError ? togglenomerSelulerError() : "";
-          }
-        }}
-      />
-
-      {nomerSelulerError ? (
-        <AText
-          style={{ paddingTop: 6 }}
-          color={color.error.error500}
-          size={14}
-          weight="normal"
-        >
-          Nomer telepon seluler kosong
+          Nomer telepon wajib
         </AText>
       ) : (
         ""
@@ -377,6 +365,38 @@ function PemohonPerlalin({ onPress }) {
         onPress={() => {
           press();
         }}
+      />
+
+      <AInputAlamat
+        visibleModal={alamatInputModal}
+        master={dataMaster}
+        setWilayah={setAlamatModal}
+        setProvinsi={setProvinsi}
+        setKabupaten={setKabupaten}
+        setKecamatan={setKecamatan}
+        setKelurahan={setKelurahan}
+        btnOK={"OK"}
+        btnBATAL={"Batal"}
+        onPressBATALButton={() => {
+          toggleAlamatInputModal();
+        }}
+        onPressOKButton={() => {
+          toggleAlamatInputModal();
+        }}
+      />
+
+      <ADatePicker
+        visibleModal={dateModal}
+        onPressOKButton={() => {
+          toggleDateModal();
+          {
+            tanggalError ? toggletanggalError() : "";
+          }
+        }}
+        onPressBATALButton={() => {
+          toggleDateModal();
+        }}
+        pilih={setTanggal}
       />
     </ScrollView>
   );

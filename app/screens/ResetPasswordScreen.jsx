@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import {
   StyleSheet,
   View,
-  Pressable,
+  TouchableOpacity,
   BackHandler,
   ScrollView,
 } from "react-native";
@@ -304,7 +304,7 @@ function ResetPasswordScreen({ navigation, route }) {
             Tidak menerima kode?
           </AText>
 
-          <Pressable
+          <TouchableOpacity
             disabled={count === 0 ? false : true}
             style={{ flexDirection: "row", paddingLeft: 4 }}
             onPress={() => {
@@ -316,7 +316,7 @@ function ResetPasswordScreen({ navigation, route }) {
             <AText size={14} color={color.neutral.neutral700} weight="semibold">
               {count === 0 ? "Kirim ulang" : secondsToHms(count)}
             </AText>
-          </Pressable>
+          </TouchableOpacity>
         </View>
       </ScrollView>
       <ADialog

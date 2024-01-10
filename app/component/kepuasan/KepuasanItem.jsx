@@ -1,12 +1,8 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext } from "react";
 import { StyleSheet, View, TouchableHighlight } from "react-native";
 import { UserContext } from "../../context/UserContext";
 import color from "../../constants/color";
 import AText from "../utility/AText";
-import ATextInput from "../utility/ATextInput";
-import AButton from "../utility/AButton";
-import AConfirmationDialog from "../utility/AConfirmationDialog";
-import ADialog from "../utility/ADialog";
 import SaranKritik from "./SaranKritik";
 
 export default function KepuasanItem({ navigation, route }) {

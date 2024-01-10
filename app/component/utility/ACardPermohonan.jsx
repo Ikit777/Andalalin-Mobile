@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { StyleSheet, View, Pressable } from "react-native";
+import React from "react";
+import { StyleSheet, View, TouchableOpacity } from "react-native";
 import color from "../../constants/color";
 import AText from "./AText";
 import { Feather } from "@expo/vector-icons";
@@ -9,6 +9,7 @@ function ACardPermohonan({
   jenis,
   kode,
   pemohon,
+  email,
   alamat,
   style,
   onPress,
@@ -33,11 +34,17 @@ function ACardPermohonan({
     switch (status) {
       case "Persyaratan tidak terpenuhi":
         return color.error.error50;
+        case "Kelengkapan tidak terpenuhi":
+        return color.error.error50;
       case "Permohonan dibatalkan":
+        return color.error.error50;
+      case "Permohonan ditolak":
+        return color.error.error50;
+      case "Permohonan ditunda":
         return color.error.error50;
       case "Permohonan selesai":
         return color.success.success50;
-case "Pemasangan selesai":
+      case "Pemasangan selesai":
         return color.success.success50;
       case "Survei diterima":
         return color.success.success50;
@@ -50,11 +57,17 @@ case "Pemasangan selesai":
     switch (status) {
       case "Persyaratan tidak terpenuhi":
         return color.error.error700;
+        case "Kelengkapan tidak terpenuhi":
+        return color.error.error700;
       case "Permohonan dibatalkan":
+        return color.error.error700;
+      case "Permohonan ditolak":
+        return color.error.error700;
+      case "Permohonan ditunda":
         return color.error.error700;
       case "Permohonan selesai":
         return color.success.success700;
-case "Pemasangan selesai":
+      case "Pemasangan selesai":
         return color.success.success700;
       case "Survei diterima":
         return color.success.success700;
@@ -155,8 +168,15 @@ case "Pemasangan selesai":
         ) : (
           ""
         )}
+        {email != null ? (
+          <AText size={12} color={color.neutral.neutral400} weight="normal">
+            {email}
+          </AText>
+        ) : (
+          ""
+        )}
 
-        <Pressable
+        <TouchableOpacity
           style={{
             flexDirection: "row",
             alignSelf: "flex-end",
@@ -176,7 +196,7 @@ case "Pemasangan selesai":
             size={20}
             color={color.primary.primary700}
           />
-        </Pressable>
+        </TouchableOpacity>
       </View>
     </View>
   );

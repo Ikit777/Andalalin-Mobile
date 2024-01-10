@@ -31,7 +31,13 @@ function ADropDownCostume({
   const [value, setValue] = useState();
 
   const toggleView = () => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    const linearConfig = LayoutAnimation.create(
+      300, // Duration in milliseconds
+      LayoutAnimation.Types.linear,
+      LayoutAnimation.Properties.opacity
+    );
+
+    LayoutAnimation.configureNext(linearConfig);
     setOpen();
   };
 

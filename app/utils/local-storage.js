@@ -4,7 +4,7 @@ export const store = async (key, value) => {
   try {
     await AsyncStorage.setItem(key, JSON.stringify(value));
   } catch (err) {
-    console.error(err);
+    console.log(err);
   }
 };
 
@@ -27,7 +27,7 @@ export const merge = async (key, value) => {
   try {
     await AsyncStorage.mergeItem(key, JSON.stringify(value));
   } catch (err) {
-    console.error(err);
+    console.log(err);
   }
 };
 
@@ -36,6 +36,6 @@ export const remove = async (key) => {
     await AsyncStorage.removeItem(key);
     return true;
   } catch (err) {
-    console.error(err);
+    console.log(err);
   }
 };

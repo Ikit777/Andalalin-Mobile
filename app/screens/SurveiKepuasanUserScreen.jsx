@@ -69,9 +69,9 @@ function SurveiKepuasanUserScreen({ navigation, route }) {
               back();
             }}
           />
-          <AText
-            style={{ paddingLeft: 4 }}
-            size={24}
+         <AText
+            style={{ paddingLeft: 4}}
+            size={20}
             color={color.neutral.neutral900}
             weight="normal"
           >
@@ -86,6 +86,11 @@ function SurveiKepuasanUserScreen({ navigation, route }) {
 
       {context.indexSurvei != 10 ? (
         <Pressable
+          android_ripple={{
+            color: "rgba(0, 0, 0, 0.1)",
+            borderless: false,
+            radius: 32,
+          }}
           style={{
             shadowColor: "rgba(0, 0, 0, 0.30)",
             elevation: 8,
@@ -96,7 +101,7 @@ function SurveiKepuasanUserScreen({ navigation, route }) {
             backgroundColor: color.primary.primary100,
             position: "absolute",
             bottom: 64,
-            right: 16,
+            right: 32,
             padding: 16,
           }}
           onPress={() => {
@@ -116,7 +121,7 @@ function SurveiKepuasanUserScreen({ navigation, route }) {
       )}
 
       <AConfirmationDialog
-        title={"Kembali?"}
+        title={"Peringatan!"}
         desc={"Data yang Anda masukkan akan hilang"}
         visibleModal={confirm}
         btnOK={"OK"}
@@ -138,7 +143,7 @@ function SurveiKepuasanUserScreen({ navigation, route }) {
 const styles = StyleSheet.create({
   content: {
     paddingHorizontal: 16,
-    height: "100%",
+    flex: 1,
   },
 });
 

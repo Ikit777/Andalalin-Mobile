@@ -9,7 +9,7 @@ function ASettingItem({ onPress, icon, title, style }) {
     <TouchableHighlight
       onPress={onPress}
       style={[styles.hover, style]}
-      underlayColor={"rgba(0, 0, 0, 0.05)"}
+      underlayColor={"rgba(0, 0, 0, 0.1)"}
     >
       <View>
         <View style={styles.card}>
@@ -49,7 +49,8 @@ const styles = StyleSheet.create({
     width: "100%",
     borderBottomColor: color.neutral.neutral900,
     backgroundColor: color.primary.primary25,
-    paddingVertical: 16
+    paddingVertical: 16,
+    paddingHorizontal: 4,
   },
   hover: {
     overflow: "visible",

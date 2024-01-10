@@ -5,7 +5,7 @@ import {
   ScrollView,
   BackHandler,
   RefreshControl,
-  Pressable,
+  TouchableOpacity,
 } from "react-native";
 import AText from "../component/utility/AText";
 import color from "../constants/color";
@@ -14,10 +14,15 @@ import ABackButton from "../component/utility/ABackButton";
 import APolygon from "../component/utility/APolygon";
 import ADetailView from "../component/utility/ADetailView";
 import { authRefreshToken } from "../api/auth";
-import { andalalinHasilSurveiKepuasan } from "../api/andalalin";
+import {
+  andalalinHasilSurveiKepuasan,
+  andalalinHasilSurveiKepuasanTertentu,
+} from "../api/andalalin";
 import { UserContext } from "../context/UserContext";
 import { useStateToggler } from "../hooks/useUtility";
 import ADialog from "../component/utility/ADialog";
+import { Feather } from "@expo/vector-icons";
+import APriodePicker from "../component/utility/APriodePicker";
 
 function SurveiKepuasanScreen({ navigation }) {
   const context = useContext(UserContext);
@@ -26,20 +31,24 @@ function SurveiKepuasanScreen({ navigation }) {
   const [hasil, setHasil] = useState();
   const [gagal, toggleGagal] = useStateToggler();
 
+  const [priodeModal, togglePriodeModal] = useStateToggler();
+
   const [refreshing, setRefreshing] = useState(false);
   const [progressViewOffset, setProgressViewOffset] = useState(20);
+
+  const [priode, setPriode] = useState("");
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
       BackHandler.addEventListener("hardwareBackPress", () => {
         setProgressViewOffset(-1000);
-        navigation.replace("Back Home");
+        navigation.goBack();
         return true;
       });
 
       return BackHandler.removeEventListener("hardwareBackPress", () => {
         setProgressViewOffset(-1000);
-        navigation.replace("Back Home");
+        navigation.goBack();
         return true;
       });
     });
@@ -57,16 +66,20 @@ function SurveiKepuasanScreen({ navigation }) {
     setRefreshing(false);
     setTimeout(() => {
       context.toggleLoading(true);
-      loadKepuasan();
+      if (priode == "") {
+        loadKepuasan();
+      } else {
+        loadKepuasanPeriode();
+      }
     }, 50);
-  }, []);
+  }, [priode]);
 
   const loadKepuasan = () => {
     andalalinHasilSurveiKepuasan(context.getUser().access_token, (response) => {
       switch (response.status) {
         case 200:
           (async () => {
-            const result = await response.json();
+            const result = await response.data;
             setKepuasan(result.data);
             setHasil(result.data.hasil);
 
@@ -97,6 +110,53 @@ function SurveiKepuasanScreen({ navigation }) {
     });
   };
 
+  const loadKepuasanPeriode = () => {
+    andalalinHasilSurveiKepuasanTertentu(
+      context.getUser().access_token,
+      priode,
+      (response) => {
+        switch (response.status) {
+          case 200:
+            (async () => {
+              const result = await response.data;
+              setKepuasan(result.data);
+              setHasil(result.data.hasil);
+
+              if (result.data.responden != 0) {
+                const data = result.data.komentar.filter((item) => {
+                  return item.Komentar != "";
+                });
+                setKomentar(data);
+              }
+
+              context.toggleLoading(false);
+            })();
+            break;
+          case 424:
+            authRefreshToken(context, (response) => {
+              if (response.status === 200) {
+                loadKepuasanPeriode();
+              } else {
+                context.toggleLoading(false);
+              }
+            });
+            break;
+          default:
+            context.toggleLoading(false);
+            toggleGagal();
+            break;
+        }
+      }
+    );
+  };
+
+  useEffect(() => {
+    if (priode != "") {
+      context.toggleLoading(true);
+      loadKepuasanPeriode();
+    }
+  }, [priode]);
+
   return (
     <AScreen>
       <View style={styles.header}>
@@ -109,12 +169,12 @@ function SurveiKepuasanScreen({ navigation }) {
         >
           <ABackButton
             onPress={() => {
-              navigation.replace("Back Home");
+              navigation.goBack();
             }}
           />
           <AText
             style={{ paddingLeft: 4 }}
-            size={24}
+            size={20}
             color={color.neutral.neutral900}
             weight="normal"
           >
@@ -175,13 +235,29 @@ function SurveiKepuasanScreen({ navigation }) {
                 >
                   Priode survei
                 </AText>
-                <AText
-                  size={12}
-                  color={color.neutral.neutral900}
-                  weight="normal"
-                >
-                  {kepuasan.periode}
-                </AText>
+
+                <View style={{ flexDirection: "row" }}>
+                  <AText
+                    size={12}
+                    color={color.neutral.neutral900}
+                    weight="normal"
+                  >
+                    {kepuasan.periode}
+                  </AText>
+
+                  <TouchableOpacity
+                    style={{ paddingLeft: 16, marginTop: -3 }}
+                    onPress={() => {
+                      togglePriodeModal();
+                    }}
+                  >
+                    <Feather
+                      name="calendar"
+                      size={20}
+                      color={color.primary.main}
+                    />
+                  </TouchableOpacity>
+                </View>
               </View>
 
               <View style={styles.separator} />
@@ -300,7 +376,7 @@ function SurveiKepuasanScreen({ navigation }) {
                 >
                   Apresiasi / Kritik / Saran
                 </AText>
-                <Pressable
+                <TouchableOpacity
                   style={{ flexDirection: "row", paddingLeft: 4 }}
                   onPress={() => {
                     kepuasan.responden == "0"
@@ -315,7 +391,7 @@ function SurveiKepuasanScreen({ navigation }) {
                   >
                     Lihat
                   </AText>
-                </Pressable>
+                </TouchableOpacity>
               </View>
             </ADetailView>
 
@@ -362,13 +438,24 @@ function SurveiKepuasanScreen({ navigation }) {
 
       <ADialog
         title={"Survei kepuasa gagal dimuat"}
-        desc={"Terjadi kesalahan pada server kami, mohon coba lagi lain waktu"}
+        desc={"Terjadi kesalahan pada server, mohon coba lagi lain waktu"}
         visibleModal={gagal}
         btnOK={"OK"}
         onPressOKButton={() => {
           toggleGagal();
-          navigation.replace("Back Home");
+          navigation.goBack();
         }}
+      />
+
+      <APriodePicker
+        visibleModal={priodeModal}
+        onPressOKButton={() => {
+          togglePriodeModal();
+        }}
+        onPressBATALButton={() => {
+          togglePriodeModal();
+        }}
+        pilih={setPriode}
       />
     </AScreen>
   );

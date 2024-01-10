@@ -43,17 +43,15 @@ function KameraScreen({ navigation, route }) {
 
   const { setSurvei } = useContext(UserContext);
 
-  const [permissionDialog, togglePermissionDialog] = useStateToggler();
-
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
       BackHandler.addEventListener("hardwareBackPress", () => {
-        navigation.replace("Back Survei", { id: id, kondisi: jenis });
+        navigation.goBack();
         return true;
       });
 
       return BackHandler.removeEventListener("hardwareBackPress", () => {
-        navigation.replaces("Back Survei", { id: id, kondisi: jenis });
+        navigation.goBack();
         return true;
       });
     });
@@ -66,8 +64,6 @@ function KameraScreen({ navigation, route }) {
       (async () => {
         const hasPermission = await hasPermissionCamera();
         setPermission(hasPermission);
-
-        console.log(hasPermission);
       })();
     });
 
@@ -173,21 +169,21 @@ function KameraScreen({ navigation, route }) {
           foto1: capturedPhoto.uri,
           namaFoto1: capturedPhoto.fileName,
         });
-        navigation.push("Back Survei", { id: id, kondisi: jenis });
+        navigation.goBack();
         break;
       case "foto2":
         setSurvei({
           foto2: capturedPhoto.uri,
           namaFoto2: capturedPhoto.fileName,
         });
-        navigation.push("Back Survei", { id: id, kondisi: jenis });
+        navigation.goBack();
         break;
       case "foto3":
         setSurvei({
           foto3: capturedPhoto.uri,
           namaFoto3: capturedPhoto.fileName,
         });
-        navigation.push("Back Survei", { id: id, kondisi: jenis });
+        navigation.goBack();
         break;
     }
   };
@@ -335,18 +331,20 @@ function KameraScreen({ navigation, route }) {
               flex: 1,
               alignItems: "center",
               position: "absolute",
-              top: 20,
-              right: 20,
-              padding: 8,
+              bottom: 30,
+              left: 20,
+              padding: 16,
+              borderRadius: 50,
+              backgroundColor: "#fff",
             }}
           >
-            <Pressable
+            <TouchableOpacity
               onPress={() => {
                 setCapturedPhoto();
               }}
             >
               <Feather name={"x"} size={24} color={color.neutral.neutral900} />
-            </Pressable>
+            </TouchableOpacity>
           </View>
           <View
             style={{
@@ -355,27 +353,23 @@ function KameraScreen({ navigation, route }) {
               alignItems: "center",
               position: "absolute",
               bottom: 30,
+              right: 20,
+              borderRadius: 50,
+              padding: 16,
+              backgroundColor: "#fff",
             }}
           >
-            <TouchableHighlight
+            <TouchableOpacity
               onPress={() => {
                 pilih();
               }}
-              style={{
-                backgroundColor: "#fff",
-                alignItems: "center",
-                justifyContent: "center",
-                paddingHorizontal: 32,
-                paddingVertical: 10,
-                borderRadius: 8,
-                backgroundColor: color.primary.primary500,
-              }}
-              underlayColor={color.primary.primary600}
             >
-              <AText size={16} color={color.text.white} weight="semibold">
-                Pilih
-              </AText>
-            </TouchableHighlight>
+              <Feather
+                name={"check"}
+                size={24}
+                color={color.neutral.neutral900}
+              />
+            </TouchableOpacity>
           </View>
         </View>
       ) : (
@@ -390,7 +384,7 @@ function KameraScreen({ navigation, route }) {
           btnOK={"OK"}
           onPressOKButton={() => {
             setPermission(false);
-            navigation.replace("Back Survei", { id: id, kondisi: jenis });
+            navigation.goBack();
           }}
         />
       ) : (

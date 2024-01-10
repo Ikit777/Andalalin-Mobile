@@ -5,6 +5,7 @@ import {
   BackHandler,
   SafeAreaView,
   Dimensions,
+  Linking,
 } from "react-native";
 import AText from "../component/utility/AText";
 import color from "../constants/color";
@@ -15,6 +16,10 @@ import * as FileSystem from "expo-file-system";
 import ADialog from "../component/utility/ADialog";
 import { useStateToggler } from "../hooks/useUtility";
 import { UserContext } from "../context/UserContext";
+import { andalalinGetDokumen } from "../api/andalalin";
+import { authRefreshToken } from "../api/auth";
+import { WebView } from "react-native-webview";
+import * as IntentLauncher from 'expo-intent-launcher';
 
 function PdfViewSreen({ navigation, route }) {
   const context = useContext(UserContext);
@@ -22,17 +27,73 @@ function PdfViewSreen({ navigation, route }) {
   const [gagal, toggleGagal] = useStateToggler();
 
   const load = async () => {
-    const pdfFilePath = `${FileSystem.cacheDirectory}temp.pdf`;
+    context.toggleLoading(true);
+    andalalinGetDokumen(
+      route.params.id,
+      context.getUser().access_token,
+      route.params.dokumen,
+      (response) => {
+        switch (response.status) {
+          case 200:
+            (async () => {
+              const result = await response.data;
 
-    await FileSystem.writeAsStringAsync(pdfFilePath, route.params.pdf, {
-      encoding: FileSystem.EncodingType.Base64,
-    });
+              switch (result.tipe) {
+                case "Pdf":
+                  const filePath = `${FileSystem.cacheDirectory}temp.pdf`;
 
-    setData(pdfFilePath);
+                  await FileSystem.writeAsStringAsync(filePath, result.data, {
+                    encoding: FileSystem.EncodingType.Base64,
+                  })
+                    .then(async () => {
+                      setData(filePath);
+                    })
+                    .catch((error) => {
+                      console.error("Error writing file:", error);
+                    });
+                  break;
+                case "Word":
+                  const docxPath = `${FileSystem.cacheDirectory}temp.docx`;
+
+                  await FileSystem.writeAsStringAsync(docxPath, result.data, {
+                    encoding: FileSystem.EncodingType.Base64,
+                  })
+                    .then(() => {
+                      context.toggleLoading(false);
+                      navigation.goBack();
+                      setTimeout(() => {
+                        FileSystem.getContentUriAsync(docxPath).then(cUri => {
+                          IntentLauncher.startActivityAsync('android.intent.action.VIEW', {
+                            data: cUri,
+                            flags: 1,
+                          });
+                        });
+                      }, 300);
+                    })
+                    .catch((error) => {
+                      console.error("Error writing file:", error);
+                    });
+                  break;
+              }
+            })();
+            break;
+          case 424:
+            authRefreshToken(context, (response) => {
+              if (response.status === 200) {
+                getDokumen();
+              }
+            });
+            break;
+          default:
+            context.toggleLoading(false);
+            toggleGagal();
+            break;
+        }
+      }
+    );
   };
 
   useEffect(() => {
-    context.toggleLoading(true);
     load();
   }, []);
 
@@ -63,18 +124,13 @@ function PdfViewSreen({ navigation, route }) {
               navigation.goBack();
             }}
           />
-          <AText
-            style={{ paddingLeft: 4}}
-            size={24}
-            color={color.neutral.neutral900}
-            weight="normal"
-          >
-            {route.params.title}
+          <AText size={24} color={color.neutral.neutral900} weight="normal">
+            Berkas
           </AText>
         </View>
       </View>
       <SafeAreaView style={styles.content}>
-        {data != null ? (
+        {data && (
           <Pdf
             trustAllCerts={false}
             source={{ uri: data, cache: true }}
@@ -87,8 +143,6 @@ function PdfViewSreen({ navigation, route }) {
               toggleGagal();
             }}
           />
-        ) : (
-          ""
         )}
       </SafeAreaView>
       <ADialog

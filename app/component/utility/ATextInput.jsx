@@ -21,7 +21,7 @@ const ATextInput = React.forwardRef((props, ref) => {
         ""
       )}
 
-      <View style={[styles.border, { borderColor: props.bdColor }]}>
+      <View style={[styles.border, { borderColor: props.bdColor, width: props.lebar }]}>
         <TextInput
           style={[styles.input, { maxHeight: props.maxHeight }]}
           placeholderTextColor={color.neutral.neutral500}

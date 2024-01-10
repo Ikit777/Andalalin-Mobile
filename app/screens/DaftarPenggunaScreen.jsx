@@ -6,9 +6,10 @@ import {
   BackHandler,
   Image,
   TextInput,
-  useWindowDimensions,
   Pressable,
   RefreshControl,
+  Dimensions,
+  TouchableOpacity,
 } from "react-native";
 import AText from "../component/utility/AText";
 import color from "../constants/color";
@@ -28,16 +29,14 @@ import ASnackBar from "../component/utility/ASnackBar";
 function DaftarPenggunaScreen({ navigation }) {
   const context = useContext(UserContext);
 
-  const [pengguna, setPengguna] = useState();
-  const [penggunaDefault, setPenggunaDefault] = useState();
+  const [pengguna, setPengguna] = useState("pengguna");
+  const [penggunaDefault, setPenggunaDefault] = useState("pengguna");
   const [gagal, toggleGagal] = useStateToggler();
   const [hapusGagal, toggleHapusGagal] = useStateToggler();
   const [hapusBerhasil, toggleHapusBerhasil] = useStateToggler();
   const [konfirmasi, toggleKonfirmasi] = useStateToggler();
-  const [dataOn, setDataOn] = useState(false);
   const [message, setMessage] = useState();
   const [pencarian, setPencarian] = useState();
-  const windowHeight = useWindowDimensions().height;
   const [pilih, setPilih] = useState("");
 
   const [refreshing, setRefreshing] = useState(false);
@@ -47,6 +46,9 @@ function DaftarPenggunaScreen({ navigation }) {
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
+      context.toggleLoading(true);
+      setPengguna("pengguna");
+      load_pengguna();
       BackHandler.addEventListener("hardwareBackPress", () => {
         setProgressViewOffset(-1000);
         navigation.goBack();
@@ -63,29 +65,18 @@ function DaftarPenggunaScreen({ navigation }) {
     return unsubscribe;
   }, [navigation]);
 
-  useEffect(() => {
-    context.toggleLoading(true);
-    load_pengguna();
-  }, []);
-
   const load_pengguna = () => {
     userAll(context.getUser().access_token, (response) => {
       switch (response.status) {
         case 200:
           (async () => {
-            const result = await response.json();
+            const result = await response.data;
             const user = result.data.filter((item) => {
               return item.role !== "Super Admin";
             });
-            if (result.results == 0) {
-              setDataOn(true);
-              context.toggleLoading(false);
-            } else {
-              setPengguna(user);
-              setPenggunaDefault(user);
-              setDataOn(false);
-              context.toggleLoading(false);
-            }
+            setPengguna(user);
+            setPenggunaDefault(user);
+            context.toggleLoading(false);
           })();
           break;
         case 424:
@@ -108,7 +99,10 @@ function DaftarPenggunaScreen({ navigation }) {
   const search = (nama) => {
     if (nama) {
       const newData = penggunaDefault.filter(function (item) {
-        return item.name.indexOf(nama) > -1 || item.role.indexOf(nama) > -1;
+        return (
+          item.name.toLowerCase().indexOf(nama.toLowerCase()) > -1 ||
+          item.role.toLowerCase().indexOf(nama.toLowerCase()) > -1
+        );
       });
       setPengguna(newData);
       setPencarian(nama);
@@ -175,7 +169,7 @@ function DaftarPenggunaScreen({ navigation }) {
   };
 
   return (
-    <AScreen style={{ minHeight: Math.round(windowHeight) }}>
+    <AScreen style={{ minHeight: Dimensions.get("screen").height }}>
       <View style={styles.header}>
         <View
           style={{
@@ -190,9 +184,9 @@ function DaftarPenggunaScreen({ navigation }) {
               navigation.goBack();
             }}
           />
-          <AText
-            style={{ paddingLeft: 4 }}
-            size={24}
+         <AText
+            style={{ paddingLeft: 4}}
+            size={20}
             color={color.neutral.neutral900}
             weight="normal"
           >
@@ -229,7 +223,7 @@ function DaftarPenggunaScreen({ navigation }) {
           ""
         )}
 
-        {pengguna != null ? (
+        {pengguna != null && pengguna != "pengguna" && pengguna.length != 0 ? (
           <FlatList
             data={pengguna}
             overScrollMode="never"
@@ -289,7 +283,7 @@ function DaftarPenggunaScreen({ navigation }) {
                     </AText>
                   </View>
                 </View>
-                <Pressable
+                <TouchableOpacity
                   style={{ flexDirection: "row", padding: 8 }}
                   onPress={() => {
                     toggleHapusModal();
@@ -301,7 +295,7 @@ function DaftarPenggunaScreen({ navigation }) {
                     size={20}
                     color={color.neutral.neutral900}
                   />
-                </Pressable>
+                </TouchableOpacity>
               </View>
             )}
           />
@@ -309,12 +303,13 @@ function DaftarPenggunaScreen({ navigation }) {
           ""
         )}
 
-        {dataOn ? (
+        {pengguna == null || pengguna.length == 0 ? (
           <View
             style={{
               alignItems: "center",
-              height: "80%",
+              height: "70%",
               justifyContent: "center",
+              paddingBottom: 16,
             }}
           >
             <View
@@ -338,7 +333,7 @@ function DaftarPenggunaScreen({ navigation }) {
               color={color.neutral.neutral900}
               weight="normal"
             >
-              pengguna
+              Pengguna
             </AText>
             <AText size={20} color={color.neutral.neutral900} weight="normal">
               Belum ada
@@ -349,30 +344,31 @@ function DaftarPenggunaScreen({ navigation }) {
         )}
       </View>
 
-      {pengguna != null || dataOn ? (
-        <Pressable
-          style={{
-            shadowColor: "rgba(0, 0, 0, 0.30)",
-            elevation: 8,
-            borderRadius: 16,
-            overflow: "hidden",
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: color.primary.primary100,
-            position: "absolute",
-            bottom: 64,
-            right: 16,
-            padding: 16,
-          }}
-          onPress={() => {
-            navigation.push("Tambah User");
-          }}
-        >
-          <Feather name="plus" size={24} color={color.neutral.neutral900} />
-        </Pressable>
-      ) : (
-        ""
-      )}
+      <Pressable
+        android_ripple={{
+          color: "rgba(0, 0, 0, 0.1)",
+          borderless: false,
+          radius: 32,
+        }}
+        style={{
+          shadowColor: "rgba(0, 0, 0, 0.30)",
+          elevation: 8,
+          borderRadius: 16,
+          overflow: "hidden",
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: color.primary.primary100,
+          position: "absolute",
+          bottom: 64,
+          right: 16,
+          padding: 16,
+        }}
+        onPress={() => {
+          navigation.push("Tambah User");
+        }}
+      >
+        <Feather name="plus" size={24} color={color.neutral.neutral900} />
+      </Pressable>
 
       <ABottomSheet visible={hapusModal} close={closePilih}>
         <View>
@@ -388,6 +384,10 @@ function DaftarPenggunaScreen({ navigation }) {
             </AText>
           </View>
           <Pressable
+            android_ripple={{
+              color: "rgba(0, 0, 0, 0.1)",
+              borderless: false,
+            }}
             style={{
               flexDirection: "row",
               padding: 8,
@@ -420,7 +420,7 @@ function DaftarPenggunaScreen({ navigation }) {
               marginBottom: 16,
             }}
           >
-            <Pressable
+            <TouchableOpacity
               style={{ flexDirection: "row", paddingLeft: 4 }}
               onPress={() => {
                 toggleHapusModal();
@@ -434,14 +434,14 @@ function DaftarPenggunaScreen({ navigation }) {
               >
                 Batal
               </AText>
-            </Pressable>
+            </TouchableOpacity>
           </View>
         </View>
       </ABottomSheet>
 
       <ADialog
         title={"Pengguna gagal dimuat"}
-        desc={"Terjadi kesalahan pada server kami, mohon coba lagi lain waktu"}
+        desc={"Terjadi kesalahan pada server, mohon coba lagi lain waktu"}
         visibleModal={gagal}
         btnOK={"OK"}
         onPressOKButton={() => {
@@ -452,7 +452,7 @@ function DaftarPenggunaScreen({ navigation }) {
 
       <ADialog
         title={"Pengguna gagal dihapus"}
-        desc={"Terjadi kesalahan pada server kami, mohon coba lagi lain waktu"}
+        desc={"Terjadi kesalahan pada server, mohon coba lagi lain waktu"}
         visibleModal={hapusGagal}
         btnOK={"OK"}
         onPressOKButton={() => {

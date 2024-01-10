@@ -6,6 +6,7 @@ import {
   Pressable,
   ScrollView,
   RefreshControl,
+  TouchableOpacity,
 } from "react-native";
 import AText from "../component/utility/AText";
 import color from "../constants/color";
@@ -45,14 +46,12 @@ function DetailSurveiScreen({ navigation, route }) {
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
       BackHandler.addEventListener("hardwareBackPress", () => {
-        navigation.setOptions({ animation: "slide_from_right" });
         setProgressViewOffset(-5000);
         back();
         return true;
       });
 
       return BackHandler.removeEventListener("hardwareBackPress", () => {
-        navigation.setOptions({ animation: "slide_from_right" });
         setProgressViewOffset(-5000);
         back();
         return true;
@@ -84,30 +83,30 @@ function DetailSurveiScreen({ navigation, route }) {
       case "Petugas":
         switch (jenis) {
           case "Permohonan":
-            navigation.replace("Back Daftar", { kondisi: "Daftar" });
+            navigation.replcae("Daftar", { kondisi: "Daftar" });
             break;
           case "Mandiri":
-            navigation.replace("Back Daftar", { kondisi: "Mandiri" });
+            navigation.replcae("Daftar", { kondisi: "Mandiri" });
             break;
           case "Pemasangan":
-            navigation.replace("Back Daftar", { kondisi: "Daftar Pemasangan" });
+            navigation.replcae("Daftar", { kondisi: "Daftar Pemasangan" });
             break;
         }
         break;
       case "Super Admin":
         switch (jenis) {
           case "Mandiri":
-            navigation.replace("Back Daftar", { kondisi: "Mandiri" });
+            navigation.replcae("Daftar", { kondisi: "Mandiri" });
             break;
           default:
-            navigation.replace("Back Detail", { id: route.params.id });
+            navigation.replcae("Detail", { id: route.params.id });
             break;
         }
         break;
       default:
         switch (jenis) {
           case "Mandiri":
-            navigation.replace("Back Daftar", { kondisi: "Mandiri" });
+            navigation.replcae("Daftar", { kondisi: "Mandiri" });
             break;
           default:
             navigation.goBack();
@@ -136,7 +135,7 @@ function DetailSurveiScreen({ navigation, route }) {
         switch (response.status) {
           case 201:
             (async () => {
-              const result = await response.json();
+              const result = await response.data;
               setSurvei(result.data);
               context.toggleLoading(false);
             })();
@@ -167,7 +166,7 @@ function DetailSurveiScreen({ navigation, route }) {
         switch (response.status) {
           case 201:
             (async () => {
-              const result = await response.json();
+              const result = await response.data;
               setSurvei(result.data);
               context.toggleLoading(false);
             })();
@@ -198,7 +197,7 @@ function DetailSurveiScreen({ navigation, route }) {
         switch (response.status) {
           case 201:
             (async () => {
-              const result = await response.json();
+              const result = await response.data;
               setSurvei(result.data);
               context.toggleLoading(false);
             })();
@@ -229,13 +228,7 @@ function DetailSurveiScreen({ navigation, route }) {
       (response) => {
         switch (response.status) {
           case 201:
-            (async () => {
-              navigation.replace("Reload Survei", {
-                id: route.params.id,
-                kondisi: kondisi,
-                jenis: jenis,
-              });
-            })();
+            loadSurveiMandiri();
             break;
           case 424:
             authRefreshToken(context, (response) => {
@@ -275,7 +268,7 @@ function DetailSurveiScreen({ navigation, route }) {
         <ATextInput
           bdColor={color.neutral.neutral300}
           ktype={"default"}
-          hint={"Masukkan keterangan tambahan"}
+          hint={"Masukkan catatan"}
           rtype={"done"}
           multi={true}
           max={4}
@@ -295,7 +288,7 @@ function DetailSurveiScreen({ navigation, route }) {
             right: 16,
           }}
         >
-          <Pressable
+          <TouchableOpacity
             style={{ flexDirection: "row", paddingLeft: 4 }}
             onPress={() => {
               setKeteranganTindakan(null);
@@ -305,8 +298,8 @@ function DetailSurveiScreen({ navigation, route }) {
             <AText size={14} color={color.neutral.neutral700} weight="semibold">
               Batal
             </AText>
-          </Pressable>
-          <Pressable
+          </TouchableOpacity>
+          <TouchableOpacity
             style={{ flexDirection: "row", paddingLeft: 4, marginLeft: 32 }}
             onPress={() => {
               {
@@ -317,7 +310,7 @@ function DetailSurveiScreen({ navigation, route }) {
             <AText size={14} color={color.neutral.neutral700} weight="semibold">
               Simpan
             </AText>
-          </Pressable>
+          </TouchableOpacity>
         </View>
       </View>
     );
@@ -372,14 +365,13 @@ function DetailSurveiScreen({ navigation, route }) {
         >
           <ABackButton
             onPress={() => {
-              navigation.setOptions({ animation: "slide_from_right" });
               setProgressViewOffset(-5000);
               back();
             }}
           />
-          <AText
-            style={{ paddingLeft: 4 }}
-            size={24}
+         <AText
+            style={{ paddingLeft: 4}}
+            size={20}
             color={color.neutral.neutral900}
             weight="normal"
           >
@@ -547,7 +539,7 @@ function DetailSurveiScreen({ navigation, route }) {
                     Foto 1
                   </AText>
 
-                  <Pressable
+                  <TouchableOpacity
                     style={{ flexDirection: "row", paddingLeft: 4 }}
                     onPress={() => {
                       navigation.push("Foto", { foto: survei.Foto1 });
@@ -560,7 +552,7 @@ function DetailSurveiScreen({ navigation, route }) {
                     >
                       Lihat
                     </AText>
-                  </Pressable>
+                  </TouchableOpacity>
                 </View>
               </View>
             ) : (
@@ -585,7 +577,7 @@ function DetailSurveiScreen({ navigation, route }) {
                     Foto 2
                   </AText>
 
-                  <Pressable
+                  <TouchableOpacity
                     style={{ flexDirection: "row", paddingLeft: 4 }}
                     onPress={() => {
                       navigation.push("Foto", { foto: survei.Foto2 });
@@ -598,7 +590,7 @@ function DetailSurveiScreen({ navigation, route }) {
                     >
                       Lihat
                     </AText>
-                  </Pressable>
+                  </TouchableOpacity>
                 </View>
               </View>
             ) : (
@@ -623,7 +615,7 @@ function DetailSurveiScreen({ navigation, route }) {
                     Foto 3
                   </AText>
 
-                  <Pressable
+                  <TouchableOpacity
                     style={{ flexDirection: "row", paddingLeft: 4 }}
                     onPress={() => {
                       navigation.push("Foto", { foto: survei.Foto3 });
@@ -636,7 +628,7 @@ function DetailSurveiScreen({ navigation, route }) {
                     >
                       Lihat
                     </AText>
-                  </Pressable>
+                  </TouchableOpacity>
                 </View>
               </View>
             ) : (
@@ -695,7 +687,7 @@ function DetailSurveiScreen({ navigation, route }) {
                 Lokasi survei di map
               </AText>
 
-              <Pressable
+              <TouchableOpacity
                 style={{ flexDirection: "row", paddingLeft: 4 }}
                 onPress={() => {
                   const koordinat = {
@@ -712,7 +704,7 @@ function DetailSurveiScreen({ navigation, route }) {
                 >
                   Lihat
                 </AText>
-              </Pressable>
+              </TouchableOpacity>
             </View>
           </ADetailView>
 
@@ -730,11 +722,11 @@ function DetailSurveiScreen({ navigation, route }) {
             </AText>
           </ADetailView>
 
-          {survei.Keterangan != null && survei.Keterangan != "" ? (
+          {survei.Catatan != null && survei.Catatan != "" ? (
             <ADetailView
               style={{ marginTop: 20 }}
-              title={`Keterangan ${
-                jenis == "Pemasangan" ? "Pemasangan" : "Survei"
+              title={`Catatan ${
+                jenis == "Pemasangan" ? "pemasangan" : "survei"
               }`}
             >
               <AText
@@ -743,19 +735,19 @@ function DetailSurveiScreen({ navigation, route }) {
                 color={color.neutral.neutral900}
                 weight="normal"
               >
-                {survei.Keterangan}
+                {survei.Catatan}
               </AText>
             </ADetailView>
           ) : (
             ""
           )}
 
-          {survei.KeteranganTindakan != "" &&
-          survei.KeteranganTindakan != null &&
+          {survei.CatatanTindakan != "" &&
+          survei.CatatanTindakan != null &&
           jenis == "Mandiri" ? (
             <ADetailView
               style={{ marginTop: 20 }}
-              title={"Keterangan tambahan"}
+              title={"Catatan tambahan"}
             >
               <AText
                 style={{ padding: 16 }}
@@ -799,7 +791,7 @@ function DetailSurveiScreen({ navigation, route }) {
 
       <ADialog
         title={"Data gagal dimuat"}
-        desc={"Terjadi kesalahan pada server kami, mohon coba lagi lain waktu"}
+        desc={"Terjadi kesalahan pada server, mohon coba lagi lain waktu"}
         visibleModal={surveiGagal}
         btnOK={"OK"}
         onPressOKButton={() => {
@@ -810,7 +802,7 @@ function DetailSurveiScreen({ navigation, route }) {
 
       <ADialog
         title={"Terima survei gagal"}
-        desc={"Terjadi kesalahan pada server kami, mohon coba lagi lain waktu"}
+        desc={"Terjadi kesalahan pada server, mohon coba lagi lain waktu"}
         visibleModal={gagal}
         btnOK={"OK"}
         onPressOKButton={() => {

@@ -8,7 +8,6 @@ import {
   Image,
   ActivityIndicator,
   ScrollView,
-  Pressable,
   TextInput,
 } from "react-native";
 import AText from "./AText";
@@ -44,7 +43,13 @@ function ADropDownPerlengkapan({
   const [viewHeight, setViewHeight] = useState();
 
   const toggleView = () => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    const linearConfig = LayoutAnimation.create(
+      300, // Duration in milliseconds
+      LayoutAnimation.Types.linear,
+      LayoutAnimation.Properties.opacity
+    );
+
+    LayoutAnimation.configureNext(linearConfig);
     setOpen();
   };
 
@@ -63,10 +68,6 @@ function ADropDownPerlengkapan({
     toggleLoad(false);
   }, [kategori]);
 
-  useEffect(() => {
-    console.log(viewHeight);
-  }, [viewHeight]);
-
   const handleAllItemsRendered = () => {
     setTimeout(() => {
       toggleLoad(true);
@@ -76,7 +77,7 @@ function ADropDownPerlengkapan({
   const search = (perlengkapan) => {
     if (perlengkapan) {
       const newData = dataDefault.filter(function (item) {
-        return item.value.indexOf(perlengkapan) > -1;
+        return item.value.toLowerCase().indexOf(perlengkapan.toLowerCase()) > -1;
       });
       setData(newData);
       setPencarian(perlengkapan);
@@ -200,7 +201,7 @@ function ADropDownPerlengkapan({
               />
             </View>
 
-            <Pressable
+            <TouchableOpacity
               onPress={() => {
                 setPencarian();
                 setData(dataDefault);
@@ -208,7 +209,7 @@ function ADropDownPerlengkapan({
               }}
             >
               <Feather name="x" size={20} color={color.neutral.neutral900} />
-            </Pressable>
+            </TouchableOpacity>
           </View>
         ) : (
           <TouchableOpacity
@@ -343,7 +344,7 @@ function ADropDownPerlengkapan({
                   size={16}
                   color={color.neutral.neutral900}
                 >
-                  {kategori == "" ? notFound : "Tidak ditemukan"}
+                  {kategori == "" ? notFound : "Perlengkapan tidak ditemukan"}
                 </AText>
               </View>
             )}

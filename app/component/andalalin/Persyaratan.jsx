@@ -1,80 +1,53 @@
 import React, { useState, useContext, useEffect } from "react";
-import { StyleSheet, View, Pressable, ScrollView } from "react-native";
+import { StyleSheet, View, TouchableOpacity, ScrollView } from "react-native";
 import AText from "../../component/utility/AText";
 import color from "../../constants/color";
 import ATextInputIcon from "../utility/ATextInputIcon";
 import { UserContext } from "../../context/UserContext";
-import { useStateToggler } from "../../hooks/useUtility";
 import AButton from "../utility/AButton";
 import * as DocumentPicker from "expo-document-picker";
 
 function Persyaratan({ navigation, onPress }) {
   const {
-    permohonan: {
-      berkas_ktp,
-      nama_ktp,
-      berkas_akta,
-      nama_akta,
-      berkas_surat,
-      nama_surat,
-      persyaratan_tambahan,
-    },
+    permohonan: { persyaratan, bangkitan },
     dispatch,
+    dataMaster,
   } = useContext(UserContext);
-  const context = useContext(UserContext);
-  const [ktp, setKTP] = useState(berkas_ktp);
-  const [namaKtp, setNamaKtp] = useState(nama_ktp);
-  const [ktpError, setKTPError] = useStateToggler();
-
-  const [akta, setAkta] = useState(berkas_akta);
-  const [namaAkta, setNamaAkta] = useState(nama_akta);
-  const [aktaError, setAktaError] = useStateToggler();
-
-  const [surat, setSurat] = useState(berkas_surat);
-  const [namaSurat, setNamaSurat] = useState(nama_surat);
-  const [suratError, setSuratError] = useStateToggler();
 
   const [data, setData] = useState();
 
   const [stateVariables, setStateVariables] = useState([]);
 
-  const [tambahanNotEmpty, setTambahanNotEmpty] = useState(false);
-
   const stateError = false;
 
   useEffect(() => {
-    let persyaratan =
-      context.dataMaster.persyaratan_tambahan.PersyaratanTambahanAndalalin.map(
-        (item) => {
-          stateVariables.push({
-            persyaratan: item.persyaratan,
-            stateError,
-            namaFile: savedNama(item.persyaratan),
-            fileBerkas: savedFile(item.persyaratan),
-          });
-          return item.persyaratan;
-        }
-      );
+    const andalalin = dataMaster.persyaratan.PersyaratanAndalalin.filter(
+      (item) => {
+        return item.bangkitan == bangkitan;
+      }
+    );
 
-    setData(persyaratan);
-    if (
-      context.dataMaster.persyaratan_tambahan.PersyaratanTambahanAndalalin
-        .length == 0
-    ) {
-      setTambahanNotEmpty(true);
+    if (andalalin != null) {
+      let dokumen = andalalin.map((item) => {
+        stateVariables.push({
+          persyaratan: item.persyaratan,
+          kebutuhan: item.kebutuhan,
+          tipe: item.tipe,
+          stateError,
+          namaFile: savedNama(item.persyaratan),
+          fileBerkas: savedFile(item.persyaratan),
+        });
+        return item;
+      });
+
+      setData(dokumen);
     }
   }, []);
 
-  useEffect(() => {
-    if (persyaratan_tambahan.length !== 0) {
-      setTambahanNotEmpty(true);
-    }
-  }, []);
-
-  const savedNama = (persyaratan) => {
-    const updatedStateVariables = [...persyaratan_tambahan];
+  const savedNama = (dokumen) => {
+    const updatedStateVariables = [...persyaratan];
     const index = updatedStateVariables.findIndex(
-      (v) => v.persyaratan === persyaratan
+      (v) => v.persyaratan === dokumen
     );
     if (index !== -1) {
       return updatedStateVariables[index].nama;
@@ -83,10 +56,10 @@ function Persyaratan({ navigation, onPress }) {
     }
   };
 
-  const savedFile = (persyaratan) => {
-    const updatedStateVariables = [...persyaratan_tambahan];
+  const savedFile = (dokumen) => {
+    const updatedStateVariables = [...persyaratan];
     const index = updatedStateVariables.findIndex(
-      (v) => v.persyaratan === persyaratan
+      (v) => v.persyaratan === dokumen
     );
     if (index !== -1) {
       return updatedStateVariables[index].file;
@@ -98,7 +71,6 @@ function Persyaratan({ navigation, onPress }) {
   const handleChangeFile = (persyaratan, name, uri) => {
     const updateItems = stateVariables.map((item) => {
       if (item.persyaratan === persyaratan && uri !== null) {
-        setTambahanNotEmpty(true);
         return { ...item, namaFile: name, fileBerkas: uri, stateError: false };
       }
       return item;
@@ -107,116 +79,67 @@ function Persyaratan({ navigation, onPress }) {
     setStateVariables(updateItems);
   };
 
-  const handleChangeAllError = (cond) => {
+  const handleChangeAllError = () => {
     const updateItems = stateVariables.map((item) => {
-      if (item.fileBerkas === "") {
-        return { ...item, stateError: cond };
+      if (item.fileBerkas === "" && item.kebutuhan === "Wajib") {
+        return { ...item, stateError: true };
       }
+
       return item;
     });
     setStateVariables(updateItems);
   };
 
-  useEffect(() => {
-    {
-      ktpError ? setKTPError() : "";
-    }
-  }, [ktp]);
-
-  useEffect(() => {
-    {
-      aktaError ? setAktaError() : "";
-    }
-  }, [akta]);
-
-  useEffect(() => {
-    {
-      suratError ? setSuratError() : "";
-    }
-  }, [surat]);
-
   const press = () => {
-    stateVariables.forEach((state) => {
-      if (state.fileBerkas === "") {
-        handleChangeAllError(true);
-      }
+    handleChangeAllError();
+
+    let not_empty = stateVariables.filter((item) => {
+      return item.fileBerkas == "" && item.kebutuhan == "Wajib";
     });
 
-    if (ktp != "" && akta != "" && surat != "") {
-      if (tambahanNotEmpty) {
-        const tambahanItem = stateVariables.map((item) => {
-          return {
-            persyaratan: item.persyaratan,
-            nama: item.namaFile,
-            file: item.fileBerkas,
-          };
-        });
+    if (not_empty.length == 0) {
+      const tambahanItem = stateVariables.map((item) => {
+        return {
+          persyaratan: item.persyaratan,
+          kebutuhan: item.kebutuhan,
+          nama: item.namaFile,
+          file: item.fileBerkas,
+        };
+      });
 
-        dispatch({
-          berkas_ktp: ktp,
-          nama_ktp: namaKtp,
-          berkas_akta: akta,
-          nama_akta: namaAkta,
-          berkas_surat: surat,
-          nama_surat: namaSurat,
-          persyaratan_tambahan: tambahanItem,
-        });
-        onPress();
-      }
-    } else {
-      {
-        ktp == "" ? (ktpError ? "" : setKTPError()) : "";
-      }
-      {
-        akta == "" ? (aktaError ? "" : setAktaError()) : "";
-      }
-      {
-        surat == "" ? (suratError ? "" : setSuratError()) : "";
-      }
+      dispatch({
+        persyaratan: tambahanItem,
+      });
+      onPress();
     }
   };
 
-  const file = async (berkas) => {
-    const result = await DocumentPicker.getDocumentAsync({
-      type: "application/pdf",
-    });
-    if (!result.canceled) {
-      switch (berkas) {
-        case 1:
-          {
-            ktpError ? setKTPError() : "";
-          }
-          setKTP(result.assets[0].uri);
-          setNamaKtp(result.assets[0].name);
-          break;
-        case 2:
-          {
-            aktaError ? setAktaError() : "";
-          }
-          setAkta(result.assets[0].uri);
-          setNamaAkta(result.assets[0].name);
-          break;
-        case 3:
-          {
-            suratError ? setSuratError() : "";
-          }
-          setSurat(result.assets[0].uri);
-          setNamaSurat(result.assets[0].name);
-          break;
-      }
-    }
-  };
-
-  const file_tambahan = async (persyaratan) => {
-    const result = await DocumentPicker.getDocumentAsync({
-      type: "application/pdf",
-    });
-    if (!result.canceled) {
-      handleChangeFile(
-        persyaratan,
-        result.assets[0].name,
-        result.assets[0].uri
-      );
+  const file = async (persyaratan, type) => {
+    switch (type) {
+      case "Pdf":
+        const resultPdf = await DocumentPicker.getDocumentAsync({
+          type: "application/pdf",
+        });
+        if (!resultPdf.canceled) {
+          handleChangeFile(
+            persyaratan,
+            resultPdf.assets[0].name,
+            resultPdf.assets[0].uri
+          );
+        }
+        break;
+      case "Word":
+        const resultWord = await DocumentPicker.getDocumentAsync({
+          type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        });
+        if (!resultWord.canceled) {
+          handleChangeFile(
+            persyaratan,
+            resultWord.assets[0].name,
+            resultWord.assets[0].uri
+          );
+        }
+        break;
     }
   };
 
@@ -224,118 +147,35 @@ function Persyaratan({ navigation, onPress }) {
     if (data != null) {
       return (
         <View>
-          <ATextInputIcon
-            bdColor={ktpError ? color.error.error300 : color.neutral.neutral300}
-            hint={"Masukkan kartu tanda penduduk"}
-            title={"Kartu tanda penduduk"}
-            icon={"file-plus"}
-            value={namaKtp}
-            mult={true}
-            width={true}
-            onPress={() => {
-              file(1);
-            }}
-          />
-
-          {ktpError ? (
-            <AText
-              style={{ paddingTop: 6 }}
-              color={color.error.error500}
-              size={14}
-              weight="normal"
-            >
-              Berkas KTP wajib
-            </AText>
-          ) : (
-            ""
-          )}
-
-          <ATextInputIcon
-            bdColor={
-              aktaError ? color.error.error300 : color.neutral.neutral300
-            }
-            hint={"Masukkan akta pendirian badan"}
-            title={"Akta pendirian badan"}
-            icon={"file-plus"}
-            mult={true}
-            value={namaAkta}
-            padding={20}
-            width={true}
-            onPress={() => {
-              file(2);
-            }}
-          />
-
-          {aktaError ? (
-            <AText
-              style={{ paddingTop: 6 }}
-              color={color.error.error500}
-              size={14}
-              weight="normal"
-            >
-              Berkas akta wajib
-            </AText>
-          ) : (
-            ""
-          )}
-
-          <ATextInputIcon
-            bdColor={
-              suratError ? color.error.error300 : color.neutral.neutral300
-            }
-            hint={"Masukkan surat kuasa"}
-            title={"Surat kuasa"}
-            icon={"file-plus"}
-            padding={20}
-            width={true}
-            mult={true}
-            value={namaSurat}
-            onPress={() => {
-              file(3);
-            }}
-          />
-
-          {suratError ? (
-            <AText
-              style={{ paddingTop: 6 }}
-              color={color.error.error500}
-              size={14}
-              weight="normal"
-            >
-              Berkas surat kuasa wajib
-            </AText>
-          ) : (
-            ""
-          )}
-
           {data.map((item, index) => (
             <View key={index}>
               <ATextInputIcon
                 bdColor={
                   stateVariables.find((variabel) => {
-                    return variabel.persyaratan == item;
+                    return variabel.persyaratan == item.persyaratan;
                   }).stateError
                     ? color.error.error300
                     : color.neutral.neutral300
                 }
-                hint={"Masukkan " + item.toLowerCase()}
-                title={item}
+                hint={"Masukkan berkas " + item.tipe.toLowerCase()}
+                title={item.persyaratan}
+                wajib={item.kebutuhan == "Wajib" ? "*" : ""}
                 icon={"file-plus"}
-                padding={20}
+                padding={index == 0 ? 0 : 20}
                 mult={true}
                 width={true}
                 value={
                   stateVariables.find((variabel) => {
-                    return variabel.persyaratan == item;
+                    return variabel.persyaratan == item.persyaratan;
                   }).namaFile
                 }
                 onPress={() => {
-                  file_tambahan(item);
+                  file(item.persyaratan, item.tipe);
                 }}
               />
 
               {stateVariables.find((variabel) => {
-                return variabel.persyaratan == item;
+                return variabel.persyaratan == item.persyaratan;
               }).stateError ? (
                 <AText
                   style={{ paddingTop: 6 }}
@@ -343,7 +183,7 @@ function Persyaratan({ navigation, onPress }) {
                   size={14}
                   weight="normal"
                 >
-                  Berkas {item.toLowerCase()} wajib
+                  Berkas {item.persyaratan.toLowerCase()} wajib
                 </AText>
               ) : (
                 ""
@@ -370,9 +210,20 @@ function Persyaratan({ navigation, onPress }) {
               Lupa ketentuan persyaratan?
             </AText>
 
-            <Pressable
+            <TouchableOpacity
               style={{ flexDirection: "row", paddingLeft: 4 }}
               onPress={() => {
+                const tambahanItem = stateVariables.map((item) => {
+                  return {
+                    persyaratan: item.persyaratan,
+                    nama: item.namaFile,
+                    file: item.fileBerkas,
+                  };
+                });
+
+                dispatch({
+                  persyaratan: tambahanItem,
+                });
                 navigation.push("Ketentuan", {
                   kondisi: "Pengajuan andalalin",
                 });
@@ -385,7 +236,7 @@ function Persyaratan({ navigation, onPress }) {
               >
                 Lihat disini
               </AText>
-            </Pressable>
+            </TouchableOpacity>
           </View>
         </View>
       );

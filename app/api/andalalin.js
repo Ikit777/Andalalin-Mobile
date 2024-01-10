@@ -1,48 +1,46 @@
 import environments from "../constants/environments";
+import axiosInstance from "../utils/axiosInstance";
 
 const { ENDPOINTS } = environments;
 
 export const andalalinPengajuan = async (
   accessToken,
   pengajuan,
-  file,
   tambahan,
   andalalinRespone
 ) => {
   const formData = new FormData();
-  formData.append("ktp", {
-    uri: file.ktp,
-    name: "ktp.pdf",
-    type: "application/pdf",
-  });
-  formData.append("apb", {
-    uri: file.akta,
-    name: "akta pendirian badan.pdf",
-    type: "application/pdf",
-  });
-  formData.append("sk", {
-    uri: file.surat,
-    name: "surat kuasa.pdf",
-    type: "application/pdf",
-  });
 
   tambahan.forEach((item) => {
-    formData.append(item.persyaratan, {
-      uri: item.file,
-      name: "persyaratan.pdf",
-      type: "application/pdf",
-    });
+    if (item.file != "") {
+      if (item.tipe == "Pdf"){
+        formData.append(item.persyaratan, {
+          uri: item.file,
+          name: "persyaratan.pdf",
+          type: "application/pdf",
+        });
+      }else{
+        formData.append(item.persyaratan, {
+          uri: item.file,
+          name: "persyaratan.docx",
+          type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        });
+      }
+    }
   });
 
   formData.append("data", JSON.stringify(pengajuan));
 
-  const response = await fetch(ENDPOINTS.ANDALALIN_PENGAJUAN, {
-    method: "POST",
-    headers: {
-      Authorization: "Bearer " + accessToken,
-      "Content-Type": "multipart/form-data",
-    },
-    body: formData,
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "multipart/form-data",
+  };
+  const body = formData;
+  const response = await axiosInstance({
+    method: "post",
+    url: ENDPOINTS.ANDALALIN_PENGAJUAN,
+    headers: headers,
+    data: body,
   });
   andalalinRespone(response);
 };
@@ -50,116 +48,207 @@ export const andalalinPengajuan = async (
 export const andalalinPengajuanPerlalin = async (
   accessToken,
   pengajuan,
-  file,
   tambahan,
   andalalinRespone
 ) => {
   const formData = new FormData();
-  formData.append("ktp", {
-    uri: file.ktp,
-    name: "ktp.pdf",
-    type: "application/pdf",
-  });
-  formData.append("sp", {
-    uri: file.surat,
-    name: "surat permohonan.pdf",
-    type: "application/pdf",
-  });
 
   tambahan.forEach((item) => {
-    formData.append(item.persyaratan, {
-      uri: item.file,
-      name: "persyaratan.pdf",
-      type: "application/pdf",
-    });
+    if (item.file != "") {
+      if (item.tipe == "Pdf"){
+        formData.append(item.persyaratan, {
+          uri: item.file,
+          name: "persyaratan.pdf",
+          type: "application/pdf",
+        });
+      }else{
+        formData.append(item.persyaratan, {
+          uri: item.file,
+          name: "persyaratan.docx",
+          type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        });
+      }
+    }
   });
 
   formData.append("data", JSON.stringify(pengajuan));
 
-  const response = await fetch(ENDPOINTS.ANDALALIN_PENGAJUAN_PERLALIN, {
-    method: "POST",
-    headers: {
-      Authorization: "Bearer " + accessToken,
-      "Content-Type": "multipart/form-data",
-    },
-    body: formData,
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "multipart/form-data",
+  };
+  const body = formData;
+  const response = await axiosInstance({
+    method: "post",
+    url: ENDPOINTS.ANDALALIN_PENGAJUAN_PERLALIN,
+    headers: headers,
+    data: body,
   });
   andalalinRespone(response);
 };
 
 export const andalalinGetById = async (id, accessToken, andalalinRespone) => {
-  const response = await fetch(ENDPOINTS.ANDALALIN_GET_BY_ID + "/" + id, {
-    method: "GET",
-    headers: {
-      Authorization: "Bearer " + accessToken,
-      "Content-Type": "application/json",
-    },
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "application/json",
+  };
+  const response = await axiosInstance({
+    method: "get",
+    url: ENDPOINTS.ANDALALIN_GET_BY_ID + "/" + id,
+    headers: headers,
+  });
+  andalalinRespone(response);
+};
+
+export const andalalinGetDokumen = async (
+  id,
+  accessToken,
+  dokumen,
+  andalalinRespone
+) => {
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "application/json",
+  };
+  const response = await axiosInstance({
+    method: "get",
+    url: ENDPOINTS.ANDALALIN_GET_DOKUMEN + "/" + id + "/" + dokumen,
+    headers: headers,
   });
   andalalinRespone(response);
 };
 
 export const andalalinGetByIdUser = async (accessToken, andalalinRespone) => {
-  const response = await fetch(ENDPOINTS.ANDALALIN_GET_BY_ID_USER, {
-    method: "GET",
-    headers: {
-      Authorization: "Bearer " + accessToken,
-      "Content-Type": "application/json",
-    },
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "application/json",
+  };
+  const response = await axiosInstance({
+    method: "get",
+    url: ENDPOINTS.ANDALALIN_GET_BY_ID_USER,
+    headers: headers,
   });
   andalalinRespone(response);
 };
 
-export const andalalinGetByTiketLevel1 = async (
+export const andalalinCheckAdministrasi = async (
   accessToken,
+  id,
+  nomor,
+  tanggal,
+  data,
   andalalinRespone
 ) => {
-  const response = await fetch(ENDPOINTS.ANDALALIN_GET_BY_TIKET_LEVEL_1, {
-    method: "GET",
-    headers: {
-      Authorization: "Bearer " + accessToken,
-      "Content-Type": "application/json",
-    },
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "application/json",
+  };
+  const body = JSON.stringify({
+    nomor: nomor,
+    tanggal: tanggal,
+    data: data,
+  });
+  const response = await axiosInstance({
+    method: "post",
+    url: ENDPOINTS.ANDALALIN_CHECK_ADMINISTRASI + "/" + id,
+    headers: headers,
+    data: body,
+  });
+  
+  andalalinRespone(response);
+};
+
+export const andalalinCheckAdministrasiPerlalin = async (
+  accessToken,
+  id,
+  data,
+  andalalinRespone
+) => {
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "application/json",
+  };
+  const body = JSON.stringify({
+    data: data,
+  });
+  const response = await axiosInstance({
+    method: "post",
+    url: ENDPOINTS.ANDALALIN_CHECK_ADMINISTRASI_PERLALIN + "/" + id,
+    headers: headers,
+    data: body,
+  });
+  
+  andalalinRespone(response);
+};
+
+export const andalalinPembuatanSuratPernyataan = async (
+  accessToken,
+  id,
+  data,
+  andalalinRespone
+) => {
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "application/json",
+  };
+  const body = JSON.stringify({
+    kewajiban: data,
+  });
+  const response = await axiosInstance({
+    method: "post",
+    url: ENDPOINTS.ANDALALIN_PEMBUATAN_SURAT_PERNYATAAN + "/" + id,
+    headers: headers,
+    data: body,
   });
   andalalinRespone(response);
 };
 
-export const andalalinPersyaratanTerpenuhi = async (
+export const andalalinPembuatanPenyusunDokumen = async (
   accessToken,
   id,
+  data,
   andalalinRespone
 ) => {
-  const response = await fetch(
-    ENDPOINTS.ANDALALIN_PERSYARATAN_TERPENUHI + "/" + id,
-    {
-      method: "POST",
-      headers: {
-        Authorization: "Bearer " + accessToken,
-        "Content-Type": "application/json",
-      },
-    }
-  );
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "application/json",
+  };
+  const body = JSON.stringify({
+    penyusun: data,
+  });
+  const response = await axiosInstance({
+    method: "post",
+    url: ENDPOINTS.ANDALALIN_PEMBUATAN_PENYUSUN_DOKUMEN + "/" + id,
+    headers: headers,
+    data: body,
+  });
   andalalinRespone(response);
 };
 
-export const andalalinPersyaratanTidakSesuai = async (
+export const andalalinPembuatanSuratKeputusan = async (
   accessToken,
   id,
-  persyaratan,
+  data,
   andalalinRespone
 ) => {
-  const response = await fetch(
-    ENDPOINTS.ANDALALIN_PERSYARATAN_TIDAK_SESUAI + "/" + id,
-    {
-      method: "POST",
-      headers: {
-        Authorization: "Bearer " + accessToken,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        persyaratan: persyaratan,
-      }),
-    }
-  );
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "application/json",
+  };
+  const body = JSON.stringify({
+    nomor_keputusan: data.keputusan,
+    nomor_lampiran: data.lampiran,
+    nomor_kesanggupan: data.kesanggupan,
+    tanggal_kesanggupan: data.tanggal,
+    nama_kadis: data.nama,
+    nip_kadis: data.nip,
+  });
+  const response = await axiosInstance({
+    method: "post",
+    url: ENDPOINTS.ANDALALIN_PEMBUATAN_SURAT_KEPUTUSAN + "/" + id,
+    headers: headers,
+    data: body,
+  });
   andalalinRespone(response);
 };
 
@@ -172,24 +261,32 @@ export const andalalinUpdatePersyaratan = async (
   const formData = new FormData();
 
   file.forEach((item) => {
-    formData.append(item.persyaratan, {
-      uri: item.berkasFile,
-      name: "persyaratan.pdf",
-      type: "application/pdf",
-    });
+    if (item.tipe == "Pdf"){
+      formData.append(item.berkas, {
+        uri: item.berkasFile,
+        name: "berkas.pdf",
+        type: "application/pdf",
+      });
+    }else{
+      formData.append(item.berkas, {
+        uri: item.berkasFile,
+        name: "berkas.docx",
+        type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      });
+    }
   });
 
-  const response = await fetch(
-    ENDPOINTS.ANDALALIN_UPDATE_PERSYARATAN + "/" + id,
-    {
-      method: "POST",
-      headers: {
-        Authorization: "Bearer " + accessToken,
-        "Content-Type": "multipart/form-data",
-      },
-      body: formData,
-    }
-  );
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "multipart/form-data",
+  };
+  const body = formData;
+  const response = await axiosInstance({
+    method: "post",
+    url: ENDPOINTS.ANDALALIN_UPDATE_PERSYARATAN + "/" + id,
+    headers: headers,
+    data: body,
+  });
   andalalinRespone(response);
 };
 
@@ -199,17 +296,20 @@ export const andalalinPilihPetugas = async (
   accessToken,
   andalalinRespone
 ) => {
-  const response = await fetch(ENDPOINTS.ANDALALIN_TAMBAH_PETUGAS + "/" + id, {
-    method: "POST",
-    headers: {
-      Authorization: "Bearer " + accessToken,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      id_petugas: petugas.id,
-      nama_petugas: petugas.name,
-      email_petugas: petugas.email,
-    }),
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "application/json",
+  };
+  const body = JSON.stringify({
+    id_petugas: petugas.id,
+    nama_petugas: petugas.name,
+    email_petugas: petugas.email,
+  });
+  const response = await axiosInstance({
+    method: "post",
+    url: ENDPOINTS.ANDALALIN_TAMBAH_PETUGAS + "/" + id,
+    headers: headers,
+    data: body,
   });
   andalalinRespone(response);
 };
@@ -220,17 +320,20 @@ export const andalalinGantiPetugas = async (
   accessToken,
   andalalinRespone
 ) => {
-  const response = await fetch(ENDPOINTS.ANDALALIN_GANTI_PETUGAS + "/" + id, {
-    method: "POST",
-    headers: {
-      Authorization: "Bearer " + accessToken,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      id_petugas: petugas.id,
-      nama_petugas: petugas.name,
-      email_petugas: petugas.email,
-    }),
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "application/json",
+  };
+  const body = JSON.stringify({
+    id_petugas: petugas.id,
+    nama_petugas: petugas.name,
+    email_petugas: petugas.email,
+  });
+  const response = await axiosInstance({
+    method: "post",
+    url: ENDPOINTS.ANDALALIN_GANTI_PETUGAS + "/" + id,
+    headers: headers,
+    data: body,
   });
   andalalinRespone(response);
 };
@@ -240,16 +343,15 @@ export const andalalinGetByTiketLevel2 = async (
   status,
   andalalinRespone
 ) => {
-  const response = await fetch(
-    ENDPOINTS.ANDALALIN_GET_BY_TIKET_LEVEL_2 + "/" + status,
-    {
-      method: "GET",
-      headers: {
-        Authorization: "Bearer " + accessToken,
-        "Content-Type": "application/json",
-      },
-    }
-  );
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "application/json",
+  };
+  const response = await axiosInstance({
+    method: "get",
+    url: ENDPOINTS.ANDALALIN_GET_BY_TIKET_LEVEL_2 + "/" + status,
+    headers: headers,
+  });
   andalalinRespone(response);
 };
 
@@ -288,124 +390,101 @@ export const andalalinSurveiLapangan = async (
 
   formData.append("data", JSON.stringify(lokasi));
 
-  const response = await fetch(ENDPOINTS.ANDALALIN_SURVEI_LAPANGAN + "/" + id, {
-    method: "POST",
-    headers: {
-      Authorization: "Bearer " + accessToken,
-      "Content-Type": "multipart/form-data",
-    },
-    body: formData,
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "multipart/form-data",
+  };
+  const body = formData;
+  const response = await axiosInstance({
+    method: "post",
+    url: ENDPOINTS.ANDALALIN_SURVEI_LAPANGAN + "/" + id,
+    headers: headers,
+    data: body,
   });
   andalalinRespone(response);
 };
 
 export const andalalinGetAllSurvei = async (accessToken, andalalinRespone) => {
-  const response = await fetch(ENDPOINTS.ANDALALIN_GET_ALL_SURVEI_LAPANGAN, {
-    method: "GET",
-    headers: {
-      Authorization: "Bearer " + accessToken,
-      "Content-Type": "application/json",
-    },
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "application/json",
+  };
+  const response = await axiosInstance({
+    method: "get",
+    url: ENDPOINTS.ANDALALIN_GET_ALL_SURVEI_LAPANGAN,
+    headers: headers,
   });
   andalalinRespone(response);
 };
 
 export const andalalinGetSurvei = async (accessToken, id, andalalinRespone) => {
-  const response = await fetch(
-    ENDPOINTS.ANDALALIN_GET_SURVEI_LAPANGAN + "/" + id,
-    {
-      method: "GET",
-      headers: {
-        Authorization: "Bearer " + accessToken,
-        "Content-Type": "application/json",
-      },
-    }
-  );
-  andalalinRespone(response);
-};
-
-export const andalalinLaporanBAP = async (
-  accessToken,
-  id,
-  file,
-  bap,
-  andalalinRespone
-) => {
-  const formData = new FormData();
-
-  formData.append("bap", {
-    uri: file,
-    name: "bap.pdf",
-    type: "application/pdf",
-  });
-
-  formData.append("data", JSON.stringify(bap));
-
-  const response = await fetch(ENDPOINTS.ANDALALIN_LAPORAN_BAP + "/" + id, {
-    method: "POST",
-    headers: {
-      Authorization: "Bearer " + accessToken,
-      "Content-Type": "multipart/form-data",
-    },
-    body: formData,
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "application/json",
+  };
+  const response = await axiosInstance({
+    method: "get",
+    url: ENDPOINTS.ANDALALIN_GET_SURVEI_LAPANGAN + "/" + id,
+    headers: headers,
   });
   andalalinRespone(response);
 };
 
 export const andalalinGetAll = async (accessToken, andalalinRespone) => {
-  const response = await fetch(ENDPOINTS.ANDALALIN_GET_ALL, {
-    method: "GET",
-    headers: {
-      Authorization: "Bearer " + accessToken,
-      "Content-Type": "application/json",
-    },
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "application/json",
+  };
+  const response = await axiosInstance({
+    method: "get",
+    url: ENDPOINTS.ANDALALIN_GET_ALL,
+    headers: headers,
   });
   andalalinRespone(response);
 };
 
-export const andalalinSimpanPersetujuan = async (
+export const andalalinSimpanPemeriksaan = async (
   accessToken,
   id,
-  persetujuan,
+  hasil,
+  catatan,
   andalalinRespone
 ) => {
-  const response = await fetch(
-    ENDPOINTS.ANDALALIN_SIMPAN_PERSETUJUAN + "/" + id,
-    {
-      method: "POST",
-      headers: {
-        Authorization: "Bearer " + accessToken,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        persetujuan: persetujuan.dokumen,
-        keterangan: persetujuan.keterangan,
-      }),
-    }
-  );
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "application/json",
+  };
+  const body = JSON.stringify({
+    hasil: hasil,
+    catatan: catatan,
+  });
+  const response = await axiosInstance({
+    method: "post",
+    url: ENDPOINTS.ANDALALIN_SIMPAN_PEMERIKSAAN + "/" + id,
+    headers: headers,
+    data: body,
+  });
   andalalinRespone(response);
 };
 
-export const andalalinSimpanSK = async (
+export const andalalinChecklistKelengkapanAkhir = async (
   accessToken,
   id,
-  file,
+  data,
   andalalinRespone
 ) => {
-  const formData = new FormData();
-  formData.append("sk", {
-    uri: file,
-    name: "surat keputusan.pdf",
-    type: "application/pdf",
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "application/json",
+  };
+  const body = JSON.stringify({
+    kelengkapan: data,
   });
-
-  const response = await fetch(ENDPOINTS.ANDALALIN_SIMPAN_SK + "/" + id, {
-    method: "POST",
-    headers: {
-      Authorization: "Bearer " + accessToken,
-      "Content-Type": "multipart/form-data",
-    },
-    body: formData,
+  const response = await axiosInstance({
+    method: "post",
+    url: ENDPOINTS.ANDALALIN_CHECKLIST_KELENGKAPAN_AKHIR + "/" + id,
+    headers: headers,
+    data: body,
   });
   andalalinRespone(response);
 };
@@ -417,16 +496,19 @@ export const andalalinSimpanKeputusan = async (
   pertimbangan,
   andalalinRespone
 ) => {
-  const response = await fetch(ENDPOINTS.PERLALIN_KEPUTUSAN_HASIL + "/" + id, {
-    method: "POST",
-    headers: {
-      Authorization: "Bearer " + accessToken,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      keputusan: keputusan,
-      pertimbangan: pertimbangan,
-    }),
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "application/json",
+  };
+  const body = JSON.stringify({
+    keputusan: keputusan,
+    pertimbangan: pertimbangan,
+  });
+  const response = await axiosInstance({
+    method: "post",
+    url: ENDPOINTS.PERLALIN_KEPUTUSAN_HASIL + "/" + id,
+    headers: headers,
+    data: body,
   });
   andalalinRespone(response);
 };
@@ -436,12 +518,14 @@ export const andalalinGetByStatus = async (
   status,
   andalalinRespone
 ) => {
-  const response = await fetch(ENDPOINTS.ANDALALIN_GET_STATUS + "/" + status, {
-    method: "GET",
-    headers: {
-      Authorization: "Bearer " + accessToken,
-      "Content-Type": "application/json",
-    },
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "application/json",
+  };
+  const response = await axiosInstance({
+    method: "get",
+    url: ENDPOINTS.ANDALALIN_GET_STATUS + "/" + status,
+    headers: headers,
   });
   andalalinRespone(response);
 };
@@ -452,16 +536,19 @@ export const andalalinUsulanTindakan = async (
   tindakan,
   andalalinRespone
 ) => {
-  const response = await fetch(ENDPOINTS.ANDALALIN_USULAN_TINDAKAN + "/" + id, {
-    method: "POST",
-    headers: {
-      Authorization: "Bearer " + accessToken,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      pertimbangan: tindakan.pertimbangan,
-      keterangan: tindakan.keterangan,
-    }),
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "application/json",
+  };
+  const body = JSON.stringify({
+    pertimbangan: tindakan.pertimbangan,
+    keterangan: tindakan.keterangan,
+  });
+  const response = await axiosInstance({
+    method: "post",
+    url: ENDPOINTS.ANDALALIN_USULAN_TINDAKAN + "/" + id,
+    headers: headers,
+    data: body,
   });
   andalalinRespone(response);
 };
@@ -470,12 +557,14 @@ export const andalalinGetUsulanTindakan = async (
   accessToken,
   andalalinRespone
 ) => {
-  const response = await fetch(ENDPOINTS.ANDALALIN_GET_USULAN_TINDAKAN, {
-    method: "GET",
-    headers: {
-      Authorization: "Bearer " + accessToken,
-      "Content-Type": "application/json",
-    },
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "application/json",
+  };
+  const response = await axiosInstance({
+    method: "get",
+    url: ENDPOINTS.ANDALALIN_GET_USULAN_TINDAKAN,
+    headers: headers,
   });
   andalalinRespone(response);
 };
@@ -485,16 +574,15 @@ export const andalalinGetDetailUsulan = async (
   id,
   andalalinRespone
 ) => {
-  const response = await fetch(
-    ENDPOINTS.ANDALALIN_DETAIL_USULAN_TINDAKAN + "/" + id,
-    {
-      method: "GET",
-      headers: {
-        Authorization: "Bearer " + accessToken,
-        "Content-Type": "application/json",
-      },
-    }
-  );
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "application/json",
+  };
+  const response = await axiosInstance({
+    method: "get",
+    url: ENDPOINTS.ANDALALIN_DETAIL_USULAN_TINDAKAN + "/" + id,
+    headers: headers,
+  });
   andalalinRespone(response);
 };
 
@@ -504,16 +592,15 @@ export const andalalinTindakan = async (
   tindakan,
   andalalinRespone
 ) => {
-  const response = await fetch(
-    ENDPOINTS.ANDALALIN_TINDAKAN_USULAN + "/" + id + "/" + tindakan,
-    {
-      method: "POST",
-      headers: {
-        Authorization: "Bearer " + accessToken,
-        "Content-Type": "application/json",
-      },
-    }
-  );
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "application/json",
+  };
+  const response = await axiosInstance({
+    method: "post",
+    url: ENDPOINTS.ANDALALIN_TINDAKAN_USULAN + "/" + id + "/" + tindakan,
+    headers: headers,
+  });
   andalalinRespone(response);
 };
 
@@ -522,34 +609,15 @@ export const andalalinHapusUsulan = async (
   id,
   andalalinRespone
 ) => {
-  const response = await fetch(
-    ENDPOINTS.ANDALALIN_HAPUS_USULAN_TINDAKAN + "/" + id,
-    {
-      method: "DELETE",
-      headers: {
-        Authorization: "Bearer " + accessToken,
-        "Content-Type": "application/json",
-      },
-    }
-  );
-  andalalinRespone(response);
-};
-
-export const andalalinGetAllByTiketLevel2 = async (
-  accessToken,
-  status,
-  andalalinRespone
-) => {
-  const response = await fetch(
-    ENDPOINTS.ANDALALIN_GET_ALL_BY_TIKET_LEVEL2 + "/" + status,
-    {
-      method: "GET",
-      headers: {
-        Authorization: "Bearer " + accessToken,
-        "Content-Type": "application/json",
-      },
-    }
-  );
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "application/json",
+  };
+  const response = await axiosInstance({
+    method: "delete",
+    url: ENDPOINTS.ANDALALIN_HAPUS_USULAN_TINDAKAN + "/" + id,
+    headers: headers,
+  });
   andalalinRespone(response);
 };
 
@@ -566,13 +634,16 @@ export const andalalinSimpanLaporanSurvei = async (
     type: "application/pdf",
   });
 
-  const response = await fetch(ENDPOINTS.PERLALIN_LAPORAN_SURVEI + "/" + id, {
-    method: "POST",
-    headers: {
-      Authorization: "Bearer " + accessToken,
-      "Content-Type": "multipart/form-data",
-    },
-    body: formData,
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "multipart/form-data",
+  };
+  const body = formData;
+  const response = await axiosInstance({
+    method: "post",
+    url: ENDPOINTS.PERLALIN_LAPORAN_SURVEI + "/" + id,
+    headers: headers,
+    data: body,
   });
   andalalinRespone(response);
 };
@@ -611,13 +682,16 @@ export const andalalinSurveiMandiri = async (
 
   formData.append("data", JSON.stringify(lokasi));
 
-  const response = await fetch(ENDPOINTS.SURVEI_MANDIRI, {
-    method: "POST",
-    headers: {
-      Authorization: "Bearer " + accessToken,
-      "Content-Type": "multipart/form-data",
-    },
-    body: formData,
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "multipart/form-data",
+  };
+  const body = formData;
+  const response = await axiosInstance({
+    method: "post",
+    url: ENDPOINTS.SURVEI_MANDIRI,
+    headers: headers,
+    data: body,
   });
   andalalinRespone(response);
 };
@@ -627,12 +701,14 @@ export const andalalinGetSurveiMandiri = async (
   id,
   andalalinRespone
 ) => {
-  const response = await fetch(ENDPOINTS.DETAIL_SURVEI_MANDIRI + "/" + id, {
-    method: "GET",
-    headers: {
-      Authorization: "Bearer " + accessToken,
-      "Content-Type": "application/json",
-    },
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "application/json",
+  };
+  const response = await axiosInstance({
+    method: "get",
+    url: ENDPOINTS.DETAIL_SURVEI_MANDIRI + "/" + id,
+    headers: headers,
   });
   andalalinRespone(response);
 };
@@ -641,12 +717,14 @@ export const andalalinGetAllSurveiMandiriPetugas = async (
   accessToken,
   andalalinRespone
 ) => {
-  const response = await fetch(ENDPOINTS.PETUGAS_SURVEI_MANDIRI, {
-    method: "GET",
-    headers: {
-      Authorization: "Bearer " + accessToken,
-      "Content-Type": "application/json",
-    },
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "application/json",
+  };
+  const response = await axiosInstance({
+    method: "get",
+    url: ENDPOINTS.PETUGAS_SURVEI_MANDIRI,
+    headers: headers,
   });
   andalalinRespone(response);
 };
@@ -655,12 +733,14 @@ export const andalalinGetAllSurveiMandiri = async (
   accessToken,
   andalalinRespone
 ) => {
-  const response = await fetch(ENDPOINTS.ALL_SURVEI_MANDIRI, {
-    method: "GET",
-    headers: {
-      Authorization: "Bearer " + accessToken,
-      "Content-Type": "application/json",
-    },
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "application/json",
+  };
+  const response = await axiosInstance({
+    method: "get",
+    url: ENDPOINTS.ALL_SURVEI_MANDIRI,
+    headers: headers,
   });
   andalalinRespone(response);
 };
@@ -671,16 +751,20 @@ export const andalalinTerimaSurveiMandiri = async (
   keterangan,
   andalalinRespone
 ) => {
-  const response = await fetch(
-    ENDPOINTS.TERIMA_SURVEI_MANDIRI + "/" + id + "/" + keterangan,
-    {
-      method: "POST",
-      headers: {
-        Authorization: "Bearer " + accessToken,
-        "Content-Type": "application/json",
-      },
-    }
-  );
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "application/json",
+  };
+  const body = JSON.stringify({
+    catatan: keterangan,
+    data: data,
+  });
+  const response = await axiosInstance({
+    method: "post",
+    url: ENDPOINTS.TERIMA_SURVEI_MANDIRI + "/" + id,
+    headers: headers,
+    data: body,
+  });
   andalalinRespone(response);
 };
 
@@ -689,12 +773,14 @@ export const andalalinCekSurveiKepuasan = async (
   id,
   andalalinRespone
 ) => {
-  const response = await fetch(ENDPOINTS.CEK_SURVEI_KEPUASAN + "/" + id, {
-    method: "GET",
-    headers: {
-      Authorization: "Bearer " + accessToken,
-      "Content-Type": "application/json",
-    },
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "application/json",
+  };
+  const response = await axiosInstance({
+    method: "get",
+    url: ENDPOINTS.CEK_SURVEI_KEPUASAN + "/" + id,
+    headers: headers,
   });
   andalalinRespone(response);
 };
@@ -703,12 +789,31 @@ export const andalalinHasilSurveiKepuasan = async (
   accessToken,
   andalalinRespone
 ) => {
-  const response = await fetch(ENDPOINTS.HASIL_SURVEI_KEPUASAN, {
-    method: "GET",
-    headers: {
-      Authorization: "Bearer " + accessToken,
-      "Content-Type": "application/json",
-    },
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "application/json",
+  };
+  const response = await axiosInstance({
+    method: "get",
+    url: ENDPOINTS.HASIL_SURVEI_KEPUASAN,
+    headers: headers,
+  });
+  andalalinRespone(response);
+};
+
+export const andalalinHasilSurveiKepuasanTertentu = async (
+  accessToken,
+  periode,
+  andalalinRespone,  
+) => {
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "application/json",
+  };
+  const response = await axiosInstance({
+    method: "get",
+    url: ENDPOINTS.HASIL_SURVEI_KEPUASAN_TERTENTU + "/" + periode ,
+    headers: headers,
   });
   andalalinRespone(response);
 };
@@ -720,16 +825,19 @@ export const andalalinSurveiKepuasan = async (
   data,
   andalalinRespone
 ) => {
-  const response = await fetch(ENDPOINTS.SURVEI_KEPUASAN + "/" + id, {
-    method: "POST",
-    headers: {
-      Authorization: "Bearer " + accessToken,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      saran: kritik,
-      data: data,
-    }),
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "application/json",
+  };
+  const body = JSON.stringify({
+    saran: kritik,
+    data: data,
+  });
+  const response = await axiosInstance({
+    method: "post",
+    url: ENDPOINTS.SURVEI_KEPUASAN + "/" + id,
+    headers: headers,
+    data: body,
   });
   andalalinRespone(response);
 };
@@ -738,12 +846,14 @@ export const andalalinGetPermohonanPemasangan = async (
   accessToken,
   andalalinRespone
 ) => {
-  const response = await fetch(ENDPOINTS.GET_PERMOHONAN_PEMASANGAN_PERLALIN, {
-    method: "GET",
-    headers: {
-      Authorization: "Bearer " + accessToken,
-      "Content-Type": "application/json",
-    },
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "application/json",
+  };
+  const response = await axiosInstance({
+    method: "get",
+    url: ENDPOINTS.GET_PERMOHONAN_PEMASANGAN_PERLALIN,
+    headers: headers,
   });
   andalalinRespone(response);
 };
@@ -783,13 +893,16 @@ export const andalalinPemasangan = async (
 
   formData.append("data", JSON.stringify(lokasi));
 
-  const response = await fetch(ENDPOINTS.PEMASANGAN_PERLALIN + "/" + id, {
-    method: "POST",
-    headers: {
-      Authorization: "Bearer " + accessToken,
-      "Content-Type": "multipart/form-data",
-    },
-    body: formData,
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "multipart/form-data",
+  };
+  const body = formData;
+  const response = await axiosInstance({
+    method: "post",
+    url: ENDPOINTS.PEMASANGAN_PERLALIN + "/" + id,
+    headers: headers,
+    data: body,
   });
   andalalinRespone(response);
 };
@@ -798,12 +911,14 @@ export const andalalinGetAllPemasangan = async (
   accessToken,
   andalalinRespone
 ) => {
-  const response = await fetch(ENDPOINTS.GET_ALL_PEMASANGAN_PERLALIN, {
-    method: "GET",
-    headers: {
-      Authorization: "Bearer " + accessToken,
-      "Content-Type": "application/json",
-    },
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "application/json",
+  };
+  const response = await axiosInstance({
+    method: "get",
+    url: ENDPOINTS.GET_ALL_PEMASANGAN_PERLALIN,
+    headers: headers,
   });
   andalalinRespone(response);
 };
@@ -813,12 +928,108 @@ export const andalalinGetPemasangan = async (
   id,
   andalalinRespone
 ) => {
-  const response = await fetch(ENDPOINTS.GET_PEMASANGAN_PERLALIN + "/" + id, {
-    method: "GET",
-    headers: {
-      Authorization: "Bearer " + accessToken,
-      "Content-Type": "application/json",
-    },
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "application/json",
+  };
+  const response = await axiosInstance({
+    method: "get",
+    url: ENDPOINTS.GET_PEMASANGAN_PERLALIN + "/" + id,
+    headers: headers,
+  });
+  andalalinRespone(response);
+};
+
+export const andalalinTolakPermohonan = async (
+  accessToken,
+  id,
+  pertimbangan,
+  andalalinRespone
+) => {
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "application/json",
+  };
+  const response = await axiosInstance({
+    method: "post",
+    url: ENDPOINTS.ANDALALIN_TOLAK_PERMOHONAN + "/" + id + "/" + pertimbangan,
+    headers: headers,
+  });
+  andalalinRespone(response);
+};
+
+export const andalalinTundaPermohonan = async (
+  accessToken,
+  id,
+  pertimbangan,
+  andalalinRespone
+) => {
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "application/json",
+  };
+  const response = await axiosInstance({
+    method: "post",
+    url: ENDPOINTS.ANDALALIN_TUNDA_PERMOHONAN + "/" + id + "/" + pertimbangan,
+    headers: headers,
+  });
+  andalalinRespone(response);
+};
+
+export const andalalinLanjutkanPermohonan = async (
+  accessToken,
+  id,
+  andalalinRespone
+) => {
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "application/json",
+  };
+  const response = await axiosInstance({
+    method: "post",
+    url: ENDPOINTS.ANDALALIN_LANJUTKAN_PERMOHONAN + "/" + id,
+    headers: headers,
+  });
+  andalalinRespone(response);
+};
+
+export const andalalinUploadDokumen = async (
+  accessToken,
+  id,
+  file,
+  dokumen,
+  andalalinRespone
+) => {
+  const formData = new FormData();
+
+  file.forEach((item) => {
+    if (item.file != "") {
+      if (item.tipe == "application/pdf") {
+        formData.append(item.dokumen, {
+          uri: item.file,
+          name: "persyaratan.pdf",
+          type: item.tipe,
+        });
+      } else {
+        formData.append(item.dokumen, {
+          uri: item.file,
+          name: "persyaratan.docx",
+          type: item.tipe,
+        });
+      }
+    }
+  });
+
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "multipart/form-data",
+  };
+  const body = formData;
+  const response = await axiosInstance({
+    method: "post",
+    url: ENDPOINTS.ANDALALIN_UPLOAD_DOKUMEN + "/" + id + "/" + dokumen,
+    headers: headers,
+    data: body,
   });
   andalalinRespone(response);
 };

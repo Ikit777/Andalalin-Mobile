@@ -10,6 +10,7 @@ import AKetentuanDropdown from "../component/utility/AKetentuanDropdown";
 function KetentuanScreen({ navigation, route }) {
   const context = useContext(UserContext);
   const kondisi = route.params.kondisi;
+  const kategori = route.params.kategori;
   const [data, setData] = useState();
 
   useEffect(() => {
@@ -20,48 +21,16 @@ function KetentuanScreen({ navigation, route }) {
   }, [navigation]);
 
   const load = () => {
-    const wajibAndlalin = [
-      {
-        persyaratan: "Kartu tanda penduduk",
-        keterangan:
-          "Kartu tanda penduduk asli indonesia dengan nama yang tercantum sama dengan nama pemohon",
-      },
-      {
-        persyaratan: "Akta pendirian badan",
-        keterangan:
-          "Akta Pendirian badan yang telah mendapatkan pengesahan dari pejabat yang berwenang, apabila pemrakarsa adalah badan (operasional)",
-      },
-      {
-        persyaratan: "Surat kuasa",
-        keterangan:
-          "Surat kuasa bermaterai dari pemrakarsa apabila pengajuan permohonan dikuasakan kepada orang lain.\n\nPemberian surat kuasa hanya diberikan kepada orang yang memiliki hubungan keluarga/saudara atau hubungan staf/bawahan/kerja dengan pemohon izin yang dibuktikan dengan:\n\n1. Foto copy kartu keluarga atau surat pernyataan bermaterai yang menyatakan bahwa yang bersangkutan memiliki hubungan keluarga/saudara, dalam hal kuasa diberikan kepada orang yang memiliki hubungan keluarga/saudara.\n\n2. Surat keterangan bermaterai terkait status kepegawaian/surat penempatan kerja, dalam hal kuasa diberikan kepada orang ang memiliki hubungan staff/bawahan/kerja.",
-      },
-    ];
-
-    const wajibPerlalin = [
-      {
-        persyaratan: "Kartu tanda penduduk",
-        keterangan:
-          "Kartu tanda penduduk asli indonesia dengan nama yang tercantum sama dengan nama pemohon",
-      },
-      {
-        persyaratan: "Surat permohonan",
-        keterangan:
-          "Surat permohonan berisi infromasi terkait permohonan yang akan diajukan seperti perlengkapan lalu lintas",
-      },
-    ];
     switch (kondisi) {
       case "Pengajuan andalalin":
         context.toggleLoading(true);
 
         setTimeout(() => {
-          context.dataMaster.persyaratan_tambahan.PersyaratanTambahanAndalalin.map(
-            (item) => {
-              wajibAndlalin.push(item);
-            }
-          );
+          const persyaratan = context.dataMaster.persyaratan.PersyaratanAndalalin.filter((bangkitan) => {
+            return bangkitan.bangkitan == context.permohonan.bangkitan;
+          })
 
-          setData(wajibAndlalin);
+          setData(persyaratan);
           context.toggleLoading(false);
         }, 1000);
         break;
@@ -69,13 +38,11 @@ function KetentuanScreen({ navigation, route }) {
         context.toggleLoading(true);
 
         setTimeout(() => {
-          context.dataMaster.persyaratan_tambahan.PersyaratanTambahanAndalalin.map(
-            (item) => {
-              wajibAndlalin.push(item);
-            }
-          );
+          const persyaratan = context.dataMaster.persyaratan.PersyaratanAndalalin.filter((bangkitan) => {
+            return bangkitan.bangkitan == kategori;
+          })
 
-          setData(wajibAndlalin);
+          setData(persyaratan);
           context.toggleLoading(false);
         }, 1000);
         break;
@@ -83,13 +50,7 @@ function KetentuanScreen({ navigation, route }) {
         context.toggleLoading(true);
 
         setTimeout(() => {
-          context.dataMaster.persyaratan_tambahan.PersyaratanTambahanPerlalin.map(
-            (item) => {
-              wajibPerlalin.push(item);
-            }
-          );
-
-          setData(wajibPerlalin);
+          setData(context.dataMaster.persyaratan.PersyaratanPerlalin);
           context.toggleLoading(false);
         }, 1000);
         break;
@@ -97,13 +58,7 @@ function KetentuanScreen({ navigation, route }) {
         context.toggleLoading(true);
 
         setTimeout(() => {
-          context.dataMaster.persyaratan_tambahan.PersyaratanTambahanPerlalin.map(
-            (item) => {
-              wajibPerlalin.push(item);
-            }
-          );
-
-          setData(wajibPerlalin);
+          setData(context.dataMaster.persyaratan.PersyaratanPerlalin);
           context.toggleLoading(false);
         }, 1000);
         break;
@@ -113,9 +68,9 @@ function KetentuanScreen({ navigation, route }) {
   useEffect(() => {
     BackHandler.addEventListener("hardwareBackPress", () => {
       if (kondisi == "Pengajuan andalalin") {
-        navigation.push("Back Andalalin", { kondisi: "Andalalin" });
+        navigation.navigate("Andalalin", { kondisi: "Andalalin" });
       } else if (kondisi == "Pengajuan perlalin") {
-        navigation.push("Back Andalalin", { kondisi: "Perlalin" });
+        navigation.navigate("Andalalin", { kondisi: "Perlalin" });
       } else {
         navigation.goBack();
       }
@@ -125,9 +80,9 @@ function KetentuanScreen({ navigation, route }) {
 
     return BackHandler.removeEventListener("hardwareBackPress", () => {
       if (kondisi == "Pengajuan andalalin") {
-        navigation.push("Back Andalalin", { kondisi: "Andalalin" });
+        navigation.navigate("Andalalin", { kondisi: "Andalalin" });
       } else if (kondisi == "Pengajuan perlalin") {
-        navigation.push("Back Andalalin", { kondisi: "Perlalin" });
+        navigation.navigate("Andalalin", { kondisi: "Perlalin" });
       } else {
         navigation.goBack();
       }
@@ -149,17 +104,17 @@ function KetentuanScreen({ navigation, route }) {
           <ABackButton
             onPress={() => {
               if (kondisi == "Pengajuan andalalin") {
-                navigation.push("Back Andalalin", { kondisi: "Andalalin" });
+                navigation.navigate("Andalalin", { kondisi: "Andalalin" });
               } else if (kondisi == "Pengajuan perlalin") {
-                navigation.push("Back Andalalin", { kondisi: "Perlalin" });
+                navigation.navigate("Andalalin", { kondisi: "Perlalin" });
               } else {
                 navigation.goBack();
               }
             }}
           />
-          <AText
-            style={{ paddingLeft: 4 }}
-            size={24}
+         <AText
+            style={{ paddingLeft: 4}}
+            size={20}
             color={color.neutral.neutral900}
             weight="normal"
           >
@@ -195,6 +150,7 @@ function KetentuanScreen({ navigation, route }) {
                     backgroundColor: color.neutral.neutral50,
                     alignSelf: "center",
                     marginTop: 6,
+                    marginBottom: 6,
                   }}
                 />
               </View>

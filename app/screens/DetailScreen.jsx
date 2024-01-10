@@ -12,13 +12,14 @@ import AScreen from "../component/utility/AScreen";
 import ABackButton from "../component/utility/ABackButton";
 import { useStateToggler } from "../hooks/useUtility";
 import ADialog from "../component/utility/ADialog";
-import { andalalinGetById } from "../api/andalalin";
+import { andalalinCekSurveiKepuasan, andalalinGetById } from "../api/andalalin";
 import { authRefreshToken } from "../api/auth";
 import { UserContext } from "../context/UserContext";
 import DetailUser from "../component/detail/DetailUser";
 import DetailNonUser from "../component/detail/DetailNonUser";
 import { useFocusEffect } from "@react-navigation/native";
 import ASnackBar from "../component/utility/ASnackBar";
+import AConfirmationDialog from "../component/utility/AConfirmationDialog";
 
 function DetailScreen({ navigation, route }) {
   const context = useContext(UserContext);
@@ -27,6 +28,8 @@ function DetailScreen({ navigation, route }) {
 
   const [refreshing, setRefreshing] = useState(false);
   const [progressViewOffset, setProgressViewOffset] = useState(40);
+
+  const [surveiDialog, toggleSurveiDialog] = useStateToggler();
 
   useFocusEffect(
     React.useCallback(() => {
@@ -47,68 +50,32 @@ function DetailScreen({ navigation, route }) {
   const back = () => {
     switch (context.getUser().role) {
       case "User":
-        navigation.replace("Back Daftar");
+        navigation.replace("Daftar");
         break;
       case "Operator":
-        if (
-          data.status_andalalin == "Permohonan selesai" ||
-          data.status_andalalin == "Pemasangan selesai"
-        ) {
-          navigation.replace("Back Daftar", { kondisi: "Selesai" });
-        } else {
-          navigation.replace("Back Daftar", { kondisi: "Diajukan" });
-        }
+        navigation.replace("Daftar", { kondisi: "Diajukan" });
         break;
       case "Petugas":
         switch (data.status_andalalin) {
           case "Survei lapangan":
-            navigation.replace("Back Daftar", { kondisi: "Survei" });
+            navigation.replace("Daftar", { kondisi: "Survei" });
             break;
           case "Pemasangan sedang dilakukan":
-            navigation.replace("Back Daftar", { kondisi: "Pemasangan" });
+            navigation.replace("Daftar", { kondisi: "Pemasangan" });
             break;
           default:
-            navigation.replace("Back Daftar", { kondisi: "Survei" });
+            navigation.replace("Daftar", { kondisi: "Survei" });
             break;
         }
         break;
       case "Admin":
-        switch (data.status_andalalin) {
-          case "Permohonan selesai":
-            navigation.replace("Back Daftar", { kondisi: "Selesai" });
-            break;
-          case "Pemasangan selesai":
-            navigation.replace("Back Daftar", { kondisi: "Selesai" });
-            break;
-          default:
-            if (data.jenis_andalalin == "Dokumen analisa dampak lalu lintas") {
-              navigation.replace("Back Daftar", { kondisi: "Persetujuan" });
-            } else {
-              navigation.replace("Back Daftar", { kondisi: "Keputusan" });
-            }
-
-            break;
-        }
+        navigation.replace("Daftar", { kondisi: "Diajukan" });
         break;
       case "Dinas Perhubungan":
-        if (
-          data.status_andalalin == "Permohonan selesai" ||
-          data.status_andalalin == "Pemasangan selesai"
-        ) {
-          navigation.replace("Back Daftar", { kondisi: "Selesai" });
-        } else {
-          navigation.replace("Back Daftar", { kondisi: "Berlangsung" });
-        }
+        navigation.replace("Daftar", { kondisi: "Diajukan" });
         break;
       case "Super Admin":
-        if (
-          data.status_andalalin == "Permohonan selesai" ||
-          data.status_andalalin == "Pemasangan selesai"
-        ) {
-          navigation.replace("Back Daftar", { kondisi: "Selesai" });
-        } else {
-          navigation.replace("Back Daftar", { kondisi: "Diajukan" });
-        }
+        navigation.replace("Daftar", { kondisi: "Diajukan" });
         break;
     }
   };
@@ -117,27 +84,33 @@ function DetailScreen({ navigation, route }) {
     if (context.loading == false) {
       context.toggleLoading(true);
     }
-    switch (context.getUser().role) {
-      case "User":
-        loadPermohonan();
-        break;
-      case "Operator":
-        loadPermohonan();
-        break;
-      case "Petugas":
-        loadPermohonan();
-        break;
-      case "Admin":
-        loadPermohonan();
-        break;
-      case "Dinas Perhubungan":
-        loadPermohonan();
-        break;
-      case "Super Admin":
-        loadPermohonan();
-        break;
-    }
+    loadPermohonan();
   }, []);
+
+  const cek = (id) => {
+    andalalinCekSurveiKepuasan(
+      context.getUser().access_token,
+      id,
+      (response) => {
+        switch (response.status) {
+          case 200:
+            context.toggleLoading(false);
+            break;
+          case 424:
+            authRefreshToken(context, (response) => {
+              if (response.status === 200) {
+                cek(id);
+              }
+            });
+            break;
+          default:
+            context.toggleLoading(false);
+            toggleSurveiDialog();
+            break;
+        }
+      }
+    );
+  };
 
   const loadPermohonan = () => {
     andalalinGetById(
@@ -147,9 +120,26 @@ function DetailScreen({ navigation, route }) {
         switch (response.status) {
           case 200:
             (async () => {
-              const result = await response.json();
+              const result = await response.data;
               setData(result.data);
-              context.toggleLoading(false);
+              context.setDetailPermohonan(result.data);
+
+              switch (context.getUser().role) {
+                case "User":
+                  if (
+                    result.data.status_andalalin == "Permohonan selesai" ||
+                    result.data.status_andalalin == "Pemasangan selesai"
+                  ) {
+                    cek(route.params.id);
+                  } else {
+                    context.toggleLoading(false);
+                  }
+
+                  break;
+                default:
+                  context.toggleLoading(false);
+                  break;
+              }
             })();
             break;
           case 424:
@@ -173,17 +163,53 @@ function DetailScreen({ navigation, route }) {
   const detail = () => {
     switch (context.getUser().role) {
       case "User":
-        return <DetailUser permohonan={data} navigation={navigation} />;
+        return (
+          <DetailUser
+            permohonan={data}
+            navigation={navigation}
+            reload={loadPermohonan}
+          />
+        );
       case "Operator":
-        return <DetailNonUser permohonan={data} navigation={navigation} />;
+        return (
+          <DetailNonUser
+            permohonan={data}
+            navigation={navigation}
+            reload={loadPermohonan}
+          />
+        );
       case "Petugas":
-        return <DetailNonUser permohonan={data} navigation={navigation} />;
+        return (
+          <DetailNonUser
+            permohonan={data}
+            navigation={navigation}
+            reload={loadPermohonan}
+          />
+        );
       case "Admin":
-        return <DetailNonUser permohonan={data} navigation={navigation} />;
+        return (
+          <DetailNonUser
+            permohonan={data}
+            navigation={navigation}
+            reload={loadPermohonan}
+          />
+        );
       case "Dinas Perhubungan":
-        return <DetailNonUser permohonan={data} navigation={navigation} />;
+        return (
+          <DetailNonUser
+            permohonan={data}
+            navigation={navigation}
+            reload={loadPermohonan}
+          />
+        );
       case "Super Admin":
-        return <DetailNonUser permohonan={data} navigation={navigation} />;
+        return (
+          <DetailNonUser
+            permohonan={data}
+            navigation={navigation}
+            reload={loadPermohonan}
+          />
+        );
     }
   };
 
@@ -209,26 +235,7 @@ function DetailScreen({ navigation, route }) {
     setRefreshing(false);
     setTimeout(() => {
       context.toggleLoading(true);
-      switch (context.getUser().role) {
-        case "User":
-          loadPermohonan();
-          break;
-        case "Operator":
-          loadPermohonan();
-          break;
-        case "Petugas":
-          loadPermohonan();
-          break;
-        case "Admin":
-          loadPermohonan();
-          break;
-        case "Dinas Perhubungan":
-          loadPermohonan();
-          break;
-        case "Super Admin":
-          loadPermohonan();
-          break;
-      }
+      loadPermohonan();
     }, 50);
   }, []);
 
@@ -250,7 +257,7 @@ function DetailScreen({ navigation, route }) {
           />
           <AText
             style={{ paddingLeft: 4 }}
-            size={24}
+            size={20}
             color={color.neutral.neutral900}
             weight="normal"
           >
@@ -286,12 +293,30 @@ function DetailScreen({ navigation, route }) {
 
       <ADialog
         title={"Permohoman gagal dimuat"}
-        desc={"Terjadi kesalahan pada server kami, mohon coba lagi lain waktu"}
+        desc={"Terjadi kesalahan pada server, mohon coba lagi lain waktu"}
         visibleModal={gagal}
         btnOK={"OK"}
         onPressOKButton={() => {
           toggleGagal();
-          navigation.navigate("Daftar");
+          back();
+        }}
+      />
+
+      <AConfirmationDialog
+        title={"Survei kepuasan"}
+        desc={"Anda harus menyelesaikan survei kepuasan terlebih dahulu"}
+        visibleModal={surveiDialog}
+        btnOK={"OK"}
+        btnBATAL={"Batal"}
+        onPressBATALButton={() => {
+          toggleSurveiDialog();
+          back();
+        }}
+        onPressOKButton={() => {
+          toggleSurveiDialog();
+          context.clearSurveiKepuasan();
+          context.setIndexSurvei(1);
+          navigation.push("Survei Kepuasan", { id: route.params.id });
         }}
       />
     </AScreen>

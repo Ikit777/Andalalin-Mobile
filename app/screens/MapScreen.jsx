@@ -92,9 +92,9 @@ function MapScreen({ navigation, route }) {
               navigation.goBack();
             }}
           />
-          <AText
-            style={{ paddingLeft: 4 }}
-            size={24}
+         <AText
+            style={{ paddingLeft: 4}}
+            size={20}
             color={color.neutral.neutral900}
             weight="normal"
           >
@@ -121,6 +121,11 @@ function MapScreen({ navigation, route }) {
 
       {load ? (
         <Pressable
+          android_ripple={{
+            color: "rgba(0, 0, 0, 0.1)",
+            borderless: false,
+            radius: 32,
+          }}
           style={{
             alignSelf: "baseline",
             position: "absolute",

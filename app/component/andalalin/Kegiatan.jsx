@@ -4,26 +4,26 @@ import AText from "../utility/AText";
 import color from "../../constants/color";
 import ATextInput from "../utility/ATextInput";
 import ATextInputIcon from "../utility/ATextInputIcon";
-import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 import { useStateToggler } from "../../hooks/useUtility";
 import { UserContext } from "../../context/UserContext";
 import AButton from "../utility/AButton";
-import ALokasi from "../utility/ALokasi";
+import { useFocusEffect } from "@react-navigation/native";
+import ADatePicker from "../utility/ADatePicker";
 
-function Kegiatan({ onPress }) {
+function Kegiatan({ onPress, navigation }) {
   const {
     permohonan: {
       aktivitas,
       peruntukan,
-      kriteria_khusus,
+      total_luas_lahan,
       nilai_kriteria,
-      lokasi_bangunan,
+      
       nomer_skrk,
       tanggal_skrk,
-      lat_bangunan,
-      long_bangunan,
+      
       jenis,
       rencana_pembangunan,
+      catatan,
     },
     dispatch,
     dataMaster,
@@ -31,62 +31,40 @@ function Kegiatan({ onPress }) {
 
   const kegiatanInput = React.createRef();
   const peruntukanInput = React.createRef();
+  const totalInput = React.createRef();
   const luasInput = React.createRef();
-  const alamatInput = React.createRef();
   const nomerInput = React.createRef();
 
   const [kegiatan, setKegiatan] = useState(aktivitas);
   const [untuk, setPeruntukan] = useState(peruntukan);
+  const [total, setTotal] = useState(total_luas_lahan);
   const [luas, setLuas] = useState(nilai_kriteria);
-  const [alamat, setAlamat] = useState(lokasi_bangunan);
+  
   const [nomer, setNomer] = useState(nomer_skrk);
   const [tanggal, setTanggal] = useState(tanggal_skrk);
-  const [lat, setLat] = useState(lat_bangunan);
-  const [long, setLong] = useState(long_bangunan);
+ 
+  const [catatanTambahan, setCatatanTambahan] = useState(catatan);
 
   const [kegiatanError, toggleKegiatanError] = useStateToggler();
   const [peruntukanError, togglePeruntukanError] = useStateToggler();
   const [luasError, toggleLuasError] = useStateToggler();
-  const [alamatError, toggleAlamatError] = useStateToggler();
+  
   const [nomerError, toggleNomerError] = useStateToggler();
   const [tanggalError, toggleTanggalError] = useStateToggler();
-
-  const [lokasiModal, toggleLokasiModal] = useStateToggler();
+  const [totalError, toggleTotalError] = useStateToggler();
 
   const [data, setData] = useState("");
 
-  const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate;
-    setTanggal(formatDate(currentDate));
-    {
-      tanggalError ? toggleTanggalError() : "";
-    }
-  };
-
-  const showMode = (currentMode) => {
-    DateTimePickerAndroid.open({
-      value: new Date(),
-      onChange,
-      mode: currentMode,
-    });
-  };
-
-  const showDatepicker = () => {
-    showMode("date");
-  };
-
-  const formatDate = (date) => {
-    return `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
-  };
+  const [dateModal, toggleDateModal] = useStateToggler();
 
   const press = () => {
     if (data.Kriteria == "" && data.Kriteria == null) {
       if (
         kegiatan != "" &&
         untuk != "" &&
-        alamat != "" &&
         nomer != "" &&
-        tanggal != ""
+        tanggal != "" &&
+        total != ""
       ) {
         {
           kegiatanError ? toggleKegiatanError() : "";
@@ -94,24 +72,25 @@ function Kegiatan({ onPress }) {
         {
           peruntukanError ? togglePeruntukanError() : "";
         }
-        {
-          alamatError ? toggleAlamatError() : "";
-        }
+        
         {
           nomerError ? toggleNomerError() : "";
         }
         {
           tanggalError ? toggleTanggalError() : "";
         }
-
+        {
+          totalError ? toggleTotalError() : "";
+        }
         dispatch({
           aktivitas: kegiatan,
           peruntukan: untuk,
-          lokasi_bangunan: alamat,
+          total_luas_lahan: total,
+          
           nomer_skrk: nomer,
           tanggal_skrk: tanggal,
-          lat_bangunan: lat,
-          long_bangunan: long,
+          
+          catatan: catatanTambahan,
         });
         onPress();
       } else {
@@ -121,14 +100,15 @@ function Kegiatan({ onPress }) {
         {
           untuk == "" ? (peruntukanError ? "" : togglePeruntukanError()) : "";
         }
-        {
-          alamat == "" ? (alamatError ? "" : toggleAlamatError()) : "";
-        }
+        
         {
           nomer == "" ? (nomerError ? "" : toggleNomerError()) : "";
         }
         {
           tanggal == "" ? (tanggalError ? "" : toggleTanggalError()) : "";
+        }
+        {
+          total == "" ? (totalError ? "" : toggleTotalError()) : "";
         }
       }
     } else {
@@ -136,9 +116,9 @@ function Kegiatan({ onPress }) {
         kegiatan != "" &&
         untuk != "" &&
         luas != "" &&
-        alamat != "" &&
         nomer != "" &&
-        tanggal != ""
+        tanggal != "" &&
+        total != ""
       ) {
         {
           kegiatanError ? toggleKegiatanError() : "";
@@ -150,25 +130,23 @@ function Kegiatan({ onPress }) {
           luasError ? toggleLuasError() : "";
         }
         {
-          alamatError ? toggleAlamatError() : "";
-        }
-        {
           nomerError ? toggleNomerError() : "";
         }
         {
           tanggalError ? toggleTanggalError() : "";
         }
-
+        {
+          totalError ? toggleTotalError() : "";
+        }
         dispatch({
           aktivitas: kegiatan,
           peruntukan: untuk,
           kriteria_khusus: data.Kriteria,
+          total_luas_lahan: total,
           nilai_kriteria: luas,
-          lokasi_bangunan: alamat,
           nomer_skrk: nomer,
           tanggal_skrk: tanggal,
-          lat_bangunan: lat,
-          long_bangunan: long,
+          catatan: catatanTambahan,
         });
         onPress();
       } else {
@@ -182,20 +160,20 @@ function Kegiatan({ onPress }) {
           luas == "" ? (luasError ? "" : toggleLuasError()) : "";
         }
         {
-          alamat == "" ? (alamatError ? "" : toggleAlamatError()) : "";
-        }
-        {
           nomer == "" ? (nomerError ? "" : toggleNomerError()) : "";
         }
         {
           tanggal == "" ? (tanggalError ? "" : toggleTanggalError()) : "";
+        }
+        {
+          total == "" ? (totalError ? "" : toggleTotalError()) : "";
         }
       }
     }
   };
 
   const dataSet = () => {
-    let findData = dataMaster.rencana_pembangunan.find((item) => {
+    let findData = dataMaster.jenis_rencana.find((item) => {
       return item.Kategori == jenis;
     });
 
@@ -251,7 +229,7 @@ function Kegiatan({ onPress }) {
           peruntukanError ? color.error.error300 : color.neutral.neutral300
         }
         ktype={"default"}
-        hint={"Peruntukan"}
+        hint={"Masukkan peruntukan"}
         title={"Peruntukan"}
         multi={true}
         padding={20}
@@ -270,6 +248,44 @@ function Kegiatan({ onPress }) {
           weight="normal"
         >
           Peruntukan wajib
+        </AText>
+      ) : (
+        ""
+      )}
+
+      <ATextInput
+        bdColor={totalError ? color.error.error300 : color.neutral.neutral300}
+        ktype={"number-pad"}
+        hint={"Masukkan total"}
+        title={"Total luas lahan (m²)"}
+        multi={false}
+        padding={20}
+        rtype={data.Kriteria != "" && data.Kriteria != null ? "next" : "done"}
+        blur={data.Kriteria != "" && data.Kriteria != null ? false : true}
+        value={total}
+        ref={totalInput}
+        onChangeText={(value) => {
+          setTotal(value);
+        }}
+        submit={() => {
+          {
+            totalError ? toggleTotalError() : "";
+          }
+
+          if (data.Kriteria != "" && data.Kriteria != null) {
+            total != "" ? luasInput.current.focus() : "";
+          }
+        }}
+      />
+
+      {totalError ? (
+        <AText
+          style={{ paddingTop: 6 }}
+          color={color.error.error500}
+          size={14}
+          weight="normal"
+        >
+          Total luas lahan wajib
         </AText>
       ) : (
         ""
@@ -317,31 +333,6 @@ function Kegiatan({ onPress }) {
         ""
       )}
 
-      <ATextInputIcon
-        bdColor={alamatError ? color.error.error300 : color.neutral.neutral300}
-        hint={"Pilih lokasi bangunan"}
-        title={"Lokasi bangunan"}
-        padding={20}
-        mult={true}
-        width={true}
-        icon={"map-pin"}
-        value={alamat}
-        onPress={toggleLokasiModal}
-      />
-
-      {alamatError ? (
-        <AText
-          style={{ paddingTop: 6 }}
-          color={color.error.error500}
-          size={14}
-          weight="normal"
-        >
-          Lokasi bangunan wajib
-        </AText>
-      ) : (
-        ""
-      )}
-
       <ATextInput
         bdColor={nomerError ? color.error.error300 : color.neutral.neutral300}
         ktype={"default"}
@@ -382,7 +373,9 @@ function Kegiatan({ onPress }) {
         padding={20}
         icon={"calendar"}
         value={tanggal}
-        onPress={showDatepicker}
+        onPress={() => {
+          toggleDateModal();
+        }}
       />
 
       {tanggalError ? (
@@ -398,6 +391,19 @@ function Kegiatan({ onPress }) {
         ""
       )}
 
+      <ATextInput
+        bdColor={color.neutral.neutral300}
+        ktype={"default"}
+        hint={"Masukkan catatan"}
+        title={"Catatan"}
+        multi={true}
+        padding={20}
+        value={catatanTambahan}
+        onChangeText={(value) => {
+          setCatatanTambahan(value);
+        }}
+      />
+
       <AButton
         style={{ marginTop: 32, marginBottom: 50 }}
         title={"Lanjut"}
@@ -407,14 +413,18 @@ function Kegiatan({ onPress }) {
         }}
       />
 
-      <ALokasi
-        visibleModal={lokasiModal}
-        setLokasi={setAlamat}
-        setLat={setLat}
-        setLong={setLong}
+      <ADatePicker
+        visibleModal={dateModal}
         onPressOKButton={() => {
-          toggleLokasiModal();
+          toggleDateModal();
+          {
+            tanggalError ? toggleTanggalError() : "";
+          }
         }}
+        onPressBATALButton={() => {
+          toggleDateModal();
+        }}
+        pilih={setTanggal}
       />
     </ScrollView>
   );
