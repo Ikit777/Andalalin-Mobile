@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import { StyleSheet, View, Pressable, TouchableOpacity } from "react-native";
 import color from "../../constants/color";
 import AText from "../utility/AText";
@@ -7,7 +7,7 @@ import { useStateToggler } from "../../hooks/useUtility";
 import { UserContext } from "../../context/UserContext";
 import AButton from "../utility/AButton";
 import ABottomSheet from "../utility/ABottomSheet";
-import { RadioButton, Checkbox } from "react-native-paper";
+import { RadioButton } from "react-native-paper";
 import {
   andalalinLanjutkanPermohonan,
   andalalinSimpanKeputusan,
@@ -73,6 +73,9 @@ function DetailNonUser({ permohonan, navigation, reload }) {
   const [pemasanganModal, togglePemasanganModal] = useStateToggler();
   const [keputusanPemasanganKonfirmasi, toggleKeputusanPemasanganKonfirmasi] =
     useStateToggler();
+
+  const [tindakanModal, toggleTindakanModal] = useStateToggler();
+  const [tindakanPilihan, setTindakanPilihan] = useState();
 
   const status = () => {
     switch (permohonan.status_andalalin) {
@@ -181,18 +184,16 @@ function DetailNonUser({ permohonan, navigation, reload }) {
                 break;
             }
           case "Persetujuan penyusun dokumen":
-              setDokumen("Penyusun dokumen");
-              uploadFile.push({
-                nama: "",
-                file: "",
-                tipe: "",
-                dokumen: "Penyusun dokumen",
-              });
-              toggleUploadModal();
+            setDokumen("Penyusun dokumen");
+            uploadFile.push({
+              nama: "",
+              file: "",
+              tipe: "",
+              dokumen: "Penyusun dokumen",
+            });
+            toggleUploadModal();
           case "Pemeriksaan dokumen andalalin":
-            return tindakan(() => {
-
-            }, "Pilih tindakan");
+            return tindakan(() => {}, "Pilih tindakan");
           case "Dokumen andalalin terpenuhi":
             return tindakan(() => {
               navigation.push("Pernyataan");
@@ -248,37 +249,98 @@ function DetailNonUser({ permohonan, navigation, reload }) {
         }
         break;
       case "Super Admin":
-        // switch (permohonan.status_andalalin) {
-        //   case "Cek persyaratan":
-        //     return tindakan(() => {
-        //       setPersyaratanModal();
-        //     }, "Cek persyaratan");
-        //   case "Berita acara pemeriksaan":
-        //     switch (permohonan.persetujuan) {
-        //       case "Dokumen tidak disetujui":
-        //         return tindakan(() => {
-        //           navigation.push("Berita acara pemeriksaan", {
-        //             id: permohonan.id_andalalin,
-        //             kondisi: "perbarui",
-        //           });
-        //         }, "perbarui laporan");
-        //       default:
-        //         return tindakan(() => {
-        //           navigation.push("Berita acara pemeriksaan", {
-        //             id: permohonan.id_andalalin,
-        //             kondisi: "Laporan",
-        //           });
-        //         }, "Berita acara pemeriksaan");
-        //     }
-        //   case "Pembuatan surat keputusan":
-        //     return tindakan(() => {
-        //       setSKModal();
-        //     }, "Pembuatan surat keputusan");
-        //   case "Persetujuan dokumen":
-        //     return tindakan(() => {
-        //       setPersetujuanModal();
-        //     }, "Persetujuan dokumen");
-        // }
+        switch (permohonan.status_andalalin) {
+          case "Cek persyaratan":
+            return tindakan(() => {
+              setPersyaratanModal();
+            }, "Pilih tindakan");
+          case "Persetujuan administrasi":
+            return tindakan(() => {
+              setDokumen("Checklist administrasi");
+              uploadFile.push({
+                nama: "",
+                file: "",
+                tipe: "",
+                dokumen: "Checklist administrasi",
+              });
+              toggleUploadModal();
+            }, "Upload berkas");
+          case "Persyaratan terpenuhi":
+            switch (permohonan.kategori_bangkitan) {
+              case "Bangkitan rendah":
+                return tindakan(() => {
+                  navigation.push("Pernyataan");
+                }, "Pembuatan surat pernyataan");
+              case "Bangkitan sedang":
+                return tindakan(() => {
+                  context.setIndexPenyusun(1);
+                  context.clearPenyusun();
+                  navigation.push("Penyusun");
+                }, "Pembuatan penyusun dokumen");
+              case "Bangkitan tinggi":
+                break;
+            }
+          case "Persetujuan penyusun dokumen":
+            setDokumen("Penyusun dokumen");
+            uploadFile.push({
+              nama: "",
+              file: "",
+              tipe: "",
+              dokumen: "Penyusun dokumen",
+            });
+            toggleUploadModal();
+          case "Pemeriksaan dokumen andalalin":
+            return tindakan(() => {}, "Pilih tindakan");
+          case "Dokumen andalalin terpenuhi":
+            return tindakan(() => {
+              navigation.push("Pernyataan");
+            }, "Pembuatan surat pernyataan");
+          case "Pembuatan surat keputusan":
+            return tindakan(() => {
+              navigation.push("Keputusan");
+            }, "Pembuatan surat keputusan");
+          case "Pemeriksaan surat keputusan":
+            return tindakan(() => {
+              setPemeriksaanModal();
+            }, "Berikan hasil pemeriksaan");
+          case "Persetujuan surat keputusan":
+            return tindakan(() => {
+              setDokumen("Surat keputusan persetujuan teknis andalalin");
+              uploadFile.push({
+                nama: "",
+                file: "",
+                tipe: "",
+                dokumen: "Surat keputusan persetujuan teknis andalalin",
+              });
+              toggleUploadModal();
+            }, "Upload berkas");
+          case "Cek kelengkapan akhir":
+            return tindakan(() => {
+              context.setIndexKelengkapan(1);
+              context.clearKelengkapan();
+              navigation.push("Kelengkapan");
+            }, "Cek kelengkapan akhir");
+          case "Persetujuan kelengkapan akhir":
+            return tindakan(() => {
+              setDokumen("Checklist kelengkapan akhir");
+              uploadFile.push({
+                nama: "",
+                file: "",
+                tipe: "",
+                dokumen: "Checklist kelengkapan akhir",
+              });
+              toggleUploadModal();
+            }, "Upload berkas");
+          case "Kelengkapan tidak terpenuhi":
+            if (permohonan.kelengkapan != null) {
+              return tindakan(() => {
+                navigation.push("Update Kelengkapan", {
+                  permohonan: permohonan,
+                });
+              }, "Perbarui kelengkapan");
+            }
+        }
+
         break;
     }
   };
@@ -387,9 +449,13 @@ function DetailNonUser({ permohonan, navigation, reload }) {
               });
             }, "Ganti pentugas");
           case "Survei ditunda":
-            return tindakan(() => {}, "Lanjutkan survei");
+            return tindakan(() => {
+              toggleLanjutkanModal();
+            }, "Lanjutkan survei");
           case "Pemasangan ditunda":
-            return tindakan(() => {}, "Lanjutkan pemasangan");
+            return tindakan(() => {
+              togglePemasanganModal();
+            }, "Lanjutkan pemasangan");
           case "Laporan survei":
             return tindakan(() => {
               setLaporanModal();
@@ -399,23 +465,9 @@ function DetailNonUser({ permohonan, navigation, reload }) {
               toggleKeputusanModal();
             }, "Pengambilan keputusan hasil");
           case "Pemasangan sedang dilakukan":
-            return doubletindakan(
-              () => {
-                navigation.push("Survei", {
-                  id: permohonan.id_andalalin,
-                  kondisi: "Pemasangan",
-                }),
-                  context.clearSurvei();
-              },
-              "Pemasangan perlengkapan",
-              () => {
-                navigation.push("Pilih Petugas", {
-                  kondisi: "Ganti",
-                  permohonan: permohonan,
-                });
-              },
-              "Ganti pentugas"
-            );
+            return tindakan(() => {
+              toggleTindakanModal();
+            }, "Pilih tindakan");
         }
         break;
     }
@@ -433,7 +485,11 @@ function DetailNonUser({ permohonan, navigation, reload }) {
   const persyaratan = () => {
     return (
       <View>
-        {syarat == null ? permohonan.jenis_andalalin == "Dokumen analisis dampak lalu lintas" ? tindakan_andalalin() : tindakan_perlalin() : ""}
+        {syarat == null
+          ? permohonan.jenis_andalalin == "Dokumen analisis dampak lalu lintas"
+            ? tindakan_andalalin()
+            : tindakan_perlalin()
+          : ""}
 
         {syarat === "Tolak permohonan" ? tolak_permohonan() : ""}
 
@@ -467,9 +523,12 @@ function DetailNonUser({ permohonan, navigation, reload }) {
 
                 context.setIndexAdministrasi(1);
                 context.clearAdministrasi();
-                if (permohonan.jenis_andalalin == "Dokumen analisis dampak lalu lintas"){
+                if (
+                  permohonan.jenis_andalalin ==
+                  "Dokumen analisis dampak lalu lintas"
+                ) {
                   navigation.push("Administrasi");
-                }else{
+                } else {
                   navigation.push("Administrasi Perlalin");
                 }
               } else if (syarat == "Tolak permohonan") {
@@ -587,7 +646,7 @@ function DetailNonUser({ permohonan, navigation, reload }) {
         </AText>
         <View>
           <RadioButton.Group onValueChange={(value) => setChecked(value)}>
-          <View
+            <View
               style={{
                 flexDirection: "row",
                 alignItems: "center",
@@ -886,21 +945,21 @@ function DetailNonUser({ permohonan, navigation, reload }) {
           </View>
         );
       case "Penyusun dokumen":
-          return (
-            <View>
-              <ATextInputIcon
-                bdColor={color.neutral.neutral300}
-                hint={"Masukkan berkas pdf"}
-                icon={"file-plus"}
-                mult={true}
-                width={true}
-                value={uploadNamaFile}
-                onPress={() => {
-                  file("Penyusun dokumen", "Pdf");
-                }}
-              />
-            </View>
-          );
+        return (
+          <View>
+            <ATextInputIcon
+              bdColor={color.neutral.neutral300}
+              hint={"Masukkan berkas pdf"}
+              icon={"file-plus"}
+              mult={true}
+              width={true}
+              value={uploadNamaFile}
+              onPress={() => {
+                file("Penyusun dokumen", "Pdf");
+              }}
+            />
+          </View>
+        );
     }
   };
 
@@ -2033,6 +2092,127 @@ function DetailNonUser({ permohonan, navigation, reload }) {
                 toggleKeputusanPemasanganKonfirmasi();
               }
               setKeputusanLanjut(keputusan);
+            }}
+          >
+            <AText size={14} color={color.neutral.neutral700} weight="semibold">
+              Lanjut
+            </AText>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  };
+
+  const close_tindakan_modal = () => {
+    toggleTindakanModal();
+  };
+
+  const tindakan_pilihan = () => {
+    return (
+      <View>
+        <AText
+          style={{ paddingBottom: 16 }}
+          size={18}
+          color={color.neutral.neutral700}
+          weight="semibold"
+        >
+          Pilih tindakan permohonan
+        </AText>
+        <RadioButton.Group onValueChange={(value) => setTindakanPilihan(value)}>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <RadioButton
+              label="Pemasangan"
+              value="Pemasangan"
+              uncheckedColor={color.neutral.neutral300}
+              color={color.primary.primary600}
+              status={
+                tindakanPilihan === "Pemasangan" ? "checked" : "unchecked"
+              }
+            />
+            <Pressable
+              onPress={() => {
+                setTindakanPilihan("Pemasangan");
+              }}
+            >
+              <AText
+                style={{ paddingLeft: 4 }}
+                size={14}
+                color={color.neutral.neutral700}
+              >
+                Pemasangan
+              </AText>
+            </Pressable>
+          </View>
+
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              paddingTop: 8,
+            }}
+          >
+            <RadioButton
+              label="Ganti petugas"
+              value="Ganti petugas"
+              uncheckedColor={color.neutral.neutral300}
+              color={color.primary.primary600}
+              status={
+                tindakanPilihan === "Ganti petugas" ? "checked" : "unchecked"
+              }
+            />
+            <Pressable
+              onPress={() => {
+                setTindakanPilihan("Ganti petugas");
+              }}
+            >
+              <AText
+                style={{ paddingLeft: 4 }}
+                size={14}
+                color={color.neutral.neutral700}
+              >
+                Ganti petugas
+              </AText>
+            </Pressable>
+          </View>
+        </RadioButton.Group>
+
+        <View
+          style={{
+            flexDirection: "row",
+            alignSelf: "flex-end",
+            marginTop: 52,
+            marginRight: 16,
+            marginBottom: 16,
+          }}
+        >
+          <TouchableOpacity
+            style={{ flexDirection: "row", paddingLeft: 4 }}
+            onPress={() => {
+              close_tindakan_modal();
+            }}
+          >
+            <AText size={14} color={color.neutral.neutral700} weight="semibold">
+              Batal
+            </AText>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{ flexDirection: "row", paddingLeft: 4, marginLeft: 32 }}
+            onPress={() => {
+              switch (tindakanPilihan) {
+                case "Pemasangan":
+                  navigation.push("Survei", {
+                    id: permohonan.id_andalalin,
+                    kondisi: "Pemasangan",
+                  }),
+                    context.clearSurvei();
+                  break;
+                case "Ganti petugas":
+                  navigation.push("Pilih Petugas", {
+                    kondisi: "Ganti",
+                    permohonan: permohonan,
+                  });
+                  break;
+              }
             }}
           >
             <AText size={14} color={color.neutral.neutral700} weight="semibold">
@@ -3955,6 +4135,10 @@ function DetailNonUser({ permohonan, navigation, reload }) {
 
       <ABottomSheet visible={surveiModal} close={closeSurveiModal}>
         {survei_tindakan()}
+      </ABottomSheet>
+
+      <ABottomSheet visible={tindakanModal} close={close_tindakan_modal}>
+        {tindakan_pilihan()}
       </ABottomSheet>
 
       {pelaksanaan()}
