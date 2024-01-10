@@ -24,9 +24,8 @@ import { useFocusEffect } from "@react-navigation/native";
 import { checkMaster, masterAndalalin } from "../api/master";
 import { get, remove, store } from "../utils/local-storage";
 import AKategoriBangkitan from "../component/utility/AKategoriBangkitan";
-import * as FileSystem from "expo-file-system";
 import { Buffer } from "buffer";
-import { deflate, inflate } from "react-native-gzip";
+import { inflate } from "react-native-gzip";
 
 function HomeScreen({ navigation }) {
   const context = useContext(UserContext);
