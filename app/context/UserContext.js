@@ -8,7 +8,6 @@ import React, {
 } from "react";
 
 import * as Notifications from "expo-notifications";
-import { masterAndalalin } from "../api/master";
 import * as FileSystem from "expo-file-system";
 
 export const UserContext = createContext();

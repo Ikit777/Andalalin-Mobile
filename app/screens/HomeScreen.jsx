@@ -24,8 +24,8 @@ import { useFocusEffect } from "@react-navigation/native";
 import { checkMaster, masterAndalalin } from "../api/master";
 import { get, remove, store } from "../utils/local-storage";
 import AKategoriBangkitan from "../component/utility/AKategoriBangkitan";
-import { Buffer } from "buffer";
 import { inflate } from "react-native-gzip";
+import * as FileSystem from "expo-file-system";
 
 function HomeScreen({ navigation }) {
   const context = useContext(UserContext);
@@ -96,7 +96,7 @@ function HomeScreen({ navigation }) {
               title={"Daftar permohonan"}
               desc={"Daftar permohonan yang telah diajukan"}
               onPress={() => {
-                masterData("Daftar");
+                masterData("Daftar User");
               }}
             />
           </View>
@@ -110,7 +110,7 @@ function HomeScreen({ navigation }) {
               title={"Daftar permohonan"}
               desc={"Daftar permohonan yang telah diajukan"}
               onPress={() => {
-                masterData("Daftar Operator");
+                masterData("Daftar Non User");
               }}
             />
 
@@ -241,7 +241,7 @@ function HomeScreen({ navigation }) {
               title={"Daftar permohonan"}
               desc={"Daftar permohonan yang telah diajukan"}
               onPress={() => {
-                masterData("Daftar Super Admin");
+                masterData("Daftar Non User");
               }}
             />
 
@@ -410,9 +410,11 @@ function HomeScreen({ navigation }) {
   const decompressInflate = async (compressedData) => {
     try {
       const decompressedData = await inflate(compressedData);
-      const decompressedString =
-        Buffer.from(decompressedData).toString("utf-8");
-      return JSON.parse(decompressedString);
+      const match = decompressedData.match(/"update":\s*"([^"]*)"/);
+
+      const updateValue = match ? match[1] : null;
+
+      return { decompressedData, updateValue };
     } catch (error) {
       throw new Error(`Error decompressing data: ${error}`);
     }
@@ -421,7 +423,7 @@ function HomeScreen({ navigation }) {
   const masterData = async (kondisi) => {
     context.toggleLoading(true);
 
-    const value = await get("master");
+    const value = await get("updated");
 
     if (!value) {
       masterAndalalin((response) => {
@@ -431,34 +433,43 @@ function HomeScreen({ navigation }) {
 
             // Decompress the data using react-native-gzip
             decompressInflate(result.data)
-              .then((jsonData) => {
-                store("master", jsonData.update);
+              .then(({ decompressedData, updateValue }) => {
+                store("updated", updateValue);
 
-                context.setDataMaster(jsonData);
+                const filePath = `${FileSystem.documentDirectory}data.json`;
+                FileSystem.writeAsStringAsync(filePath, decompressedData, {
+                  encoding: FileSystem.EncodingType.UTF8,
+                })
+                  .then(() => {
+                    context.getDataMaster();
 
-                switch (kondisi) {
-                  case "Andalalin":
-                    context.toggleLoading(false);
-                    toggleKategoriBangkitan();
-                    break;
-                  case "Perlalin":
-                    context.toggleLoading(false);
-                    navigation.push("Andalalin", {
-                      kondisi: "Perlalin",
-                    });
-                    context.clear();
-                    context.setIndex(1);
-                    break;
-                  case "Daftar":
-                    navigation.push("Daftar");
-                    break;
-                  case "Daftar Operator":
-                    navigation.push("Daftar", { kondisi: "Diajukan" });
-                    break;
-                  case "Daftar Super Admin":
-                    navigation.push("Daftar", { kondisi: "Diajukan" });
-                    break;
-                }
+                    switch (kondisi) {
+                      case "Andalalin":
+                        context.toggleLoading(false);
+                        toggleKategoriBangkitan();
+                        break;
+                      case "Perlalin":
+                        context.toggleLoading(false);
+                        navigation.push("Andalalin", {
+                          kondisi: "Perlalin",
+                        });
+                        context.clear();
+                        context.setIndex(1);
+                        break;
+                      case "Daftar User":
+                        navigation.push("Daftar");
+                        break;
+                      case "Daftar Non User":
+                        navigation.push("Daftar", { kondisi: "Diajukan" });
+                        break;
+                    }
+                  })
+                  .catch((error) => {
+                    if (context.server == false) {
+                      context.toggleLoading(false);
+                      toggleGagal();
+                    }
+                  });
               })
               .catch((error) => {
                 if (context.server == false) {
@@ -487,34 +498,49 @@ function HomeScreen({ navigation }) {
 
                     // Decompress the data using react-native-gzip
                     decompressInflate(result.data)
-                      .then((jsonData) => {
-                        store("master", jsonData.update);
+                      .then(({ decompressedData, updateValue }) => {
+                        store("updated", updateValue);
 
-                        context.setDataMaster(jsonData);
+                        const filePath = `${FileSystem.documentDirectory}data.json`;
+                        FileSystem.writeAsStringAsync(
+                          filePath,
+                          decompressedData,
+                          {
+                            encoding: FileSystem.EncodingType.UTF8,
+                          }
+                        )
+                          .then(() => {
+                            context.getDataMaster();
 
-                        switch (kondisi) {
-                          case "Andalalin":
-                            context.toggleLoading(false);
-                            toggleKategoriBangkitan();
-                            break;
-                          case "Perlalin":
-                            context.toggleLoading(false);
-                            navigation.push("Andalalin", {
-                              kondisi: "Perlalin",
-                            });
-                            context.clear();
-                            context.setIndex(1);
-                            break;
-                          case "Daftar":
-                            navigation.push("Daftar");
-                            break;
-                          case "Daftar Operator":
-                            navigation.push("Daftar", { kondisi: "Diajukan" });
-                            break;
-                          case "Daftar Super Admin":
-                            navigation.push("Daftar", { kondisi: "Diajukan" });
-                            break;
-                        }
+                            switch (kondisi) {
+                              case "Andalalin":
+                                context.toggleLoading(false);
+                                toggleKategoriBangkitan();
+                                break;
+                              case "Perlalin":
+                                context.toggleLoading(false);
+                                navigation.push("Andalalin", {
+                                  kondisi: "Perlalin",
+                                });
+                                context.clear();
+                                context.setIndex(1);
+                                break;
+                              case "Daftar User":
+                                navigation.push("Daftar");
+                                break;
+                              case "Daftar Non User":
+                                navigation.push("Daftar", {
+                                  kondisi: "Diajukan",
+                                });
+                                break;
+                            }
+                          })
+                          .catch((error) => {
+                            if (context.server == false) {
+                              context.toggleLoading(false);
+                              toggleGagal();
+                            }
+                          });
                       })
                       .catch((error) => {
                         if (context.server == false) {
@@ -531,6 +557,8 @@ function HomeScreen({ navigation }) {
                 }
               });
             } else {
+              context.getDataMaster();
+
               switch (kondisi) {
                 case "Andalalin":
                   context.toggleLoading(false);
@@ -542,13 +570,10 @@ function HomeScreen({ navigation }) {
                   context.clear();
                   context.setIndex(1);
                   break;
-                case "Daftar":
+                case "Daftar User":
                   navigation.push("Daftar");
                   break;
-                case "Daftar Operator":
-                  navigation.push("Daftar", { kondisi: "Diajukan" });
-                  break;
-                case "Daftar Super Admin":
+                case "Daftar Non User":
                   navigation.push("Daftar", { kondisi: "Diajukan" });
                   break;
               }
