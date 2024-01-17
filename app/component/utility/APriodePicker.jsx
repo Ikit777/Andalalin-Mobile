@@ -92,6 +92,8 @@ function APriodePicker({
       >
         <TouchableWithoutFeedback>
           <View style={styles.horizontal}>
+            <View style={{ paddingVertical: 6 }} />
+
             <View
               style={{
                 flexDirection: "row",
@@ -153,8 +155,6 @@ function APriodePicker({
                 />
               </TouchableOpacity>
             </View>
-
-            <View style={{ paddingVertical: 8 }} />
 
             <View
               style={{
