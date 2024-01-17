@@ -156,12 +156,14 @@ function APriodePicker({
               </TouchableOpacity>
             </View>
 
+            <View style={{ paddingVertical: 1 }} />
+
             <View
               style={{
                 flexDirection: "row",
                 justifyContent: "space-between",
                 paddingHorizontal: 16,
-                paddingVertical: 12,
+                paddingVertical: 8,
               }}
             >
               {monthly.slice(0, 3).map((item, index) => (
@@ -201,7 +203,7 @@ function APriodePicker({
                 flexDirection: "row",
                 justifyContent: "space-between",
                 paddingHorizontal: 16,
-                paddingVertical: 12,
+                paddingVertical: 8,
               }}
             >
               {monthly.slice(3, 6).map((item, index) => (
@@ -241,7 +243,7 @@ function APriodePicker({
                 flexDirection: "row",
                 justifyContent: "space-between",
                 paddingHorizontal: 16,
-                paddingVertical: 12,
+                paddingVertical: 8,
               }}
             >
               {monthly.slice(6, 9).map((item, index) => (
@@ -281,7 +283,7 @@ function APriodePicker({
                 flexDirection: "row",
                 justifyContent: "space-between",
                 paddingHorizontal: 16,
-                paddingVertical: 12,
+                paddingVertical: 8,
               }}
             >
               {monthly.slice(9, 12).map((item, index) => (
