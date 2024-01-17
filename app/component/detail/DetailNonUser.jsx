@@ -130,25 +130,6 @@ function DetailNonUser({ permohonan, navigation, reload }) {
     );
   };
 
-  const doubletindakan = (onPress1, title1, onPress2, title2) => {
-    return (
-      <View style={{ flexDirection: "column" }}>
-        <AButton
-          style={{ marginBottom: 16 }}
-          title={title1}
-          mode="contained"
-          onPress={onPress1}
-        />
-        <AButton
-          style={{ marginBottom: 32 }}
-          title={title2}
-          mode="contained"
-          onPress={onPress2}
-        />
-      </View>
-    );
-  };
-
   const buttonAndalalin = () => {
     switch (context.getUser().role) {
       case "Operator":
