@@ -9,8 +9,9 @@ import {
 } from "react-native";
 import color from "../../constants/color";
 import AText from "../utility/AText";
-import DatePicker from "react-native-modern-datepicker";
 import { poppins } from "../../constants/font";
+import CalendarPicker from "react-native-calendar-picker";
+import { Feather } from "@expo/vector-icons";
 
 function ADatePicker({
   visibleModal = false,
@@ -20,6 +21,7 @@ function ADatePicker({
 }) {
   const [visible, setVisible] = React.useState(visibleModal);
   const [date, setDate] = useState();
+  const [selected, setSelected] = useState();
 
   React.useEffect(() => {
     toggleModal();
@@ -28,6 +30,8 @@ function ADatePicker({
   const toggleModal = () => {
     if (visibleModal) {
       setVisible(true);
+      setDate(null);
+      setSelected(null);
     } else {
       setTimeout(() => setVisible(false), 200);
     }
@@ -45,6 +49,26 @@ function ADatePicker({
       date.slice(8, 10) + "-" + date.slice(5, 7) + "-" + date.slice(0, 4);
 
     return date_formated;
+  };
+
+  const onDateChange = (date) => {
+    setSelected(date);
+    setDate(formated(date.toISOString()));
+  };
+
+  const [lastTap, setLastTap] = useState(0);
+
+  const handleDateChange = (date) => {
+    const now = Date.now();
+    const DOUBLE_TAP_DELAY = 300;
+
+    if (now - lastTap < DOUBLE_TAP_DELAY) {
+      return;
+    }
+
+    onDateChange(date);
+
+    setLastTap(now);
   };
 
   return (
@@ -67,20 +91,63 @@ function ADatePicker({
       >
         <TouchableWithoutFeedback>
           <View style={styles.horizontal}>
-            <DatePicker
-              options={{
-                backgroundColor: color.primary.primary50,
-                defaultFont: poppins["semibold"],
-                headerFont: poppins["semibold"],
-                textHeaderFontSize: 20,
-                textFontSize: 16,
-                textHeaderColor: color.primary.primary700,
-                textDefaultColor: color.primary.primary700,
-                selectedTextColor: color.text.white,
-                mainColor: color.primary.primary400,
+            <CalendarPicker
+              width={340}
+              selectedDayStyle={{ backgroundColor: color.primary.primary400 }}
+              selectedDayTextStyle={{
+                fontFamily: poppins["normal"],
+                fontSize: 16,
+                color: color.text.white,
               }}
-              mode="calendar"
-              onSelectedChange={(date) => setDate(formated(date))}
+              textStyle={{
+                fontFamily: poppins["normal"],
+                fontSize: 16,
+                color: color.primary.primary700,
+              }}
+              previousComponent={
+                <Feather
+                  name="chevron-left"
+                  size={30}
+                  color={color.primary.primary400}
+                />
+              }
+              nextComponent={
+                <Feather
+                  name="chevron-right"
+                  size={30}
+                  color={color.primary.primary400}
+                />
+              }
+              selectYearTitle="Pilih tahun"
+              selectMonthTitle="Pilih bulan pada tahun "
+              monthTitleStyle={{
+                fontFamily: poppins["semibold"],
+                fontSize: 20,
+                color: color.primary.primary700,
+              }}
+              yearTitleStyle={{
+                fontFamily: poppins["semibold"],
+                fontSize: 20,
+                color: color.primary.primary700,
+              }}
+              weekdays={["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"]}
+              months={[
+                "Januari",
+                "Februari",
+                "Maret",
+                "April",
+                "Mei",
+                "Juni",
+                "Juli",
+                "Agustus",
+                "September",
+                "Oktober",
+                "November",
+                "Desember",
+              ]}
+              selectedStartDate={selected != null ? selected : undefined}
+              enableDateChange={true}
+              onDateChange={handleDateChange}
             />
 
             <View
@@ -91,7 +158,7 @@ function ADatePicker({
               }}
             >
               <TouchableOpacity
-                style={{ paddingBottom: 14 }}
+                style={{ paddingVertical: 14 }}
                 onPress={onPressBATALButton}
               >
                 <AText
@@ -104,7 +171,7 @@ function ADatePicker({
                 </AText>
               </TouchableOpacity>
 
-              <TouchableOpacity style={{ paddingBottom: 14 }} onPress={pick}>
+              <TouchableOpacity style={{ paddingVertical: 14 }} onPress={pick}>
                 <AText
                   style={{ paddingHorizontal: 20, paddingVertical: 5 }}
                   size={14}
