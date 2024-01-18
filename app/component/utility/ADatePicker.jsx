@@ -4,13 +4,13 @@ import {
   View,
   Dimensions,
   TouchableOpacity,
-  KeyboardAvoidingView,
+  Modal,
+  TouchableWithoutFeedback,
 } from "react-native";
 import color from "../../constants/color";
 import AText from "../utility/AText";
 import DatePicker from "react-native-modern-datepicker";
 import { poppins } from "../../constants/font";
-import Modal from "react-native-modal";
 
 function ADatePicker({
   visibleModal = false,
@@ -41,91 +41,94 @@ function ADatePicker({
   };
 
   const formated = (date) => {
-    const date_formated = date.slice(8, 10) + "-" + date.slice(5,7) + "-" + date.slice(0, 4)
+    const date_formated =
+      date.slice(8, 10) + "-" + date.slice(5, 7) + "-" + date.slice(0, 4);
 
     return date_formated;
-  }
+  };
 
   return (
     <Modal
-      animationIn={"fadeIn"}
-      animationInTiming={300}
-      animationOut={"fadeOut"}
-      animationOutTiming={300}
-      isVisible={visible}
-      backdropOpacity={0.5}
+      animationType="fade"
+      visible={visible}
+      transparent={true}
       statusBarTranslucent
-      coverScreen={true}
       deviceHeight={Dimensions.get("screen").height}
-      backdropTransitionOutTiming={0}
       onRequestClose={() => {
         onPressBATALButton();
       }}
-      onBackdropPress={() => {
-        onPressBATALButton();
-      }}
-      style={{paddingHorizontal: 12}}
     >
-      <KeyboardAvoidingView behavior={"padding"}>
-        <View style={styles.horizontal}>
-          <DatePicker
-            options={{
-              backgroundColor: color.primary.primary50,
-              defaultFont: poppins["semibold"],
-              headerFont: poppins["semibold"],
-              textHeaderFontSize: 20,
-              textFontSize: 16,
-              textHeaderColor: color.primary.primary700,
-              textDefaultColor: color.primary.primary700,
-              selectedTextColor: color.text.white,
-              mainColor: color.primary.primary400,
-            }}
-            mode="calendar"
-            onSelectedChange={date => setDate(formated(date))}
-          />
+      <TouchableOpacity
+        style={styles.container}
+        activeOpacity={1}
+        onPressOut={() => {
+          onPressBATALButton();
+        }}
+      >
+        <TouchableWithoutFeedback>
+          <View style={styles.horizontal}>
+            <DatePicker
+              options={{
+                backgroundColor: color.primary.primary50,
+                defaultFont: poppins["semibold"],
+                headerFont: poppins["semibold"],
+                textHeaderFontSize: 20,
+                textFontSize: 16,
+                textHeaderColor: color.primary.primary700,
+                textDefaultColor: color.primary.primary700,
+                selectedTextColor: color.text.white,
+                mainColor: color.primary.primary400,
+              }}
+              mode="calendar"
+              onSelectedChange={(date) => setDate(formated(date))}
+            />
 
-          <View
-            style={{
-              flexDirection: "row",
-              alignSelf: "flex-end",
-              paddingRight: 16,
-            }}
-          >
-            <TouchableOpacity
-              style={{ marginVertical: 14 }}
-              onPress={onPressBATALButton}
+            <View
+              style={{
+                flexDirection: "row",
+                alignSelf: "flex-end",
+                paddingRight: 16,
+              }}
             >
-              <AText
-                style={{ paddingHorizontal: 20, paddingVertical: 5 }}
-                size={14}
-                color={color.primary.primary700}
-                weight="semibold"
+              <TouchableOpacity
+                style={{ paddingBottom: 14 }}
+                onPress={onPressBATALButton}
               >
-                Batal
-              </AText>
-            </TouchableOpacity>
+                <AText
+                  style={{ paddingHorizontal: 20, paddingVertical: 5 }}
+                  size={14}
+                  color={color.primary.primary700}
+                  weight="semibold"
+                >
+                  Batal
+                </AText>
+              </TouchableOpacity>
 
-            <TouchableOpacity
-              style={{ marginVertical: 14 }}
-              onPress={pick}
-            >
-              <AText
-                style={{ paddingHorizontal: 20, paddingVertical: 5 }}
-                size={14}
-                color={color.primary.primary700}
-                weight="semibold"
-              >
-                Pilih
-              </AText>
-            </TouchableOpacity>
+              <TouchableOpacity style={{ paddingBottom: 14 }} onPress={pick}>
+                <AText
+                  style={{ paddingHorizontal: 20, paddingVertical: 5 }}
+                  size={14}
+                  color={color.primary.primary700}
+                  weight="semibold"
+                >
+                  Pilih
+                </AText>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-      </KeyboardAvoidingView>
+        </TouchableWithoutFeedback>
+      </TouchableOpacity>
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    paddingHorizontal: 31,
+  },
   horizontal: {
     borderRadius: 12,
     paddingTop: 10,
