@@ -43,6 +43,7 @@ import {
   UpdateKelengkapanScreen,
   PembuatanPenyusunDokumenScreen,
   CekAdministrasiPerlalinScreen,
+  PemeriksaanDokumenScreen,
 } from "../screens";
 
 const Stack = createNativeStackNavigator();
@@ -218,6 +219,10 @@ const Navigator = ({
       <Stack.Screen
         name="Penyusun"
         component={PembuatanPenyusunDokumenScreen}
+      />
+      <Stack.Screen
+        name="Pemeriksaan dokumen"
+        component={PemeriksaanDokumenScreen}
       />
     </Stack.Navigator>
   );

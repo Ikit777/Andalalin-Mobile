@@ -174,6 +174,11 @@ const penyusunInit = {
   penyusun: [],
 };
 
+const pemeriksaanInit = {
+  status: "",
+  pemeriksaan: [], 
+}
+
 export function UserProvider({ children }) {
   const [loading, toggleLoading] = useState(true);
 
@@ -214,6 +219,9 @@ export function UserProvider({ children }) {
 
   const [indexPenyusun, setIndexPenyusun] = useState(1);
   const [penyusun, setPenyusun] = useReducer(reducer, penyusunInit);
+
+  const [indexPemeriksaan, setIndexPemeriksaan] = useState(1);
+  const [pemeriksaan, setPemeriksaan] = useReducer(reducer, pemeriksaanInit);
 
   const [dataDokumen, setDataDokumen] = useState();
   const [uraian, setUraian] = useState("");
@@ -276,6 +284,11 @@ export function UserProvider({ children }) {
   const clearPenyusun = () => {
     setIndexPenyusun(1);
     setPenyusun(penyusunInit);
+  };
+
+  const clearPemeriksaan = () => {
+    setIndexPemeriksaan(1);
+    setPemeriksaan(pemeriksaanInit);
   };
 
   const getUser = () => {
@@ -374,6 +387,11 @@ export function UserProvider({ children }) {
         penyusun,
         setPenyusun,
         clearPenyusun,
+        indexPemeriksaan,
+        setIndexPemeriksaan,
+        pemeriksaan,
+        setPemeriksaan,
+        clearPemeriksaan,
       }}
     >
       {children}

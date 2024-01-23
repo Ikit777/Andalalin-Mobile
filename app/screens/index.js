@@ -39,3 +39,4 @@ export { default as PembuatanSuratKeputusanScreen } from "./PembuatanSuratKeputu
 export { default as CekKelengkapanAkhirScreen } from "./CekKelengkapanAkhirScreen";
 export { default as UpdateKelengkapanScreen } from "./UpdateKelengkapanScreen";
 export { default as PembuatanPenyusunDokumenScreen } from "./PembuatanPenyusunDokumenScreen";
+export { default as PemeriksaanDokumenScreen } from "./PemeriksaanDokumenScreen";

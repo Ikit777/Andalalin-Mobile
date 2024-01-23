@@ -77,10 +77,6 @@ function DetailNonUser({ permohonan, navigation, reload }) {
   const [tindakanModal, toggleTindakanModal] = useStateToggler();
   const [tindakanPilihan, setTindakanPilihan] = useState();
 
-  const [tindakanPemeriksaan, setTindakanPemeriksaan] = useState();
-  const [tindakanPemeriksaanModal, toggleTindakanPemeriksaan] =
-    useStateToggler();
-
   const status = () => {
     switch (permohonan.status_andalalin) {
       case "Persyaratan tidak terpenuhi":
@@ -180,7 +176,9 @@ function DetailNonUser({ permohonan, navigation, reload }) {
               toggleUploadModal();
             }, "Upload berkas");
           case "Pemeriksaan dokumen andalalin":
-            return tindakan(() => {}, "Pilih tindakan");
+            return tindakan(() => {
+              navigation.push("Pemeriksaan dokumen");
+            }, "Periksa dokumen andalalin");
           case "Dokumen andalalin terpenuhi":
             return tindakan(() => {
               navigation.push("Pernyataan");
@@ -2209,10 +2207,6 @@ function DetailNonUser({ permohonan, navigation, reload }) {
         </View>
       </View>
     );
-  };
-
-  const tindakan_pemeriksaan = () => {
-    
   };
 
   const andalalin = () => {
