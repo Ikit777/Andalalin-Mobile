@@ -18,7 +18,7 @@ import { useStateToggler } from "../hooks/useUtility";
 import AConfirmationDialog from "../component/utility/AConfirmationDialog";
 import { authLogout, authForgotPassword, authRefreshToken } from "../api/auth";
 import ADialog from "../component/utility/ADialog";
-import { remove, store } from "../utils/local-storage";
+import { get, remove, store } from "../utils/local-storage";
 import * as ImagePicker from "expo-image-picker";
 import { userUpdatePhoto } from "../api/user";
 
@@ -51,6 +51,7 @@ function SettingScreen({ navigation }) {
       switch (response.status) {
         case 200:
           context.toggleLoading(false);
+          remove(context.getUser().id);
           remove("authState");
           context.setCheck();
           navigation.push("Back Login");

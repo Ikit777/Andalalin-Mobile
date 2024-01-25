@@ -22,35 +22,35 @@ function PemeriksaanDokumenScreen({ navigation }) {
 
   const [item, setItem] = useState(0);
 
-  pemeriksaan_bangkitan_rendah = [
+  pemeriksaan_bangkitan_sedang = [
     {
-      Substansi: "BAB 1",
-      Catatan: [],
+      substansi: "BAB 1",
+      catatan: [],
     },
     {
-      Substansi: "BAB 2",
-      Catatan: [],
+      substansi: "BAB 2",
+      catatan: [],
     },
     {
-      Substansi: "BAB 3",
-      Catatan: [],
+      substansi: "BAB 3",
+      catatan: [],
     },
     {
-      Substansi: "BAB 4",
-      Catatan: [],
+      substansi: "BAB 4",
+      catatan: [],
     },
 
     {
-      Substansi: "BAB 5",
-      Catatan: [],
+      substansi: "BAB 5",
+      catatan: [],
     },
     {
-      Substansi: "LAMPIRAN GAMBAR TEKNIS",
-      Catatan: [],
+      substansi: "LAMPIRAN GAMBAR TEKNIS",
+      catatan: [],
     },
     {
-      Substansi: "CATATAN DAN KETERANGAN TAMBAHAN",
-      Catatan: [],
+      substansi: "CATATAN DAN KETERANGAN TAMBAHAN",
+      catatan: [],
     },
   ];
 
@@ -59,12 +59,12 @@ function PemeriksaanDokumenScreen({ navigation }) {
     const pemeriksaan = [];
 
     switch (context.detailPermohonan.kategori_bangkitan) {
-      case "Bangkitan rendah":
-        pemeriksaan.push(...pemeriksaan_bangkitan_rendah);
+      case "Bangkitan sedang":
+        pemeriksaan.push(...pemeriksaan_bangkitan_sedang);
         break;
     }
 
-    setItem(pemeriksaan.length);
+    setItem(pemeriksaan.length + 1);
 
     context.setPemeriksaan({
       pemeriksaan: pemeriksaan,
@@ -164,7 +164,23 @@ function PemeriksaanDokumenScreen({ navigation }) {
           right: 32,
           padding: 16,
         }}
-        onPress={() => {}}
+        onPress={() => {
+          switch (context.indexPemeriksaan) {
+            case 1:
+              if (
+                context.pemeriksaan.status != ""
+              ) {
+                onGoToNext();
+              }
+              break;
+            case item:
+              toggleKonfirmasi();
+              break;
+            default:
+              onGoToNext();
+              break;
+          }
+        }}
       >
         <Feather
           name={context.indexPemeriksaan != item ? "arrow-right" : "check"}

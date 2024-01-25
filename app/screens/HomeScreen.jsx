@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -48,6 +48,16 @@ function HomeScreen({ navigation }) {
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
+      (async () => {
+        const user = await get("authState");
+        const notification = await get(user.id);
+        if (notification) {
+          context.setNotification(true);
+        } else {
+          context.setNotification(false);
+        }
+      })();
+
       BackHandler.addEventListener("hardwareBackPress", () => {
         toggleComfirm();
         return true;
@@ -655,11 +665,13 @@ function HomeScreen({ navigation }) {
                 style={{ padding: 8, flexDirection: "row" }}
                 onPress={() => {
                   navigation.push("Notifikasi");
-                  context.setNotification(false);
+                  (async () => {
+                    const user = await get("authState");
+                    remove(user.id);
+                  })();
                 }}
               >
                 <Feather name="bell" size={18} color="white" />
-
                 {context.notification ? (
                   <View
                     style={{

@@ -9,6 +9,7 @@ import React, {
 
 import * as Notifications from "expo-notifications";
 import * as FileSystem from "expo-file-system";
+import { get, store } from "../utils/local-storage";
 
 export const UserContext = createContext();
 
@@ -176,8 +177,8 @@ const penyusunInit = {
 
 const pemeriksaanInit = {
   status: "",
-  pemeriksaan: [], 
-}
+  pemeriksaan: [],
+};
 
 export function UserProvider({ children }) {
   const [loading, toggleLoading] = useState(true);
@@ -197,8 +198,8 @@ export function UserProvider({ children }) {
 
   const notificationListener = useRef();
   const responseListener = useRef();
-  const lastNotificationResponse = Notifications.useLastNotificationResponse();
-  const [notification, setNotification] = useState(false);
+  const lastNotificationResponse = Notifications.getLastNotificationResponseAsync();
+  const [notification, setNotification] = useState();
 
   const [dataMaster, setDataMaster] = useState("master");
 
@@ -237,13 +238,21 @@ export function UserProvider({ children }) {
 
   useEffect(() => {
     notificationListener.current =
-      Notifications.addNotificationReceivedListener((notification) => {
-        setNotification(true);
+      Notifications.addNotificationReceivedListener(() => {
+        (async () => {
+          const value = await get("authState");
+
+          store(value.id, "New Notification");
+        })();
       });
 
     responseListener.current =
-      Notifications.addNotificationResponseReceivedListener((response) => {
-        setNotification(true);
+      Notifications.addNotificationResponseReceivedListener(() => {
+       (async () => {
+          const value = await get("authState");
+
+          store(value.id, "New Notification");
+        })();
       });
 
     return () => {

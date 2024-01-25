@@ -177,6 +177,8 @@ function DetailNonUser({ permohonan, navigation, reload }) {
             }, "Upload berkas");
           case "Pemeriksaan dokumen andalalin":
             return tindakan(() => {
+              context.setIndexPemeriksaan(1);
+              context.clearPemeriksaan();
               navigation.push("Pemeriksaan dokumen");
             }, "Periksa dokumen andalalin");
           case "Dokumen andalalin terpenuhi":

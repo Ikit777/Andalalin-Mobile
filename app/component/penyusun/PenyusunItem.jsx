@@ -3,7 +3,6 @@ import {
   StyleSheet,
   View,
   TouchableOpacity,
-  Pressable,
   ScrollView,
 } from "react-native";
 import { UserContext } from "../../context/UserContext";
