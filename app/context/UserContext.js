@@ -318,6 +318,7 @@ export function UserProvider({ children }) {
     });
 
     const loadedData = await JSON.parse(fileContents);
+    store("updated", loadedData.update);
     setDataMaster(loadedData);
     return dataMaster;
   };

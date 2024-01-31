@@ -237,12 +237,14 @@ export default function PemeriksaanItem({ navigation, route }) {
                         flexDirection: "row",
                         paddingTop: 14,
                         justifyContent: "space-between",
+                        alignItems: "center",
                       }}
                     >
                       <View
                         style={{
                           flexDirection: "row",
                           width: "80%",
+                          alignItems: "center",
                         }}
                       >
                         <AText

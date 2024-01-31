@@ -185,6 +185,21 @@ function DetailNonUser({ permohonan, navigation, reload }) {
               context.clearPemeriksaan();
               navigation.push("Pemeriksaan dokumen");
             }, "Periksa dokumen andalalin");
+          case "Persetujuan asistensi dokumen":
+            return tindakan(() => {
+              setDokumen("Catatan asistensi dokumen");
+              uploadFile.push({
+                nama: "",
+                file: "",
+                tipe: "",
+                dokumen: "Catatan asistensi dokumen",
+              });
+              toggleUploadModal();
+            }, "Upload berkas");
+          case "Dokumen terpenuhi":
+              return tindakan(() => {
+                
+              }, "Periksa substansi teknis");
           case "Dokumen andalalin terpenuhi":
             return tindakan(() => {
               navigation.push("Pernyataan");
@@ -951,6 +966,22 @@ function DetailNonUser({ permohonan, navigation, reload }) {
             />
           </View>
         );
+        case "Catatan asistensi dokumen":
+          return (
+            <View>
+              <ATextInputIcon
+                bdColor={color.neutral.neutral300}
+                hint={"Masukkan berkas pdf"}
+                icon={"file-plus"}
+                mult={true}
+                width={true}
+                value={uploadNamaFile}
+                onPress={() => {
+                  file("Catatan asistensi dokumen", "Pdf");
+                }}
+              />
+            </View>
+          );
     }
   };
 
@@ -1057,6 +1088,8 @@ function DetailNonUser({ permohonan, navigation, reload }) {
         setUploadNamaFile(nama);
         break;
       case "Penyusun dokumen":
+        setUploadNamaFile(nama);
+      case "Catatan asistensi dokumen":
         setUploadNamaFile(nama);
     }
   };

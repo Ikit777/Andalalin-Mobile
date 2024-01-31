@@ -41,7 +41,6 @@ function PemeriksaanDokumenScreen({ navigation }) {
       substansi: "BAB 4",
       catatan: [],
     },
-
     {
       substansi: "BAB 5",
       catatan: [],
@@ -58,19 +57,32 @@ function PemeriksaanDokumenScreen({ navigation }) {
 
   useEffect(() => {
     context.toggleLoading(true);
-    const pemeriksaan = [];
 
     switch (context.detailPermohonan.kategori_bangkitan) {
       case "Bangkitan sedang":
-        pemeriksaan.push(...pemeriksaan_bangkitan_sedang);
+        const status =
+          context.detailPermohonan.hasil_asistensi == null
+            ? ""
+            : context.detailPermohonan.hasil_asistensi;
+
+        const deepCopiedObject = JSON.parse(
+          JSON.stringify(context.detailPermohonan.catatan_asistensi)
+        );
+
+        let pemeriksaan =
+          context.detailPermohonan.catatan_asistensi == null
+            ? pemeriksaan_bangkitan_sedang
+            : deepCopiedObject;
+
+        setItem(pemeriksaan.length + 1);
+
+        context.setPemeriksaan({
+          status: status,
+          pemeriksaan: pemeriksaan,
+        });
+
         break;
     }
-
-    setItem(pemeriksaan.length + 1);
-
-    context.setPemeriksaan({
-      pemeriksaan: pemeriksaan,
-    });
 
     setTimeout(() => {
       context.toggleLoading(false);
@@ -201,9 +213,7 @@ function PemeriksaanDokumenScreen({ navigation }) {
         onPress={() => {
           switch (context.indexPemeriksaan) {
             case 1:
-              if (
-                context.pemeriksaan.status != ""
-              ) {
+              if (context.pemeriksaan.status != "") {
                 onGoToNext();
               }
               break;

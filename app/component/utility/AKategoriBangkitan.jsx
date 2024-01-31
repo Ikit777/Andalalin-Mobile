@@ -4,7 +4,6 @@ import {
   View,
   Modal,
   Pressable,
-  Animated,
   Dimensions,
   TouchableOpacity,
   TouchableWithoutFeedback,

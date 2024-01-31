@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import { StyleSheet, View, TouchableOpacity } from "react-native";
 import color from "../../constants/color";
 import AText from "../utility/AText";
@@ -118,6 +118,23 @@ function DetailUser({ permohonan, navigation, reload }) {
           });
           toggleUploadModal();
         }, "Upload surat pernyataan");
+      case "Dokumen tidak terpenuhi":
+        return tindakan(() => {
+          setDokumen("Dokumen andalalin");
+          uploadFile.push({
+            nama: "",
+            file: "",
+            tipe: "",
+            dokumen: "Dokumen hasil analisis dampak lalu lintas (pdf)",
+          });
+          uploadFile.push({
+            nama: "",
+            file: "",
+            tipe: "",
+            dokumen: "Dokumen hasil analisis dampak lalu lintas (word)",
+          });
+          toggleUploadModal();
+        }, "Perbarui dokumen andalalin");
       case "Menunggu pembayaran":
         return tindakan(() => {
           setDokumen("Bukti pembayaran");
@@ -2121,6 +2138,50 @@ function DetailUser({ permohonan, navigation, reload }) {
             />
           </View>
         );
+      case "Dokumen andalalin":
+        return (
+          <View>
+            <View
+              style={{
+                marginBottom: 16,
+              }}
+            >
+              <AText
+                size={18}
+                color={color.neutral.neutral700}
+                weight="semibold"
+              >
+                Upload berkas {dokumen.toLowerCase()}
+              </AText>
+            </View>
+            <ATextInputIcon
+              bdColor={color.neutral.neutral300}
+              hint={"Masukkan berkas docx"}
+              icon={"file-plus"}
+              mult={true}
+              width={true}
+              value={uploadNamaFile}
+              onPress={() => {
+                file(
+                  "Dokumen hasil analisis dampak lalu lintas (word)",
+                  "Word"
+                );
+              }}
+            />
+            <ATextInputIcon
+              bdColor={color.neutral.neutral300}
+              hint={"Masukkan berkas pdf"}
+              icon={"file-plus"}
+              mult={true}
+              width={true}
+              padding={20}
+              value={uploadNamaFile2}
+              onPress={() => {
+                file("Dokumen hasil analisis dampak lalu lintas (pdf)", "Pdf");
+              }}
+            />
+          </View>
+        );
     }
   };
 
@@ -2218,6 +2279,12 @@ function DetailUser({ permohonan, navigation, reload }) {
         break;
       case "Billing PNBP dan bukti pembayaran PNBP":
         setUploadNamaFile(nama);
+        break;
+      case "Dokumen hasil analisis dampak lalu lintas (word)":
+        setUploadNamaFile(nama);
+        break;
+      case "Dokumen hasil analisis dampak lalu lintas (pdf)":
+        setUploadNamaFile2(nama);
         break;
     }
   };

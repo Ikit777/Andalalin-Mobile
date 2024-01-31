@@ -224,13 +224,6 @@ function SettingScreen({ navigation }) {
             title={"Reset password"}
           />
 
-          <ASettingItem
-            icon={"info"}
-            title={"Tentang"}
-            onPress={() => {
-              navigation.navigate("Tentang");
-            }}
-          />
           {context.getUser().role == "User" ? (
             <View>
               <ASettingItem
@@ -266,6 +259,14 @@ function SettingScreen({ navigation }) {
           ) : (
             ""
           )}
+
+          <ASettingItem
+            icon={"info"}
+            title={"Tentang"}
+            onPress={() => {
+              navigation.navigate("Tentang");
+            }}
+          />
         </View>
 
         <AButton

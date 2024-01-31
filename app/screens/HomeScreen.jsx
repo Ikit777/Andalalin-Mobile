@@ -22,9 +22,8 @@ import { userMe } from "../api/user";
 import ExitApp from "react-native-exit-app";
 import { useFocusEffect } from "@react-navigation/native";
 import { checkMaster, masterAndalalin } from "../api/master";
-import { get, remove, store } from "../utils/local-storage";
+import { get, remove } from "../utils/local-storage";
 import AKategoriBangkitan from "../component/utility/AKategoriBangkitan";
-import { inflate } from "react-native-gzip";
 import * as FileSystem from "expo-file-system";
 
 function HomeScreen({ navigation }) {
@@ -419,19 +418,6 @@ function HomeScreen({ navigation }) {
     }
   };
 
-  const decompressInflate = async (compressedData) => {
-    try {
-      const decompressedData = await inflate(compressedData);
-      const match = decompressedData.match(/"update":\s*"([^"]*)"/);
-
-      const updateValue = match ? match[1] : null;
-
-      return { decompressedData, updateValue };
-    } catch (error) {
-      throw new Error(`Error decompressing data: ${error}`);
-    }
-  };
-
   const masterData = async (kondisi) => {
     context.toggleLoading(true);
 
@@ -443,45 +429,33 @@ function HomeScreen({ navigation }) {
           (async () => {
             const result = await response.data;
 
-            // Decompress the data using react-native-gzip
-            await decompressInflate(result.data)
-              .then(({ decompressedData, updateValue }) => {
-                store("updated", updateValue);
+            const filePath = `${FileSystem.documentDirectory}data.json`;
+            FileSystem.writeAsStringAsync(filePath, result.data, {
+              encoding: FileSystem.EncodingType.Base64,
+            })
+              .then(() => {
+                context.getDataMaster();
 
-                const filePath = `${FileSystem.documentDirectory}data.json`;
-                FileSystem.writeAsStringAsync(filePath, decompressedData, {
-                  encoding: FileSystem.EncodingType.UTF8,
-                })
-                  .then(() => {
-                    context.getDataMaster();
-
-                    switch (kondisi) {
-                      case "Andalalin":
-                        context.toggleLoading(false);
-                        toggleKategoriBangkitan();
-                        break;
-                      case "Perlalin":
-                        context.toggleLoading(false);
-                        navigation.push("Andalalin", {
-                          kondisi: "Perlalin",
-                        });
-                        context.clear();
-                        context.setIndex(1);
-                        break;
-                      case "Daftar User":
-                        navigation.push("Daftar");
-                        break;
-                      case "Daftar Non User":
-                        navigation.push("Daftar", { kondisi: "Diajukan" });
-                        break;
-                    }
-                  })
-                  .catch((error) => {
-                    if (context.server == false) {
-                      context.toggleLoading(false);
-                      toggleGagal();
-                    }
-                  });
+                switch (kondisi) {
+                  case "Andalalin":
+                    context.toggleLoading(false);
+                    toggleKategoriBangkitan();
+                    break;
+                  case "Perlalin":
+                    context.toggleLoading(false);
+                    navigation.push("Andalalin", {
+                      kondisi: "Perlalin",
+                    });
+                    context.clear();
+                    context.setIndex(1);
+                    break;
+                  case "Daftar User":
+                    navigation.push("Daftar");
+                    break;
+                  case "Daftar Non User":
+                    navigation.push("Daftar", { kondisi: "Diajukan" });
+                    break;
+                }
               })
               .catch((error) => {
                 if (context.server == false) {
@@ -507,52 +481,34 @@ function HomeScreen({ navigation }) {
                 if (response.status === 200) {
                   (async () => {
                     const result = await response.data;
-
-                    // Decompress the data using react-native-gzip
-                    await decompressInflate(result.data)
-                      .then(({ decompressedData, updateValue }) => {
-                        store("updated", updateValue);
-
-                        const filePath = `${FileSystem.documentDirectory}data.json`;
-                        FileSystem.writeAsStringAsync(
-                          filePath,
-                          decompressedData,
-                          {
-                            encoding: FileSystem.EncodingType.UTF8,
-                          }
-                        )
-                          .then(() => {
-                            context.getDataMaster();
-
-                            switch (kondisi) {
-                              case "Andalalin":
-                                context.toggleLoading(false);
-                                toggleKategoriBangkitan();
-                                break;
-                              case "Perlalin":
-                                context.toggleLoading(false);
-                                navigation.push("Andalalin", {
-                                  kondisi: "Perlalin",
-                                });
-                                context.clear();
-                                context.setIndex(1);
-                                break;
-                              case "Daftar User":
-                                navigation.push("Daftar");
-                                break;
-                              case "Daftar Non User":
-                                navigation.push("Daftar", {
-                                  kondisi: "Diajukan",
-                                });
-                                break;
-                            }
-                          })
-                          .catch((error) => {
-                            if (context.server == false) {
-                              context.toggleLoading(false);
-                              toggleGagal();
-                            }
-                          });
+        
+                    const filePath = `${FileSystem.documentDirectory}data.json`;
+                    FileSystem.writeAsStringAsync(filePath, result.data, {
+                      encoding: FileSystem.EncodingType.Base64,
+                    })
+                      .then(() => {
+                        context.getDataMaster();
+        
+                        switch (kondisi) {
+                          case "Andalalin":
+                            context.toggleLoading(false);
+                            toggleKategoriBangkitan();
+                            break;
+                          case "Perlalin":
+                            context.toggleLoading(false);
+                            navigation.push("Andalalin", {
+                              kondisi: "Perlalin",
+                            });
+                            context.clear();
+                            context.setIndex(1);
+                            break;
+                          case "Daftar User":
+                            navigation.push("Daftar");
+                            break;
+                          case "Daftar Non User":
+                            navigation.push("Daftar", { kondisi: "Diajukan" });
+                            break;
+                        }
                       })
                       .catch((error) => {
                         if (context.server == false) {
@@ -578,7 +534,9 @@ function HomeScreen({ navigation }) {
                   break;
                 case "Perlalin":
                   context.toggleLoading(false);
-                  navigation.push("Andalalin", { kondisi: "Perlalin" });
+                  navigation.push("Andalalin", {
+                    kondisi: "Perlalin",
+                  });
                   context.clear();
                   context.setIndex(1);
                   break;
