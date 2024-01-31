@@ -7,7 +7,6 @@ import {
   RefreshControl,
   TextInput,
   Pressable,
-  TouchableOpacity,
 } from "react-native";
 import AText from "../component/utility/AText";
 import color from "../constants/color";
@@ -25,18 +24,12 @@ import {
   andalalinGetByTiketLevel2,
   andalalinGetPermohonanPemasangan,
   andalalinGetUsulanTindakan,
-  andalalinSimpanKeputusan,
-  andalalinTindakan,
 } from "../api/andalalin";
 import { authRefreshToken } from "../api/auth";
 import ADialog from "../component/utility/ADialog";
 import { useStateToggler } from "../hooks/useUtility";
 import { UserContext } from "../context/UserContext";
 import { Feather } from "@expo/vector-icons";
-import ABottomSheet from "../component/utility/ABottomSheet";
-import { RadioButton } from "react-native-paper";
-import AConfirmationDialog from "../component/utility/AConfirmationDialog";
-import ATextInput from "../component/utility/ATextInput";
 import { poppins } from "../constants/font";
 import AFilterModal from "../component/utility/AFilterModal";
 import { useFocusEffect } from "@react-navigation/native";
@@ -54,8 +47,6 @@ function DaftarScreen({ navigation, route }) {
 
   const [refreshing, setRefreshing] = useState(false);
   const [progressViewOffset, setProgressViewOffset] = useState(20);
-
-  
 
   const [filterModal, toggleFilterModal] = useStateToggler();
 
@@ -1912,8 +1903,6 @@ function DaftarScreen({ navigation, route }) {
     );
   };
 
-  
-
   return (
     <AScreen>
       <View style={styles.header}>
@@ -2006,8 +1995,6 @@ function DaftarScreen({ navigation, route }) {
         )}
       </View>
 
-      
-
       <ADialog
         title={"Permohoman gagal dimuat"}
         desc={"Terjadi kesalahan pada server, mohon coba lagi lain waktu"}
@@ -2052,8 +2039,6 @@ function DaftarScreen({ navigation, route }) {
         }}
       />
 
-      
-
       <AFilterModal
         visibleModal={filterModal}
         btnBATAL={"Batal"}
@@ -2068,8 +2053,6 @@ function DaftarScreen({ navigation, route }) {
           toggleFilterModal();
         }}
       />
-
-      
     </AScreen>
   );
 }

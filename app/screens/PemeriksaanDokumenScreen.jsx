@@ -12,6 +12,8 @@ import { useStateToggler } from "../hooks/useUtility";
 import AProgressBar from "../component/utility/AProgressBar";
 import { Feather } from "@expo/vector-icons";
 import PemeriksaanNavigator from "../component/pemeriksaan/PemeriksaanNavigator";
+import { andalalinPemeriksaanDokumenAndalalin } from "../api/andalalin";
+import { authRefreshToken } from "../api/auth";
 
 function PemeriksaanDokumenScreen({ navigation }) {
   const context = useContext(UserContext);
@@ -111,6 +113,38 @@ function PemeriksaanDokumenScreen({ navigation }) {
         index: newIndex,
       });
     }
+  };
+
+  const pemeriksaan_dokumen = () => {
+    context.toggleLoading(true);
+    andalalinPemeriksaanDokumenAndalalin(
+      context.getUser().access_token,
+      context.detailPermohonan.id_andalalin,
+      context.pemeriksaan.status,
+      context.pemeriksaan.pemeriksaan,
+      (response) => {
+        switch (response.status) {
+          case 200:
+            navigation.replace("Detail", {
+              id: context.detailPermohonan.id_andalalin,
+            });
+            break;
+          case 424:
+            authRefreshToken(context, (response) => {
+              if (response.status === 200) {
+                pemeriksaan_dokumen();
+              } else {
+                context.toggleLoading(false);
+              }
+            });
+            break;
+          default:
+            context.toggleLoading(false);
+            toggleGagal();
+            break;
+        }
+      }
+    );
   };
 
   return (
@@ -217,6 +251,7 @@ function PemeriksaanDokumenScreen({ navigation }) {
         }}
         onPressOKButton={() => {
           toggleKonfirmasi();
+          pemeriksaan_dokumen();
         }}
       />
 

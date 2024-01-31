@@ -179,7 +179,6 @@ const Navigator = ({
       <Stack.Screen
         name="Kamera"
         component={KameraScreen}
-        initialParams={{ kondisi, jenis, id }}
       />
       <Stack.Screen
         name="Survei Kepuasan"

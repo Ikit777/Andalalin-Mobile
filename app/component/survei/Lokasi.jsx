@@ -21,11 +21,10 @@ import Geolocation from "react-native-geolocation-service";
 
 function Lokasi({ onPress, id }) {
   const {
-    survei: { lat, long, lokasi, jalan },
+    survei: { lat, long, lokasi },
     setSurvei,
   } = useContext(UserContext);
   const context = useContext(UserContext);
-  const [alamat, setAlamat] = useState(jalan);
   const [maps, setMaps] = useState("");
   const [alamatLengkap, setAlamatLengkap] = useState(lokasi);
 
@@ -140,10 +139,15 @@ function Lokasi({ onPress, id }) {
             });
 
             for (let item of response) {
-              let address = `${item.street}`;
-              let addressLengkap = `${item.street}, ${item.name}, ${item.district}, ${item.postalCode}, ${item.city}, ${item.subregion}, ${item.region}, ${item.country}`;
+              let street = item.street != null ? (item.street + ", ") : ("");
+              let name = item.name != null ? (item.name + ", ") : ("");
+              let district = item.district != null ? (item.district + ", ") : ("");
+              let postalCode = item.postalCode != null ? (item.postalCode + ", ") : ("");
+              let city = item.city != null ? (item.city + ", ") : ("");
+              let subregion = item.subregion != null ? (item.subregion + ", ") :("");
+              let region = item.region != null ? (item.region + ", ") : ("");
+              let addressLengkap = `${street}${name}${district}${postalCode}${city}${subregion}${region}${"Indonesia"}`;
 
-              setAlamat(address);
               setAlamatLengkap(addressLengkap);
             }
 
@@ -209,10 +213,15 @@ function Lokasi({ onPress, id }) {
             });
 
             for (let item of response) {
-              let address = `${item.street}`;
-              let addressLengkap = `${item.street}, ${item.name}, ${item.district}, ${item.postalCode}, ${item.city}, ${item.subregion}, ${item.region}, ${item.country}`;
+              let street = item.street != null ? (item.street + ", ") : ("");
+              let name = item.name != null ? (item.name + ", ") : ("");
+              let district = item.district != null ? (item.district + ", ") : ("");
+              let postalCode = item.postalCode != null ? (item.postalCode + ", ") : ("");
+              let city = item.city != null ? (item.city + ", ") : ("");
+              let subregion = item.subregion != null ? (item.subregion + ", ") :("");
+              let region = item.region != null ? (item.region + ", ") : ("");
+              let addressLengkap = `${street}${name}${district}${postalCode}${city}${subregion}${region}${"Indonesia"}`;
 
-              setAlamat(address);
               setAlamatLengkap(addressLengkap);
             }
 
@@ -237,14 +246,12 @@ function Lokasi({ onPress, id }) {
           lat: location.coords.latitude,
           long: location.coords.longitude,
           lokasi: alamatLengkap,
-          jalan: alamat,
         });
       } else {
         setSurvei({
           lat: lat,
           long: long,
           lokasi: lokasi,
-          jalan: jalan,
         });
       }
 
@@ -374,11 +381,8 @@ function Lokasi({ onPress, id }) {
               />
             </View>
             <View style={{ paddingLeft: 16, alignContent: "flex-start" }}>
-              <AText size={12} color={color.neutral.neutral900}>
-                {alamat}
-              </AText>
               <AText
-                style={{ paddingTop: 8, marginRight: 40 }}
+                style={{ paddingTop: -24, marginRight: 40 }}
                 size={12}
                 color={color.neutral.neutral500}
               >

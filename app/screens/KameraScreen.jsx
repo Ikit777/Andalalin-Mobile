@@ -24,9 +24,6 @@ import ADialog from "../component/utility/ADialog";
 import { useStateToggler } from "../hooks/useUtility";
 
 function KameraScreen({ navigation, route }) {
-  const kondisi = route.params.kondisi;
-  const jenis = route.params.jenis;
-  const id = route.params.id;
   let cameraRef = useRef(null);
   const [capturedPhoto, setCapturedPhoto] = useState(null);
   const [flashMode, setFlashMode] = useState("off");
@@ -41,7 +38,7 @@ function KameraScreen({ navigation, route }) {
 
   const [isReady, setIsReady] = useState(false);
 
-  const { setSurvei } = useContext(UserContext);
+  const { survei, setSurvei } = useContext(UserContext);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
@@ -163,29 +160,13 @@ function KameraScreen({ navigation, route }) {
   };
 
   const pilih = () => {
-    switch (kondisi) {
-      case "foto1":
-        setSurvei({
-          foto1: capturedPhoto.uri,
-          namaFoto1: capturedPhoto.fileName,
-        });
-        navigation.goBack();
-        break;
-      case "foto2":
-        setSurvei({
-          foto2: capturedPhoto.uri,
-          namaFoto2: capturedPhoto.fileName,
-        });
-        navigation.goBack();
-        break;
-      case "foto3":
-        setSurvei({
-          foto3: capturedPhoto.uri,
-          namaFoto3: capturedPhoto.fileName,
-        });
-        navigation.goBack();
-        break;
-    }
+    let foto = {uri: capturedPhoto.uri, name: capturedPhoto.fileName}
+    updatedFoto = survei.foto;
+    updatedFoto.push(foto)
+    setSurvei({
+      foto: updatedFoto,
+    })
+    navigation.goBack();
   };
 
   const hasPermissionCamera = async () => {

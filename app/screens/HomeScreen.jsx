@@ -193,9 +193,10 @@ function HomeScreen({ navigation }) {
               icon={"map-pin"}
               title={"Survei lapangan mandiri"}
               desc={
-                "Daftar survei lapangan mandiri yang dilakukan oleh pertugas"
+                "Survei lapangan mandiri yang dilakukan oleh pertugas atau yang bersangkutan"
               }
               onPress={() => {
+                context.clearSurvei();
                 navigation.push("Survei", { kondisi: "Mandiri" });
               }}
             />
@@ -272,9 +273,10 @@ function HomeScreen({ navigation }) {
               icon={"map-pin"}
               title={"Survei lapangan mandiri"}
               desc={
-                "Daftar survei lapangan mandiri yang dilakukan oleh pertugas"
+                "Survei lapangan mandiri yang dilakukan oleh pertugas atau yang bersangkutan"
               }
               onPress={() => {
+                context.clearSurvei();
                 navigation.push("Survei", { kondisi: "Mandiri" });
               }}
             />
@@ -442,7 +444,7 @@ function HomeScreen({ navigation }) {
             const result = await response.data;
 
             // Decompress the data using react-native-gzip
-            decompressInflate(result.data)
+            await decompressInflate(result.data)
               .then(({ decompressedData, updateValue }) => {
                 store("updated", updateValue);
 
@@ -507,7 +509,7 @@ function HomeScreen({ navigation }) {
                     const result = await response.data;
 
                     // Decompress the data using react-native-gzip
-                    decompressInflate(result.data)
+                    await decompressInflate(result.data)
                       .then(({ decompressedData, updateValue }) => {
                         store("updated", updateValue);
 

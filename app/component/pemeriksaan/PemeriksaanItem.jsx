@@ -136,7 +136,7 @@ export default function PemeriksaanItem({ navigation, route }) {
               color={color.neutral.neutral900}
               weight="normal"
             >
-              Pilih status dokumen analisis dampak lalu lintas
+              Tentukan status dokumen analisis dampak lalu lintas
             </AText>
 
             <RadioButton.Group onValueChange={(value) => update_status(value)}>

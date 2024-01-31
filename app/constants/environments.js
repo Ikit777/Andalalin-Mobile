@@ -60,6 +60,7 @@ const environments = {
       ANDALALIN_TINDAKAN_USULAN: url + "/v1/permohonan/usulan/tindakan",
       ANDALALIN_HAPUS_USULAN_TINDAKAN: url + "/v1/permohonan/usulan/hapus",
       ANDALALIN_GET_ALL_BY_TIKET_LEVEL2: url + "/v1/permohonan/tiket/2",
+      ANDALALIN_PEMERIKSAAN_DOKUMEN_ANDALALIN: url + "/v1/permohonan/pemeriksaan/dokumen",
       PERLALIN_LAPORAN_SURVEI: url + "/v1/permohonan/laporan/survei",
       PERLALIN_KEPUTUSAN_HASIL: url + "/v1/permohonan/keputusan/hasil",
 

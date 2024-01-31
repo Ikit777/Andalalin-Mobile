@@ -83,30 +83,30 @@ function DetailSurveiScreen({ navigation, route }) {
       case "Petugas":
         switch (jenis) {
           case "Permohonan":
-            navigation.replcae("Daftar", { kondisi: "Daftar" });
+            navigation.replace("Daftar", { kondisi: "Daftar" });
             break;
           case "Mandiri":
-            navigation.replcae("Daftar", { kondisi: "Mandiri" });
+            navigation.replace("Daftar", { kondisi: "Mandiri" });
             break;
           case "Pemasangan":
-            navigation.replcae("Daftar", { kondisi: "Daftar Pemasangan" });
+            navigation.replace("Daftar", { kondisi: "Daftar Pemasangan" });
             break;
         }
         break;
       case "Super Admin":
         switch (jenis) {
           case "Mandiri":
-            navigation.replcae("Daftar", { kondisi: "Mandiri" });
+            navigation.replace("Daftar", { kondisi: "Mandiri" });
             break;
           default:
-            navigation.replcae("Detail", { id: route.params.id });
+            navigation.replace("Detail", { id: route.params.id });
             break;
         }
         break;
       default:
         switch (jenis) {
           case "Mandiri":
-            navigation.replcae("Daftar", { kondisi: "Mandiri" });
+            navigation.replace("Daftar", { kondisi: "Mandiri" });
             break;
           default:
             navigation.goBack();
@@ -369,8 +369,8 @@ function DetailSurveiScreen({ navigation, route }) {
               back();
             }}
           />
-         <AText
-            style={{ paddingLeft: 4}}
+          <AText
+            style={{ paddingLeft: 4 }}
             size={20}
             color={color.neutral.neutral900}
             weight="normal"
@@ -520,6 +520,44 @@ function DetailSurveiScreen({ navigation, route }) {
           <ADetailView
             title={`Foto ${jenis == "Pemasangan" ? "Pemasangan" : "Survei"}`}
           >
+            {survei.Foto.length != 0
+              ? survei.Foto.map((item, index) => (
+                  <View key={index}>
+                    {index == 0 && index == survei.Foto.length ? "" : <View style={styles.separator} /> }
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        padding: 16,
+                      }}
+                    >
+                      <AText
+                        size={12}
+                        color={color.neutral.neutral900}
+                        weight="normal"
+                      >
+                        Foto {index + 1}
+                      </AText>
+
+                      <TouchableOpacity
+                        style={{ flexDirection: "row", paddingLeft: 4 }}
+                        onPress={() => {
+                          navigation.push("Foto", { foto: item.Foto });
+                        }}
+                      >
+                        <AText
+                          size={14}
+                          color={color.neutral.neutral700}
+                          weight="semibold"
+                        >
+                          Lihat
+                        </AText>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                ))
+              : ""}
             {survei.Foto1 != null ? (
               <View>
                 <View style={styles.separator} />
@@ -745,10 +783,7 @@ function DetailSurveiScreen({ navigation, route }) {
           {survei.CatatanTindakan != "" &&
           survei.CatatanTindakan != null &&
           jenis == "Mandiri" ? (
-            <ADetailView
-              style={{ marginTop: 20 }}
-              title={"Catatan tambahan"}
-            >
+            <ADetailView style={{ marginTop: 20 }} title={"Catatan tambahan"}>
               <AText
                 style={{ padding: 16 }}
                 size={12}

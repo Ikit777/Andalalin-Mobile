@@ -16,7 +16,7 @@ import ADialog from "../utility/ADialog";
 
 function Keterangan({ navigation, id, kondisi }) {
   const {
-    survei: { keterangan, foto1, foto2, foto3, lokasi, lat, long },
+    survei: { keterangan, foto, lokasi, lat, long },
     setSurvei,
     clearSurvei,
     setIndexSurvei,
@@ -32,12 +32,6 @@ function Keterangan({ navigation, id, kondisi }) {
   }, [keteranganText]);
 
   const simpan = () => {
-    const foto = {
-      fotoSurvei1: foto1,
-      fotoSurvei2: foto2,
-      fotoSurvei3: foto3,
-    };
-
     const lokasi_survei = {
       latitude: parseFloat(lat),
       longtitude: parseFloat(long),
@@ -57,7 +51,7 @@ function Keterangan({ navigation, id, kondisi }) {
               clearSurvei();
               setIndexSurvei(1);
 
-              navigation.replace("Detail Survei", {
+              navigation.push("Detail Survei", {
                 id: id,
                 kondisi: "Petugas",
                 jenis: "Permohonan",
@@ -83,12 +77,6 @@ function Keterangan({ navigation, id, kondisi }) {
   };
 
   const simpan_mandiri = () => {
-    const foto = {
-      fotoSurvei1: foto1,
-      fotoSurvei2: foto2,
-      fotoSurvei3: foto3,
-    };
-
     const lokasi_survei = {
       latitude: parseFloat(lat),
       longtitude: parseFloat(long),
@@ -101,14 +89,13 @@ function Keterangan({ navigation, id, kondisi }) {
       foto,
       lokasi_survei,
       (response) => {
-        console.log(response)
         switch (response.status) {
           case 201:
             (async () => {
               clearSurvei();
               setIndexSurvei(1);
               const result = await response.data;
-              navigation.replace("Detail Survei", {
+              navigation.push("Detail Survei", {
                 id: result.data.IdSurvey,
                 kondisi: "Petugas",
                 jenis: "Mandiri",
@@ -133,12 +120,6 @@ function Keterangan({ navigation, id, kondisi }) {
   };
 
   const simpan_pemasangan = () => {
-    const foto = {
-      fotoSurvei1: foto1,
-      fotoSurvei2: foto2,
-      fotoSurvei3: foto3,
-    };
-
     const lokasi_survei = {
       latitude: parseFloat(lat),
       longtitude: parseFloat(long),
@@ -158,7 +139,7 @@ function Keterangan({ navigation, id, kondisi }) {
               clearSurvei();
               setIndexSurvei(1);
               
-              navigation.replace("Detail Survei", {
+              navigation.push("Detail Survei", {
                 id: id,
                 kondisi: "Petugas",
                 jenis: "Pemasangan",

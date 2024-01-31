@@ -1,30 +1,48 @@
 import React, { useContext, useState } from "react";
-import { StyleSheet, ScrollView, View, Pressable } from "react-native";
+import {
+  StyleSheet,
+  ScrollView,
+  View,
+  Image,
+  TouchableOpacity,
+} from "react-native";
 import { useStateToggler } from "../../hooks/useUtility";
-import ATextInputIcon from "../utility/ATextInputIcon";
 import { UserContext } from "../../context/UserContext";
 import color from "../../constants/color";
 import AButton from "../utility/AButton";
 import AText from "../utility/AText";
+import ADialog from "../utility/ADialog";
+import { MaterialIcons } from "@expo/vector-icons";
 
-function Foto({ onPress, navigation, kondisi, id }) {
+function Foto({ onPress, navigation }) {
   const {
-    survei: { foto1, foto2, namaFoto1, namaFoto2, namaFoto3 },
+    survei: { foto },
+    setSurvei,
   } = useContext(UserContext);
 
-  const [foto1Error, setFoto1Error] = useStateToggler();
+  const [error, toggleError] = useStateToggler();
 
   const selanjutnya = () => {
-    if (foto1 != "Kosong") {
-      {
-        foto1Error ? setFoto1Error() : "";
-      }
+    if (foto.length != 0) {
       onPress();
     } else {
-      {
-        foto1 == "Kosong" ? (foto1Error ? "" : setFoto1Error()) : "";
-      }
+      toggleError();
     }
+  };
+
+  const remove_Foto = (file) => {
+    const updated = foto;
+
+    const index = updated.findIndex((value) => {
+      return value.name == file;
+    });
+    if (index > -1) {
+      updated.splice(index, 1);
+    }
+
+    setSurvei({
+      foto: updated,
+    });
   };
 
   return (
@@ -33,91 +51,81 @@ function Foto({ onPress, navigation, kondisi, id }) {
       showsVerticalScrollIndicator={false}
       persistentScrollbar={true}
     >
-      <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <ATextInputIcon
-          bdColor={foto1Error ? color.error.error300 : color.neutral.neutral300}
-          hint={"Masukkan foto"}
-          title={"Foto 1"}
-          icon={"camera"}
-          value={namaFoto1}
-          mult={true}
-          onPress={() => {
-            setTimeout(() => {
-              navigation.push("Kamera", {
-                kondisi: "foto" + 1,
-                jenis: kondisi,
-                id: id,
-              });
-            }, 500);
-          }}
-        />
-      </View>
+      {foto.length != 0
+        ? foto.map((item, index) => (
+            <View key={index}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  paddingTop: 14,
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    width: "80%",
+                    alignItems: "center",
+                  }}
+                >
+                  <Image
+                    source={{ uri: item.uri }}
+                    style={{ width: 50, height: 50, borderRadius: 8 }}
+                  />
+                  <AText
+                    style={{ paddingLeft: 16 }}
+                    size={16}
+                    color={color.neutral.neutral700}
+                  >
+                    {item.name}
+                  </AText>
+                </View>
 
-      {foto1Error ? (
-        <AText
-          style={{ paddingTop: 6 }}
-          color={color.error.error500}
-          size={14}
-          weight="normal"
-        >
-          Foto 1 belum dipilih
+                <TouchableOpacity
+                  onPress={() => {
+                    remove_Foto(item.name);
+                  }}
+                >
+                  <MaterialIcons
+                    name="delete-outline"
+                    size={24}
+                    color={color.neutral.neutral900}
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
+          ))
+        : ""}
+      {foto.length != 0 ? <View style={{ paddingTop: 24 }} /> : ""}
+      <TouchableOpacity
+        onPress={() => {
+          setTimeout(() => {
+            navigation.push("Kamera");
+          }, 500);
+        }}
+      >
+        <AText size={16} color={color.primary.main} weight="semibold">
+          + Tambah foto
         </AText>
-      ) : (
-        ""
-      )}
-
-      <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <ATextInputIcon
-          bdColor={color.neutral.neutral300}
-          hint={"Masukkan foto"}
-          title={"Foto 2 (Opsional)"}
-          icon={"camera"}
-          value={namaFoto2}
-          padding={20}
-          mult={true}
-          onPress={() => {
-            if (foto1 != "Kosong") {
-              setTimeout(() => {
-              navigation.push("Kamera", {
-                kondisi: "foto" + 2,
-                jenis: kondisi,
-                id: id,
-              });
-            }, 500);
-            }
-          }}
-        />
-      </View>
-
-      <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <ATextInputIcon
-          bdColor={color.neutral.neutral300}
-          hint={"Masukkan foto"}
-          title={"Foto 3 (Opsional)"}
-          icon={"camera"}
-          value={namaFoto3}
-          padding={20}
-          mult={true}
-          onPress={() => {
-            if (foto1 != "Kosong" && foto2 != "Kosong") {
-              setTimeout(() => {
-              navigation.push("Kamera", {
-                kondisi: "foto" + 3,
-                jenis: kondisi,
-                id: id,
-              });
-            }, 500);
-            }
-          }}
-        />
-      </View>
+      </TouchableOpacity>
 
       <AButton
-        style={{ marginTop: 32, marginBottom: 50 }}
+        style={{ marginTop: 24, marginBottom: 50 }}
         title={"Lanjut"}
         mode="contained"
         onPress={() => {
           selanjutnya();
+        }}
+      />
+
+      <ADialog
+        title={"Peringatan!"}
+        desc={"Silahkan tambahkan foto terlebih dahulu"}
+        visibleModal={error}
+        btnOK={"OK"}
+        onPressOKButton={() => {
+          toggleError();
         }}
       />
     </ScrollView>

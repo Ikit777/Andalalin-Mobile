@@ -39,6 +39,8 @@ function LanjutanScreen({ navigation, route }) {
         return color.error.error50;
       case "Kelengkapan tidak terpenuhi":
         return color.error.error50;
+      case "Dokumen tidak terpenuhi":
+        return color.error.error50;
       case "Permohonan dibatalkan":
         return color.error.error50;
       case "Permohonan ditolak":
@@ -59,6 +61,8 @@ function LanjutanScreen({ navigation, route }) {
       case "Persyaratan tidak terpenuhi":
         return color.error.error700;
       case "Kelengkapan tidak terpenuhi":
+        return color.error.error700;
+      case "Dokumen tidak terpenuhi":
         return color.error.error700;
       case "Permohonan dibatalkan":
         return color.error.error700;
@@ -1164,7 +1168,7 @@ function LanjutanScreen({ navigation, route }) {
         }}
       >
         <ADetailView title={"Informasi perlengkapan"}>
-        <View
+          <View
             style={{
               flexDirection: "row",
               justifyContent: "space-between",
@@ -1190,7 +1194,7 @@ function LanjutanScreen({ navigation, route }) {
             </AText>
           </View>
 
-        <View style={styles.separator} />
+          <View style={styles.separator} />
 
           <View
             style={{
@@ -1248,469 +1252,469 @@ function LanjutanScreen({ navigation, route }) {
         </ADetailView>
 
         <ADetailView style={{ marginTop: 20 }} title={"Lokasi pemasangan"}>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                padding: 16,
-              }}
-            >
-              <AText
-                style={{ maxWidth: "50%" }}
-                size={12}
-                color={color.neutral.neutral900}
-                weight="normal"
-              >
-                Negara pemasangan
-              </AText>
-              <AText
-                style={{ maxWidth: "50%" }}
-                size={12}
-                color={color.neutral.neutral500}
-                weight="normal"
-              >
-                {permohonan.negara_pemasangan}
-              </AText>
-            </View>
-
-            <View style={styles.separator} />
-
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                padding: 16,
-              }}
-            >
-              <AText
-                style={{ maxWidth: "50%" }}
-                size={12}
-                color={color.neutral.neutral900}
-                weight="normal"
-              >
-                Provinsi pemasangan
-              </AText>
-              <AText
-                style={{ maxWidth: "50%" }}
-                size={12}
-                color={color.neutral.neutral500}
-                weight="normal"
-              >
-                {permohonan.provinsi_pemasangan}
-              </AText>
-            </View>
-
-            <View style={styles.separator} />
-
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                padding: 16,
-              }}
-            >
-              <AText
-                style={{ maxWidth: "50%" }}
-                size={12}
-                color={color.neutral.neutral900}
-                weight="normal"
-              >
-                Kabupaten pemasangan
-              </AText>
-              <AText
-                style={{ maxWidth: "50%" }}
-                size={12}
-                color={color.neutral.neutral500}
-                weight="normal"
-              >
-                {permohonan.kabupaten_pemasangan}
-              </AText>
-            </View>
-
-            <View style={styles.separator} />
-
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                padding: 16,
-              }}
-            >
-              <AText
-                style={{ maxWidth: "50%" }}
-                size={12}
-                color={color.neutral.neutral900}
-                weight="normal"
-              >
-                Kecamatan pemasangan
-              </AText>
-              <AText
-                style={{ maxWidth: "50%" }}
-                size={12}
-                color={color.neutral.neutral500}
-                weight="normal"
-              >
-                {permohonan.kecamatan_pemasangan}
-              </AText>
-            </View>
-
-            <View style={styles.separator} />
-
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                padding: 16,
-              }}
-            >
-              <AText
-                style={{ maxWidth: "50%" }}
-                size={12}
-                color={color.neutral.neutral900}
-                weight="normal"
-              >
-                Kelurahan pemasangan
-              </AText>
-              <AText
-                style={{ maxWidth: "50%" }}
-                size={12}
-                color={color.neutral.neutral500}
-                weight="normal"
-              >
-                {permohonan.kelurahan_pemasangan}
-              </AText>
-            </View>
-
-            <View style={styles.separator} />
-
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                padding: 16,
-              }}
-            >
-              <AText
-                style={{ maxWidth: "50%" }}
-                size={12}
-                color={color.neutral.neutral900}
-                weight="normal"
-              >
-                Alamat pemasangan
-              </AText>
-              <AText
-                style={{ maxWidth: "50%" }}
-                size={12}
-                color={color.neutral.neutral500}
-                weight="normal"
-              >
-                {permohonan.alamat_pemasangan}
-              </AText>
-            </View>
-
-            <View style={styles.separator} />
-
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                padding: 16,
-              }}
-            >
-              <AText
-                style={{ maxWidth: "50%" }}
-                size={12}
-                color={color.neutral.neutral900}
-                weight="normal"
-              >
-                Nama jalan
-              </AText>
-              <AText
-                style={{ maxWidth: "50%" }}
-                size={12}
-                color={color.neutral.neutral500}
-                weight="normal"
-              >
-                {permohonan.nama_jalan}
-              </AText>
-            </View>
-          </ADetailView>
-
-          <ADetailView style={{ paddingTop: 20 }} title={"Informasi jalan"}>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                padding: 14,
-              }}
-            >
-              <AText
-                style={{ maxWidth: "50%" }}
-                size={12}
-                color={color.neutral.neutral900}
-                weight="normal"
-              >
-                Kode jalan
-              </AText>
-              <AText
-                style={{ maxWidth: "50%" }}
-                size={12}
-                color={color.neutral.neutral500}
-                weight="normal"
-              >
-                {permohonan.kode_jalan_merge}
-              </AText>
-            </View>
-
-            <View style={styles.separator} />
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                padding: 16,
-              }}
-            >
-              <AText
-                style={{ maxWidth: "50%" }}
-                size={12}
-                color={color.neutral.neutral900}
-                weight="normal"
-              >
-                Nama jalan
-              </AText>
-              <AText
-                style={{ maxWidth: "50%" }}
-                size={12}
-                color={color.neutral.neutral500}
-                weight="normal"
-              >
-                {permohonan.nama_jalan}
-              </AText>
-            </View>
-
-            <View style={styles.separator} />
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                padding: 16,
-              }}
-            >
-              <AText
-                style={{ maxWidth: "50%" }}
-                size={12}
-                color={color.neutral.neutral900}
-                weight="normal"
-              >
-                Pengkal jalan
-              </AText>
-              <AText
-                style={{ maxWidth: "50%" }}
-                size={12}
-                color={color.neutral.neutral500}
-                weight="normal"
-              >
-                {permohonan.pangkal_jalan}
-              </AText>
-            </View>
-
-            <View style={styles.separator} />
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                padding: 16,
-              }}
-            >
-              <AText
-                style={{ maxWidth: "50%" }}
-                size={12}
-                color={color.neutral.neutral900}
-                weight="normal"
-              >
-                Ujung jalan
-              </AText>
-              <AText
-                style={{ maxWidth: "50%" }}
-                size={12}
-                color={color.neutral.neutral500}
-                weight="normal"
-              >
-                {permohonan.ujung_jalan}
-              </AText>
-            </View>
-
-            <View style={styles.separator} />
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                padding: 16,
-              }}
-            >
-              <AText
-                style={{ maxWidth: "50%" }}
-                size={12}
-                color={color.neutral.neutral900}
-                weight="normal"
-              >
-                Panjang jalan
-              </AText>
-              <AText
-                style={{ maxWidth: "50%" }}
-                size={12}
-                color={color.neutral.neutral500}
-                weight="normal"
-              >
-                {permohonan.panjang_jalan}
-              </AText>
-            </View>
-
-            <View style={styles.separator} />
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                padding: 16,
-              }}
-            >
-              <AText
-                style={{ maxWidth: "50%" }}
-                size={12}
-                color={color.neutral.neutral900}
-                weight="normal"
-              >
-                Lebar jalan
-              </AText>
-              <AText
-                style={{ maxWidth: "50%" }}
-                size={12}
-                color={color.neutral.neutral500}
-                weight="normal"
-              >
-                {permohonan.lebar_jalan}
-              </AText>
-            </View>
-
-            <View style={styles.separator} />
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                padding: 16,
-              }}
-            >
-              <AText
-                style={{ maxWidth: "50%" }}
-                size={12}
-                color={color.neutral.neutral900}
-                weight="normal"
-              >
-                Permukaan jalan
-              </AText>
-              <AText
-                style={{ maxWidth: "50%" }}
-                size={12}
-                color={color.neutral.neutral500}
-                weight="normal"
-              >
-                {permohonan.permukaan_jalan}
-              </AText>
-            </View>
-
-            <View style={styles.separator} />
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                padding: 16,
-              }}
-            >
-              <AText
-                style={{ maxWidth: "50%" }}
-                size={12}
-                color={color.neutral.neutral900}
-                weight="normal"
-              >
-                Fungsi jalan
-              </AText>
-              <AText
-                style={{ maxWidth: "50%" }}
-                size={12}
-                color={color.neutral.neutral500}
-                weight="normal"
-              >
-                {permohonan.fungsi_jalan}
-              </AText>
-            </View>
-          </ADetailView>
-
-          <ADetailView
-            style={{ paddingTop: 20 }}
-            title={"Lokasi pemasangan berdasarkan koordinat"}
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: 16,
+            }}
           >
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                padding: 14,
-              }}
-            >
-              <AText
-                style={{ maxWidth: "50%" }}
-                size={12}
-                color={color.neutral.neutral900}
-                weight="normal"
-              >
-                Lokasi pemasangan dimap
-              </AText>
-              <TouchableOpacity
-                style={{ flexDirection: "row", paddingLeft: 4 }}
-                onPress={() => {
-                  const koordinat = {
-                    latitude: permohonan.latitude,
-                    longitude: permohonan.longitude,
-                  };
-                  navigation.push("Map", { koordinat: koordinat });
-                }}
-              >
-                <AText
-                  size={14}
-                  color={color.neutral.neutral700}
-                  weight="semibold"
-                >
-                  Lihat
-                </AText>
-              </TouchableOpacity>
-            </View>
-
             <AText
-              style={{ padding: 16 }}
+              style={{ maxWidth: "50%" }}
               size={12}
               color={color.neutral.neutral900}
               weight="normal"
             >
-              {permohonan.lokasi_pemasangan}
+              Negara pemasangan
             </AText>
-          </ADetailView>
+            <AText
+              style={{ maxWidth: "50%" }}
+              size={12}
+              color={color.neutral.neutral500}
+              weight="normal"
+            >
+              {permohonan.negara_pemasangan}
+            </AText>
+          </View>
 
-          <View style={{ paddingBottom: 36 }} />
+          <View style={styles.separator} />
+
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: 16,
+            }}
+          >
+            <AText
+              style={{ maxWidth: "50%" }}
+              size={12}
+              color={color.neutral.neutral900}
+              weight="normal"
+            >
+              Provinsi pemasangan
+            </AText>
+            <AText
+              style={{ maxWidth: "50%" }}
+              size={12}
+              color={color.neutral.neutral500}
+              weight="normal"
+            >
+              {permohonan.provinsi_pemasangan}
+            </AText>
+          </View>
+
+          <View style={styles.separator} />
+
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: 16,
+            }}
+          >
+            <AText
+              style={{ maxWidth: "50%" }}
+              size={12}
+              color={color.neutral.neutral900}
+              weight="normal"
+            >
+              Kabupaten pemasangan
+            </AText>
+            <AText
+              style={{ maxWidth: "50%" }}
+              size={12}
+              color={color.neutral.neutral500}
+              weight="normal"
+            >
+              {permohonan.kabupaten_pemasangan}
+            </AText>
+          </View>
+
+          <View style={styles.separator} />
+
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: 16,
+            }}
+          >
+            <AText
+              style={{ maxWidth: "50%" }}
+              size={12}
+              color={color.neutral.neutral900}
+              weight="normal"
+            >
+              Kecamatan pemasangan
+            </AText>
+            <AText
+              style={{ maxWidth: "50%" }}
+              size={12}
+              color={color.neutral.neutral500}
+              weight="normal"
+            >
+              {permohonan.kecamatan_pemasangan}
+            </AText>
+          </View>
+
+          <View style={styles.separator} />
+
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: 16,
+            }}
+          >
+            <AText
+              style={{ maxWidth: "50%" }}
+              size={12}
+              color={color.neutral.neutral900}
+              weight="normal"
+            >
+              Kelurahan pemasangan
+            </AText>
+            <AText
+              style={{ maxWidth: "50%" }}
+              size={12}
+              color={color.neutral.neutral500}
+              weight="normal"
+            >
+              {permohonan.kelurahan_pemasangan}
+            </AText>
+          </View>
+
+          <View style={styles.separator} />
+
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: 16,
+            }}
+          >
+            <AText
+              style={{ maxWidth: "50%" }}
+              size={12}
+              color={color.neutral.neutral900}
+              weight="normal"
+            >
+              Alamat pemasangan
+            </AText>
+            <AText
+              style={{ maxWidth: "50%" }}
+              size={12}
+              color={color.neutral.neutral500}
+              weight="normal"
+            >
+              {permohonan.alamat_pemasangan}
+            </AText>
+          </View>
+
+          <View style={styles.separator} />
+
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: 16,
+            }}
+          >
+            <AText
+              style={{ maxWidth: "50%" }}
+              size={12}
+              color={color.neutral.neutral900}
+              weight="normal"
+            >
+              Nama jalan
+            </AText>
+            <AText
+              style={{ maxWidth: "50%" }}
+              size={12}
+              color={color.neutral.neutral500}
+              weight="normal"
+            >
+              {permohonan.nama_jalan}
+            </AText>
+          </View>
+        </ADetailView>
+
+        <ADetailView style={{ paddingTop: 20 }} title={"Informasi jalan"}>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: 14,
+            }}
+          >
+            <AText
+              style={{ maxWidth: "50%" }}
+              size={12}
+              color={color.neutral.neutral900}
+              weight="normal"
+            >
+              Kode jalan
+            </AText>
+            <AText
+              style={{ maxWidth: "50%" }}
+              size={12}
+              color={color.neutral.neutral500}
+              weight="normal"
+            >
+              {permohonan.kode_jalan_merge}
+            </AText>
+          </View>
+
+          <View style={styles.separator} />
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: 16,
+            }}
+          >
+            <AText
+              style={{ maxWidth: "50%" }}
+              size={12}
+              color={color.neutral.neutral900}
+              weight="normal"
+            >
+              Nama jalan
+            </AText>
+            <AText
+              style={{ maxWidth: "50%" }}
+              size={12}
+              color={color.neutral.neutral500}
+              weight="normal"
+            >
+              {permohonan.nama_jalan}
+            </AText>
+          </View>
+
+          <View style={styles.separator} />
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: 16,
+            }}
+          >
+            <AText
+              style={{ maxWidth: "50%" }}
+              size={12}
+              color={color.neutral.neutral900}
+              weight="normal"
+            >
+              Pengkal jalan
+            </AText>
+            <AText
+              style={{ maxWidth: "50%" }}
+              size={12}
+              color={color.neutral.neutral500}
+              weight="normal"
+            >
+              {permohonan.pangkal_jalan}
+            </AText>
+          </View>
+
+          <View style={styles.separator} />
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: 16,
+            }}
+          >
+            <AText
+              style={{ maxWidth: "50%" }}
+              size={12}
+              color={color.neutral.neutral900}
+              weight="normal"
+            >
+              Ujung jalan
+            </AText>
+            <AText
+              style={{ maxWidth: "50%" }}
+              size={12}
+              color={color.neutral.neutral500}
+              weight="normal"
+            >
+              {permohonan.ujung_jalan}
+            </AText>
+          </View>
+
+          <View style={styles.separator} />
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: 16,
+            }}
+          >
+            <AText
+              style={{ maxWidth: "50%" }}
+              size={12}
+              color={color.neutral.neutral900}
+              weight="normal"
+            >
+              Panjang jalan
+            </AText>
+            <AText
+              style={{ maxWidth: "50%" }}
+              size={12}
+              color={color.neutral.neutral500}
+              weight="normal"
+            >
+              {permohonan.panjang_jalan}
+            </AText>
+          </View>
+
+          <View style={styles.separator} />
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: 16,
+            }}
+          >
+            <AText
+              style={{ maxWidth: "50%" }}
+              size={12}
+              color={color.neutral.neutral900}
+              weight="normal"
+            >
+              Lebar jalan
+            </AText>
+            <AText
+              style={{ maxWidth: "50%" }}
+              size={12}
+              color={color.neutral.neutral500}
+              weight="normal"
+            >
+              {permohonan.lebar_jalan}
+            </AText>
+          </View>
+
+          <View style={styles.separator} />
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: 16,
+            }}
+          >
+            <AText
+              style={{ maxWidth: "50%" }}
+              size={12}
+              color={color.neutral.neutral900}
+              weight="normal"
+            >
+              Permukaan jalan
+            </AText>
+            <AText
+              style={{ maxWidth: "50%" }}
+              size={12}
+              color={color.neutral.neutral500}
+              weight="normal"
+            >
+              {permohonan.permukaan_jalan}
+            </AText>
+          </View>
+
+          <View style={styles.separator} />
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: 16,
+            }}
+          >
+            <AText
+              style={{ maxWidth: "50%" }}
+              size={12}
+              color={color.neutral.neutral900}
+              weight="normal"
+            >
+              Fungsi jalan
+            </AText>
+            <AText
+              style={{ maxWidth: "50%" }}
+              size={12}
+              color={color.neutral.neutral500}
+              weight="normal"
+            >
+              {permohonan.fungsi_jalan}
+            </AText>
+          </View>
+        </ADetailView>
+
+        <ADetailView
+          style={{ paddingTop: 20 }}
+          title={"Lokasi pemasangan berdasarkan koordinat"}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: 14,
+            }}
+          >
+            <AText
+              style={{ maxWidth: "50%" }}
+              size={12}
+              color={color.neutral.neutral900}
+              weight="normal"
+            >
+              Lokasi pemasangan dimap
+            </AText>
+            <TouchableOpacity
+              style={{ flexDirection: "row", paddingLeft: 4 }}
+              onPress={() => {
+                const koordinat = {
+                  latitude: permohonan.latitude,
+                  longitude: permohonan.longitude,
+                };
+                navigation.push("Map", { koordinat: koordinat });
+              }}
+            >
+              <AText
+                size={14}
+                color={color.neutral.neutral700}
+                weight="semibold"
+              >
+                Lihat
+              </AText>
+            </TouchableOpacity>
+          </View>
+
+          <AText
+            style={{ padding: 16 }}
+            size={12}
+            color={color.neutral.neutral900}
+            weight="normal"
+          >
+            {permohonan.lokasi_pemasangan}
+          </AText>
+        </ADetailView>
+
+        <View style={{ paddingBottom: 36 }} />
       </ScrollView>
     );
   }
@@ -3447,8 +3451,6 @@ function LanjutanScreen({ navigation, route }) {
               {permohonan.peruntukan}
             </AText>
           </ADetailView>
-
-          
 
           {permohonan.catatan != "" && permohonan.catatan != null ? (
             <View>

@@ -100,7 +100,14 @@ function PilihLokasiScreen({ navigation, route }) {
             });
 
             for (let item of response) {
-              let addressLengkap = `${item.street}, ${item.name}, ${item.district}, ${item.postalCode}, ${item.city}, ${item.subregion}, ${item.region}, ${item.country}`;
+              let street = item.street != null ? (item.street + ", ") : ("");
+              let name = item.name != null ? (item.name + ", ") : ("");
+              let district = item.district != null ? (item.district + ", ") : ("");
+              let postalCode = item.postalCode != null ? (item.postalCode + ", ") : ("");
+              let city = item.city != null ? (item.city + ", ") : ("");
+              let subregion = item.subregion != null ? (item.subregion + ", ") :("");
+              let region = item.region != null ? (item.region + ", ") : ("");
+              let addressLengkap = `${street}${name}${district}${postalCode}${city}${subregion}${region}${"Indonesia"}`;
 
               setAlamatLengkap(addressLengkap);
             }
@@ -169,7 +176,14 @@ function PilihLokasiScreen({ navigation, route }) {
             });
 
             for (let item of response) {
-              let addressLengkap = `${item.street}, ${item.name}, ${item.district}, ${item.postalCode}, ${item.city}, ${item.subregion}, ${item.region}, ${item.country}`;
+              let street = item.street != null ? (item.street + ", ") : ("");
+              let name = item.name != null ? (item.name + ", ") : ("");
+              let district = item.district != null ? (item.district + ", ") : ("");
+              let postalCode = item.postalCode != null ? (item.postalCode + ", ") : ("");
+              let city = item.city != null ? (item.city + ", ") : ("");
+              let subregion = item.subregion != null ? (item.subregion + ", ") :("");
+              let region = item.region != null ? (item.region + ", ") : ("");
+              let addressLengkap = `${street}${name}${district}${postalCode}${city}${subregion}${region}${"Indonesia"}`;
 
               setAlamatLengkap(addressLengkap);
             }

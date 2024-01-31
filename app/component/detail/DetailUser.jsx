@@ -37,6 +37,8 @@ function DetailUser({ permohonan, navigation, reload }) {
         return color.error.error50;
       case "Kelengkapan tidak terpenuhi":
         return color.error.error50;
+      case "Dokumen tidak terpenuhi":
+        return color.error.error50;
       case "Permohonan dibatalkan":
         return color.error.error50;
       case "Permohonan ditolak":
@@ -57,6 +59,8 @@ function DetailUser({ permohonan, navigation, reload }) {
       case "Persyaratan tidak terpenuhi":
         return color.error.error700;
       case "Kelengkapan tidak terpenuhi":
+        return color.error.error700;
+      case "Dokumen tidak terpenuhi":
         return color.error.error700;
       case "Permohonan dibatalkan":
         return color.error.error700;

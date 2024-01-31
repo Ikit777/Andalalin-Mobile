@@ -13,13 +13,13 @@ export const andalalinPengajuan = async (
 
   tambahan.forEach((item) => {
     if (item.file != "") {
-      if (item.tipe == "Pdf"){
+      if (item.tipe == "Pdf") {
         formData.append(item.persyaratan, {
           uri: item.file,
           name: "persyaratan.pdf",
           type: "application/pdf",
         });
-      }else{
+      } else {
         formData.append(item.persyaratan, {
           uri: item.file,
           name: "persyaratan.docx",
@@ -55,13 +55,13 @@ export const andalalinPengajuanPerlalin = async (
 
   tambahan.forEach((item) => {
     if (item.file != "") {
-      if (item.tipe == "Pdf"){
+      if (item.tipe == "Pdf") {
         formData.append(item.persyaratan, {
           uri: item.file,
           name: "persyaratan.pdf",
           type: "application/pdf",
         });
-      }else{
+      } else {
         formData.append(item.persyaratan, {
           uri: item.file,
           name: "persyaratan.docx",
@@ -154,7 +154,7 @@ export const andalalinCheckAdministrasi = async (
     headers: headers,
     data: body,
   });
-  
+
   andalalinRespone(response);
 };
 
@@ -177,7 +177,7 @@ export const andalalinCheckAdministrasiPerlalin = async (
     headers: headers,
     data: body,
   });
-  
+
   andalalinRespone(response);
 };
 
@@ -225,6 +225,30 @@ export const andalalinPembuatanPenyusunDokumen = async (
   andalalinRespone(response);
 };
 
+export const andalalinPemeriksaanDokumenAndalalin = async (
+  accessToken,
+  id,
+  status,
+  pemeriksaan,
+  andalalinRespone
+) => {
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "application/json",
+  };
+  const body = JSON.stringify({
+    status: status,
+    pemeriksaan: pemeriksaan,
+  });
+  const response = await axiosInstance({
+    method: "post",
+    url: ENDPOINTS.ANDALALIN_PEMERIKSAAN_DOKUMEN_ANDALALIN + "/" + id,
+    headers: headers,
+    data: body,
+  });
+  andalalinRespone(response);
+};
+
 export const andalalinPembuatanSuratKeputusan = async (
   accessToken,
   id,
@@ -261,13 +285,13 @@ export const andalalinUpdatePersyaratan = async (
   const formData = new FormData();
 
   file.forEach((item) => {
-    if (item.tipe == "Pdf"){
+    if (item.tipe == "Pdf") {
       formData.append(item.berkas, {
         uri: item.berkasFile,
         name: "berkas.pdf",
         type: "application/pdf",
       });
-    }else{
+    } else {
       formData.append(item.berkas, {
         uri: item.berkasFile,
         name: "berkas.docx",
@@ -364,29 +388,13 @@ export const andalalinSurveiLapangan = async (
 ) => {
   const formData = new FormData();
 
-  foto.fotoSurvei1 != "Kosong"
-    ? formData.append("foto1", {
-        uri: foto.fotoSurvei1,
-        name: "foto1.jpg",
-        type: "image/jpeg",
-      })
-    : formData.append("foto1");
-
-  foto.fotoSurvei2 != "Kosong"
-    ? formData.append("foto2", {
-        uri: foto.fotoSurvei2,
-        name: "foto2.jpg",
-        type: "image/jpeg",
-      })
-    : formData.append("foto2");
-
-  foto.fotoSurvei3 != "Kosong"
-    ? formData.append("foto3", {
-        uri: foto.fotoSurvei3,
-        name: "foto3.jpg",
-        type: "image/jpeg",
-      })
-    : formData.append("foto3");
+  foto.forEach((item) => {
+    formData.append(item.name, {
+      uri: item.uri,
+      name: item.name,
+      type: "image/jpeg",
+    });
+  });
 
   formData.append("data", JSON.stringify(lokasi));
 
@@ -656,29 +664,13 @@ export const andalalinSurveiMandiri = async (
 ) => {
   const formData = new FormData();
 
-  foto.fotoSurvei1 != "Kosong"
-    ? formData.append("foto1", {
-        uri: foto.fotoSurvei1,
-        name: "foto1.jpg",
-        type: "image/jpeg",
-      })
-    : formData.append("foto1");
-
-  foto.fotoSurvei2 != "Kosong"
-    ? formData.append("foto2", {
-        uri: foto.fotoSurvei2,
-        name: "foto2.jpg",
-        type: "image/jpeg",
-      })
-    : formData.append("foto2");
-
-  foto.fotoSurvei3 != "Kosong"
-    ? formData.append("foto3", {
-        uri: foto.fotoSurvei3,
-        name: "foto3.jpg",
-        type: "image/jpeg",
-      })
-    : formData.append("foto3");
+  foto.forEach((item) => {
+    formData.append(item.name, {
+      uri: item.uri,
+      name: item.name,
+      type: "image/jpeg",
+    });
+  });
 
   formData.append("data", JSON.stringify(lokasi));
 
@@ -804,7 +796,7 @@ export const andalalinHasilSurveiKepuasan = async (
 export const andalalinHasilSurveiKepuasanTertentu = async (
   accessToken,
   periode,
-  andalalinRespone,  
+  andalalinRespone
 ) => {
   const headers = {
     Authorization: "Bearer " + accessToken,
@@ -812,7 +804,7 @@ export const andalalinHasilSurveiKepuasanTertentu = async (
   };
   const response = await axiosInstance({
     method: "get",
-    url: ENDPOINTS.HASIL_SURVEI_KEPUASAN_TERTENTU + "/" + periode ,
+    url: ENDPOINTS.HASIL_SURVEI_KEPUASAN_TERTENTU + "/" + periode,
     headers: headers,
   });
   andalalinRespone(response);
@@ -867,29 +859,13 @@ export const andalalinPemasangan = async (
 ) => {
   const formData = new FormData();
 
-  foto.fotoSurvei1 != "Kosong"
-    ? formData.append("foto1", {
-        uri: foto.fotoSurvei1,
-        name: "foto1.jpg",
-        type: "image/jpeg",
-      })
-    : formData.append("foto1");
-
-  foto.fotoSurvei2 != "Kosong"
-    ? formData.append("foto2", {
-        uri: foto.fotoSurvei2,
-        name: "foto2.jpg",
-        type: "image/jpeg",
-      })
-    : formData.append("foto2");
-
-  foto.fotoSurvei3 != "Kosong"
-    ? formData.append("foto3", {
-        uri: foto.fotoSurvei3,
-        name: "foto3.jpg",
-        type: "image/jpeg",
-      })
-    : formData.append("foto3");
+  foto.forEach((item) => {
+    formData.append(item.name, {
+      uri: item.uri,
+      name: item.name,
+      type: "image/jpeg",
+    });
+  });
 
   formData.append("data", JSON.stringify(lokasi));
 

@@ -34,7 +34,9 @@ function ACardPermohonan({
     switch (status) {
       case "Persyaratan tidak terpenuhi":
         return color.error.error50;
-        case "Kelengkapan tidak terpenuhi":
+      case "Kelengkapan tidak terpenuhi":
+        return color.error.error50;
+      case "Dokumen tidak terpenuhi":
         return color.error.error50;
       case "Permohonan dibatalkan":
         return color.error.error50;
@@ -57,9 +59,11 @@ function ACardPermohonan({
     switch (status) {
       case "Persyaratan tidak terpenuhi":
         return color.error.error700;
-        case "Kelengkapan tidak terpenuhi":
+      case "Kelengkapan tidak terpenuhi":
         return color.error.error700;
       case "Permohonan dibatalkan":
+        return color.error.error700;
+      case "Dokumen tidak terpenuhi":
         return color.error.error700;
       case "Permohonan ditolak":
         return color.error.error700;

@@ -32,6 +32,12 @@ function SurveiScreen({ navigation, route }) {
     }, [context.indexSurvei])
   );
 
+  useEffect(() => {
+    context.setSurvei({
+      foto: [],
+    });
+  }, []);
+
   const back = () => {
     if (context.indexSurvei == 1) {
       toggleComfirm();
@@ -48,9 +54,9 @@ function SurveiScreen({ navigation, route }) {
   const judul = () => {
     switch (context.indexSurvei) {
       case 1:
-        return "Upload foto";
+        return "Tambah foto";
       case 2:
-        return "Lokasi survei";
+        return "Lokasi";
       case 3:
         return "Keterangan";
     }

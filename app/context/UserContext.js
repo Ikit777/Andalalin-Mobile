@@ -132,16 +132,10 @@ const perlalinInit = {
 };
 
 const surveiInit = {
-  foto1: "Kosong",
-  namaFoto1: "",
-  foto2: "Kosong",
-  namaFoto2: "",
-  foto3: "Kosong",
-  namaFoto3: "",
+  foto: [],
   lat: "",
   long: "",
   lokasi: "",
-  jalan: "",
   keterangan: "",
 };
 
