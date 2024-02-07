@@ -6,7 +6,7 @@ module.exports = ({ config }) => {
         projectId: "415722cd-73d6-4d47-93dc-aa14779aa554",
       },
       appStatus: process.env.APP_STATUS ?? "DEVELOPMENT",
-      apiURL: process.env.API_URL ?? "https://andalalin.me",
+      apiURL: process.env.API_URL ?? "https://app.infra.dewacloud.com",
     },
     android: {
       package: "com.andalalin",
