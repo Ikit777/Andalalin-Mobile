@@ -35,6 +35,8 @@ function LoginScreen({ navigation }) {
   const [emailError, toggleEmailError] = useStateToggler();
   const [passwordError, togglePasswordError] = useStateToggler();
 
+  const [formError, toggleFormError] = useStateToggler();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [token, setToken] = useState("");
@@ -60,10 +62,6 @@ function LoginScreen({ navigation }) {
     const unsubscribe = navigation.addListener("focus", () => {
       context.toggleLoading(false);
       context.setUser("userLoggin");
-      setEmail("");
-      setPassword("");
-      emailError ? toggleEmailError() : "";
-      passwordError ? togglePasswordError() : "";
 
       BackHandler.addEventListener("hardwareBackPress", () => {
         toggleComfirm();
@@ -156,7 +154,9 @@ function LoginScreen({ navigation }) {
           break;
         case 400:
           context.toggleLoading(false);
-          toggleDialogUser();
+          emailError ? "" : toggleEmailError();
+          passwordError ? "" : togglePasswordError();
+          dialogUser ? "" : toggleDialogUser();
           break;
         case 403:
           context.toggleLoading(false);
@@ -172,21 +172,25 @@ function LoginScreen({ navigation }) {
 
   const doLogin = () => {
     if (email != "" && password != "") {
-      {
+      if (!dialogUser) {
         emailError ? toggleEmailError() : "";
-      }
-      {
         passwordError ? togglePasswordError() : "";
+        formError ? toggleFormError() : "";
       }
+
       login();
     } else {
-      {
-        email == "" ? (emailError ? "" : toggleEmailError()) : "";
-      }
-      {
-        password == "" ? (passwordError ? "" : togglePasswordError()) : "";
-      }
+      email == "" ? (emailError ? "" : toggleEmailError()) : "";
+      password == "" ? (passwordError ? "" : togglePasswordError()) : "";
+      formError ? "" : toggleFormError();
     }
+  };
+
+  const clear_error = () => {
+    emailError ? toggleEmailError() : "";
+    passwordError ? togglePasswordError() : "";
+    formError ? toggleFormError() : "";
+    dialogUser ? toggleDialogUser() : "";
   };
 
   return (
@@ -200,7 +204,7 @@ function LoginScreen({ navigation }) {
         persistentScrollbar={true}
       >
         <AText color={color.neutral.neutral900} size={24} weight="semibold">
-          Log in
+          Ayo Masuk
         </AText>
         <AText
           style={{ paddingBottom: 32 }}
@@ -223,54 +227,56 @@ function LoginScreen({ navigation }) {
           ref={emailInput}
           onChangeText={(value) => {
             setEmail(value);
+            clear_error();
           }}
           submit={() => {
-            {
-              emailError ? toggleEmailError() : "";
-            }
             passwordInput.current.focus();
+            clear_error();
           }}
         />
-        {emailError ? (
-          <AText
-            style={{ paddingTop: 6 }}
-            color={color.error.error500}
-            size={14}
-            weight="normal"
-          >
-            Email kosong
-          </AText>
-        ) : (
-          ""
-        )}
         <APasswordInput
-          hint={"Masukkan password anda"}
-          title={"Password"}
+          hint={"Masukkan kata sandi anda"}
+          title={"Kata sandi"}
           rtype={"done"}
-          bdColor={emailError ? color.error.error300 : color.neutral.neutral300}
+          bdColor={
+            passwordError ? color.error.error300 : color.neutral.neutral300
+          }
           value={password}
           ref={passwordInput}
           onChangeText={(value) => {
             setPassword(value);
+            clear_error();
           }}
           submit={() => {
-            {
-              passwordError ? togglePasswordError() : "";
-            }
+            clear_error();
           }}
           passwordVisibility={passwordVisibility}
           handlePasswordVisibility={handlePasswordVisibility}
           rightIcon={rightIcon}
         />
 
-        {passwordError ? (
+        {formError ? (
           <AText
-            style={{ paddingTop: 6 }}
+            style={{ paddingTop: 8 }}
             color={color.error.error500}
             size={14}
             weight="normal"
           >
-            Password kosong
+            Masukkan email dan kata sandi Anda
+          </AText>
+        ) : (
+          ""
+        )}
+
+        {dialogUser ? (
+          <AText
+            style={{ paddingTop: 8 }}
+            color={color.error.error500}
+            size={14}
+            weight="normal"
+          >
+            Akun tidak terdaftar, silakan periksa kembali email dan kata sandi
+            Anda
           </AText>
         ) : (
           ""
@@ -285,18 +291,16 @@ function LoginScreen({ navigation }) {
           }}
           onPress={() => {
             navigation.push("Forgot");
-            setEmail("");
-            setPassword("");
           }}
         >
           <AText size={14} color={color.neutral.neutral700} weight="semibold">
-            Lupa password
+            Lupa kata sandi
           </AText>
         </TouchableOpacity>
         <AButton
           style={styles.login}
           mode="contained"
-          title="Log in"
+          title="Masuk"
           onPress={() => {
             doLogin();
           }}
@@ -316,8 +320,6 @@ function LoginScreen({ navigation }) {
           <TouchableOpacity
             style={{ flexDirection: "row", paddingLeft: 4 }}
             onPress={() => {
-              setEmail("");
-              setPassword("");
               navigation.push("Register");
             }}
           >
@@ -328,8 +330,8 @@ function LoginScreen({ navigation }) {
         </View>
       </ScrollView>
       <AConfirmationDialog
-        title={"Peringatan!"}
-        desc={"Apakah Anda yakin ingin keluar aplikasi"}
+        title={"Peringatan"}
+        desc={"Apakah Anda yakin ingin keluar aplikasi?"}
         visibleModal={confirm}
         btnOK={"OK"}
         btnBATAL={"Batal"}
@@ -342,25 +344,12 @@ function LoginScreen({ navigation }) {
         }}
       />
       <ADialog
-        title={"Peringatan!"}
-        desc={"User tidak terdaptar pada sistem"}
-        visibleModal={dialogUser}
-        btnOK={"OK"}
-        onPressOKButton={() => {
-          toggleDialogUser();
-          setEmail("");
-          setPassword("");
-        }}
-      />
-      <ADialog
-        title={"Peringatan!"}
+        title={"Peringatan"}
         desc={"Akun Anda belum terverifikasi"}
         visibleModal={dialogVerif}
         btnOK={"Verifikasi"}
         onPressOKButton={() => {
           toggleDialogVerif();
-          setEmail("");
-          setPassword("");
           verif(email);
           navigation.push("Verifikasi", { email: email });
         }}

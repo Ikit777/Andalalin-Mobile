@@ -439,8 +439,8 @@ function RegisterScreen({ navigation }) {
         </View>
       </ScrollView>
       <AConfirmationDialog
-        title={"Peringatan!"}
-        desc={"Apakah Anda yakin ingin kembali, data tidak akan disimpan"}
+        title={"Peringatan"}
+        desc={"Apakah Anda yakin ingin kembali, data pendaftaran Anda akan hilang?"}
         visibleModal={confirm}
         btnOK={"OK"}
         btnBATAL={"Batal"}
@@ -452,12 +452,12 @@ function RegisterScreen({ navigation }) {
           setName("");
           setPassword("");
           setconfirmPassword("");
-          navigation.goBack();
+          navigation.replace("Login");
         }}
       />
       <ADialog
-        title={"Peringatan!"}
-        desc={"Email sudah digunakan"}
+        title={"Peringatan"}
+        desc={"Email telah digunakan pengguna lain"}
         visibleModal={emailExist}
         btnOK={"OK"}
         onPressOKButton={() => {
@@ -465,7 +465,7 @@ function RegisterScreen({ navigation }) {
         }}
       />
       <ADialog
-        title={"Peringatan!"}
+        title={"Peringatan"}
         desc={"Terjadi kesalahan pada server, mohon coba lagi lain waktu"}
         visibleModal={something}
         btnOK={"OK"}
@@ -475,9 +475,9 @@ function RegisterScreen({ navigation }) {
       />
 
       <ADialog
-        title={"Peringatan!"}
+        title={"Peringatan"}
         desc={
-          "Email tidak dapat ditemukan, silahkan masukkan email dengan benar"
+          "Email Anda tidak valid, silahkan masukkan email dengan benar"
         }
         visibleModal={emailNotExist}
         btnOK={"OK"}

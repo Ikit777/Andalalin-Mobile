@@ -234,7 +234,7 @@ function PemeriksaanDokumenScreen({ navigation }) {
       </Pressable>
 
       <AConfirmationDialog
-        title={"Peringatan!"}
+        title={"Peringatan"}
         desc={"Hasil pemeriksaan akan hilang jika anda kembali"}
         visibleModal={confirm}
         btnOK={"OK"}

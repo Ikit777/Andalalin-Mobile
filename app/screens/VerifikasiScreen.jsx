@@ -46,20 +46,6 @@ function VerifikasiScreen({ navigation, route }) {
     };
   }, [navigation]);
 
-  useEffect(() => {
-    const unsubscribe = navigation.addListener("focus", () => {
-      BackHandler.addEventListener("hardwareBackPress", () => {
-        return true;
-      });
-
-      return BackHandler.removeEventListener("hardwareBackPress", () => {
-        return true;
-      });
-    });
-
-    return unsubscribe;
-  }, [navigation]);
-
   const handleFulfill = (code) => {
     if (code.length === CELL_COUNT) {
       setIsFull(true);
@@ -188,7 +174,7 @@ function VerifikasiScreen({ navigation, route }) {
         btnOK={"OK"}
         onPressOKButton={() => {
           toggleBerhasil();
-          navigation.push("Back Login");
+          navigation.replace("Login");
         }}
       />
       <ADialog
@@ -203,7 +189,7 @@ function VerifikasiScreen({ navigation, route }) {
         }}
       />
       <ADialog
-        title={"Peringatan!"}
+        title={"Peringatan"}
         desc={"Kode verifikasi Anda kosong"}
         visibleModal={code}
         btnOK={"OK"}

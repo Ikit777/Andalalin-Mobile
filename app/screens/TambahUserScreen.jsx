@@ -498,7 +498,7 @@ function TambahUserScreen({ navigation }) {
       />
 
       <ADialog
-        title={"Peringatan!"}
+        title={"Peringatan"}
         desc={"Email sudah digunakan"}
         visibleModal={emailExist}
         btnOK={"OK"}

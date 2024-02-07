@@ -120,7 +120,7 @@ function Foto({ onPress, navigation }) {
       />
 
       <ADialog
-        title={"Peringatan!"}
+        title={"Peringatan"}
         desc={"Silahkan tambahkan foto terlebih dahulu"}
         visibleModal={error}
         btnOK={"OK"}

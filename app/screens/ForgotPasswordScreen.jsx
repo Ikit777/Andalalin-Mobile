@@ -5,15 +5,17 @@ import BackButton from "../component/utility/ABackButton";
 import AText from "../component/utility/AText";
 import color from "../constants/color";
 import ATextInput from "../component/utility/ATextInput";
-import ALoading from "../component/utility/ALoading";
 import { useStateToggler } from "../hooks/useUtility";
 import { authForgotPassword } from "../api/auth";
 import AButton from "../component/utility/AButton";
 import { UserContext } from "../context/UserContext";
+import ADialog from "../component/utility/ADialog";
+ADialog;
 
 function ForgotPasswordScreen({ navigation }) {
   const context = useContext(UserContext);
   const [email, setEmail] = useState("");
+
   const [err, toggleErr] = useStateToggler();
   const [verif, toggleVerif] = useStateToggler();
   const [data, toggleData] = useStateToggler();
@@ -29,15 +31,12 @@ function ForgotPasswordScreen({ navigation }) {
           break;
         case 400:
           context.toggleLoading(false);
-          toggleErr();
-          toggleBd();
+          err ? "" : toggleErr();
+          bd ? "" : toggleBd();
           break;
         case 401:
           context.toggleLoading(false);
-          if (!err) {
-            toggleVerif();
-            toggleBd();
-          }
+          toggleVerif();
           break;
       }
     });
@@ -46,34 +45,50 @@ function ForgotPasswordScreen({ navigation }) {
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
       BackHandler.addEventListener("hardwareBackPress", () => {
-        setEmail("");
-        navigation.goBack();
+        navigation.replace("Login");
         return true;
       });
 
       return BackHandler.removeEventListener("hardwareBackPress", () => {
-        setEmail("");
-        navigation.goBack();
+        navigation.replace("Login");
         return true;
       });
     });
     return unsubscribe;
   }, [navigation]);
 
+  const kirim = () => {
+    if (email != "") {
+      if (!err) {
+        data ? toggleData() : "";
+        bd ? toggleBd() : "";
+      }
+
+      forgot(email);
+    } else {
+      email == "" ? (data ? "" : toggleData()) : "";
+      email == "" ? (bd ? "" : toggleBd()) : "";
+    }
+  };
+
+  const clear_error = () => {
+    data ? toggleData() : "";
+    bd ? toggleBd() : "";
+  };
+
   return (
     <AScreen>
       <View style={styles.header}>
         <BackButton
           onPress={() => {
-            setEmail("");
-            navigation.goBack();
+            navigation.replace("Login");
           }}
         />
       </View>
 
       <View style={styles.content}>
         <AText color={color.neutral.neutral900} size={24} weight="semibold">
-          Lupa password?
+          Lupa kata sandi?
         </AText>
         <AText
           style={{ paddingBottom: 32 }}
@@ -81,7 +96,7 @@ function ForgotPasswordScreen({ navigation }) {
           size={16}
           weight="normal"
         >
-          Jangan khawatir, kami akan memberikan intruksi reset password ke email
+          Jangan khawatir, kami akan memberikan intruksi reset kata sandi ke email
           Anda
         </AText>
 
@@ -95,21 +110,11 @@ function ForgotPasswordScreen({ navigation }) {
           value={email}
           multi={false}
           submit={() => {
-            if (data) {
-              toggleData();
-              toggleBd();
-            }
-            if (err) {
-              toggleErr();
-              toggleBd();
-            }
-            if (verif) {
-              toggleVerif();
-              toggleBd();
-            }
+            clear_error();
           }}
           onChangeText={(value) => {
             setEmail(value);
+            clear_error();
           }}
         />
 
@@ -120,20 +125,7 @@ function ForgotPasswordScreen({ navigation }) {
             size={14}
             weight="normal"
           >
-            Email tidak ditemukan
-          </AText>
-        ) : (
-          ""
-        )}
-
-        {verif ? (
-          <AText
-            style={{ paddingTop: 6 }}
-            color={color.error.error500}
-            size={14}
-            weight="normal"
-          >
-            Email belum melakukan verifikasi
+            Email Anda tidak terdaftar
           </AText>
         ) : (
           ""
@@ -146,7 +138,7 @@ function ForgotPasswordScreen({ navigation }) {
             size={14}
             weight="normal"
           >
-            Email kosong
+            Masukkan email Anda
           </AText>
         ) : (
           ""
@@ -157,13 +149,7 @@ function ForgotPasswordScreen({ navigation }) {
           mode="contained"
           title="Kirim"
           onPress={() => {
-            if (email != "") {
-              forgot(email);
-              setEmail("");
-            } else {
-              toggleData();
-              toggleBd();
-            }
+            kirim();
           }}
         />
 
@@ -191,6 +177,18 @@ function ForgotPasswordScreen({ navigation }) {
           </TouchableOpacity>
         </View>
       </View>
+
+      <ADialog
+        title={"Peringatan"}
+        desc={"Akun Anda belum terverifikasi"}
+        visibleModal={verif}
+        btnOK={"Verifikasi"}
+        onPressOKButton={() => {
+          toggleVerif();
+          verif(email);
+          navigation.push("Verifikasi", { email: email });
+        }}
+      />
     </AScreen>
   );
 }

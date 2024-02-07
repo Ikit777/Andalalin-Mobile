@@ -106,7 +106,7 @@ function SurveiScreen({ navigation, route }) {
       </View>
 
       <AConfirmationDialog
-        title={"Peringatan!"}
+        title={"Peringatan"}
         desc={"Data yang Anda masukkan akan hilang"}
         visibleModal={confirm}
         btnOK={"OK"}

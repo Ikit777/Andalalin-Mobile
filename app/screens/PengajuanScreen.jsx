@@ -169,7 +169,7 @@ function PengajuanScreen({ navigation, route }) {
       <View style={styles.content}>{content()}</View>
 
       <AConfirmationDialog
-        title={"Peringatan!"}
+        title={"Peringatan"}
         desc={"Data yang Anda masukkan akan hilang"}
         visibleModal={confirm}
         btnOK={"OK"}

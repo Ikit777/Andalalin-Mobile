@@ -251,7 +251,7 @@ function CekKelengkapanAkhirScreen({ navigation }) {
       </Pressable>
 
       <AConfirmationDialog
-        title={"Peringatan!"}
+        title={"Peringatan"}
         desc={"Data yang Anda masukkan akan hilang"}
         visibleModal={confirm}
         btnOK={"OK"}

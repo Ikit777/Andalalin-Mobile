@@ -79,9 +79,9 @@ function HomeScreen({ navigation }) {
             <AMenuCard
               style={{ marginBottom: 20 }}
               icon={"clipboard"}
-              title={"Andalalin"}
+              title={"Analisis Dampak Lalu Lintas"}
               desc={
-                "Ajukan permohonan untuk pelaksanaan analisis dampak lalu lintas"
+                "Pengajuan permohonan pelaksanaan analisis dampak lalu lintas"
               }
               onPress={() => {
                 context.clear();
@@ -93,7 +93,7 @@ function HomeScreen({ navigation }) {
               icon={"alert-triangle"}
               title={"Perlengkapan lalu lintas"}
               desc={
-                "Ajukan permohonan untuk pelaksanaan pengadaan perlengkapan lalu lintas"
+                "Pengajuan permohonan pelaksanaan pemasangan perlengkapan lalu lintas"
               }
               onPress={() => {
                 masterData("Perlalin");
@@ -481,14 +481,14 @@ function HomeScreen({ navigation }) {
                 if (response.status === 200) {
                   (async () => {
                     const result = await response.data;
-        
+
                     const filePath = `${FileSystem.documentDirectory}data.json`;
                     FileSystem.writeAsStringAsync(filePath, result.data, {
                       encoding: FileSystem.EncodingType.Base64,
                     })
                       .then(() => {
                         context.getDataMaster();
-        
+
                         switch (kondisi) {
                           case "Andalalin":
                             context.toggleLoading(false);
@@ -703,8 +703,8 @@ function HomeScreen({ navigation }) {
         {home()}
       </ScrollView>
       <AConfirmationDialog
-        title={"Peringatan!"}
-        desc={"Apakah Anda yakin ingin keluar aplikasi"}
+        title={"Peringatan"}
+        desc={"Apakah Anda yakin ingin keluar aplikasi?"}
         visibleModal={confirm}
         btnOK={"OK"}
         btnBATAL={"Batal"}

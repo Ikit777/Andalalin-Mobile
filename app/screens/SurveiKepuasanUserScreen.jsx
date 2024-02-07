@@ -121,7 +121,7 @@ function SurveiKepuasanUserScreen({ navigation, route }) {
       )}
 
       <AConfirmationDialog
-        title={"Peringatan!"}
+        title={"Peringatan"}
         desc={"Data yang Anda masukkan akan hilang"}
         visibleModal={confirm}
         btnOK={"OK"}

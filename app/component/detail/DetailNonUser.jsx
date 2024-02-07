@@ -4172,7 +4172,7 @@ function DetailNonUser({ permohonan, navigation, reload }) {
       </ABottomSheet>
 
       <ADialog
-        title={"Peringatan!"}
+        title={"Peringatan"}
         desc={"Terjadi kesalahan pada server, mohon coba lagi lain waktu"}
         visibleModal={gagal}
         btnOK={"OK"}

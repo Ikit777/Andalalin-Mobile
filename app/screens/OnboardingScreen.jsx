@@ -42,7 +42,7 @@ function OnBoardingscreen({ navigation }) {
         </AText>
         <View style={{ paddingTop: 8 }}>
           <AText color={color.neutral.neutral500} size={16} weight="normal">
-            Management lalu lintas dengan mudah dan tepat bersama andalalin
+            Managemen lalu lintas dengan mudah dan tepat bersama andalalin
           </AText>
         </View>
         <View style={{ paddingTop: 128, paddingBottom: 16 }}>
@@ -51,8 +51,8 @@ function OnBoardingscreen({ navigation }) {
       </View>
 
       <AConfirmationDialog
-        title={"Peringatan!"}
-        desc={"Apakah Anda yakin ingin keluar aplikasi"}
+        title={"Peringatan"}
+        desc={"Apakah Anda yakin ingin keluar aplikasi?"}
         visibleModal={confirm}
         btnOK={"OK"}
         btnBATAL={"Batal"}
@@ -75,8 +75,8 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end"
   },
   stretch: {
-    width: 145,
-    height: 118,
+    width: 185,
+    height: 158,
     alignSelf: "center",
     resizeMode: "contain",
   },
