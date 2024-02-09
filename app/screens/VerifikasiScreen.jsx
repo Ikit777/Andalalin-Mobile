@@ -1,5 +1,11 @@
 import React, { useState, Fragment, useEffect, useContext } from "react";
-import { StyleSheet, View, TouchableOpacity, Text, BackHandler } from "react-native";
+import {
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  Text,
+  BackHandler,
+} from "react-native";
 import AScreen from "../component/utility/AScreen";
 import AText from "../component/utility/AText";
 import AButton from "../component/utility/AButton";
@@ -30,20 +36,21 @@ function VerifikasiScreen({ navigation, route }) {
   const [isFull, setIsFull] = useState(false);
   const [berhasil, toggleBerhasil] = useStateToggler();
   const [gagal, toggleGagal] = useStateToggler();
-  const [code, toggleCode] = useStateToggler();
-  const [resendBerhasil, toggleResendBerhasil] = useStateToggler();
   const [resendGagal, toggleResendGagal] = useStateToggler();
 
   useEffect(() => {
-    navigation.addListener("beforeRemove", (e) => {
-      e.preventDefault();
-    });
-
-    return () => {
-      navigation.removeListener("beforeRemove", (e) => {
-        e.preventDefault();
+    const unsubscribe = navigation.addListener("focus", () => {
+      BackHandler.addEventListener("hardwareBackPress", () => {
+        navigation.replace("Login");
+        return true;
       });
-    };
+
+      return BackHandler.removeEventListener("hardwareBackPress", () => {
+        navigation.replace("Login");
+        return true;
+      });
+    });
+    return unsubscribe;
   }, [navigation]);
 
   const handleFulfill = (code) => {
@@ -71,7 +78,6 @@ function VerifikasiScreen({ navigation, route }) {
     authResendVerication(email, (response) => {
       if (response.status === 201) {
         context.toggleLoading(false);
-        toggleResendBerhasil();
       } else {
         context.toggleLoading(false);
         toggleResendGagal();
@@ -82,11 +88,15 @@ function VerifikasiScreen({ navigation, route }) {
   return (
     <AScreen>
       <View style={styles.header}>
-        <ABackButton color={color.text.trans} />
+        <ABackButton
+          onPress={() => {
+            navigation.replace("Login");
+          }}
+        />
       </View>
       <View style={styles.content}>
         <AText color={color.neutral.neutral900} size={24} weight="semibold">
-          Kode verifikasi
+          Verifikasi akun
         </AText>
         <AText
           style={{ paddingBottom: 32 }}
@@ -103,9 +113,19 @@ function VerifikasiScreen({ navigation, route }) {
           {...props}
           value={value}
           onChangeText={(code) => {
-            setValue(code);
-            handleFulfill(code);
+            if (code.length <= 0) {
+              setValue("000000");
+            } else {
+              setValue(code);
+              handleFulfill(code);
+            }
           }}
+          onSubmitEditing={() => {
+            if (value .length <= 0) {
+              setValue("000000");
+            }
+          }}
+          blurOnSubmit={true}
           selectionColor={color.neutral.neutral400}
           cellCount={CELL_COUNT}
           rootStyle={styles.codeFieldRoot}
@@ -134,12 +154,12 @@ function VerifikasiScreen({ navigation, route }) {
         <AButton
           style={styles.verif}
           mode="contained"
-          title="Verifikasi akun"
+          title="Verifikasi"
           onPress={() => {
-            if (value != "000000") {
+            if (value != "000000" && value.length >= 6) {
               verification(value);
             } else {
-              toggleCode();
+              setValue("000000");
             }
           }}
         />
@@ -168,8 +188,8 @@ function VerifikasiScreen({ navigation, route }) {
         </View>
       </View>
       <ADialog
-        title={"Verifikasi berhasil"}
-        desc={"Akun Anda berhasil kami verifikasi, silahkan login"}
+        title={"Verifikasi"}
+        desc={"Akun Anda berhasil kami verifikasi, silahkan login kembali"}
         visibleModal={berhasil}
         btnOK={"OK"}
         onPressOKButton={() => {
@@ -178,7 +198,7 @@ function VerifikasiScreen({ navigation, route }) {
         }}
       />
       <ADialog
-        title={"Verifikasi gagal"}
+        title={"Verifikasi"}
         desc={
           "Kode verifikasi yang Anda masukkan salah, silahkan masukkan kode yang benar"
         }
@@ -189,26 +209,8 @@ function VerifikasiScreen({ navigation, route }) {
         }}
       />
       <ADialog
-        title={"Peringatan"}
-        desc={"Kode verifikasi Anda kosong"}
-        visibleModal={code}
-        btnOK={"OK"}
-        onPressOKButton={() => {
-          toggleCode();
-        }}
-      />
-      <ADialog
-        title={"Kirim ulang berhasil"}
-        desc={"Kode verifikasi berhasil dirim ulang ke email Anda"}
-        visibleModal={resendBerhasil}
-        btnOK={"OK"}
-        onPressOKButton={() => {
-          toggleResendBerhasil();
-        }}
-      />
-      <ADialog
-        title={"Kirim ulang gagal"}
-        desc={"Akun Anda tidak terdaftar"}
+        title={"Kirim ulang"}
+        desc={"Kirim ulang kode gagal dilakukan, silahkan coba lagi lain waktu"}
         visibleModal={resendGagal}
         btnOK={"OK"}
         onPressOKButton={() => {

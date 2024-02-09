@@ -374,7 +374,7 @@ function ResetPasswordScreen({ navigation, route }) {
       </ScrollView>
 
       <ADialog
-        title={"Kata sandi berhasil dibuat"}
+        title={"Kata sandi"}
         desc={"Kata sandi baru berhasil dibuat, silahkan untuk login kembali"}
         visibleModal={resetBerhasil}
         btnOK={"OK"}
@@ -390,7 +390,7 @@ function ResetPasswordScreen({ navigation, route }) {
       />
 
       <ADialog
-        title={"Telah terjadi sesuatu"}
+        title={"Kata sandi"}
         desc={"Kata sandi baru gagal dibuat, silahkan coba lagi lain waktu"}
         visibleModal={resetGagal}
         btnOK={"OK"}
@@ -400,7 +400,7 @@ function ResetPasswordScreen({ navigation, route }) {
       />
 
       <ADialog
-        title={"Telah terjadi sesuatu"}
+        title={"Kirim ulang"}
         desc={"Kirim ulang kode gagal dilakukan, silahkan coba lagi lain waktu"}
         visibleModal={resendGagal}
         btnOK={"OK"}

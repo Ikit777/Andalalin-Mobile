@@ -74,11 +74,11 @@ function RegisterScreen({ navigation, route }) {
     context.toggleLoading(true);
 
     authRegister(name, email, nomor, password, confirmPassword, (response) => {
-      console.log(response.status)
+      console.log(response.status);
       switch (response.status) {
         case 201:
           context.toggleLoading(false);
-          // navigation.push("Verifikasi", { email: email });
+          navigation.push("Verifikasi", { email: email });
           break;
         case 400:
           switch (response.data.message) {
@@ -468,8 +468,8 @@ function RegisterScreen({ navigation, route }) {
         </View>
       </ScrollView>
       <ADialog
-        title={"Peringatan"}
-        desc={"Terjadi kesalahan pada server, mohon coba lagi lain waktu"}
+        title={"Daftar"}
+        desc={"Pendaftaran gagal dilakukan, silahkan coba lagi lain waktu"}
         visibleModal={something}
         btnOK={"OK"}
         onPressOKButton={() => {

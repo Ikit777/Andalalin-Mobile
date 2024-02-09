@@ -51,7 +51,7 @@ function OnBoardingscreen({ navigation }) {
       </View>
 
       <AConfirmationDialog
-        title={"Peringatan"}
+        title={"Keluar"}
         desc={"Apakah Anda yakin ingin keluar aplikasi?"}
         visibleModal={confirm}
         btnOK={"OK"}

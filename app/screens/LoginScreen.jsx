@@ -331,7 +331,7 @@ function LoginScreen({ navigation }) {
         </View>
       </ScrollView>
       <AConfirmationDialog
-        title={"Peringatan"}
+        title={"Keluar"}
         desc={"Apakah Anda yakin ingin keluar aplikasi?"}
         visibleModal={confirm}
         btnOK={"OK"}
@@ -345,8 +345,8 @@ function LoginScreen({ navigation }) {
         }}
       />
       <ADialog
-        title={"Peringatan"}
-        desc={"Akun Anda belum terverifikasi"}
+        title={"Verifikasi"}
+        desc={"Akun Anda belum terverifikasi oleh kami, silahkan lakukan verifikasi"}
         visibleModal={dialogVerif}
         btnOK={"Verifikasi"}
         onPressOKButton={() => {

@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { StyleSheet, View, TouchableOpacity, BackHandler } from "react-native";
 import AScreen from "../component/utility/AScreen";
-import BackButton from "../component/utility/ABackButton";
 import AText from "../component/utility/AText";
 import color from "../constants/color";
 import ATextInput from "../component/utility/ATextInput";
@@ -10,7 +9,7 @@ import { authForgotPassword } from "../api/auth";
 import AButton from "../component/utility/AButton";
 import { UserContext } from "../context/UserContext";
 import ADialog from "../component/utility/ADialog";
-ADialog;
+import ABackButton from "../component/utility/ABackButton";
 
 function ForgotPasswordScreen({ navigation }) {
   const context = useContext(UserContext);
@@ -81,7 +80,7 @@ function ForgotPasswordScreen({ navigation }) {
   return (
     <AScreen>
       <View style={styles.header}>
-        <BackButton
+        <ABackButton
           onPress={() => {
             navigation.replace("Login");
           }}
@@ -180,8 +179,10 @@ function ForgotPasswordScreen({ navigation }) {
       </View>
 
       <ADialog
-        title={"Peringatan"}
-        desc={"Akun Anda belum terverifikasi"}
+        title={"Verifikasi"}
+        desc={
+          "Akun Anda belum terverifikasi oleh kami, silahkan lakukan verifikasi"
+        }
         visibleModal={verif}
         btnOK={"Verifikasi"}
         onPressOKButton={() => {

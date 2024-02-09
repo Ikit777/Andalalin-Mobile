@@ -703,7 +703,7 @@ function HomeScreen({ navigation }) {
         {home()}
       </ScrollView>
       <AConfirmationDialog
-        title={"Peringatan"}
+        title={"Keluar"}
         desc={"Apakah Anda yakin ingin keluar aplikasi?"}
         visibleModal={confirm}
         btnOK={"OK"}
@@ -722,7 +722,7 @@ function HomeScreen({ navigation }) {
         visibleModal={error}
         btnOK={"OK"}
         onPressOKButton={() => {
-          navigation.push("Back Login");
+          navigation.replace("Login");
           remove("authState");
           context.setCheck();
           toggleError();
