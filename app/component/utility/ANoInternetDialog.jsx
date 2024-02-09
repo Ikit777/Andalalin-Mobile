@@ -1,5 +1,12 @@
 import React, { useContext } from "react";
-import { StyleSheet, View, Modal, Animated, TouchableOpacity, Dimensions } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Modal,
+  Animated,
+  TouchableOpacity,
+  Dimensions,
+} from "react-native";
 import color from "../../constants/color";
 import AText from "../utility/AText";
 import { UserContext } from "../../context/UserContext";
@@ -8,25 +15,23 @@ import * as RootNavigation from "../../navigation/RootNavigator.js";
 function ANoInternetDialog({ visibleModal = false }) {
   const context = useContext(UserContext);
   const [visible, setVisible] = React.useState(visibleModal);
-  
 
   React.useEffect(() => {
     toggleModal();
   }, [visibleModal]);
-  
+
   const toggleModal = () => {
     if (visibleModal) {
       if (context.loading == true) {
         context.toggleLoading(false);
       }
       setVisible(true);
-      
     }
   };
 
   const ok = () => {
     setTimeout(() => setVisible(false), 200);
-    
+
     if (context.getUser() != "user") {
       RootNavigation.navigate("Home");
     }
@@ -36,7 +41,7 @@ function ANoInternetDialog({ visibleModal = false }) {
     if (visibleModal) {
       return 82;
     } else {
-      return 24
+      return 24;
     }
   };
 
@@ -46,7 +51,7 @@ function ANoInternetDialog({ visibleModal = false }) {
       visible={visible}
       transparent={true}
       statusBarTranslucent
-      deviceHeight={Dimensions.get('screen').height}
+      deviceHeight={Dimensions.get("screen").height}
     >
       <View style={styles.container}>
         <View style={styles.horizontal}>

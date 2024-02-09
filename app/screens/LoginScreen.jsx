@@ -187,9 +187,9 @@ function LoginScreen({ navigation }) {
   };
 
   const clear_error = () => {
-    emailError ? toggleEmailError() : "";
-    passwordError ? togglePasswordError() : "";
-    formError ? toggleFormError() : "";
+    email != "" ? (emailError ? toggleEmailError() : "") : "";
+    password != "" ? (passwordError ? togglePasswordError() : "") : "";
+    email != "" && password != "" ? (formError ? toggleFormError() : "") : "";
     dialogUser ? toggleDialogUser() : "";
   };
 
@@ -212,12 +212,12 @@ function LoginScreen({ navigation }) {
           size={16}
           weight="normal"
         >
-          Selamat datang di andalalin
+          Dapatkan kemudahan dalam urusan managemen lalu lintas
         </AText>
         <ATextInput
           bdColor={emailError ? color.error.error300 : color.neutral.neutral300}
           hint={"Masukkan email anda"}
-          title={"Email"}
+          title={"E-mail"}
           rtype={"next"}
           ktype={"email-address"}
           inputMode={"email"}
@@ -238,6 +238,7 @@ function LoginScreen({ navigation }) {
           hint={"Masukkan kata sandi anda"}
           title={"Kata sandi"}
           rtype={"done"}
+          padding={20}
           bdColor={
             passwordError ? color.error.error300 : color.neutral.neutral300
           }
@@ -320,7 +321,7 @@ function LoginScreen({ navigation }) {
           <TouchableOpacity
             style={{ flexDirection: "row", paddingLeft: 4 }}
             onPress={() => {
-              navigation.push("Register");
+              navigation.push("Register", { kondisi: "Login" });
             }}
           >
             <AText size={14} color={color.neutral.neutral700} weight="semibold">

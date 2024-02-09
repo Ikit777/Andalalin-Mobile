@@ -3,7 +3,6 @@ import React, { useEffect, useState, useCallback } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 
 import * as Font from "expo-font";
-import * as SplashScreen from "expo-splash-screen";
 
 import { NetProvider, NetContext } from "./app/context/NetContext";
 import { AFonts } from "./app/constants/font";
@@ -25,6 +24,7 @@ import ExitApp from "react-native-exit-app";
 import VersionCheck from "react-native-version-check";
 import { health } from "./app/api/user";
 import AServer from "./app/component/utility/AServer";
+import SplashScreenOn from "./app/screens/SplashScreen";
 
 export default function App() {
   const [isAppReady, setIsAppReady] = useState(false);
@@ -33,11 +33,7 @@ export default function App() {
 
   const [update, toggleUpdate] = useState(false);
 
-  const onLayoutRootView = useCallback(async () => {
-    if (isAppReady) {
-      await SplashScreen.hideAsync();
-    }
-  }, [isAppReady]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const prepare = async () => {
     try {
@@ -48,6 +44,12 @@ export default function App() {
       console.log(err);
     } finally {
       setIsAppReady(true);
+
+      setTimeout(() => {
+        setIsLoading(false);
+        checkFirstTimeLaunch();
+        // checkVersion();
+      }, 150);
     }
   };
 
@@ -83,62 +85,53 @@ export default function App() {
     } catch (error) {}
   };
 
-  useEffect(() => {
-    // checkVersion();
-  }, []);
-
-  useEffect(() => {
-    prepare();
-  }, []);
-
-  useEffect(() => {
-    checkFirstTimeLaunch();
-  }, []);
-
   if (!isAppReady) {
-    return null;
+    prepare();
   }
 
   return (
-    <View onLayout={onLayoutRootView} style={{ flex: 1 }}>
-      <AUpdateDialog
-        visibleModal={update}
-        onPressOKButton={() => {
-          Linking.openURL("market://details?id=com.andalalin");
-          ExitApp.exitApp();
-        }}
-      />
+    <View style={{ flex: 1 }}>
+      {isLoading ? (
+        <SplashScreenOn isLoading={isAppReady} />
+      ) : (
+        <NetProvider>
+          <AUpdateDialog
+            visibleModal={update}
+            onPressOKButton={() => {
+              Linking.openURL("market://details?id=com.andalalin");
+              ExitApp.exitApp();
+            }}
+          />
+          <UserProvider>
+            <LoadMaster isLogged={isLogged} user={user} />
+            <NavigationContainer ref={navigationRef}>
+              <NetContext.Consumer>
+                {(ctx) => <ANoInternetDialog visibleModal={!ctx} />}
+              </NetContext.Consumer>
 
-      <NetProvider>
-        <UserProvider>
-          <LoadMaster isLogged={isLogged} user={user} />
-          <NavigationContainer ref={navigationRef}>
-            <NetContext.Consumer>
-              {(ctx) => <ANoInternetDialog visibleModal={!ctx} />}
-            </NetContext.Consumer>
+              <UserContext.Consumer>
+                {(value) => <AServer visibleModal={value.getServer()} />}
+              </UserContext.Consumer>
 
-            <UserContext.Consumer>
-              {(value) => <AServer visibleModal={value.getServer()} />}
-            </UserContext.Consumer>
+              <UserContext.Consumer>
+                {(value) => <ASessionEnd visibleModal={value.getSession()} />}
+              </UserContext.Consumer>
 
-            <UserContext.Consumer>
-              {(value) => <ASessionEnd visibleModal={value.getSession()} />}
-            </UserContext.Consumer>
+              <UserContext.Consumer>
+                {(value) =>
+                  value.user != "user" ? (
+                    <ALoading visibleModal={value.getLoading()} />
+                  ) : (
+                    ""
+                  )
+                }
+              </UserContext.Consumer>
 
-            <UserContext.Consumer>
-              {(value) =>
-                value.user != "user" ? (
-                  <ALoading visibleModal={value.getLoading()} />
-                ) : (
-                  ""
-                )
-              }
-            </UserContext.Consumer>
-
-            <Navigator isLogged={isLogged} />
-          </NavigationContainer>
-        </UserProvider>
-      </NetProvider>
+              <Navigator isLogged={isLogged} />
+            </NavigationContainer>
+          </UserProvider>
+        </NetProvider>
+      )}
     </View>
   );
 }

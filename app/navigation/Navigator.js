@@ -65,19 +65,28 @@ const Navigator = ({
   return (
     <Stack.Navigator
       initialRouteName={isLogged ? "Home" : "Onboarding"}
-      screenOptions={{ headerShown: false, animation: "slide_from_right", animationTypeForReplace: "pop" }}
+      screenOptions={{
+        headerShown: false,
+        animation: "slide_from_right",
+        animationTypeForReplace: "pop",
+      }}
     >
+      {/* Halaman awal */}
+      <Stack.Screen name="Onboarding" component={OnBoardingScreen} />
+
+      {/* Home */}
       <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen name="Tentang" component={TentangScreen} />
       <Stack.Screen name="Setting" component={SettingScreen} />
 
-      <Stack.Screen name="Onboarding" component={OnBoardingScreen} />
+      {/* Auth Screen */}
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen
         name="Back Login"
         component={LoginScreen}
         options={{ animation: "slide_from_left" }}
       />
-      <Stack.Screen name="Register" component={RegisterScreen} />
+      <Stack.Screen name="Register" component={RegisterScreen} initialParams={{ kondisi }} />
       <Stack.Screen
         name="Verifikasi"
         component={VerifikasiScreen}
@@ -87,9 +96,9 @@ const Navigator = ({
       <Stack.Screen
         name="Reset"
         component={ResetPasswordScreen}
-        initialParams={{ email }}
+        initialParams={{ email, kondisi }}
       />
-      <Stack.Screen name="Tentang" component={TentangScreen} />
+
       <Stack.Screen
         name="Andalalin"
         component={PengajuanScreen}
@@ -176,10 +185,7 @@ const Navigator = ({
         initialParams={{ koordinat }}
       />
       <Stack.Screen name="Kepuasan" component={SurveiKepuasanScreen} />
-      <Stack.Screen
-        name="Kamera"
-        component={KameraScreen}
-      />
+      <Stack.Screen name="Kamera" component={KameraScreen} />
       <Stack.Screen
         name="Survei Kepuasan"
         component={SurveiKepuasanUserScreen}
@@ -190,10 +196,7 @@ const Navigator = ({
         component={KomentarScreen}
         initialParams={{ komentar }}
       />
-      <Stack.Screen
-        name="Administrasi"
-        component={CekAdministrasiScreen}
-      />
+      <Stack.Screen name="Administrasi" component={CekAdministrasiScreen} />
       <Stack.Screen
         name="Administrasi Perlalin"
         component={CekAdministrasiPerlalinScreen}
@@ -206,10 +209,7 @@ const Navigator = ({
         name="Keputusan"
         component={PembuatanSuratKeputusanScreen}
       />
-      <Stack.Screen
-        name="Kelengkapan"
-        component={CekKelengkapanAkhirScreen}
-      />
+      <Stack.Screen name="Kelengkapan" component={CekKelengkapanAkhirScreen} />
       <Stack.Screen
         name="Update Kelengkapan"
         component={UpdateKelengkapanScreen}

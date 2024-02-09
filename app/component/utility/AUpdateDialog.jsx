@@ -1,24 +1,27 @@
 import React from "react";
-import { StyleSheet, View, Modal, TouchableOpacity, Animated, Dimensions } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Modal,
+  TouchableOpacity,
+  Animated,
+  Dimensions,
+} from "react-native";
 import color from "../../constants/color";
 import AText from "../utility/AText";
 
 function AUpdateDialog({ visibleModal = false, onPressOKButton }) {
   const [visible, setVisible] = React.useState(visibleModal);
-  
+
   React.useEffect(() => {
     toggleModal();
   }, [visibleModal]);
+
   const toggleModal = () => {
     if (visibleModal) {
       setVisible(true);
-      if (context.loading == true) {
-        context.toggleLoading(false);
-      }
-      
     } else {
       setTimeout(() => setVisible(false), 200);
-      
     }
   };
   return (
@@ -27,7 +30,7 @@ function AUpdateDialog({ visibleModal = false, onPressOKButton }) {
       visible={visible}
       transparent={true}
       statusBarTranslucent
-      deviceHeight={Dimensions.get('screen').height}
+      deviceHeight={Dimensions.get("screen").height}
     >
       <View style={styles.container}>
         <View style={styles.horizontal}>
@@ -39,13 +42,12 @@ function AUpdateDialog({ visibleModal = false, onPressOKButton }) {
             color={color.neutral.neutral500}
             size={14}
           >
-            Pembaharuan aplikasi tersedia, silahkan update aplikasi Andalalin Anda
+            Pembaharuan aplikasi tersedia, silahkan update aplikasi Andalalin
+            Anda
           </AText>
           <TouchableOpacity
             style={{ alignItems: "flex-end", marginVertical: 24 }}
-            onPress={
-              onPressOKButton
-            }
+            onPress={onPressOKButton}
           >
             <AText
               style={{ paddingHorizontal: 20, paddingVertical: 5 }}

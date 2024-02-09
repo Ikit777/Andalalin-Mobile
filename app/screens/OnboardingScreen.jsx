@@ -75,8 +75,8 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end"
   },
   stretch: {
-    width: 185,
-    height: 158,
+    width: 205,
+    height: 175,
     alignSelf: "center",
     resizeMode: "contain",
   },

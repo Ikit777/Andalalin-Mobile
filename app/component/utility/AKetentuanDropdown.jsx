@@ -15,12 +15,12 @@ if (Platform.OS === "android") {
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
-function AKetentuanDropdown({ bottom, hint, data, padding, bdColor }) {
+function AKetentuanDropdown({ bottom, hint, data, padding }) {
   const [open, setOpen] = useStateToggler();
 
   const toggleView = () => {
     const linearConfig = LayoutAnimation.create(
-      300, // Duration in milliseconds
+      500, // Duration in milliseconds
       LayoutAnimation.Types.linear,
       LayoutAnimation.Properties.opacity
     );

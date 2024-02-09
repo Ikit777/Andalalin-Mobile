@@ -27,7 +27,7 @@ function ForgotPasswordScreen({ navigation }) {
       switch (response.status) {
         case 200:
           context.toggleLoading(false);
-          navigation.push("Reset", { email: email });
+          navigation.push("Reset", { email: email, kondisi: "Not Logged" });
           break;
         case 400:
           context.toggleLoading(false);
@@ -72,8 +72,10 @@ function ForgotPasswordScreen({ navigation }) {
   };
 
   const clear_error = () => {
-    data ? toggleData() : "";
-    bd ? toggleBd() : "";
+    email != "" ? (data ? toggleData() : "") : "";
+    email != "" ? (bd ? toggleBd() : "") : "";
+
+    err ? toggleErr() : "";
   };
 
   return (
@@ -96,14 +98,14 @@ function ForgotPasswordScreen({ navigation }) {
           size={16}
           weight="normal"
         >
-          Jangan khawatir, kami akan memberikan intruksi reset kata sandi ke email
-          Anda
+          Jangan khawatir, kami akan memberikan intruksi reset kata sandi ke
+          email Anda
         </AText>
 
         <ATextInput
           bdColor={bd ? color.error.error300 : color.neutral.neutral300}
           hint={"Masukkan email anda"}
-          title={"Email"}
+          title={"E-mail"}
           rtype={"done"}
           ktype={"email-address"}
           inputMode={"email"}
@@ -125,7 +127,7 @@ function ForgotPasswordScreen({ navigation }) {
             size={14}
             weight="normal"
           >
-            Email Anda tidak terdaftar
+            Akun tidak terdaftar, silakan periksa kembali email Anda
           </AText>
         ) : (
           ""
@@ -167,8 +169,7 @@ function ForgotPasswordScreen({ navigation }) {
           <TouchableOpacity
             style={{ flexDirection: "row", paddingLeft: 4 }}
             onPress={() => {
-              setEmail("");
-              navigation.push("Register", { email: email });
+              navigation.push("Register", { kondisi: "Forgot" });
             }}
           >
             <AText size={14} color={color.neutral.neutral700} weight="semibold">

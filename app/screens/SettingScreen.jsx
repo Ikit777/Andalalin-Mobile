@@ -54,7 +54,7 @@ function SettingScreen({ navigation }) {
           remove(context.getUser().id);
           remove("authState");
           context.setCheck();
-          navigation.push("Back Login");
+          navigation.replace("Login");
           break;
         case 424:
           authRefreshToken(context, (response) => {
@@ -78,7 +78,7 @@ function SettingScreen({ navigation }) {
     authForgotPassword(email, (response) => {
       if (response.status === 200) {
         context.toggleLoading(false);
-        navigation.navigate("Reset", { email: email });
+        navigation.navigate("Reset", { email: email, kondisi: "Logged" });
       }
     });
   };

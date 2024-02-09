@@ -14,12 +14,17 @@ import ATextInput from "../component/utility/ATextInput";
 import AButton from "../component/utility/AButton";
 import { useStateToggler } from "../hooks/useUtility";
 import { authForgotPassword, authResetPassword } from "../api/auth";
-import ALoading from "../component/utility/ALoading";
 import ADialog from "../component/utility/ADialog";
 import { remove } from "../utils/local-storage";
 import { UserContext } from "../context/UserContext";
+import APasswordInput from "../component/utility/APasswordInput";
+import { usePasswordVisibility } from "../hooks/usePasswordVisibility";
 
 function ResetPasswordScreen({ navigation, route }) {
+  const { passwordVisibility, rightIcon, handlePasswordVisibility } =
+    usePasswordVisibility();
+
+  const kondisi = route.params.kondisi;
   const passwordBaruInput = React.createRef();
   const konfirmasiPassword = React.createRef();
   const codeInput = React.createRef();
@@ -32,24 +37,34 @@ function ResetPasswordScreen({ navigation, route }) {
   let [count, setTimer] = useState(5 * 60);
   let [isStarted, setIsStarted] = useState(true);
 
-  const [resendBerhasil, toggleResendBerhasil] = useStateToggler();
   const [resendGagal, toggleResendGagal] = useStateToggler();
   const [resetBerhasil, toggleResetBerhasil] = useStateToggler();
+  const [resetGagal, toggleResetGagal] = useStateToggler();
   const [passNotSame, togglePassNotSame] = useStateToggler();
   const [expired, toggleExpired] = useStateToggler();
   const [passwordError, togglePasswordError] = useStateToggler();
   const [konfirmasiError, toggleKonfirmasiError] = useStateToggler();
   const [codeError, toggleCodeError] = useStateToggler();
+  const [formError, toggleFormError] = useStateToggler();
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
       BackHandler.addEventListener("hardwareBackPress", () => {
-        navigation.goBack();
+        if (kondisi == "Logged") {
+          navigation.replace("Home");
+        } else {
+          navigation.replace("Forgot");
+        }
+
         return true;
       });
 
       return BackHandler.removeEventListener("hardwareBackPress", () => {
-        navigation.goBack();
+        if (kondisi == "Logged") {
+          navigation.replace("Home");
+        } else {
+          navigation.replace("Forgot");
+        }
         return true;
       });
     });
@@ -64,7 +79,7 @@ function ResetPasswordScreen({ navigation, route }) {
         return lastTimerCount - 1;
       });
     }, 1000);
-    //cleanup the interval on complete
+
     return () => {
       clearInterval(interval);
     };
@@ -87,7 +102,8 @@ function ResetPasswordScreen({ navigation, route }) {
     authForgotPassword(email, (response) => {
       if (response.status === 200) {
         context.toggleLoading(false);
-        toggleResendBerhasil();
+        setTimer(5 * 60);
+        setIsStarted(false);
       } else {
         context.toggleLoading(false);
         toggleResendGagal();
@@ -105,11 +121,17 @@ function ResetPasswordScreen({ navigation, route }) {
           break;
         case 400:
           context.toggleLoading(false);
-          togglePassNotSame();
+          konfirmasiError ? "" : toggleKonfirmasiError();
+          passNotSame ? "" : togglePassNotSame();
           break;
         case 502:
           context.toggleLoading(false);
-          toggleExpired();
+          codeError ? "" : toggleCodeError();
+          expired ? "" : toggleExpired();
+          break;
+        default:
+          context.toggleLoading(false);
+          toggleResetGagal();
           break;
       }
     });
@@ -117,31 +139,32 @@ function ResetPasswordScreen({ navigation, route }) {
 
   const doReset = () => {
     if (baru != "" && konfirmasi != "" && code != "") {
-      {
+      if (!passNotSame && !expired) {
         passwordError ? togglePasswordError() : "";
-      }
-      {
         konfirmasiError ? toggleKonfirmasiError() : "";
-      }
-      {
         codeError ? toggleCodeError() : "";
+        formError ? toggleFormError() : "";
       }
+
       reset(baru, konfirmasi, code);
     } else {
-      {
-        baru == "" ? (passwordError ? "" : togglePasswordError()) : "";
-      }
-      {
-        konfirmasi == ""
-          ? konfirmasiError
-            ? ""
-            : toggleKonfirmasiError()
-          : "";
-      }
-      {
-        code == "" ? (codeError ? "" : toggleCodeError()) : "";
-      }
+      baru == "" ? (passwordError ? "" : togglePasswordError()) : "";
+      konfirmasi == "" ? (konfirmasiError ? "" : toggleKonfirmasiError()) : "";
+      code == "" ? (codeError ? "" : toggleCodeError()) : "";
+      formError ? "" : toggleFormError();
     }
+  };
+
+  const clear_error = () => {
+    konfirmasi != "" ? (konfirmasiError ? toggleKonfirmasiError() : "") : "";
+    code != "" ? (codeError ? toggleCodeError() : "") : "";
+    baru != "" && konfirmasi != "" && code != ""
+      ? formError
+        ? toggleFormError()
+        : ""
+      : "";
+    passNotSame ? togglePassNotSame() : "";
+    expired ? toggleExpired() : "";
   };
 
   return (
@@ -156,7 +179,11 @@ function ResetPasswordScreen({ navigation, route }) {
         >
           <BackButton
             onPress={() => {
-              navigation.goBack();
+              if (kondisi == "Logged") {
+                navigation.replace("Home");
+              } else {
+                navigation.replace("Forgot");
+              }
             }}
           />
         </View>
@@ -167,7 +194,7 @@ function ResetPasswordScreen({ navigation, route }) {
         persistentScrollbar={true}
       >
         <AText color={color.neutral.neutral900} size={24} weight="semibold">
-          Reset password
+          Buat kata sandi baru
         </AText>
         <AText
           style={{ paddingBottom: 16 }}
@@ -175,17 +202,17 @@ function ResetPasswordScreen({ navigation, route }) {
           size={16}
           weight="normal"
         >
-          Kami sudah mengirim kode reset password ke{" "}
+          Kode untuk membuat kata sandi baru telah dikirim ke{" "}
           {route.params.email.toLowerCase()}
         </AText>
 
-        <ATextInput
+        <APasswordInput
           bdColor={
             passwordError ? color.error.error300 : color.neutral.neutral300
           }
           ktype={"default"}
-          hint={"Masukkan password baru"}
-          title={"Password baru"}
+          hint={"Masukkan kata sandi baru"}
+          title={"Kata sandi baru"}
           rtype={"next"}
           value={baru}
           blur={false}
@@ -193,13 +220,25 @@ function ResetPasswordScreen({ navigation, route }) {
           ref={passwordBaruInput}
           onChangeText={(value) => {
             setBaru(value);
-          }}
-          submit={() => {
-            {
+            if (value.length < 8) {
+              passwordError ? "" : togglePasswordError();
+            } else {
               passwordError ? togglePasswordError() : "";
             }
+            clear_error();
+          }}
+          submit={() => {
+            if (baru.length < 8) {
+              passwordError ? "" : togglePasswordError();
+            } else {
+              passwordError ? togglePasswordError() : "";
+            }
+            clear_error();
             konfirmasiPassword.current.focus();
           }}
+          passwordVisibility={passwordVisibility}
+          handlePasswordVisibility={handlePasswordVisibility}
+          rightIcon={rightIcon}
         />
 
         <AText
@@ -210,16 +249,17 @@ function ResetPasswordScreen({ navigation, route }) {
           size={14}
           weight="normal"
         >
-          Minimal 8 karakter: Hanya huruf, angka, dan simbol
+          Keterangan: Kata sandi minimal 8 karakter, terdiri dari huruf, angka,
+          atau simbol
         </AText>
 
-        <ATextInput
+        <APasswordInput
           bdColor={
             konfirmasiError ? color.error.error300 : color.neutral.neutral300
           }
           ktype={"default"}
-          hint={"Masukkan konfirmasi password"}
-          title={"Konfirmasi password"}
+          hint={"Masukkan konfirmasi kata sandi"}
+          title={"Konfirmasi kata sandi"}
           rtype={"next"}
           value={konfirmasi}
           blur={false}
@@ -228,56 +268,71 @@ function ResetPasswordScreen({ navigation, route }) {
           ref={konfirmasiPassword}
           onChangeText={(value) => {
             setKonfirmasi(value);
+            clear_error();
           }}
           submit={() => {
-            {
-              konfirmasiError ? toggleKonfirmasiError() : "";
-            }
+            clear_error();
             codeInput.current.focus();
           }}
+          passwordVisibility={passwordVisibility}
+          handlePasswordVisibility={handlePasswordVisibility}
+          rightIcon={rightIcon}
         />
-
-        {konfirmasiError ? (
-          <AText
-            style={{ paddingTop: 6 }}
-            color={color.error.error500}
-            size={14}
-            weight="normal"
-          >
-            Konfirmasi password kosong
-          </AText>
-        ) : (
-          ""
-        )}
 
         <ATextInput
           bdColor={codeError ? color.error.error300 : color.neutral.neutral300}
           ktype={"numeric"}
-          hint={"Masukkan kode reset password"}
-          title={"Kode reset password"}
+          hint={"Masukkan kode autentikasi anda"}
+          title={"Kode autentikasi"}
           rtype={"done"}
           value={code}
           multi={false}
           padding={20}
           ref={codeInput}
           submit={() => {
-            {
-              codeError ? toggleCodeError() : "";
-            }
+            clear_error();
           }}
           onChangeText={(value) => {
             setCode(value);
+            clear_error();
           }}
         />
 
-        {codeError ? (
+        {formError ? (
           <AText
             style={{ paddingTop: 6 }}
             color={color.error.error500}
             size={14}
             weight="normal"
           >
-            Kode reset password kosong
+            Lengkapi formulir atau kolom yang tersedia dengan benar
+          </AText>
+        ) : (
+          ""
+        )}
+
+        {passNotSame ? (
+          <AText
+            style={{ paddingTop: 6 }}
+            color={color.error.error500}
+            size={14}
+            weight="normal"
+          >
+            Konfirmasi kata sandi Anda dengan benar
+          </AText>
+        ) : (
+          ""
+        )}
+
+        {expired ? (
+          <AText
+            style={{ paddingTop: 6 }}
+            color={color.error.error500}
+            size={14}
+            weight="normal"
+          >
+            Kode autentikasi Anda salah atau sudah tidak berlaku, silahkan
+            periksa atau kirim ulang kode
           </AText>
         ) : (
           ""
@@ -286,7 +341,7 @@ function ResetPasswordScreen({ navigation, route }) {
         <AButton
           style={styles.reset}
           mode="contained"
-          title="Reset password"
+          title="Buat kata sandi"
           onPress={() => {
             doReset();
           }}
@@ -308,8 +363,6 @@ function ResetPasswordScreen({ navigation, route }) {
             disabled={count === 0 ? false : true}
             style={{ flexDirection: "row", paddingLeft: 4 }}
             onPress={() => {
-              setTimer(5 * 60);
-              setIsStarted(false);
               resend(route.params.email);
             }}
           >
@@ -319,58 +372,40 @@ function ResetPasswordScreen({ navigation, route }) {
           </TouchableOpacity>
         </View>
       </ScrollView>
-      <ADialog
-        title={"Kirim ulang berhasil"}
-        desc={"Kode reset password berhasil dikirim ulang ke email Anda"}
-        visibleModal={resendBerhasil}
-        btnOK={"OK"}
-        onPressOKButton={() => {
-          toggleResendBerhasil();
-        }}
-      />
 
       <ADialog
-        title={"Kirim ulang gagal"}
-        desc={"Akun tidak terdaftar"}
-        visibleModal={resendGagal}
-        btnOK={"OK"}
-        onPressOKButton={() => {
-          toggleResendGagal();
-        }}
-      />
-
-      <ADialog
-        title={"Reset password berhasil"}
-        desc={"Password Anda berhasil direset, silahkan login kembali"}
+        title={"Kata sandi berhasil dibuat"}
+        desc={"Kata sandi baru berhasil dibuat, silahkan untuk login kembali"}
         visibleModal={resetBerhasil}
         btnOK={"OK"}
         onPressOKButton={() => {
           toggleResetBerhasil();
-          remove("authState");
-          context.setCheck();
-          navigation.push("Back Login");
+          if (kondisi == "Logged") {
+            remove("authState");
+            context.setCheck();
+          }
+
+          navigation.replace("Login");
         }}
       />
 
       <ADialog
-        title={"Reset password gagal"}
-        desc={"Konfirmasi password Anda tidak sama dengan password"}
-        visibleModal={passNotSame}
+        title={"Telah terjadi sesuatu"}
+        desc={"Kata sandi baru gagal dibuat, silahkan coba lagi lain waktu"}
+        visibleModal={resetGagal}
         btnOK={"OK"}
         onPressOKButton={() => {
-          togglePassNotSame();
+          toggleResetGagal();
         }}
       />
 
       <ADialog
-        title={"Reset password gagal"}
-        desc={
-          "kode reset Anda sudah tidak luarsa atau salah, silahkan kirim ulang kode reset"
-        }
-        visibleModal={expired}
+        title={"Telah terjadi sesuatu"}
+        desc={"Kirim ulang kode gagal dilakukan, silahkan coba lagi lain waktu"}
+        visibleModal={resendGagal}
         btnOK={"OK"}
         onPressOKButton={() => {
-          toggleExpired();
+          toggleResendGagal();
         }}
       />
     </AScreen>

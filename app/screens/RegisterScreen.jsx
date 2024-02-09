@@ -16,13 +16,13 @@ import APasswordInput from "../component/utility/APasswordInput";
 import { usePasswordVisibility } from "../hooks/usePasswordVisibility";
 import AButton from "../component/utility/AButton";
 import { useStateToggler } from "../hooks/useUtility";
-import AConfirmationDialog from "../component/utility/AConfirmationDialog";
 import { authRegister } from "../api/auth";
 import ADialog from "../component/utility/ADialog";
 import { UserContext } from "../context/UserContext";
 import { Checkbox } from "react-native-paper";
 
-function RegisterScreen({ navigation }) {
+function RegisterScreen({ navigation, route }) {
+  const kondisi = route.params.kondisi;
   const emailInput = React.createRef();
   const nomorInput = React.createRef();
   const passwordInput = React.createRef();
@@ -31,7 +31,6 @@ function RegisterScreen({ navigation }) {
 
   const { passwordVisibility, rightIcon, handlePasswordVisibility } =
     usePasswordVisibility();
-  const [confirm, toggleComfirm] = useStateToggler();
   const [emailExist, toggleEmailExist] = useStateToggler();
   const [something, toggleSomething] = useStateToggler();
   const [passNotSame, togglePassNotSame] = useStateToggler();
@@ -41,6 +40,7 @@ function RegisterScreen({ navigation }) {
   const [passwordError, togglePasswordError] = useStateToggler();
   const [konfirmasiError, toggleKonfirmasiError] = useStateToggler();
   const [emailNotExist, toggleEmailNotExist] = useStateToggler();
+  const [formError, toggleFormError] = useStateToggler();
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -51,12 +51,21 @@ function RegisterScreen({ navigation }) {
 
   useEffect(() => {
     BackHandler.addEventListener("hardwareBackPress", () => {
-      toggleComfirm();
+      if (kondisi == "Login") {
+        navigation.replace("Login");
+      } else {
+        navigation.replace("Forgot");
+      }
+
       return true;
     });
 
     return BackHandler.removeEventListener("hardwareBackPress", () => {
-      toggleComfirm();
+      if (kondisi == "Login") {
+        navigation.replace("Login");
+      } else {
+        navigation.replace("Forgot");
+      }
       return true;
     });
   }, []);
@@ -65,22 +74,30 @@ function RegisterScreen({ navigation }) {
     context.toggleLoading(true);
 
     authRegister(name, email, nomor, password, confirmPassword, (response) => {
+      console.log(response.status)
       switch (response.status) {
         case 201:
           context.toggleLoading(false);
-          navigation.push("Verifikasi", { email: email });
+          // navigation.push("Verifikasi", { email: email });
           break;
-        case 409:
-          context.toggleLoading(false);
-          toggleEmailExist();
-          break;
-        case 204:
-          context.toggleLoading(false);
-          toggleEmailNotExist();
-          break;
-        case 502:
-          context.toggleLoading(false);
-          togglePassNotSame();
+        case 400:
+          switch (response.data.message) {
+            case "Confirmation error":
+              context.toggleLoading(false);
+              konfirmasiError ? "" : toggleKonfirmasiError();
+              passNotSame ? "" : togglePassNotSame();
+              break;
+            case "Email validation error":
+              context.toggleLoading(false);
+              emailError ? "" : toggleEmailError();
+              emailNotExist ? "" : toggleEmailNotExist();
+              break;
+            case "Email is exist":
+              context.toggleLoading(false);
+              emailError ? "" : toggleEmailError();
+              emailExist ? "" : toggleEmailExist();
+              break;
+          }
           break;
         default:
           context.toggleLoading(false);
@@ -91,44 +108,60 @@ function RegisterScreen({ navigation }) {
   };
 
   const doRegister = () => {
-    if (name != "" && email != "" && nomor != "" && password != "" && confirmPassword != "") {
-      {
+    if (
+      name != "" &&
+      email != "" &&
+      nomor != "" &&
+      password != "" &&
+      confirmPassword != ""
+    ) {
+      if (!passNotSame) {
         nameError ? toggleNameError() : "";
-      }
-      {
         emailError ? toggleEmailError() : "";
-      }
-      {
         nomorError ? toggleNomorError() : "";
-      }
-      {
         passwordError ? togglePasswordError() : "";
-      }
-      {
         konfirmasiError ? toggleKonfirmasiError() : "";
+        formError ? toggleFormError() : "";
+
+        register(name, email, nomor, password, confirmPassword);
       }
-      register(name, email, nomor, password, confirmPassword);
     } else {
-      {
-        name == "" ? (nameError ? "" : toggleNameError()) : "";
-      }
-      {
-        email == "" ? (emailError ? "" : toggleEmailError()) : "";
-      }
-      {
-        nomor == "" ? (nomorError ? "" : toggleNomorError()) : "";
-      }
-      {
-        password == "" ? (passwordError ? "" : togglePasswordError()) : "";
-      }
-      {
-        confirmPassword == ""
-          ? konfirmasiError
-            ? ""
-            : toggleKonfirmasiError()
-          : "";
-      }
+      name == "" ? (nameError ? "" : toggleNameError()) : "";
+      email == "" ? (emailError ? "" : toggleEmailError()) : "";
+      nomor == "" ? (nomorError ? "" : toggleNomorError()) : "";
+      password == "" ? (passwordError ? "" : togglePasswordError()) : "";
+      confirmPassword == ""
+        ? konfirmasiError
+          ? ""
+          : toggleKonfirmasiError()
+        : "";
+      formError ? "" : toggleFormError();
     }
+  };
+
+  const clear_error = () => {
+    name != "" ? (nameError ? toggleNameError() : "") : "";
+    email != "" ? (emailError ? toggleEmailError() : "") : "";
+    nomor != "" ? (nomorError ? toggleNomorError() : "") : "";
+    confirmPassword != ""
+      ? konfirmasiError
+        ? toggleKonfirmasiError()
+        : ""
+      : "";
+
+    name != "" &&
+    email != "" &&
+    nomor != "" &&
+    password != "" &&
+    confirmPassword != ""
+      ? formError
+        ? toggleFormError()
+        : ""
+      : "";
+
+    passNotSame ? togglePassNotSame() : "";
+    emailNotExist ? toggleEmailNotExist() : "";
+    emailExist ? toggleEmailExist() : "";
   };
 
   return (
@@ -136,7 +169,11 @@ function RegisterScreen({ navigation }) {
       <View style={styles.header}>
         <BackButton
           onPress={() => {
-            toggleComfirm();
+            if (kondisi == "Login") {
+              navigation.replace("Login");
+            } else {
+              navigation.replace("Forgot");
+            }
           }}
         />
       </View>
@@ -168,27 +205,13 @@ function RegisterScreen({ navigation }) {
           value={name}
           onChangeText={(value) => {
             setName(value);
+            clear_error();
           }}
           submit={() => {
-            {
-              nameError ? toggleNameError() : "";
-            }
+            clear_error();
             emailInput.current.focus();
           }}
         />
-
-        {nameError ? (
-          <AText
-            style={{ paddingTop: 6 }}
-            color={color.error.error500}
-            size={14}
-            weight="normal"
-          >
-            Nama lengkap wajib
-          </AText>
-        ) : (
-          ""
-        )}
 
         <ATextInput
           bdColor={emailError ? color.error.error300 : color.neutral.neutral300}
@@ -203,28 +226,14 @@ function RegisterScreen({ navigation }) {
           value={email}
           onChangeText={(value) => {
             setEmail(value);
+            clear_error();
           }}
           ref={emailInput}
           submit={() => {
-            {
-              emailError ? toggleEmailError() : "";
-            }
+            clear_error();
             nomorInput.current.focus();
           }}
         />
-
-        {emailError ? (
-          <AText
-            style={{ paddingTop: 6 }}
-            color={color.error.error500}
-            size={14}
-            weight="normal"
-          >
-            Email wajib
-          </AText>
-        ) : (
-          ""
-        )}
 
         <ATextInput
           bdColor={nomorError ? color.error.error300 : color.neutral.neutral300}
@@ -238,49 +247,45 @@ function RegisterScreen({ navigation }) {
           value={nomor}
           onChangeText={(value) => {
             setNomor(value);
+            clear_error();
           }}
           ref={nomorInput}
           submit={() => {
-            {
-              nomorError ? toggleNomorError() : "";
-            }
+            clear_error();
             passwordInput.current.focus();
           }}
         />
 
-        {nomorError ? (
-          <AText
-            style={{ paddingTop: 6 }}
-            color={color.error.error500}
-            size={14}
-            weight="normal"
-          >
-            Nomor telepon kosong
-          </AText>
-        ) : (
-          ""
-        )}
-
         <APasswordInput
-          hint={"Masukkan password anda"}
-          title={"Password"}
+          hint={"Masukkan kata sandi anda"}
+          title={"Kata sandi"}
           rtype={"next"}
           bdColor={
             passwordError ? color.error.error300 : color.neutral.neutral300
           }
+          padding={20}
           ref={passwordInput}
           blur={false}
           onChangeText={(value) => {
             setPassword(value);
+            if (value.length < 8) {
+              passwordError ? "" : togglePasswordError();
+            } else {
+              passwordError ? togglePasswordError() : "";
+            }
+            clear_error();
           }}
           value={password}
           passwordVisibility={passwordVisibility}
           handlePasswordVisibility={handlePasswordVisibility}
           rightIcon={rightIcon}
           submit={() => {
-            {
+            if (password.length < 8) {
+              passwordError ? "" : togglePasswordError();
+            } else {
               passwordError ? togglePasswordError() : "";
             }
+            clear_error();
             comfirmInput.current.focus();
           }}
         />
@@ -293,27 +298,25 @@ function RegisterScreen({ navigation }) {
           size={14}
           weight="normal"
         >
-          Minimal 8 karakter: Hanya huruf, angka, dan simbol
+          Keterangan: Kata sandi minimal 8 karakter, terdiri dari huruf, angka,
+          atau simbol
         </AText>
 
         <APasswordInput
-          hint={"Masukkan password anda"}
-          title={"Konfirmasi Password"}
+          hint={"Masukkan kata sandi anda"}
+          title={"Konfirmasi kata sandi"}
           bdColor={
-            konfirmasiError || passNotSame
-              ? color.error.error300
-              : color.neutral.neutral300
+            konfirmasiError ? color.error.error300 : color.neutral.neutral300
           }
+          padding={20}
           rtype={"done"}
           blur={true}
           onChangeText={(value) => {
             setconfirmPassword(value);
+            clear_error();
           }}
           submit={() => {
-            {
-              konfirmasiError ? toggleKonfirmasiError() : "";
-              passNotSame ? togglePassNotSame() : "";
-            }
+            clear_error();
           }}
           value={confirmPassword}
           ref={comfirmInput}
@@ -322,14 +325,14 @@ function RegisterScreen({ navigation }) {
           rightIcon={rightIcon}
         />
 
-        {konfirmasiError ? (
+        {formError ? (
           <AText
             style={{ paddingTop: 6 }}
             color={color.error.error500}
             size={14}
             weight="normal"
           >
-            Email kosong
+            Lengkapi formulir atau kolom yang tersedia dengan benar
           </AText>
         ) : (
           ""
@@ -342,7 +345,33 @@ function RegisterScreen({ navigation }) {
             size={14}
             weight="normal"
           >
-            Konfirmasi password tidak sama dengan password
+            Konfirmasi kata sandi Anda dengan benar
+          </AText>
+        ) : (
+          ""
+        )}
+
+        {emailNotExist ? (
+          <AText
+            style={{ paddingTop: 6 }}
+            color={color.error.error500}
+            size={14}
+            weight="normal"
+          >
+            Email Anda tidak valid, masukkan email dengan benar
+          </AText>
+        ) : (
+          ""
+        )}
+
+        {emailExist ? (
+          <AText
+            style={{ paddingTop: 6 }}
+            color={color.error.error500}
+            size={14}
+            weight="normal"
+          >
+            Email sudah digunakan pengguna lain
           </AText>
         ) : (
           ""
@@ -429,41 +458,15 @@ function RegisterScreen({ navigation }) {
           <TouchableOpacity
             style={{ flexDirection: "row", paddingLeft: 4 }}
             onPress={() => {
-              navigation.push("Back Login");
+              navigation.replace("Back Login");
             }}
           >
             <AText size={14} color={color.neutral.neutral700} weight="semibold">
-              Log in
+              Masuk
             </AText>
           </TouchableOpacity>
         </View>
       </ScrollView>
-      <AConfirmationDialog
-        title={"Peringatan"}
-        desc={"Apakah Anda yakin ingin kembali, data pendaftaran Anda akan hilang?"}
-        visibleModal={confirm}
-        btnOK={"OK"}
-        btnBATAL={"Batal"}
-        onPressBATALButton={() => {
-          toggleComfirm();
-        }}
-        onPressOKButton={() => {
-          setEmail("");
-          setName("");
-          setPassword("");
-          setconfirmPassword("");
-          navigation.replace("Login");
-        }}
-      />
-      <ADialog
-        title={"Peringatan"}
-        desc={"Email telah digunakan pengguna lain"}
-        visibleModal={emailExist}
-        btnOK={"OK"}
-        onPressOKButton={() => {
-          toggleEmailExist();
-        }}
-      />
       <ADialog
         title={"Peringatan"}
         desc={"Terjadi kesalahan pada server, mohon coba lagi lain waktu"}
@@ -471,18 +474,6 @@ function RegisterScreen({ navigation }) {
         btnOK={"OK"}
         onPressOKButton={() => {
           toggleSomething();
-        }}
-      />
-
-      <ADialog
-        title={"Peringatan"}
-        desc={
-          "Email Anda tidak valid, silahkan masukkan email dengan benar"
-        }
-        visibleModal={emailNotExist}
-        btnOK={"OK"}
-        onPressOKButton={() => {
-          toggleEmailNotExist();
         }}
       />
     </AScreen>

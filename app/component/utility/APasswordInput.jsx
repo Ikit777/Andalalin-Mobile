@@ -8,7 +8,7 @@ import { Feather } from '@expo/vector-icons';
 const APasswordInput = React.forwardRef((props, ref) =>
 {
   return (
-    <View style={{ flexDirection: "column", paddingTop: 20, paddingBottom: props.bottom }}>
+    <View style={{ flexDirection: "column", paddingTop: props.padding, paddingBottom: props.bottom }}>
       <AText color={color.neutral.neutral700} size={14}>
         {props.title}
       </AText>
