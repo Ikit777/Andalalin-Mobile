@@ -24,7 +24,7 @@ import ExitApp from "react-native-exit-app";
 import VersionCheck from "react-native-version-check";
 import { health } from "./app/api/user";
 import AServer from "./app/component/utility/AServer";
-import SplashScreenOn from "./app/screens/SplashScreen";
+import SplashScreen from "./app/screens/SplashScreen";
 
 export default function App() {
   const [isAppReady, setIsAppReady] = useState(false);
@@ -92,7 +92,7 @@ export default function App() {
   return (
     <View style={{ flex: 1 }}>
       {isLoading ? (
-        <SplashScreenOn isLoading={isAppReady} />
+        <SplashScreen isLoading={isAppReady} />
       ) : (
         <NetProvider>
           <AUpdateDialog

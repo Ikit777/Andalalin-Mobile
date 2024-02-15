@@ -2,7 +2,7 @@ import React, { useRef } from "react";
 import { StyleSheet, View, Image, Animated, Easing } from "react-native";
 import AScreen from "../component/utility/AScreen";
 
-function SplashScreenOn({ isLoading, timing = Easing.ease }) {
+function SplashScreen({ isLoading, timing = Easing.ease }) {
   // const fadeAnim = useRef(new Animated.Value(isLoading ? 1 : 0)).current;
 
   // const toggleVisibility = () => {
@@ -96,4 +96,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SplashScreenOn;
+export default SplashScreen;

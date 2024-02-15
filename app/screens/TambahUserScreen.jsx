@@ -39,6 +39,7 @@ function TambahUserScreen({ navigation }) {
   const [peranError, setPeranError] = useStateToggler();
   const [nipError, setNipError] = useStateToggler();
   const [passwordError, setPasswordError] = useStateToggler();
+  const [formError, toggleFormError] = useStateToggler();
 
   const namaRef = React.createRef();
   const emailRef = React.createRef();
@@ -79,79 +80,51 @@ function TambahUserScreen({ navigation }) {
         nip != "" &&
         password != ""
       ) {
-        {
+        if (!emailNotExist && !emailExist) {
           namaError ? setNamaError() : "";
-        }
-        {
           emailError ? setEmailError() : "";
-        }
-        {
           nomorError ? setNomorError() : "";
-        }
-        {
           peranError ? setPeranError() : "";
-        }
-        {
           passwordError ? setPasswordError() : "";
-        }
-        {
           nipError ? setNipError() : "";
+          formError ? toggleFormError() : "";
+
+          tambah_pengguna();
         }
-        tambah_pengguna();
       } else {
-        {
-          nama == "" ? (namaError ? "" : setNamaError()) : "";
-        }
-        {
-          email == "" ? (emailError ? "" : setEmailError()) : "";
-        }
-        {
-          nomor == "" ? (nomorError ? "" : setNomorError()) : "";
-        }
-        {
-          peran == "" ? (peranError ? "" : setPeranError()) : "";
-        }
-        {
-          nip == "" ? (nipError ? "" : setNipError()) : "";
-        }
-        {
-          password == "" ? (passwordError ? "" : setPasswordError()) : "";
-        }
+        nama == "" ? (namaError ? "" : setNamaError()) : "";
+        email == "" ? (emailError ? "" : setEmailError()) : "";
+        nomor == "" ? (nomorError ? "" : setNomorError()) : "";
+        peran == "" ? (peranError ? "" : setPeranError()) : "";
+        nip == "" ? (nipError ? "" : setNipError()) : "";
+        password == "" ? (passwordError ? "" : setPasswordError()) : "";
+        formError ? "" : toggleFormError();
       }
     } else {
-      if (nama != "" && email != "" && nomor != "" && peran != "" && password != "") {
-        {
+      if (
+        nama != "" &&
+        email != "" &&
+        nomor != "" &&
+        peran != "" &&
+        password != ""
+      ) {
+        if (!emailNotExist && !emailExist) {
           namaError ? setNamaError() : "";
-        }
-        {
           emailError ? setEmailError() : "";
-        }
-        {
           nomorError ? setNomorError() : "";
-        }
-        {
           peranError ? setPeranError() : "";
-        }
-        {
           passwordError ? setPasswordError() : "";
+          formError ? toggleFormError() : "";
+
+          tambah_pengguna();
         }
-        tambah_pengguna();
       } else {
-        {
-          nama == "" ? (namaError ? "" : setNamaError()) : "";
-        }
-        {
-          email == "" ? (emailError ? "" : setEmailError()) : "";
-        }
-        {
-          nomor == "" ? (nomorError ? "" : setNomorError()) : "";
-        }
-        {
-          peran == "" ? (peranError ? "" : setPeranError()) : "";
-        }
-        {
-          password == "" ? (passwordError ? "" : setPasswordError()) : "";
-        }
+        nama == "" ? (namaError ? "" : setNamaError()) : "";
+        email == "" ? (emailError ? "" : setEmailError()) : "";
+        nomor == "" ? (nomorError ? "" : setNomorError()) : "";
+        peran == "" ? (peranError ? "" : setPeranError()) : "";
+        password == "" ? (passwordError ? "" : setPasswordError()) : "";
+        formError ? "" : toggleFormError();
       }
     }
   };
@@ -193,10 +166,6 @@ function TambahUserScreen({ navigation }) {
           context.toggleLoading(false);
           toggleEmailExist();
           break;
-        case 204:
-          context.toggleLoading(false);
-          toggleEmailNotExist();
-          break;
         case 424:
           authRefreshToken(context, (response) => {
             if (response.status === 200) {
@@ -215,8 +184,49 @@ function TambahUserScreen({ navigation }) {
   };
 
   useEffect(() => {
-    peranError ? setPeranError() : "";
+    clear_error();
   }, [peran]);
+
+  const clear_error = () => {
+    if (peran != "" && peran != "User") {
+      nama != "" ? (namaError ? setNamaError() : "") : "";
+      nomor != "" ? (nomorError ? setNomorError() : "") : "";
+      peran != "" ? (peranError ? setPeranError() : "") : "";
+      nip != "" ? (nipError ? setNipError() : "") : "";
+
+      nama != "" &&
+      email != "" &&
+      nomor != "" &&
+      peran != "" &&
+      nip != "" &&
+      password != ""
+        ? formError
+          ? toggleFormError()
+          : ""
+        : "";
+    } else {
+      nama != "" ? (namaError ? setNamaError() : "") : "";
+      nomor != "" ? (nomorError ? setNomorError() : "") : "";
+      peran != "" ? (peranError ? setPeranError() : "") : "";
+
+      nama != "" && email != "" && nomor != "" && peran != "" && password != ""
+        ? formError
+          ? toggleFormError()
+          : ""
+        : "";
+    }
+  };
+
+  const validateEmail = (value) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(value)) {
+      emailError ? "" : setEmailError();
+      emailNotExist ? "" : toggleEmailNotExist();
+    } else {
+      emailError ? setEmailError() : "";
+      emailNotExist ? toggleEmailNotExist() : "";
+    }
+  };
 
   return (
     <AScreen>
@@ -233,8 +243,8 @@ function TambahUserScreen({ navigation }) {
               navigation.goBack();
             }}
           />
-         <AText
-            style={{ paddingLeft: 4}}
+          <AText
+            style={{ paddingLeft: 4 }}
             size={20}
             color={color.neutral.neutral900}
             weight="normal"
@@ -257,18 +267,6 @@ function TambahUserScreen({ navigation }) {
           max={400}
           saved={peran}
         />
-        {peranError ? (
-          <AText
-            style={{ paddingTop: 6 }}
-            color={color.error.error500}
-            size={14}
-            weight="normal"
-          >
-            Peran wajib
-          </AText>
-        ) : (
-          ""
-        )}
 
         <ATextInput
           bdColor={namaError ? color.error.error500 : color.neutral.neutral300}
@@ -283,29 +281,13 @@ function TambahUserScreen({ navigation }) {
           ref={namaRef}
           onChangeText={(value) => {
             setNama(value);
+            clear_error();
           }}
           submit={() => {
-            {
-              namaError ? setNamaError() : "";
-            }
-            {
-              nama != "" ? emailRef.current.focus() : "";
-            }
+            clear_error();
+            nama != "" ? emailRef.current.focus() : "";
           }}
         />
-
-        {namaError ? (
-          <AText
-            style={{ paddingTop: 6 }}
-            color={color.error.error500}
-            size={14}
-            weight="normal"
-          >
-            Nama wajib
-          </AText>
-        ) : (
-          ""
-        )}
 
         <ATextInput
           bdColor={emailError ? color.error.error500 : color.neutral.neutral300}
@@ -321,26 +303,34 @@ function TambahUserScreen({ navigation }) {
           inputMode={"email"}
           onChangeText={(value) => {
             setEmail(value);
+            if (value.length > 0) {
+              validateEmail(value);
+            } else {
+              emailError ? setEmailError() : "";
+              emailNotExist ? toggleEmailNotExist() : "";
+            }
+            clear_error();
           }}
           submit={() => {
-            {
+            if (email.length > 0) {
+              validateEmail(email);
+            } else {
               emailError ? setEmailError() : "";
+              emailNotExist ? toggleEmailNotExist() : "";
             }
-
-              {
-                email != "" ? nomorRef.current.focus() : "";
-              }
+            clear_error();
+            email != "" ? nomorRef.current.focus() : "";
           }}
         />
 
-        {emailError ? (
+        {emailNotExist ? (
           <AText
             style={{ paddingTop: 6 }}
             color={color.error.error500}
             size={14}
             weight="normal"
           >
-            Email wajib
+            Email Anda tidak valid, masukkan email dengan benar
           </AText>
         ) : (
           ""
@@ -359,36 +349,18 @@ function TambahUserScreen({ navigation }) {
           ktype={"number-pad"}
           onChangeText={(value) => {
             setNomor(value);
+            clear_error();
           }}
           submit={() => {
-            {
-              nomorError ? setNomorError() : "";
-            }
+            clear_error();
 
             if (peran != "" && peran != "User") {
-              {
-                nomor != "" ? nipRef.current.focus() : "";
-              }
+              nomor != "" ? nipRef.current.focus() : "";
             } else {
-              {
-                nomor != "" ? passwordRef.current.focus() : "";
-              }
+              nomor != "" ? passwordRef.current.focus() : "";
             }
           }}
         />
-
-        {nomorError ? (
-          <AText
-            style={{ paddingTop: 6 }}
-            color={color.error.error500}
-            size={14}
-            weight="normal"
-          >
-            Nomor telepon wajib
-          </AText>
-        ) : (
-          ""
-        )}
 
         {peran != "User" && peran != "" ? (
           <View>
@@ -407,29 +379,14 @@ function TambahUserScreen({ navigation }) {
               ktype={"number-pad"}
               onChangeText={(value) => {
                 setNip(value);
+                clear_error();
               }}
               submit={() => {
-                {
-                  nipError ? setNipError() : "";
-                }
-                {
-                  nip != "" ? passwordRef.current.focus() : "";
-                }
+                clear_error();
+
+                nip != "" ? passwordRef.current.focus() : "";
               }}
             />
-
-            {nipError ? (
-              <AText
-                style={{ paddingTop: 6 }}
-                color={color.error.error500}
-                size={14}
-                weight="normal"
-              >
-                NIP wajib
-              </AText>
-            ) : (
-              ""
-            )}
           </View>
         ) : (
           ""
@@ -438,6 +395,7 @@ function TambahUserScreen({ navigation }) {
         <APasswordInput
           hint={"Masukkan password"}
           title={"Password"}
+          padding={20}
           rtype={"done"}
           bdColor={
             passwordError ? color.error.error500 : color.neutral.neutral300
@@ -446,11 +404,20 @@ function TambahUserScreen({ navigation }) {
           ref={passwordRef}
           onChangeText={(value) => {
             setPassword(value);
-          }}
-          submit={() => {
-            {
+            if (value.length > 0 && value.length < 8) {
+              passwordError ? "" : setPasswordError();
+            } else {
               passwordError ? setPasswordError() : "";
             }
+            clear_error();
+          }}
+          submit={() => {
+            if (password.length > 0 && password.length < 8) {
+              passwordError ? "" : setPasswordError();
+            } else {
+              passwordError ? setPasswordError() : "";
+            }
+            clear_error();
           }}
           passwordVisibility={passwordVisibility}
           handlePasswordVisibility={handlePasswordVisibility}
@@ -465,8 +432,35 @@ function TambahUserScreen({ navigation }) {
           size={14}
           weight="normal"
         >
-          Minimal 8 karakter: Hanya huruf, angka, dan simbol
+          Keterangan: Kata sandi minimal 8 karakter, terdiri dari huruf, angka,
+          atau simbol
         </AText>
+
+        {formError ? (
+          <AText
+            style={{ paddingTop: 6 }}
+            color={color.error.error500}
+            size={14}
+            weight="normal"
+          >
+            Lengkapi formulir atau kolom yang tersedia dengan benar
+          </AText>
+        ) : (
+          ""
+        )}
+
+        {emailExist ? (
+          <AText
+            style={{ paddingTop: 6 }}
+            color={color.error.error500}
+            size={14}
+            weight="normal"
+          >
+            Email sudah digunakan pengguna lain
+          </AText>
+        ) : (
+          ""
+        )}
 
         <AButton
           style={{ marginTop: 32, marginBottom: 50 }}
@@ -484,7 +478,7 @@ function TambahUserScreen({ navigation }) {
 
       <AConfirmationDialog
         title={"Tambah pengguna"}
-        desc={"Apakah Anda yakin ingin tambah pengguna?"}
+        desc={"Apakah Anda yakin ingin menambah pengguna?"}
         visibleModal={confirm}
         btnOK={"OK"}
         btnBATAL={"Batal"}
@@ -498,34 +492,12 @@ function TambahUserScreen({ navigation }) {
       />
 
       <ADialog
-        title={"Peringatan"}
-        desc={"Email sudah digunakan"}
-        visibleModal={emailExist}
-        btnOK={"OK"}
-        onPressOKButton={() => {
-          toggleEmailExist();
-        }}
-      />
-
-      <ADialog
-        title={"Tambah pengguna gagal"}
-        desc={"Terjadi kesalahan pada server, mohon coba lagi lain waktu"}
+        title={"Tambah pengguna"}
+        desc={"Tambah pengguna gagal dilakukan, silahkan coba lagi lain waktu"}
         visibleModal={something}
         btnOK={"OK"}
         onPressOKButton={() => {
           toggleSomething();
-        }}
-      />
-
-      <ADialog
-        title={"Tambah pengguna gagal"}
-        desc={
-          "Email tidak dapat ditemukan, silahkan masukkan email dengan benar"
-        }
-        visibleModal={emailNotExist}
-        btnOK={"OK"}
-        onPressOKButton={() => {
-          toggleEmailNotExist();
         }}
       />
     </AScreen>

@@ -116,7 +116,7 @@ function RegisterScreen({ navigation, route }) {
       password != "" &&
       confirmPassword != ""
     ) {
-      if (!passNotSame && !emailNotExist) {
+      if (!passNotSame && !emailNotExist && !emailExist) {
         nameError ? toggleNameError() : "";
         emailError ? toggleEmailError() : "";
         nomorError ? toggleNomorError() : "";
