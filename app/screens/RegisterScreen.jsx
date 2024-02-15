@@ -74,30 +74,20 @@ function RegisterScreen({ navigation, route }) {
     context.toggleLoading(true);
 
     authRegister(name, email, nomor, password, confirmPassword, (response) => {
-      console.log(response.status);
       switch (response.status) {
         case 201:
           context.toggleLoading(false);
           navigation.push("Verifikasi", { email: email });
           break;
         case 400:
-          switch (response.data.message) {
-            case "Confirmation error":
-              context.toggleLoading(false);
-              konfirmasiError ? "" : toggleKonfirmasiError();
-              passNotSame ? "" : togglePassNotSame();
-              break;
-            case "Email validation error":
-              context.toggleLoading(false);
-              emailError ? "" : toggleEmailError();
-              emailNotExist ? "" : toggleEmailNotExist();
-              break;
-            case "Email is exist":
-              context.toggleLoading(false);
-              emailError ? "" : toggleEmailError();
-              emailExist ? "" : toggleEmailExist();
-              break;
-          }
+          context.toggleLoading(false);
+          konfirmasiError ? "" : toggleKonfirmasiError();
+          passNotSame ? "" : togglePassNotSame();
+          break;
+        case 409:
+          context.toggleLoading(false);
+          emailError ? "" : toggleEmailError();
+          emailExist ? "" : toggleEmailExist();
           break;
         default:
           context.toggleLoading(false);
@@ -105,6 +95,17 @@ function RegisterScreen({ navigation, route }) {
           break;
       }
     });
+  };
+
+  const validateEmail = (value) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(value)) {
+      emailError ? "" : toggleEmailError();
+      emailNotExist ? "" : toggleEmailNotExist();
+    } else {
+      emailError ? toggleEmailError() : "";
+      emailNotExist ? toggleEmailNotExist() : "";
+    }
   };
 
   const doRegister = () => {
@@ -115,7 +116,7 @@ function RegisterScreen({ navigation, route }) {
       password != "" &&
       confirmPassword != ""
     ) {
-      if (!passNotSame) {
+      if (!passNotSame && !emailNotExist) {
         nameError ? toggleNameError() : "";
         emailError ? toggleEmailError() : "";
         nomorError ? toggleNomorError() : "";
@@ -141,7 +142,7 @@ function RegisterScreen({ navigation, route }) {
 
   const clear_error = () => {
     name != "" ? (nameError ? toggleNameError() : "") : "";
-    email != "" ? (emailError ? toggleEmailError() : "") : "";
+    email != "" && !emailNotExist ? (emailError ? toggleEmailError() : "") : "";
     nomor != "" ? (nomorError ? toggleNomorError() : "") : "";
     confirmPassword != ""
       ? konfirmasiError
@@ -160,7 +161,6 @@ function RegisterScreen({ navigation, route }) {
       : "";
 
     passNotSame ? togglePassNotSame() : "";
-    emailNotExist ? toggleEmailNotExist() : "";
     emailExist ? toggleEmailExist() : "";
   };
 
@@ -195,7 +195,7 @@ function RegisterScreen({ navigation, route }) {
         </AText>
 
         <ATextInput
-          bdColor={nameError ? color.error.error300 : color.neutral.neutral300}
+          bdColor={nameError ? color.error.error500 : color.neutral.neutral300}
           ktype={"default"}
           hint={"Masukkan nama anda"}
           title={"Nama lengkap"}
@@ -214,7 +214,7 @@ function RegisterScreen({ navigation, route }) {
         />
 
         <ATextInput
-          bdColor={emailError ? color.error.error300 : color.neutral.neutral300}
+          bdColor={emailError ? color.error.error500 : color.neutral.neutral300}
           ktype={"email-address"}
           inputMode={"email"}
           hint={"Masukkan email anda"}
@@ -226,17 +226,42 @@ function RegisterScreen({ navigation, route }) {
           value={email}
           onChangeText={(value) => {
             setEmail(value);
+            if (value.length > 0) {
+              validateEmail(value);
+            } else {
+              emailError ? toggleEmailError() : "";
+              emailNotExist ? toggleEmailNotExist() : "";
+            }
             clear_error();
           }}
           ref={emailInput}
           submit={() => {
+            if (email.length > 0) {
+              validateEmail(email);
+            } else {
+              emailError ? toggleEmailError() : "";
+              emailNotExist ? toggleEmailNotExist() : "";
+            }
             clear_error();
             nomorInput.current.focus();
           }}
         />
 
+        {emailNotExist ? (
+          <AText
+            style={{ paddingTop: 6 }}
+            color={color.error.error500}
+            size={14}
+            weight="normal"
+          >
+            Email Anda tidak valid, masukkan email dengan benar
+          </AText>
+        ) : (
+          ""
+        )}
+
         <ATextInput
-          bdColor={nomorError ? color.error.error300 : color.neutral.neutral300}
+          bdColor={nomorError ? color.error.error500 : color.neutral.neutral300}
           ktype={"number-pad"}
           hint={"Masukkan nomor anda"}
           title={"Nomor telepon"}
@@ -261,14 +286,14 @@ function RegisterScreen({ navigation, route }) {
           title={"Kata sandi"}
           rtype={"next"}
           bdColor={
-            passwordError ? color.error.error300 : color.neutral.neutral300
+            passwordError ? color.error.error500 : color.neutral.neutral300
           }
           padding={20}
           ref={passwordInput}
           blur={false}
           onChangeText={(value) => {
             setPassword(value);
-            if (value.length < 8) {
+            if (value.length > 0 && value.length < 8) {
               passwordError ? "" : togglePasswordError();
             } else {
               passwordError ? togglePasswordError() : "";
@@ -280,7 +305,7 @@ function RegisterScreen({ navigation, route }) {
           handlePasswordVisibility={handlePasswordVisibility}
           rightIcon={rightIcon}
           submit={() => {
-            if (password.length < 8) {
+            if (password.length > 0 && password.length < 8) {
               passwordError ? "" : togglePasswordError();
             } else {
               passwordError ? togglePasswordError() : "";
@@ -293,7 +318,7 @@ function RegisterScreen({ navigation, route }) {
         <AText
           style={{ paddingTop: 6 }}
           color={
-            passwordError ? color.error.error300 : color.neutral.neutral300
+            passwordError ? color.error.error500 : color.neutral.neutral300
           }
           size={14}
           weight="normal"
@@ -306,7 +331,7 @@ function RegisterScreen({ navigation, route }) {
           hint={"Masukkan kata sandi anda"}
           title={"Konfirmasi kata sandi"}
           bdColor={
-            konfirmasiError ? color.error.error300 : color.neutral.neutral300
+            konfirmasiError ? color.error.error500 : color.neutral.neutral300
           }
           padding={20}
           rtype={"done"}
@@ -346,19 +371,6 @@ function RegisterScreen({ navigation, route }) {
             weight="normal"
           >
             Konfirmasi kata sandi Anda dengan benar
-          </AText>
-        ) : (
-          ""
-        )}
-
-        {emailNotExist ? (
-          <AText
-            style={{ paddingTop: 6 }}
-            color={color.error.error500}
-            size={14}
-            weight="normal"
-          >
-            Email Anda tidak valid, masukkan email dengan benar
           </AText>
         ) : (
           ""

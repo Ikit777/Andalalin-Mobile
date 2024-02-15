@@ -142,7 +142,7 @@ function Permohonan({ onPress }) {
         selected={setKategoriPemohon}
         max={200}
         saved={kategoriPemohon}
-        bdColor={pemohonError ? color.error.error300 : color.neutral.neutral300}
+        bdColor={pemohonError ? color.error.error500 : color.neutral.neutral300}
       />
       {pemohonError ? (
         <AText
@@ -165,7 +165,7 @@ function Permohonan({ onPress }) {
         max={200}
         padding={20}
         saved={jenisRencana}
-        bdColor={jenisError ? color.error.error300 : color.neutral.neutral300}
+        bdColor={jenisError ? color.error.error500 : color.neutral.neutral300}
       />
       {jenisError ? (
         <AText
@@ -181,7 +181,7 @@ function Permohonan({ onPress }) {
       )}
 
       <ADropDownCostume
-        bdColor={rencanaError ? color.error.error300 : color.neutral.neutral300}
+        bdColor={rencanaError ? color.error.error500 : color.neutral.neutral300}
         judul={"Jenis rencana pembangunan"}
         hint={"Pilih jenis"}
         data={rencana}
@@ -213,7 +213,7 @@ function Permohonan({ onPress }) {
         max={200}
         padding={20}
         saved={lokasiPengambilan}
-        bdColor={lokasiError ? color.error.error300 : color.neutral.neutral300}
+        bdColor={lokasiError ? color.error.error500 : color.neutral.neutral300}
       />
       {lokasiError ? (
         <AText

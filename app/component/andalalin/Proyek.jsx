@@ -196,7 +196,7 @@ function Proyek({ onPress, navigation }) {
     >
       <ATextInput
         bdColor={
-          namaProyekError ? color.error.error300 : color.neutral.neutral300
+          namaProyekError ? color.error.error500 : color.neutral.neutral300
         }
         ktype={"default"}
         hint={"Masukkan nama"}
@@ -236,7 +236,7 @@ function Proyek({ onPress, navigation }) {
         padding={20}
         saved={jenisProyek}
         bdColor={
-          jenisProyekError ? color.error.error300 : color.neutral.neutral300
+          jenisProyekError ? color.error.error500 : color.neutral.neutral300
         }
       />
 
@@ -254,7 +254,7 @@ function Proyek({ onPress, navigation }) {
       )}
 
       <ATextInputIcon
-        bdColor={wilayahError ? color.error.error300 : color.neutral.neutral300}
+        bdColor={wilayahError ? color.error.error500 : color.neutral.neutral300}
         hint={"Pilih wilayah administratif"}
         title={"Wilayah administratif proyek"}
         padding={20}
@@ -279,7 +279,7 @@ function Proyek({ onPress, navigation }) {
       )}
 
       <ADropdownJalan
-        bdColor={jalanError ? color.error.error300 : color.neutral.neutral300}
+        bdColor={jalanError ? color.error.error500 : color.neutral.neutral300}
         judul={"Jalan proyek"}
         hint={"Pilih jalan"}
         data={jalanItem}
@@ -308,7 +308,7 @@ function Proyek({ onPress, navigation }) {
       )}
 
       <ATextInput
-        bdColor={alamatError ? color.error.error300 : color.neutral.neutral300}
+        bdColor={alamatError ? color.error.error500 : color.neutral.neutral300}
         ktype={"default"}
         hint={"Masukkan alamat proyek"}
         title={"Alamat proyek"}
@@ -336,7 +336,7 @@ function Proyek({ onPress, navigation }) {
       )}
 
       <ATextInputIcon
-        bdColor={lokasiError ? color.error.error300 : color.neutral.neutral300}
+        bdColor={lokasiError ? color.error.error500 : color.neutral.neutral300}
         hint={"Pilih lokasi proyek"}
         title={"Lokasi proyek"}
         padding={20}

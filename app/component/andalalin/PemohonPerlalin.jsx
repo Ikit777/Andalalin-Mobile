@@ -151,7 +151,7 @@ function PemohonPerlalin({ onPress }) {
       persistentScrollbar={true}
     >
       <ATextInput
-        bdColor={nikError ? color.error.error300 : color.neutral.neutral300}
+        bdColor={nikError ? color.error.error500 : color.neutral.neutral300}
         ktype={"number-pad"}
         hint={"Masukkan nik anda"}
         title={"Nik"}
@@ -184,7 +184,7 @@ function PemohonPerlalin({ onPress }) {
       )}
 
       <ADropDownCostume
-        bdColor={jenisError ? color.error.error300 : color.neutral.neutral300}
+        bdColor={jenisError ? color.error.error500 : color.neutral.neutral300}
         judul={"Jenis kelamin"}
         hint={"Pilih jenis kelamin"}
         data={jenis_kelamin}
@@ -206,7 +206,7 @@ function PemohonPerlalin({ onPress }) {
       )}
 
       <ATextInput
-        bdColor={tempatError ? color.error.error300 : color.neutral.neutral300}
+        bdColor={tempatError ? color.error.error500 : color.neutral.neutral300}
         ktype={"default"}
         hint={"Masukkan tempat lahir"}
         title={"Tempat lahir"}
@@ -239,7 +239,7 @@ function PemohonPerlalin({ onPress }) {
       )}
 
       <ATextInputIcon
-        bdColor={tanggalError ? color.error.error300 : color.neutral.neutral300}
+        bdColor={tanggalError ? color.error.error500 : color.neutral.neutral300}
         hint={"Masukkan tanggal lahir"}
         title={"Tanggal lahir"}
         padding={20}
@@ -265,7 +265,7 @@ function PemohonPerlalin({ onPress }) {
       )}
 
       <ATextInputIcon
-        bdColor={alamat1Error ? color.error.error300 : color.neutral.neutral300}
+        bdColor={alamat1Error ? color.error.error500 : color.neutral.neutral300}
         hint={"Pilih wilayah administratif"}
         title={"Wilayah administratif"}
         padding={20}
@@ -290,7 +290,7 @@ function PemohonPerlalin({ onPress }) {
       )}
 
       <ATextInput
-        bdColor={alamatError ? color.error.error300 : color.neutral.neutral300}
+        bdColor={alamatError ? color.error.error500 : color.neutral.neutral300}
         ktype={"default"}
         hint={"Masukkan alamat"}
         title={"Alamat"}
@@ -317,7 +317,7 @@ function PemohonPerlalin({ onPress }) {
       )}
 
       <ATextInput
-        bdColor={nomerError ? color.error.error300 : color.neutral.neutral300}
+        bdColor={nomerError ? color.error.error500 : color.neutral.neutral300}
         ktype={"number-pad"}
         hint={"Masukkan nomer"}
         title={"Nomer telepon/Fax"}

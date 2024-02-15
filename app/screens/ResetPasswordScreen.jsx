@@ -119,12 +119,12 @@ function ResetPasswordScreen({ navigation, route }) {
           context.toggleLoading(false);
           toggleResetBerhasil();
           break;
-        case 400:
+        case 422:
           context.toggleLoading(false);
           konfirmasiError ? "" : toggleKonfirmasiError();
           passNotSame ? "" : togglePassNotSame();
           break;
-        case 502:
+        case 400:
           context.toggleLoading(false);
           codeError ? "" : toggleCodeError();
           expired ? "" : toggleExpired();
@@ -208,7 +208,7 @@ function ResetPasswordScreen({ navigation, route }) {
 
         <APasswordInput
           bdColor={
-            passwordError ? color.error.error300 : color.neutral.neutral300
+            passwordError ? color.error.error500 : color.neutral.neutral300
           }
           ktype={"default"}
           hint={"Masukkan kata sandi baru"}
@@ -255,7 +255,7 @@ function ResetPasswordScreen({ navigation, route }) {
 
         <APasswordInput
           bdColor={
-            konfirmasiError ? color.error.error300 : color.neutral.neutral300
+            konfirmasiError ? color.error.error500 : color.neutral.neutral300
           }
           ktype={"default"}
           hint={"Masukkan konfirmasi kata sandi"}
@@ -280,7 +280,7 @@ function ResetPasswordScreen({ navigation, route }) {
         />
 
         <ATextInput
-          bdColor={codeError ? color.error.error300 : color.neutral.neutral300}
+          bdColor={codeError ? color.error.error500 : color.neutral.neutral300}
           ktype={"numeric"}
           hint={"Masukkan kode autentikasi anda"}
           title={"Kode autentikasi"}

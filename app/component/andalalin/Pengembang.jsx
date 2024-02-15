@@ -216,7 +216,7 @@ function Pengembang({ onPress }) {
       persistentScrollbar={true}
     >
       <ATextInput
-        bdColor={namaError ? color.error.error300 : color.neutral.neutral300}
+        bdColor={namaError ? color.error.error500 : color.neutral.neutral300}
         ktype={"default"}
         hint={"Masukkan nama"}
         title={"Nama pengembang atau pembangun"}
@@ -249,7 +249,7 @@ function Pengembang({ onPress }) {
       )}
 
       <ATextInputIcon
-        bdColor={wilayahError ? color.error.error300 : color.neutral.neutral300}
+        bdColor={wilayahError ? color.error.error500 : color.neutral.neutral300}
         hint={"Pilih wilayah administratif"}
         title={"Wilayah administratif pengembang"}
         padding={20}
@@ -274,7 +274,7 @@ function Pengembang({ onPress }) {
       )}
 
       <ATextInput
-        bdColor={alamatError ? color.error.error300 : color.neutral.neutral300}
+        bdColor={alamatError ? color.error.error500 : color.neutral.neutral300}
         ktype={"default"}
         hint={"Masukkan alamat"}
         title={"Alamat pengembang"}
@@ -301,7 +301,7 @@ function Pengembang({ onPress }) {
       )}
 
       <ATextInput
-        bdColor={nomerError ? color.error.error300 : color.neutral.neutral300}
+        bdColor={nomerError ? color.error.error500 : color.neutral.neutral300}
         ktype={"number-pad"}
         hint={"Masukkan nomor"}
         title={"Nomor telepon/Fax pengembang"}
@@ -345,7 +345,7 @@ function Pengembang({ onPress }) {
       )}
 
       <ATextInput
-        bdColor={emailError ? color.error.error300 : color.neutral.neutral300}
+        bdColor={emailError ? color.error.error500 : color.neutral.neutral300}
         hint={"Masukkan email"}
         title={"Email pengembang"}
         rtype={"next"}
@@ -382,7 +382,7 @@ function Pengembang({ onPress }) {
 
       <ATextInput
         bdColor={
-          pimpinanError ? color.error.error300 : color.neutral.neutral300
+          pimpinanError ? color.error.error500 : color.neutral.neutral300
         }
         ktype={"default"}
         hint={"Masukkan nama pimpinan"}
@@ -418,7 +418,7 @@ function Pengembang({ onPress }) {
       )}
 
       <ATextInput
-        bdColor={jabatanError ? color.error.error300 : color.neutral.neutral300}
+        bdColor={jabatanError ? color.error.error500 : color.neutral.neutral300}
         ktype={"default"}
         hint={"Masukkan jabatan pimpinan"}
         title={"Jabatan pimpinan"}
@@ -451,7 +451,7 @@ function Pengembang({ onPress }) {
       )}
 
       <ADropDownCostume
-        bdColor={jenisError ? color.error.error300 : color.neutral.neutral300}
+        bdColor={jenisError ? color.error.error500 : color.neutral.neutral300}
         judul={"Jenis kelamin pimpinan"}
         hint={"Pilih jenis kelamin"}
         data={jenis_kelamin}
@@ -474,7 +474,7 @@ function Pengembang({ onPress }) {
 
       <ATextInputIcon
         bdColor={
-          wilayahPimpinanError ? color.error.error300 : color.neutral.neutral300
+          wilayahPimpinanError ? color.error.error500 : color.neutral.neutral300
         }
         hint={"Pilih wilayah administratif"}
         title={"Wilayah administratif pimpinan"}
@@ -501,7 +501,7 @@ function Pengembang({ onPress }) {
 
       <ATextInput
         bdColor={
-          alamatPimpinanError ? color.error.error300 : color.neutral.neutral300
+          alamatPimpinanError ? color.error.error500 : color.neutral.neutral300
         }
         ktype={"default"}
         hint={"Masukkan alamat"}

@@ -38,6 +38,9 @@ function VerifikasiScreen({ navigation, route }) {
   const [gagal, toggleGagal] = useStateToggler();
   const [resendGagal, toggleResendGagal] = useStateToggler();
 
+  const [alreadyError, toggleAlreadyError] = useStateToggler();
+  const [notExist, toggleNotExist] = useStateToggler();
+
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
       BackHandler.addEventListener("hardwareBackPress", () => {
@@ -63,24 +66,43 @@ function VerifikasiScreen({ navigation, route }) {
     context.toggleLoading(true);
 
     authVerification(code, (response) => {
-      if (response.status === 200) {
-        context.toggleLoading(false);
-        toggleBerhasil();
-      } else {
-        context.toggleLoading(false);
-        toggleGagal();
+      switch (response.status) {
+        case 200:
+          context.toggleLoading(false);
+          toggleBerhasil();
+          break;
+        case 404:
+          context.toggleLoading(false);
+          toggleNotExist();
+          break;
+        case 422:
+          context.toggleLoading(false);
+          toggleAlreadyError();
+          break;
+        default:
+          context.toggleLoading(false);
+          toggleGagal();
+          break;
       }
     });
   };
 
   const resend = (email) => {
     context.toggleLoading(true);
+
     authResendVerication(email, (response) => {
-      if (response.status === 201) {
-        context.toggleLoading(false);
-      } else {
-        context.toggleLoading(false);
-        toggleResendGagal();
+      switch (response.status) {
+        case 201:
+          context.toggleLoading(false);
+          break;
+        case 404:
+          context.toggleLoading(false);
+          toggleNotExist();
+          break;
+        default:
+          context.toggleLoading(false);
+          toggleResendGagal();
+          break;
       }
     });
   };
@@ -121,7 +143,7 @@ function VerifikasiScreen({ navigation, route }) {
             }
           }}
           onSubmitEditing={() => {
-            if (value .length <= 0) {
+            if (value.length <= 0) {
               setValue("000000");
             }
           }}
@@ -200,12 +222,32 @@ function VerifikasiScreen({ navigation, route }) {
       <ADialog
         title={"Verifikasi"}
         desc={
-          "Kode verifikasi yang Anda masukkan salah, silahkan masukkan kode yang benar"
+          "Kode verifikasi yang Anda masukkan salah, silahkan masukkan dengan benar"
         }
         visibleModal={gagal}
         btnOK={"OK"}
         onPressOKButton={() => {
           toggleGagal();
+        }}
+      />
+      <ADialog
+        title={"Verifikasi"}
+        desc={"Akun tidak terdaftar, silakan daftarkan kembali"}
+        visibleModal={notExist}
+        btnOK={"OK"}
+        onPressOKButton={() => {
+          toggleNotExist();
+          navigation.replace("Daftar");
+        }}
+      />
+      <ADialog
+        title={"Verifikasi"}
+        desc={"Akun anda sudah terverifikasi, silahkan login kembali"}
+        visibleModal={alreadyError}
+        btnOK={"OK"}
+        onPressOKButton={() => {
+          toggleAlreadyError();
+          navigation.replace("Login");
         }}
       />
       <ADialog

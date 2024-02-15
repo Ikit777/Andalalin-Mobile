@@ -29,6 +29,7 @@ function SettingScreen({ navigation }) {
   const [fotoBerhasil, toggleFotoBerhasil] = useStateToggler();
   const [fotoGagal, toggleFotoGagal] = useStateToggler();
   const [permission, togglePermission] = useStateToggler();
+  const [forgotError, toggleForgotError] = useStateToggler();
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
@@ -79,6 +80,9 @@ function SettingScreen({ navigation }) {
       if (response.status === 200) {
         context.toggleLoading(false);
         navigation.navigate("Reset", { email: email, kondisi: "Logged" });
+      } else {
+        context.toggleLoading(false);
+        toggleForgotError();
       }
     });
   };
@@ -221,7 +225,7 @@ function SettingScreen({ navigation }) {
           <ASettingItem
             onPress={() => forgot(context.getUser().email)}
             icon={"lock"}
-            title={"Reset password"}
+            title={"Kata sandi baru"}
           />
 
           {context.getUser().role == "User" ? (
@@ -330,6 +334,20 @@ function SettingScreen({ navigation }) {
         btnOK={"OK"}
         onPressOKButton={() => {
           togglePermission();
+        }}
+      />
+
+      <ADialog
+        title={"Kata sandi baru"}
+        desc={"Terjadi kesalahan pada akaun anda, silahkan login kembali"}
+        visibleModal={forgotError}
+        btnOK={"OK"}
+        onPressOKButton={() => {
+          toggleForgotError();
+          remove(context.getUser().id);
+          remove("authState");
+          context.setCheck();
+          navigation.replace("Login");
         }}
       />
     </AScreen>

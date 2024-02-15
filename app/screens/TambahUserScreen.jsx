@@ -249,7 +249,7 @@ function TambahUserScreen({ navigation }) {
         persistentScrollbar={true}
       >
         <ADropDownCostume
-          bdColor={peranError ? color.error.error300 : color.neutral.neutral300}
+          bdColor={peranError ? color.error.error500 : color.neutral.neutral300}
           judul={"Peran"}
           hint={"Pilih peran"}
           data={jenis_peran}
@@ -271,7 +271,7 @@ function TambahUserScreen({ navigation }) {
         )}
 
         <ATextInput
-          bdColor={namaError ? color.error.error300 : color.neutral.neutral300}
+          bdColor={namaError ? color.error.error500 : color.neutral.neutral300}
           ktype={"default"}
           hint={"Masukkan nama"}
           title={"Nama lengkap"}
@@ -308,7 +308,7 @@ function TambahUserScreen({ navigation }) {
         )}
 
         <ATextInput
-          bdColor={emailError ? color.error.error300 : color.neutral.neutral300}
+          bdColor={emailError ? color.error.error500 : color.neutral.neutral300}
           hint={"Masukkan email"}
           title={"Email"}
           rtype={"next"}
@@ -347,7 +347,7 @@ function TambahUserScreen({ navigation }) {
         )}
 
         <ATextInput
-          bdColor={nomorError ? color.error.error300 : color.neutral.neutral300}
+          bdColor={nomorError ? color.error.error500 : color.neutral.neutral300}
           hint={"Masukkan nomor"}
           title={"Nomor telepon"}
           rtype={"next"}
@@ -394,7 +394,7 @@ function TambahUserScreen({ navigation }) {
           <View>
             <ATextInput
               bdColor={
-                nipError ? color.error.error300 : color.neutral.neutral300
+                nipError ? color.error.error500 : color.neutral.neutral300
               }
               hint={"Masukkan nip"}
               title={"NIP"}
@@ -440,7 +440,7 @@ function TambahUserScreen({ navigation }) {
           title={"Password"}
           rtype={"done"}
           bdColor={
-            passwordError ? color.error.error300 : color.neutral.neutral300
+            passwordError ? color.error.error500 : color.neutral.neutral300
           }
           value={password}
           ref={passwordRef}
@@ -460,7 +460,7 @@ function TambahUserScreen({ navigation }) {
         <AText
           style={{ paddingTop: 6 }}
           color={
-            passwordError ? color.error.error300 : color.neutral.neutral300
+            passwordError ? color.error.error500 : color.neutral.neutral300
           }
           size={14}
           weight="normal"

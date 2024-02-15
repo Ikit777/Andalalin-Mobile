@@ -154,7 +154,7 @@ function Persyaratan({ navigation, onPress }) {
                   stateVariables.find((variabel) => {
                     return variabel.persyaratan == item.persyaratan;
                   }).stateError
-                    ? color.error.error300
+                    ? color.error.error500
                     : color.neutral.neutral300
                 }
                 hint={"Masukkan berkas " + item.tipe.toLowerCase()}

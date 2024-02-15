@@ -14,7 +14,6 @@ const environments = {
       AUTH_VERIFICATION: url + "/v1/auth/verification",
       AUTH_RESEND_VERIFICATION: url + "/v1/auth/verification/resend",
 
-
       //Users
       AUTH_FORGOT_PASSWORD: url + "/v1/users/password/forgot",
       AUTH_RESET_PASSWORD: url + "/v1/users/password/reset",

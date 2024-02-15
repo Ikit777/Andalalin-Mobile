@@ -184,7 +184,7 @@ function PembuatanSuratKeputusanScreen({ navigation }) {
       >
         <ATextInput
           bdColor={
-            keputusanError ? color.error.error300 : color.neutral.neutral300
+            keputusanError ? color.error.error500 : color.neutral.neutral300
           }
           ktype={"default"}
           hint={"Masukkan nomor"}
@@ -222,7 +222,7 @@ function PembuatanSuratKeputusanScreen({ navigation }) {
 
         <ATextInput
           bdColor={
-            lampiranError ? color.error.error300 : color.neutral.neutral300
+            lampiranError ? color.error.error500 : color.neutral.neutral300
           }
           ktype={"default"}
           hint={"Masukkan nomor"}
@@ -261,7 +261,7 @@ function PembuatanSuratKeputusanScreen({ navigation }) {
 
         <ATextInput
           bdColor={
-            kesanggupanError ? color.error.error300 : color.neutral.neutral300
+            kesanggupanError ? color.error.error500 : color.neutral.neutral300
           }
           ktype={"default"}
           hint={"Masukkan nomor"}
@@ -297,7 +297,7 @@ function PembuatanSuratKeputusanScreen({ navigation }) {
 
         <ATextInputIcon
           bdColor={
-            tanggalError ? color.error.error300 : color.neutral.neutral300
+            tanggalError ? color.error.error500 : color.neutral.neutral300
           }
           hint={"Masukkan tanggal"}
           title={"Tanggal surat pernyataan kesanggupan"}
@@ -323,7 +323,7 @@ function PembuatanSuratKeputusanScreen({ navigation }) {
         )}
 
         <ATextInput
-          bdColor={namaError ? color.error.error300 : color.neutral.neutral300}
+          bdColor={namaError ? color.error.error500 : color.neutral.neutral300}
           ktype={"default"}
           hint={"Masukkan nama"}
           title={"Nama kepala dinas perhubungan"}
@@ -360,7 +360,7 @@ function PembuatanSuratKeputusanScreen({ navigation }) {
         )}
 
         <ATextInput
-          bdColor={nipError ? color.error.error300 : color.neutral.neutral300}
+          bdColor={nipError ? color.error.error500 : color.neutral.neutral300}
           ktype={"number-pad"}
           hint={"Masukkan nip"}
           title={"NIP kepala dinas perhubungan"}

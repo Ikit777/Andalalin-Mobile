@@ -34,8 +34,10 @@ function LoginScreen({ navigation }) {
   const [confirm, toggleComfirm] = useStateToggler();
   const [emailError, toggleEmailError] = useStateToggler();
   const [passwordError, togglePasswordError] = useStateToggler();
-
+  const [something, toggleSomething] = useStateToggler();
+  const [verify, toggleVerify] = useStateToggler();
   const [formError, toggleFormError] = useStateToggler();
+  const [emailNotExist, toggleEmailNotExist] = useStateToggler();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -121,8 +123,21 @@ function LoginScreen({ navigation }) {
   const verif = (email) => {
     context.toggleLoading(true);
     authResendVerication(email, (response) => {
-      if (response.status === 201) {
-        context.toggleLoading(false);
+      switch (response.status) {
+        case 201:
+          context.toggleLoading(false);
+          navigation.push("Verifikasi", { email: email });
+          break;
+        case 404:
+          context.toggleLoading(false);
+          emailError ? "" : toggleEmailError();
+          passwordError ? "" : togglePasswordError();
+          dialogUser ? "" : toggleDialogUser();
+          break;
+        default:
+          context.toggleLoading(false);
+          toggleVerify();
+          break;
       }
     });
   };
@@ -152,7 +167,7 @@ function LoginScreen({ navigation }) {
             navigation.push("Home");
           })();
           break;
-        case 400:
+        case 404:
           context.toggleLoading(false);
           emailError ? "" : toggleEmailError();
           passwordError ? "" : togglePasswordError();
@@ -164,7 +179,7 @@ function LoginScreen({ navigation }) {
           break;
         default:
           context.toggleLoading(false);
-          toggleDialogUser();
+          toggleSomething();
           break;
       }
     });
@@ -172,13 +187,12 @@ function LoginScreen({ navigation }) {
 
   const doLogin = () => {
     if (email != "" && password != "") {
-      if (!dialogUser) {
+      if (!dialogUser && !emailNotExist) {
         emailError ? toggleEmailError() : "";
         passwordError ? togglePasswordError() : "";
         formError ? toggleFormError() : "";
+        login();
       }
-
-      login();
     } else {
       email == "" ? (emailError ? "" : toggleEmailError()) : "";
       password == "" ? (passwordError ? "" : togglePasswordError()) : "";
@@ -187,10 +201,21 @@ function LoginScreen({ navigation }) {
   };
 
   const clear_error = () => {
-    email != "" ? (emailError ? toggleEmailError() : "") : "";
+    email != "" && !emailNotExist ? (emailError ? toggleEmailError() : "") : "";
     password != "" ? (passwordError ? togglePasswordError() : "") : "";
     email != "" && password != "" ? (formError ? toggleFormError() : "") : "";
     dialogUser ? toggleDialogUser() : "";
+  };
+
+  const validateEmail = (value) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(value)) {
+      emailError ? "" : toggleEmailError();
+      emailNotExist ? "" : toggleEmailNotExist();
+    } else {
+      emailError ? toggleEmailError() : "";
+      emailNotExist ? toggleEmailNotExist() : "";
+    }
   };
 
   return (
@@ -215,9 +240,9 @@ function LoginScreen({ navigation }) {
           Dapatkan kemudahan dalam urusan managemen lalu lintas
         </AText>
         <ATextInput
-          bdColor={emailError ? color.error.error300 : color.neutral.neutral300}
+          bdColor={emailError ? color.error.error500 : color.neutral.neutral300}
           hint={"Masukkan email anda"}
-          title={"E-mail"}
+          title={"Email"}
           rtype={"next"}
           ktype={"email-address"}
           inputMode={"email"}
@@ -228,19 +253,43 @@ function LoginScreen({ navigation }) {
           onChangeText={(value) => {
             setEmail(value);
             clear_error();
+            if (value.length > 0) {
+              validateEmail(value);
+            } else {
+              emailError ? toggleEmailError() : "";
+              emailNotExist ? toggleEmailNotExist() : "";
+            }
           }}
           submit={() => {
             passwordInput.current.focus();
             clear_error();
+            if (email.length > 0) {
+              validateEmail(email);
+            } else {
+              emailError ? toggleEmailError() : "";
+              emailNotExist ? toggleEmailNotExist() : "";
+            }
           }}
         />
+        {emailNotExist ? (
+          <AText
+            style={{ paddingTop: 6 }}
+            color={color.error.error500}
+            size={14}
+            weight="normal"
+          >
+            Email Anda tidak valid, masukkan email dengan benar
+          </AText>
+        ) : (
+          ""
+        )}
         <APasswordInput
           hint={"Masukkan kata sandi anda"}
           title={"Kata sandi"}
           rtype={"done"}
           padding={20}
           bdColor={
-            passwordError ? color.error.error300 : color.neutral.neutral300
+            passwordError ? color.error.error500 : color.neutral.neutral300
           }
           value={password}
           ref={passwordInput}
@@ -346,13 +395,34 @@ function LoginScreen({ navigation }) {
       />
       <ADialog
         title={"Verifikasi"}
-        desc={"Akun Anda belum terverifikasi oleh kami, silahkan lakukan verifikasi"}
+        desc={
+          "Akun Anda belum terverifikasi oleh kami, silahkan lakukan verifikasi"
+        }
         visibleModal={dialogVerif}
         btnOK={"Verifikasi"}
         onPressOKButton={() => {
           toggleDialogVerif();
           verif(email);
-          navigation.push("Verifikasi", { email: email });
+        }}
+      />
+
+      <ADialog
+        title={"Masuk"}
+        desc={"Masuk gagal dilakukan, silahkan coba lagi lain waktu"}
+        visibleModal={something}
+        btnOK={"OK"}
+        onPressOKButton={() => {
+          toggleSomething();
+        }}
+      />
+
+      <ADialog
+        title={"Verifikasi"}
+        desc={"Kode verifikasi gagak dikirim, silahkan coba lagi lain waktu"}
+        visibleModal={verify}
+        btnOK={"OK"}
+        onPressOKButton={() => {
+          toggleVerify();
         }}
       />
     </AScreen>

@@ -291,7 +291,7 @@ function Pemohon({ onPress }) {
       persistentScrollbar={true}
     >
       <ATextInput
-        bdColor={nikError ? color.error.error300 : color.neutral.neutral300}
+        bdColor={nikError ? color.error.error500 : color.neutral.neutral300}
         ktype={"number-pad"}
         hint={"Masukkan nik anda"}
         title={"Nik"}
@@ -332,7 +332,7 @@ function Pemohon({ onPress }) {
         <View>
           <ATextInput
             bdColor={
-              jabatanError ? color.error.error300 : color.neutral.neutral300
+              jabatanError ? color.error.error500 : color.neutral.neutral300
             }
             ktype={"default"}
             hint={"Masukkan jabatan anda"}
@@ -370,7 +370,7 @@ function Pemohon({ onPress }) {
       )}
 
       <ADropDownCostume
-        bdColor={jenisError ? color.error.error300 : color.neutral.neutral300}
+        bdColor={jenisError ? color.error.error500 : color.neutral.neutral300}
         judul={"Jenis kelamin"}
         hint={"Pilih jenis kelamin"}
         data={jenis_kelamin}
@@ -392,7 +392,7 @@ function Pemohon({ onPress }) {
       )}
 
       <ATextInput
-        bdColor={tempatError ? color.error.error300 : color.neutral.neutral300}
+        bdColor={tempatError ? color.error.error500 : color.neutral.neutral300}
         ktype={"default"}
         hint={"Masukkan tempat lahir"}
         title={"Tempat lahir"}
@@ -425,7 +425,7 @@ function Pemohon({ onPress }) {
       )}
 
       <ATextInputIcon
-        bdColor={tanggalError ? color.error.error300 : color.neutral.neutral300}
+        bdColor={tanggalError ? color.error.error500 : color.neutral.neutral300}
         hint={"Masukkan tanggal lahir"}
         title={"Tanggal lahir"}
         padding={20}
@@ -451,7 +451,7 @@ function Pemohon({ onPress }) {
       )}
 
       <ATextInputIcon
-        bdColor={alamat1Error ? color.error.error300 : color.neutral.neutral300}
+        bdColor={alamat1Error ? color.error.error500 : color.neutral.neutral300}
         hint={"Pilih wilayah administratif"}
         title={"Wilayah administratif"}
         padding={20}
@@ -476,7 +476,7 @@ function Pemohon({ onPress }) {
       )}
 
       <ATextInput
-        bdColor={alamatError ? color.error.error300 : color.neutral.neutral300}
+        bdColor={alamatError ? color.error.error500 : color.neutral.neutral300}
         ktype={"default"}
         hint={"Masukkan alamat"}
         title={"Alamat"}
@@ -504,7 +504,7 @@ function Pemohon({ onPress }) {
 
       <ATextInput
         bdColor={
-          nomerSelulerError ? color.error.error300 : color.neutral.neutral300
+          nomerSelulerError ? color.error.error500 : color.neutral.neutral300
         }
         ktype={"number-pad"}
         hint={"Masukkan nomer"}
@@ -553,7 +553,7 @@ function Pemohon({ onPress }) {
 
       <ATextInput
         bdColor={
-          sertifikatError ? color.error.error300 : color.neutral.neutral300
+          sertifikatError ? color.error.error500 : color.neutral.neutral300
         }
         ktype={"default"}
         hint={"Masukkan nomer sertifikat"}
@@ -592,7 +592,7 @@ function Pemohon({ onPress }) {
 
       <ATextInput
         bdColor={
-          klasifikasiError ? color.error.error300 : color.neutral.neutral300
+          klasifikasiError ? color.error.error500 : color.neutral.neutral300
         }
         ktype={"default"}
         hint={"Masukkan klasifikasi"}

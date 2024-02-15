@@ -123,7 +123,7 @@ function UsulanPengelolaanScreen({ navigation, route }) {
       >
         <ATextInput
           bdColor={
-            pertimbanganError ? color.error.error300 : color.neutral.neutral300
+            pertimbanganError ? color.error.error500 : color.neutral.neutral300
           }
           ktype={"default"}
           hint={"Masukkan pertimbangan"}

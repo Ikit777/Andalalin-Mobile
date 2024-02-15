@@ -62,7 +62,7 @@ function KegiatanPerlalin({ onPress }) {
     >
       <ATextInput
         bdColor={
-          kegiatanError ? color.error.error300 : color.neutral.neutral300
+          kegiatanError ? color.error.error500 : color.neutral.neutral300
         }
         ktype={"default"}
         hint={"Masukkan alasan"}
@@ -90,7 +90,7 @@ function KegiatanPerlalin({ onPress }) {
 
       <ATextInput
         bdColor={
-          peruntukanError ? color.error.error300 : color.neutral.neutral300
+          peruntukanError ? color.error.error500 : color.neutral.neutral300
         }
         ktype={"default"}
         hint={"Peruntukan"}

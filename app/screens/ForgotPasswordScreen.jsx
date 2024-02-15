@@ -5,7 +5,7 @@ import AText from "../component/utility/AText";
 import color from "../constants/color";
 import ATextInput from "../component/utility/ATextInput";
 import { useStateToggler } from "../hooks/useUtility";
-import { authForgotPassword } from "../api/auth";
+import { authForgotPassword, authResendVerication } from "../api/auth";
 import AButton from "../component/utility/AButton";
 import { UserContext } from "../context/UserContext";
 import ADialog from "../component/utility/ADialog";
@@ -19,6 +19,9 @@ function ForgotPasswordScreen({ navigation }) {
   const [verif, toggleVerif] = useStateToggler();
   const [data, toggleData] = useStateToggler();
   const [bd, toggleBd] = useStateToggler();
+  const [something, toggleSomething] = useStateToggler();
+  const [verify, toggleVerify] = useStateToggler();
+  const [emailNotExist, toggleEmailNotExist] = useStateToggler();
 
   const forgot = (email) => {
     context.toggleLoading(true);
@@ -28,14 +31,18 @@ function ForgotPasswordScreen({ navigation }) {
           context.toggleLoading(false);
           navigation.push("Reset", { email: email, kondisi: "Not Logged" });
           break;
-        case 400:
+        case 404:
           context.toggleLoading(false);
           err ? "" : toggleErr();
           bd ? "" : toggleBd();
           break;
-        case 401:
+        case 403:
           context.toggleLoading(false);
           toggleVerif();
+          break;
+        default:
+          context.toggleLoading(false);
+          toggleSomething();
           break;
       }
     });
@@ -56,14 +63,35 @@ function ForgotPasswordScreen({ navigation }) {
     return unsubscribe;
   }, [navigation]);
 
+  const verification = (email) => {
+    context.toggleLoading(true);
+    authResendVerication(email, (response) => {
+      switch (response.status) {
+        case 201:
+          context.toggleLoading(false);
+          navigation.push("Verifikasi", { email: email });
+          break;
+        case 404:
+          context.toggleLoading(false);
+          err ? "" : toggleErr();
+          bd ? "" : toggleBd();
+          break;
+        default:
+          context.toggleLoading(false);
+          toggleVerify();
+          break;
+      }
+    });
+  };
+
   const kirim = () => {
     if (email != "") {
-      if (!err) {
+      if (!err && !emailNotExist) {
         data ? toggleData() : "";
         bd ? toggleBd() : "";
-      }
 
-      forgot(email);
+        forgot(email);
+      }
     } else {
       email == "" ? (data ? "" : toggleData()) : "";
       email == "" ? (bd ? "" : toggleBd()) : "";
@@ -71,10 +99,21 @@ function ForgotPasswordScreen({ navigation }) {
   };
 
   const clear_error = () => {
-    email != "" ? (data ? toggleData() : "") : "";
-    email != "" ? (bd ? toggleBd() : "") : "";
+    data ? toggleData() : "";
+    email != "" && !emailNotExist ? (bd ? toggleBd() : "") : "";
 
     err ? toggleErr() : "";
+  };
+
+  const validateEmail = (value) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(value)) {
+      bd ? "" : toggleBd();
+      emailNotExist ? "" : toggleEmailNotExist();
+    } else {
+      bd ? toggleBd() : "";
+      emailNotExist ? toggleEmailNotExist() : "";
+    }
   };
 
   return (
@@ -102,9 +141,9 @@ function ForgotPasswordScreen({ navigation }) {
         </AText>
 
         <ATextInput
-          bdColor={bd ? color.error.error300 : color.neutral.neutral300}
+          bdColor={bd ? color.error.error500 : color.neutral.neutral300}
           hint={"Masukkan email anda"}
-          title={"E-mail"}
+          title={"Email"}
           rtype={"done"}
           ktype={"email-address"}
           inputMode={"email"}
@@ -112,12 +151,37 @@ function ForgotPasswordScreen({ navigation }) {
           multi={false}
           submit={() => {
             clear_error();
+            if (email.length > 0) {
+              validateEmail(email);
+            } else {
+              bd ? toggleBd() : "";
+              emailNotExist ? toggleEmailNotExist() : "";
+            }
           }}
           onChangeText={(value) => {
             setEmail(value);
             clear_error();
+            if (value.length > 0) {
+              validateEmail(value);
+            } else {
+              bd ? toggleBd() : "";
+              emailNotExist ? toggleEmailNotExist() : "";
+            }
           }}
         />
+
+        {emailNotExist ? (
+          <AText
+            style={{ paddingTop: 6 }}
+            color={color.error.error500}
+            size={14}
+            weight="normal"
+          >
+            Email Anda tidak valid, masukkan email dengan benar
+          </AText>
+        ) : (
+          ""
+        )}
 
         {err ? (
           <AText
@@ -187,8 +251,27 @@ function ForgotPasswordScreen({ navigation }) {
         btnOK={"Verifikasi"}
         onPressOKButton={() => {
           toggleVerif();
-          verif(email);
-          navigation.push("Verifikasi", { email: email });
+          verification(email);
+        }}
+      />
+
+      <ADialog
+        title={"Kirim"}
+        desc={"Kode gagal dikirim, silahkan coba lagi lain waktu"}
+        visibleModal={something}
+        btnOK={"OK"}
+        onPressOKButton={() => {
+          toggleSomething();
+        }}
+      />
+
+      <ADialog
+        title={"Verifikasi"}
+        desc={"Kode verifikasi gagak dikirim, silahkan coba lagi lain waktu"}
+        visibleModal={verify}
+        btnOK={"OK"}
+        onPressOKButton={() => {
+          toggleVerify();
         }}
       />
     </AScreen>

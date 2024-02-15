@@ -320,7 +320,7 @@ function PermohonanPerlalin({ onPress, navigation }) {
         max={250}
         saved={KategoriUtama}
         bdColor={
-          kategoriUtamaError ? color.error.error300 : color.neutral.neutral300
+          kategoriUtamaError ? color.error.error500 : color.neutral.neutral300
         }
       />
       {kategoriUtamaError ? (
@@ -345,7 +345,7 @@ function PermohonanPerlalin({ onPress, navigation }) {
         padding={20}
         saved={kategoriPerlalin}
         bdColor={
-          kategoriError ? color.error.error300 : color.neutral.neutral300
+          kategoriError ? color.error.error500 : color.neutral.neutral300
         }
       />
       {kategoriError ? (
@@ -362,7 +362,7 @@ function PermohonanPerlalin({ onPress, navigation }) {
       )}
 
       <ADropDownPerlengkapan
-        bdColor={jenisError ? color.error.error300 : color.neutral.neutral300}
+        bdColor={jenisError ? color.error.error500 : color.neutral.neutral300}
         judul={"Jenis perlengkapan"}
         hint={"Pilih perlengkapan"}
         data={jenisData}
@@ -392,7 +392,7 @@ function PermohonanPerlalin({ onPress, navigation }) {
       )}
 
       <ATextInputIcon
-        bdColor={wilayahError ? color.error.error300 : color.neutral.neutral300}
+        bdColor={wilayahError ? color.error.error500 : color.neutral.neutral300}
         hint={"Pilih wilayah administratif"}
         title={"Wilayah administratif pemasangan"}
         padding={20}
@@ -417,7 +417,7 @@ function PermohonanPerlalin({ onPress, navigation }) {
       )}
 
       <ADropdownJalan
-        bdColor={jalanError ? color.error.error300 : color.neutral.neutral300}
+        bdColor={jalanError ? color.error.error500 : color.neutral.neutral300}
         judul={"Jalan pemasangan"}
         hint={"Pilih jalan"}
         data={jalanItem}
@@ -446,7 +446,7 @@ function PermohonanPerlalin({ onPress, navigation }) {
       )}
 
       <ATextInput
-        bdColor={alamatError ? color.error.error300 : color.neutral.neutral300}
+        bdColor={alamatError ? color.error.error500 : color.neutral.neutral300}
         ktype={"default"}
         hint={"Masukkan alamat pemasangan"}
         title={"Alamat pemasangan"}
@@ -474,7 +474,7 @@ function PermohonanPerlalin({ onPress, navigation }) {
       )}
 
       <ATextInputIcon
-        bdColor={titikError ? color.error.error300 : color.neutral.neutral300}
+        bdColor={titikError ? color.error.error500 : color.neutral.neutral300}
         hint={"Pilih lokasi pemasangan"}
         title={"Lokasi pemasangan"}
         padding={20}
@@ -506,7 +506,7 @@ function PermohonanPerlalin({ onPress, navigation }) {
         max={250}
         padding={20}
         saved={lokasiPengambilan}
-        bdColor={lokasiError ? color.error.error300 : color.neutral.neutral300}
+        bdColor={lokasiError ? color.error.error500 : color.neutral.neutral300}
       />
       {lokasiError ? (
         <AText

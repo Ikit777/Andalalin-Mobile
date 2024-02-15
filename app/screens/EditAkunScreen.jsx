@@ -216,7 +216,7 @@ function EditAkunScreen({ navigation }) {
         persistentScrollbar={true}
       >
         <ATextInput
-          bdColor={namaError ? color.error.error300 : color.neutral.neutral300}
+          bdColor={namaError ? color.error.error500 : color.neutral.neutral300}
           ktype={"default"}
           hint={"Masukkan nama"}
           title={"Nama lengkap"}
@@ -252,7 +252,7 @@ function EditAkunScreen({ navigation }) {
         )}
 
         <ATextInput
-          bdColor={emailError ? color.error.error300 : color.neutral.neutral300}
+          bdColor={emailError ? color.error.error500 : color.neutral.neutral300}
           hint={"Masukkan email"}
           title={"Email"}
           rtype={"next"}
@@ -291,7 +291,7 @@ function EditAkunScreen({ navigation }) {
         )}
 
         <ATextInput
-          bdColor={nomorError ? color.error.error300 : color.neutral.neutral300}
+          bdColor={nomorError ? color.error.error500 : color.neutral.neutral300}
           ktype={"number-pad"}
           hint={"Masukkan nomor"}
           title={"Nomor telepon"}
@@ -333,7 +333,7 @@ function EditAkunScreen({ navigation }) {
           <View>
             <ATextInput
               bdColor={
-                nipError ? color.error.error300 : color.neutral.neutral300
+                nipError ? color.error.error500 : color.neutral.neutral300
               }
               hint={"Masukkan nip"}
               title={"NIP"}

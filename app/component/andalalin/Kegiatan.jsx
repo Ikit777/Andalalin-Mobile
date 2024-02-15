@@ -198,7 +198,7 @@ function Kegiatan({ onPress, navigation }) {
     >
       <ATextInput
         bdColor={
-          kegiatanError ? color.error.error300 : color.neutral.neutral300
+          kegiatanError ? color.error.error500 : color.neutral.neutral300
         }
         ktype={"default"}
         hint={"Masukkan aktivitas"}
@@ -226,7 +226,7 @@ function Kegiatan({ onPress, navigation }) {
 
       <ATextInput
         bdColor={
-          peruntukanError ? color.error.error300 : color.neutral.neutral300
+          peruntukanError ? color.error.error500 : color.neutral.neutral300
         }
         ktype={"default"}
         hint={"Masukkan peruntukan"}
@@ -254,7 +254,7 @@ function Kegiatan({ onPress, navigation }) {
       )}
 
       <ATextInput
-        bdColor={totalError ? color.error.error300 : color.neutral.neutral300}
+        bdColor={totalError ? color.error.error500 : color.neutral.neutral300}
         ktype={"number-pad"}
         hint={"Masukkan total"}
         title={"Total luas lahan (m²)"}
@@ -295,7 +295,7 @@ function Kegiatan({ onPress, navigation }) {
         <View>
           <ATextInput
             bdColor={
-              luasError ? color.error.error300 : color.neutral.neutral300
+              luasError ? color.error.error500 : color.neutral.neutral300
             }
             ktype={"number-pad"}
             hint={"Masukkan " + data.Kriteria.toLowerCase()}
@@ -334,7 +334,7 @@ function Kegiatan({ onPress, navigation }) {
       )}
 
       <ATextInput
-        bdColor={nomerError ? color.error.error300 : color.neutral.neutral300}
+        bdColor={nomerError ? color.error.error500 : color.neutral.neutral300}
         ktype={"default"}
         hint={"Masukkan nomor SKRK"}
         title={"Nomor SKRK"}
@@ -367,7 +367,7 @@ function Kegiatan({ onPress, navigation }) {
       )}
 
       <ATextInputIcon
-        bdColor={tanggalError ? color.error.error300 : color.neutral.neutral300}
+        bdColor={tanggalError ? color.error.error500 : color.neutral.neutral300}
         hint={"Masukkan tanggal SKRK"}
         title={"Tanggal SKRK"}
         padding={20}
