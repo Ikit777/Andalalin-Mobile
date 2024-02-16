@@ -192,7 +192,8 @@ export function UserProvider({ children }) {
 
   const notificationListener = useRef();
   const responseListener = useRef();
-  const lastNotificationResponse = Notifications.getLastNotificationResponseAsync();
+  const lastNotificationResponse =
+    Notifications.getLastNotificationResponseAsync();
   const [notification, setNotification] = useState();
 
   const [dataMaster, setDataMaster] = useState("master");
@@ -222,6 +223,17 @@ export function UserProvider({ children }) {
   const [uraian, setUraian] = useState("");
   const [pilihModal, togglePilihModal] = useState(false);
 
+  const checkUser = async () => {
+    const value = await get("authState");
+    if (value) {
+      setUser(value);
+    }
+  };
+
+  useEffect(() => {
+    checkUser();
+  }, []);
+
   Notifications.setNotificationHandler({
     handleNotification: async () => ({
       shouldShowAlert: true,
@@ -242,7 +254,7 @@ export function UserProvider({ children }) {
 
     responseListener.current =
       Notifications.addNotificationResponseReceivedListener(() => {
-       (async () => {
+        (async () => {
           const value = await get("authState");
 
           store(value.id, "New Notification");

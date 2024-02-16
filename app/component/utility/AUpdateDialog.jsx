@@ -4,13 +4,14 @@ import {
   View,
   Modal,
   TouchableOpacity,
-  Animated,
+  Linking,
   Dimensions,
 } from "react-native";
 import color from "../../constants/color";
 import AText from "../utility/AText";
+import ExitApp from "react-native-exit-app";
 
-function AUpdateDialog({ visibleModal = false, onPressOKButton }) {
+function AUpdateDialog({ visibleModal = false }) {
   const [visible, setVisible] = React.useState(visibleModal);
 
   React.useEffect(() => {
@@ -47,7 +48,10 @@ function AUpdateDialog({ visibleModal = false, onPressOKButton }) {
           </AText>
           <TouchableOpacity
             style={{ alignItems: "flex-end", marginVertical: 24 }}
-            onPress={onPressOKButton}
+            onPress={() => {
+              Linking.openURL("market://details?id=com.andalalin");
+              ExitApp.exitApp();
+            }}
           >
             <AText
               style={{ paddingHorizontal: 20, paddingVertical: 5 }}

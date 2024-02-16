@@ -105,8 +105,6 @@ function SettingScreen({ navigation }) {
               photo: result.photo,
               nip: context.getUser().nip,
             };
-            Object.assign(context.user, newAuthState);
-            context.setUser(newAuthState);
             store("authState", newAuthState);
             toggleFotoBerhasil();
           })();

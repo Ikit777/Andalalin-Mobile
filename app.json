@@ -10,9 +10,7 @@
       "@config-plugins/react-native-blob-util",
       "@config-plugins/react-native-pdf"
     ],
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },

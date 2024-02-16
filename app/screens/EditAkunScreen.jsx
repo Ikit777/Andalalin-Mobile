@@ -84,8 +84,6 @@ function EditAkunScreen({ navigation }) {
               photo: result.data.photo,
               nip: result.data.nip,
             };
-            Object.assign(context.user, newAuthState);
-            context.setUser(newAuthState);
             store("authState", newAuthState);
             if (namaRef.current) {
               namaRef.current.blur();

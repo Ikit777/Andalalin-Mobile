@@ -130,7 +130,7 @@ export const authLogout = async (accessToken, authRespone) => {
 
 export const authRefreshToken = async (user, authRespone) => {
   const headers = {
-    Authorization: "Bearer " + user.user.refresh_token,
+    Authorization: "Bearer " + user.getUser().refresh_token,
     "Content-Type": "application/json",
   };
   const response = await axiosInstance({
@@ -142,16 +142,14 @@ export const authRefreshToken = async (user, authRespone) => {
     const newAuthState = {
       access_token: response.data.data.access_token,
       refresh_token: response.data.data.refresh_token,
-      id: user.user.id,
-      nama: user.user.nama,
-      email: user.user.email,
-      nomor: user.user.nomor,
-      role: user.user.role,
-      photo: user.user.photo,
-      nip: user.user.nip,
+      id: user.getUser().id,
+      nama: user.getUser().nama,
+      email: user.getUser().email,
+      nomor: user.getUser().nomor,
+      role: user.getUser().role,
+      photo: user.getUser().photo,
+      nip: user.getUser().nip,
     };
-    Object.assign(user.user, newAuthState);
-    user.setUser(newAuthState);
     store("authState", newAuthState);
   } else if (response.status === 424) {
     user.setSession(true);

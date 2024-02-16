@@ -63,7 +63,6 @@ function LoginScreen({ navigation }) {
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
       context.toggleLoading(false);
-      context.setUser("userLoggin");
 
       BackHandler.addEventListener("hardwareBackPress", () => {
         toggleComfirm();
@@ -162,7 +161,6 @@ function LoginScreen({ navigation }) {
               nip: result.data.nip,
             };
 
-            context.setUser(newAuthState);
             store("authState", newAuthState);
             navigation.push("Home");
           })();

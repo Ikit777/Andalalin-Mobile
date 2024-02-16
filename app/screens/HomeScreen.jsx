@@ -72,7 +72,7 @@ function HomeScreen({ navigation }) {
   }, [navigation]);
 
   const home = () => {
-    switch (context.user.role) {
+    switch (context.getUser().role) {
       case "User":
         return (
           <View style={{ paddingBottom: 32 }}>
@@ -600,7 +600,7 @@ function HomeScreen({ navigation }) {
       return () => {
         clearInterval(timerID);
       };
-    }, [context.user])
+    }, [context.getUser()])
   );
 
   return (
