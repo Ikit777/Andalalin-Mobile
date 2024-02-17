@@ -1,16 +1,12 @@
-import { View } from "react-native";
-import React, { useCallback, useEffect, useState } from "react";
+import { Animated, Easing, View } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import * as Font from "expo-font";
 import { NetProvider, NetContext } from "./app/context/NetContext";
 import { AFonts } from "./app/constants/font";
 import { get } from "./app/utils/local-storage";
 import ANoInternetDialog from "./app/component/utility/ANoInternetDialog";
-import {
-  UserContext,
-  UserProvider,
-  useMyContext,
-} from "./app/context/UserContext";
+import { UserContext, UserProvider } from "./app/context/UserContext";
 import Navigator from "./app/navigation/Navigator";
 import ASessionEnd from "./app/component/utility/ASessionEnd";
 import { navigationRef } from "./app/navigation/RootNavigator";
@@ -25,6 +21,17 @@ export default function App() {
   const [isLogged, setLogged] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  const toggleVisibility = () => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 150,
+      useNativeDriver: true,
+      easing: Easing.ease,
+    }).start();
+  };
+
   const prepare = async () => {
     try {
       /* Load fonts */
@@ -36,7 +43,8 @@ export default function App() {
       setIsAppReady(true);
       setTimeout(() => {
         setIsLoading(false);
-      }, 150);
+        toggleVisibility();
+      }, 100);
     }
   };
 
@@ -56,47 +64,45 @@ export default function App() {
 
   return (
     <View style={{ flex: 1 }}>
-      <NetProvider>
-        <CheckProvider>
-          <UserProvider>
-            {isLoading ? (
-              <SplashScreen isLoading={isAppReady} />
-            ) : (
-              <NavigationContainer ref={navigationRef}>
-                <NetContext.Consumer>
-                  {(isAvailable) => (
-                    <ANoInternetDialog visibleModal={!isAvailable} />
-                  )}
-                </NetContext.Consumer>
+      {isLoading ? (
+        <SplashScreen isLoading={isAppReady} />
+      ) : (
+        <Animated.View style={{ flex: 1, opacity: fadeAnim }}>
+          <NetProvider>
+            <CheckProvider>
+              <UserProvider>
+                <NavigationContainer ref={navigationRef}>
+                  <NetContext.Consumer>
+                    {(isAvailable) => (
+                      <ANoInternetDialog visibleModal={!isAvailable} />
+                    )}
+                  </NetContext.Consumer>
 
-                <CheckContext.Consumer>
-                  {(check) => <AServer visibleModal={!check.isServerOk} />}
-                </CheckContext.Consumer>
+                  <CheckContext.Consumer>
+                    {(check) => <AServer visibleModal={!check.isServerOk} />}
+                  </CheckContext.Consumer>
 
-                <CheckContext.Consumer>
-                  {(check) => <AUpdateDialog visibleModal={check.isUpdate} />}
-                </CheckContext.Consumer>
+                  <CheckContext.Consumer>
+                    {(check) => <AUpdateDialog visibleModal={check.isUpdate} />}
+                  </CheckContext.Consumer>
 
-                <UserContext.Consumer>
-                  {(isEnd) => <ASessionEnd visibleModal={isEnd.getSession()} />}
-                </UserContext.Consumer>
+                  <UserContext.Consumer>
+                    {(isEnd) => (
+                      <ASessionEnd visibleModal={isEnd.getSession()} />
+                    )}
+                  </UserContext.Consumer>
 
-                <UserContext.Consumer>
-                  {(value) =>
-                    value.user != "user" ? (
-                      <ALoading visibleModal={value.getLoading()} />
-                    ) : (
-                      ""
-                    )
-                  }
-                </UserContext.Consumer>
+                  <UserContext.Consumer>
+                    {(value) => <ALoading visibleModal={value.getLoading()} />}
+                  </UserContext.Consumer>
 
-                <Navigator isLogged={isLogged} />
-              </NavigationContainer>
-            )}
-          </UserProvider>
-        </CheckProvider>
-      </NetProvider>
+                  <Navigator isLogged={isLogged} />
+                </NavigationContainer>
+              </UserProvider>
+            </CheckProvider>
+          </NetProvider>
+        </Animated.View>
+      )}
     </View>
   );
 }

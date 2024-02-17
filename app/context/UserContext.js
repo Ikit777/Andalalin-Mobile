@@ -175,7 +175,7 @@ const pemeriksaanInit = {
 };
 
 export function UserProvider({ children }) {
-  const [loading, toggleLoading] = useState(true);
+  const [loading, toggleLoading] = useState(false);
 
   const [user, setUser] = useState("user");
   const [session, setSession] = useState(false);
@@ -413,8 +413,4 @@ export function UserProvider({ children }) {
       {children}
     </UserContext.Provider>
   );
-}
-
-export function useMyContext() {
-  return useContext(UserContext);
 }

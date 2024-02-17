@@ -7,13 +7,15 @@ export function NetProvider({ children }) {
   const [isInternetAvailable, setIsInternetAvailable] = useState(true);
 
   useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener((state) => {
+      setIsInternetAvailable(state.isInternetReachable);
+    });
+  
     NetInfo.fetch().then((state) => {
       setIsInternetAvailable(state.isInternetReachable);
     });
-
-    return NetInfo.addEventListener((state) => {
-      setIsInternetAvailable(state.isInternetReachable);
-    });
+  
+    return () => unsubscribe();
   }, []);
 
   return (

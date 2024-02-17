@@ -161,6 +161,7 @@ function LoginScreen({ navigation }) {
               nip: result.data.nip,
             };
 
+            context.setUser(newAuthState);
             store("authState", newAuthState);
             navigation.push("Home");
           })();

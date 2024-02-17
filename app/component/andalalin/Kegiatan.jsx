@@ -7,7 +7,6 @@ import ATextInputIcon from "../utility/ATextInputIcon";
 import { useStateToggler } from "../../hooks/useUtility";
 import { UserContext } from "../../context/UserContext";
 import AButton from "../utility/AButton";
-import { useFocusEffect } from "@react-navigation/native";
 import ADatePicker from "../utility/ADatePicker";
 
 function Kegiatan({ onPress, navigation }) {
