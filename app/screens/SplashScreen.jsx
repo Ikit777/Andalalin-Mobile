@@ -59,10 +59,10 @@ function SplashScreen({ isLoading, timing = Easing.ease }) {
             alignItems: "center",
           }}
         >
-          {/* <Image
+          <Image
             source={require("../assets/image/banjarmasin.png")}
             style={styles.oleh1}
-          /> */}
+          />
           <Image
             source={require("../assets/image/dishub.png")}
             style={styles.oleh2}

@@ -109,10 +109,6 @@ function SettingScreen({ navigation }) {
             toggleFotoBerhasil();
           })();
           break;
-        case 400:
-          context.toggleLoading(false);
-          toggleFotoGagal();
-          break;
         case 424:
           authRefreshToken(context, (response) => {
             if (response.status === 200) {

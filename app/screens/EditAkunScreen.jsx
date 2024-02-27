@@ -20,7 +20,6 @@ function EditAkunScreen({ navigation }) {
   const [emailExist, toggleEmailExist] = useStateToggler();
   const [something, toggleSomething] = useStateToggler();
   const [berhasil, toggleBerhasil] = useStateToggler();
-  const [emailNotExist, toggleEmailNotExist] = useStateToggler();
   const context = useContext(UserContext);
   const [message, setMessage] = useState();
 
@@ -105,10 +104,6 @@ function EditAkunScreen({ navigation }) {
         case 409:
           context.toggleLoading(false);
           toggleEmailExist();
-          break;
-        case 204:
-          context.toggleLoading(false);
-          toggleEmailNotExist();
           break;
         case 424:
           authRefreshToken(context, (response) => {
@@ -414,18 +409,6 @@ function EditAkunScreen({ navigation }) {
         btnOK={"OK"}
         onPressOKButton={() => {
           toggleSomething();
-        }}
-      />
-
-      <ADialog
-        title={"Perubahan gagal disimpan"}
-        desc={
-          "Email tidak tidak tersedia, masukkan email dengan benar"
-        }
-        visibleModal={emailNotExist}
-        btnOK={"OK"}
-        onPressOKButton={() => {
-          toggleEmailNotExist();
         }}
       />
     </AScreen>
