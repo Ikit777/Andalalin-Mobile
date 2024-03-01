@@ -381,6 +381,7 @@ function EditAkunScreen({ navigation }) {
         title={"Simpan perubahan"}
         desc={"Apakah Anda yakin ingin menyimpan perubahan?"}
         visibleModal={confirm}
+        toggleVisibleModal={toggleComfirm}
         btnOK={"OK"}
         btnBATAL={"Batal"}
         onPressBATALButton={() => {
@@ -396,6 +397,7 @@ function EditAkunScreen({ navigation }) {
         title={"Peringatan"}
         desc={"Email sudah digunakan"}
         visibleModal={emailExist}
+        toggleModal={toggleEmailExist}
         btnOK={"OK"}
         onPressOKButton={() => {
           toggleEmailExist();
@@ -406,6 +408,7 @@ function EditAkunScreen({ navigation }) {
         title={"Perubahan gagal disimpan"}
         desc={"Terjadi kesalahan pada server, mohon coba lagi lain waktu"}
         visibleModal={something}
+        toggleModal={toggleSomething}
         btnOK={"OK"}
         onPressOKButton={() => {
           toggleSomething();

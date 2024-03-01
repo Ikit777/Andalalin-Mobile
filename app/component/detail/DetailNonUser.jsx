@@ -9,14 +9,14 @@ import AButton from "../utility/AButton";
 import ABottomSheet from "../utility/ABottomSheet";
 import { RadioButton } from "react-native-paper";
 import {
+  andalalinBatalkanPermohonan,
+  andalalinLanjutkanPemasangan,
   andalalinLanjutkanPermohonan,
-  andalalinSimpanKeputusan,
-  andalalinSimpanLaporanSurvei,
   andalalinSimpanPemeriksaan,
   andalalinTolakPermohonan,
+  andalalinTundaPemasangan,
   andalalinTundaPermohonan,
   andalalinUploadDokumen,
-  andalalinTindakan,
 } from "../../api/andalalin";
 import { authRefreshToken } from "../../api/auth";
 import ADialog from "../utility/ADialog";
@@ -43,17 +43,6 @@ function DetailNonUser({ permohonan, navigation, reload }) {
   const [konfiermasiPemeriksaan, toggleKonfirmasiPemeriksaan] =
     useStateToggler();
 
-  const [laporanModal, setLaporanModal] = useStateToggler();
-  const [laporanFile, setLaporanFile] = useState();
-  const [laporanNamaFile, setLaporanNamaFile] = useState();
-  const [laporanKonfirmasi, toggleLaporanKonfirmasi] = useStateToggler();
-
-  const [keputusanModal, toggleKeputusanModal] = useStateToggler();
-  const [keputusanLanjut, setKeputusanLanjut] = useState();
-  const [keputusan, setKeputusan] = useState();
-  const [keputusanKeterangan, setKeputusanKeterangan] = useState();
-  const [keputusanKonfirmasi, toggleKeputusanKonfirmasi] = useStateToggler();
-
   const [pertimbanganPenolakan, setPertimbanganPenolakan] = useState("");
 
   const [lanjutkanPermohonan, toggleLanjutkanPermohonan] = useStateToggler();
@@ -65,17 +54,16 @@ function DetailNonUser({ permohonan, navigation, reload }) {
 
   const [surveiModal, toggleSurveiModal] = useStateToggler();
 
-  const [lanjutkanModal, toggleLanjutkanModal] = useStateToggler();
-  const [lanjutkanCheck, setLanjutanCheck] = useState();
   const [confirm, toggleComfirm] = useStateToggler();
   const [lanjutkanGagal, toggleLanjutkanGagal] = useStateToggler();
 
-  const [pemasanganModal, togglePemasanganModal] = useStateToggler();
-  const [keputusanPemasanganKonfirmasi, toggleKeputusanPemasanganKonfirmasi] =
-    useStateToggler();
-
   const [tindakanModal, toggleTindakanModal] = useStateToggler();
   const [tindakanPilihan, setTindakanPilihan] = useState();
+  const [simpanTindakan, toggleSimpanTindakan] = useStateToggler();
+  const [lanjutkanPemasangan, toggleLanjutkanPemasangan] = useStateToggler();
+
+  const [pilih, setPilih] = useState("");
+  const [pertimbangan, setPertimbangan] = useState("");
 
   const status = () => {
     switch (permohonan.status_andalalin) {
@@ -197,9 +185,7 @@ function DetailNonUser({ permohonan, navigation, reload }) {
               toggleUploadModal();
             }, "Upload berkas");
           case "Dokumen terpenuhi":
-              return tindakan(() => {
-                
-              }, "Periksa substansi teknis");
+            return tindakan(() => {}, "Periksa substansi teknis");
           case "Dokumen andalalin terpenuhi":
             return tindakan(() => {
               navigation.push("Pernyataan");
@@ -370,24 +356,26 @@ function DetailNonUser({ permohonan, navigation, reload }) {
             return tindakan(() => {
               toggleLanjutkanPermohonan();
             }, "Lanjutkan permohonan");
-          case "Survei dibatalkan":
+          case "Survei lapangan":
             return tindakan(() => {
               navigation.push("Pilih Petugas", {
                 kondisi: "Ganti",
                 permohonan: permohonan,
               });
             }, "Ganti pentugas");
-          case "Laporan survei":
+          case "Pengecekan perlengkapan":
             return tindakan(() => {
-              setLaporanModal();
-            }, "Laporan survei");
-          case "Pemasangan sedang dilakukan":
+              context.clearPemeriksaanPerlengkapan();
+              navigation.push("Pemeriksaan perlengkapan");
+            }, "Cek perlengkapan");
+          case "Pemasangan perlengkapan":
             return tindakan(() => {
-              navigation.push("Pilih Petugas", {
-                kondisi: "Ganti",
-                permohonan: permohonan,
-              });
-            }, "Ganti pentugas");
+              setPilih("");
+              setPertimbangan("");
+              toggleTindakanModal();
+            }, "Pilih tindakan");
+          case "Pemasangan ditunda":
+            return tindakan(() => {toggleLanjutkanPemasangan();}, "Lanjutkan pemasangan");
         }
         break;
       case "Petugas":
@@ -396,11 +384,15 @@ function DetailNonUser({ permohonan, navigation, reload }) {
             switch (permohonan.status_tiket) {
               case "Buka":
                 return tindakan(() => {
-                  toggleSurveiModal();
-                }, "Pilih tindakan");
+                  navigation.push("Survei", {
+                    id: permohonan.id_andalalin,
+                    kondisi: "Permohonan",
+                  }),
+                    context.clearSurvei();
+                }, "Survei lapangan");
             }
             break;
-          case "Pemasangan sedang dilakukan":
+          case "Pemasangan perlengkapan":
             return tindakan(() => {
               navigation.push("Survei", {
                 id: permohonan.id_andalalin,
@@ -408,22 +400,6 @@ function DetailNonUser({ permohonan, navigation, reload }) {
               }),
                 context.clearSurvei();
             }, "Pemasangan perlengkapan");
-        }
-        break;
-      case "Admin":
-        switch (permohonan.status_andalalin) {
-          case "Menunggu hasil keputusan":
-            return tindakan(() => {
-              toggleKeputusanModal();
-            }, "Pengambilan keputusan hasil");
-          case "Survei ditunda":
-            return tindakan(() => {
-              toggleLanjutkanModal();
-            }, "Lanjutkan survei");
-          case "Pemasangan ditunda":
-            return tindakan(() => {
-              togglePemasanganModal();
-            }, "Lanjutkan pemasangan");
         }
         break;
       case "Super Admin":
@@ -439,6 +415,10 @@ function DetailNonUser({ permohonan, navigation, reload }) {
                 permohonan: permohonan,
               });
             }, "Pilih petugas");
+          case "Permohonan ditunda":
+            return tindakan(() => {
+              toggleLanjutkanPermohonan();
+            }, "Lanjutkan permohonan");
           case "Survei lapangan":
             switch (permohonan.status_tiket) {
               case "Buka":
@@ -447,33 +427,14 @@ function DetailNonUser({ permohonan, navigation, reload }) {
                 }, "Pilih tindakan");
             }
             break;
-          case "Survei dibatalkan":
+          case "Pemasangan perlengkapan":
             return tindakan(() => {
-              navigation.push("Pilih Petugas", {
-                kondisi: "Ganti",
-                permohonan: permohonan,
-              });
-            }, "Ganti pentugas");
-          case "Survei ditunda":
-            return tindakan(() => {
-              toggleLanjutkanModal();
-            }, "Lanjutkan survei");
-          case "Pemasangan ditunda":
-            return tindakan(() => {
-              togglePemasanganModal();
-            }, "Lanjutkan pemasangan");
-          case "Laporan survei":
-            return tindakan(() => {
-              setLaporanModal();
-            }, "Laporan survei");
-          case "Menunggu hasil keputusan":
-            return tindakan(() => {
-              toggleKeputusanModal();
-            }, "Pengambilan keputusan hasil");
-          case "Pemasangan sedang dilakukan":
-            return tindakan(() => {
+              setPilih("");
+              setPertimbangan("");
               toggleTindakanModal();
             }, "Pilih tindakan");
+          case "Pemasangan ditunda":
+            return tindakan(() => {toggleLanjutkanPemasangan();}, "Lanjutkan pemasangan");
         }
         break;
     }
@@ -885,7 +846,6 @@ function DetailNonUser({ permohonan, navigation, reload }) {
             });
             break;
           default:
-            closeCekPersyaratan();
             context.toggleLoading(false);
             toggleGagal();
             break;
@@ -966,22 +926,22 @@ function DetailNonUser({ permohonan, navigation, reload }) {
             />
           </View>
         );
-        case "Catatan asistensi dokumen":
-          return (
-            <View>
-              <ATextInputIcon
-                bdColor={color.neutral.neutral300}
-                hint={"Masukkan berkas pdf"}
-                icon={"file-plus"}
-                mult={true}
-                width={true}
-                value={uploadNamaFile}
-                onPress={() => {
-                  file("Catatan asistensi dokumen", "Pdf");
-                }}
-              />
-            </View>
-          );
+      case "Catatan asistensi dokumen":
+        return (
+          <View>
+            <ATextInputIcon
+              bdColor={color.neutral.neutral300}
+              hint={"Masukkan berkas pdf"}
+              icon={"file-plus"}
+              mult={true}
+              width={true}
+              value={uploadNamaFile}
+              onPress={() => {
+                file("Catatan asistensi dokumen", "Pdf");
+              }}
+            />
+          </View>
+        );
     }
   };
 
@@ -1125,53 +1085,6 @@ function DetailNonUser({ permohonan, navigation, reload }) {
           }
         }
         break;
-    }
-  };
-
-  const survei = () => {
-    if (
-      permohonan.status_andalalin != "Cek persyaratan" &&
-      permohonan.status_andalalin != "Persyaratan tidak terpenuhi" &&
-      permohonan.status_andalalin != "Persyaratan terpenuhi" &&
-      permohonan.status_andalalin != "Survei lapangan" &&
-      permohonan.status_andalalin != "Permohonan ditunda" &&
-      permohonan.status_andalalin != "Permohonan dibatalkan"
-    ) {
-      return (
-        <ADetailView style={{ marginTop: 20 }} title={"Survei lapangan"}>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              padding: 16,
-            }}
-          >
-            <AText size={12} color={color.neutral.neutral900} weight="normal">
-              Data survei lapangan
-            </AText>
-
-            <TouchableOpacity
-              style={{ flexDirection: "row", paddingLeft: 4 }}
-              onPress={() => {
-                navigation.push("Detail Survei", {
-                  id: permohonan.id_andalalin,
-                  kondisi: context.getUser().role,
-                  jenis: "Permohonan",
-                });
-              }}
-            >
-              <AText
-                size={14}
-                color={color.neutral.neutral700}
-                weight="semibold"
-              >
-                Lihat
-              </AText>
-            </TouchableOpacity>
-          </View>
-        </ADetailView>
-      );
     }
   };
 
@@ -1349,370 +1262,6 @@ function DetailNonUser({ permohonan, navigation, reload }) {
     );
   };
 
-  const pemasangan = () => {
-    if (permohonan.status_andalalin == "Pemasangan selesai") {
-      return (
-        <ADetailView
-          style={{ marginTop: 20 }}
-          title={"Pemasangan perlengkapan lalu lintas"}
-        >
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              padding: 16,
-            }}
-          >
-            <AText size={12} color={color.neutral.neutral900} weight="normal">
-              Data pemasangan
-            </AText>
-
-            <TouchableOpacity
-              style={{ flexDirection: "row", paddingLeft: 4 }}
-              onPress={() => {
-                navigation.push("Detail Survei", {
-                  id: permohonan.id_andalalin,
-                  kondisi: context.getUser().role,
-                  jenis: "Pemasangan",
-                });
-              }}
-            >
-              <AText
-                size={14}
-                color={color.neutral.neutral700}
-                weight="semibold"
-              >
-                Lihat
-              </AText>
-            </TouchableOpacity>
-          </View>
-        </ADetailView>
-      );
-    }
-  };
-
-  const fileLaporan = async () => {
-    const result = await DocumentPicker.getDocumentAsync({
-      type: "application/pdf",
-    });
-    if (!result.canceled) {
-      setLaporanFile(result.assets[0].uri);
-      setLaporanNamaFile(result.assets[0].name);
-    }
-  };
-
-  const closeLaporanSurvei = () => {
-    setLaporanFile(null);
-    setLaporanNamaFile(null);
-    setLaporanModal();
-  };
-
-  const laporan_survei = () => {
-    return (
-      <View>
-        <AText
-          style={{ paddingBottom: 16 }}
-          size={18}
-          color={color.neutral.neutral700}
-          weight="semibold"
-        >
-          Laporan survei
-        </AText>
-
-        <ATextInputIcon
-          bdColor={color.neutral.neutral300}
-          hint={"Masukkan laporan"}
-          icon={"file-plus"}
-          mult={true}
-          value={laporanNamaFile}
-          maxHeight={90}
-          onPress={() => {
-            fileLaporan();
-          }}
-        />
-
-        <View
-          style={{
-            flexDirection: "row",
-            alignSelf: "flex-end",
-            marginTop: 52,
-            marginRight: 16,
-            marginBottom: 16,
-          }}
-        >
-          <TouchableOpacity
-            style={{ flexDirection: "row", paddingLeft: 4 }}
-            onPress={() => {
-              setLaporanFile(null);
-              setLaporanNamaFile(null);
-              setLaporanModal();
-            }}
-          >
-            <AText size={14} color={color.neutral.neutral700} weight="semibold">
-              Batal
-            </AText>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{ flexDirection: "row", paddingLeft: 4, marginLeft: 32 }}
-            onPress={() => {
-              if (laporanFile != null) {
-                setLaporanModal();
-                toggleLaporanKonfirmasi();
-              }
-            }}
-          >
-            <AText size={14} color={color.neutral.neutral700} weight="semibold">
-              Simpan
-            </AText>
-          </TouchableOpacity>
-        </View>
-      </View>
-    );
-  };
-
-  const simpan_laporan_survei = () => {
-    andalalinSimpanLaporanSurvei(
-      context.getUser().access_token,
-      permohonan.id_andalalin,
-      laporanFile,
-      (response) => {
-        switch (response.status) {
-          case 201:
-            reload();
-            break;
-          case 424:
-            authRefreshToken(context, (response) => {
-              if (response.status === 200) {
-                simpan_laporan_survei();
-              } else {
-                context.toggleLoading(false);
-              }
-            });
-            break;
-          default:
-            setLaporanFile(null);
-            setLaporanNamaFile(null);
-            context.toggleLoading(false);
-            toggleGagal();
-            break;
-        }
-      }
-    );
-  };
-
-  const closeKeputuan = () => {
-    setKeputusan(null);
-    setKeputusanLanjut(null);
-    setKeputusanKeterangan(null);
-    toggleKeputusanModal();
-  };
-
-  const keputusan_modal = () => {
-    return (
-      <View>
-        <AText
-          style={{ paddingBottom: 16 }}
-          size={18}
-          color={color.neutral.neutral700}
-          weight="semibold"
-        >
-          Pengambilan keputusan hasil permohonan
-        </AText>
-
-        {keputusanLanjut == null ? (
-          <RadioButton.Group onValueChange={(value) => setKeputusan(value)}>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <RadioButton
-                label="Pemasangan disegerakan"
-                value="Pemasangan disegerakan"
-                uncheckedColor={color.neutral.neutral300}
-                color={color.primary.primary600}
-                status={
-                  keputusan === "Pemasangan disegerakan"
-                    ? "checked"
-                    : "unchecked"
-                }
-              />
-              <Pressable
-                onPress={() => {
-                  setKeputusan("Pemasangan disegerakan");
-                }}
-              >
-                <AText
-                  style={{ paddingLeft: 4 }}
-                  size={14}
-                  color={color.neutral.neutral700}
-                >
-                  Pemasangan disegerakan
-                </AText>
-              </Pressable>
-            </View>
-
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                paddingTop: 8,
-              }}
-            >
-              <RadioButton
-                label="Pemasangan ditunda"
-                value="Pemasangan ditunda"
-                uncheckedColor={color.neutral.neutral300}
-                color={color.primary.primary600}
-                status={
-                  keputusan === "Pemasangan ditunda" ? "checked" : "unchecked"
-                }
-              />
-              <Pressable
-                onPress={() => {
-                  setKeputusan("Pemasangan ditunda");
-                }}
-              >
-                <AText
-                  style={{ paddingLeft: 4 }}
-                  size={14}
-                  color={color.neutral.neutral700}
-                >
-                  Pemasangan ditunda
-                </AText>
-              </Pressable>
-            </View>
-          </RadioButton.Group>
-        ) : (
-          <View>
-            <ATextInput
-              bdColor={color.neutral.neutral300}
-              ktype={"default"}
-              hint={"Masukkan pertimbangan"}
-              rtype={"done"}
-              max={4}
-              maxHeight={90}
-              multi={true}
-              value={keputusanKeterangan}
-              onChangeText={(value) => {
-                setKeputusanKeterangan(value);
-              }}
-            />
-          </View>
-        )}
-
-        <View
-          style={{
-            flexDirection: "row",
-            alignSelf: "flex-end",
-            marginTop: 52,
-            marginRight: 16,
-            marginBottom: 16,
-          }}
-        >
-          <TouchableOpacity
-            style={{ flexDirection: "row", paddingLeft: 4 }}
-            onPress={() => {
-              setKeputusan(null);
-              setKeputusanLanjut(null);
-              setKeputusan(null);
-              toggleKeputusanModal();
-            }}
-          >
-            <AText size={14} color={color.neutral.neutral700} weight="semibold">
-              Batal
-            </AText>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{ flexDirection: "row", paddingLeft: 4, marginLeft: 32 }}
-            onPress={() => {
-              if (keputusanLanjut != null && keputusanKeterangan != null) {
-                toggleKeputusanModal();
-                toggleKeputusanKonfirmasi();
-              }
-              setKeputusanLanjut(keputusan);
-            }}
-          >
-            <AText size={14} color={color.neutral.neutral700} weight="semibold">
-              Lanjut
-            </AText>
-          </TouchableOpacity>
-        </View>
-      </View>
-    );
-  };
-
-  const simpan_keputusan = () => {
-    andalalinSimpanKeputusan(
-      context.getUser().access_token,
-      permohonan.id_andalalin,
-      keputusan,
-      keputusanKeterangan,
-      (response) => {
-        switch (response.status) {
-          case 200:
-            reload();
-            setKeputusan(null);
-            setKeputusanLanjut(null);
-            setKeputusanKeterangan(null);
-            break;
-          case 424:
-            authRefreshToken(context, (response) => {
-              if (response.status === 200) {
-                simpan_keputusan();
-              } else {
-                context.toggleLoading(false);
-              }
-            });
-            break;
-          default:
-            setKeputusan(null);
-            setKeputusanLanjut(null);
-            setKeputusanKeterangan(null);
-            context.toggleLoading(false);
-            toggleGagal();
-            break;
-        }
-      }
-    );
-  };
-
-  const keputusan_hasil = () => {
-    if (permohonan.keputusan_hasil != null) {
-      return (
-        <View>
-          <ADetailView
-            style={{ marginTop: 20 }}
-            title={"Keputusan hasil permohonan"}
-          >
-            <AText
-              style={{ padding: 16 }}
-              size={12}
-              color={color.neutral.neutral900}
-              weight="normal"
-            >
-              {permohonan.keputusan_hasil}
-            </AText>
-          </ADetailView>
-          {permohonan.pertimbangan != null ? (
-            <ADetailView
-              style={{ marginTop: 20 }}
-              title={"Pertimbangan keputusan hasil"}
-            >
-              <AText
-                style={{ padding: 16 }}
-                size={12}
-                color={color.neutral.neutral900}
-                weight="normal"
-              >
-                {permohonan.pertimbangan}
-              </AText>
-            </ADetailView>
-          ) : (
-            ""
-          )}
-        </View>
-      );
-    }
-  };
-
   const closeSurveiModal = () => {
     setChecked(null);
     toggleSurveiModal();
@@ -1768,17 +1317,15 @@ function DetailNonUser({ permohonan, navigation, reload }) {
               }}
             >
               <RadioButton
-                label="Usulkan tindakan"
-                value="Usulkan tindakan"
+                label="Ganti petugas"
+                value="Ganti petugas"
                 uncheckedColor={color.neutral.neutral300}
                 color={color.primary.primary600}
-                status={
-                  checked === "Usulkan tindakan" ? "checked" : "unchecked"
-                }
+                status={checked === "Ganti petugas" ? "checked" : "unchecked"}
               />
               <Pressable
                 onPress={() => {
-                  setChecked("Usulkan tindakan");
+                  setChecked("Ganti petugas");
                 }}
               >
                 <AText
@@ -1786,7 +1333,7 @@ function DetailNonUser({ permohonan, navigation, reload }) {
                   size={14}
                   color={color.neutral.neutral700}
                 >
-                  Usulkan tindakan
+                  Ganti petugas
                 </AText>
               </Pressable>
             </View>
@@ -1825,8 +1372,9 @@ function DetailNonUser({ permohonan, navigation, reload }) {
                     context.clearSurvei();
                 } else {
                   closeSurveiModal();
-                  navigation.push("Usulan", {
-                    id: permohonan.id_andalalin,
+                  navigation.push("Pilih Petugas", {
+                    kondisi: "Ganti",
+                    permohonan: permohonan,
                   });
                 }
               }
@@ -1841,36 +1389,219 @@ function DetailNonUser({ permohonan, navigation, reload }) {
     );
   };
 
-  const closePelaksanaan = () => {
-    setLanjutanCheck(null);
-    toggleLanjutkanModal();
+  const close_tindakan_modal = () => {
+    toggleTindakanModal();
+    setTindakanPilihan();
   };
 
-  const pelaksanaan = () => {
+  const tunda_pemasangan = () => {
     return (
-      <ABottomSheet visible={lanjutkanModal} close={closePelaksanaan}>
+      <View>
+        <AText
+          style={{ marginBottom: 16 }}
+          size={18}
+          color={color.neutral.neutral700}
+          weight="semibold"
+        >
+          Pertimbangan penundaan pemasangan
+        </AText>
         <View>
-          <AText
-            style={{ paddingBottom: 16 }}
-            size={18}
-            color={color.neutral.neutral700}
-            weight="semibold"
-          >
-            Apakah Anda ingin melanjutkan{"\n"}permohonan ini?
-          </AText>
+          <ATextInput
+            bdColor={color.neutral.neutral300}
+            ktype={"default"}
+            hint={"Masukkan pertimbangan"}
+            rtype={"done"}
+            max={4}
+            maxHeight={90}
+            multi={true}
+            value={pertimbangan}
+            onChangeText={(value) => {
+              setPertimbangan(value);
+            }}
+          />
+        </View>
+      </View>
+    );
+  };
 
-          <RadioButton.Group onValueChange={(value) => setLanjutanCheck(value)}>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
+  const batalkan_perhomonan = () => {
+    return (
+      <View>
+        <AText
+          style={{ marginBottom: 16 }}
+          size={18}
+          color={color.neutral.neutral700}
+          weight="semibold"
+        >
+          Pertimbangan pembatalan permohonan
+        </AText>
+        <View>
+          <ATextInput
+            bdColor={color.neutral.neutral300}
+            ktype={"default"}
+            hint={"Masukkan pertimbangan"}
+            rtype={"done"}
+            max={4}
+            maxHeight={90}
+            multi={true}
+            value={pertimbangan}
+            onChangeText={(value) => {
+              setPertimbangan(value);
+            }}
+          />
+        </View>
+      </View>
+    );
+  };
+
+  const simpan_tunda_pemasangan = () => {
+    andalalinTundaPemasangan(
+      context.getUser().access_token,
+      permohonan.id_andalalin,
+      pertimbangan,
+      (response) => {
+        switch (response.status) {
+          case 200:
+            reload();
+            break;
+          case 424:
+            authRefreshToken(context, (response) => {
+              if (response.status === 200) {
+                simpan_tunda_pemasangan();
+              } else {
+                context.toggleLoading(false);
+              }
+            });
+            break;
+          default:
+            context.toggleLoading(false);
+            toggleGagal();
+            break;
+        }
+      }
+    );
+  }
+
+  const simpan_pembatalan_permohonan = () => {
+    andalalinBatalkanPermohonan(
+      context.getUser().access_token,
+      permohonan.id_andalalin,
+      pertimbangan,
+      (response) => {
+        switch (response.status) {
+          case 200:
+            reload();
+            break;
+          case 424:
+            authRefreshToken(context, (response) => {
+              if (response.status === 200) {
+                simpan_pembatalan_permohonan();
+              } else {
+                context.toggleLoading(false);
+              }
+            });
+            break;
+          default:
+            context.toggleLoading(false);
+            toggleGagal();
+            break;
+        }
+      }
+    );
+  }
+
+  const lanjutkan_pemasangan = () => {
+    andalalinLanjutkanPemasangan(
+      context.getUser().access_token,
+      permohonan.id_andalalin,
+      (response) => {
+        switch (response.status) {
+          case 200:
+            reload();
+            break;
+          case 424:
+            authRefreshToken(context, (response) => {
+              if (response.status === 200) {
+                lanjutkan_pemasangan();
+              } else {
+                context.toggleLoading(false);
+              }
+            });
+            break;
+          default:
+            context.toggleLoading(false);
+            toggleGagal();
+            break;
+        }
+      }
+    );
+  };
+
+  const tindakan_pilihan = () => {
+    return (
+      <View>
+        
+        {pilih == "" ? (
+          <View>
+          <AText
+          style={{ paddingBottom: 16 }}
+          size={18}
+          color={color.neutral.neutral700}
+          weight="semibold"
+        >
+          Pilih tindakan permohonan
+        </AText>
+          <RadioButton.Group
+            onValueChange={(value) => setTindakanPilihan(value)}
+          >
+            {context.getUser().role == "Super Admin" ? (
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <RadioButton
+                  label="Pemasangan"
+                  value="Pemasangan"
+                  uncheckedColor={color.neutral.neutral300}
+                  color={color.primary.primary600}
+                  status={
+                    tindakanPilihan === "Pemasangan" ? "checked" : "unchecked"
+                  }
+                />
+                <Pressable
+                  onPress={() => {
+                    setTindakanPilihan("Pemasangan");
+                  }}
+                >
+                  <AText
+                    style={{ paddingLeft: 4 }}
+                    size={14}
+                    color={color.neutral.neutral700}
+                  >
+                    Pemasangan
+                  </AText>
+                </Pressable>
+              </View>
+            ) : (
+              ""
+            )}
+
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                paddingTop: 8,
+              }}
+            >
               <RadioButton
-                label="Buka"
-                value="Buka"
+                label="Ganti petugas"
+                value="Ganti petugas"
                 uncheckedColor={color.neutral.neutral300}
                 color={color.primary.primary600}
-                status={lanjutkanCheck === "Buka" ? "checked" : "unchecked"}
+                status={
+                  tindakanPilihan === "Ganti petugas" ? "checked" : "unchecked"
+                }
               />
               <Pressable
                 onPress={() => {
-                  setLanjutanCheck("Buka");
+                  setTindakanPilihan("Ganti petugas");
                 }}
               >
                 <AText
@@ -1878,7 +1609,36 @@ function DetailNonUser({ permohonan, navigation, reload }) {
                   size={14}
                   color={color.neutral.neutral700}
                 >
-                  Lanjutkan pelaksanaan survei
+                  Ganti petugas
+                </AText>
+              </Pressable>
+            </View>
+
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                paddingTop: 8,
+              }}
+            >
+              <RadioButton
+                label="Tunda"
+                value="Tunda"
+                uncheckedColor={color.neutral.neutral300}
+                color={color.primary.primary600}
+                status={tindakanPilihan === "Tunda" ? "checked" : "unchecked"}
+              />
+              <Pressable
+                onPress={() => {
+                  setTindakanPilihan("Tunda");
+                }}
+              >
+                <AText
+                  style={{ paddingLeft: 4 }}
+                  size={14}
+                  color={color.neutral.neutral700}
+                >
+                  Tunda pemasangan
                 </AText>
               </Pressable>
             </View>
@@ -1895,167 +1655,11 @@ function DetailNonUser({ permohonan, navigation, reload }) {
                 value="Batal"
                 uncheckedColor={color.neutral.neutral300}
                 color={color.primary.primary600}
-                status={lanjutkanCheck === "Batal" ? "checked" : "unchecked"}
+                status={tindakanPilihan === "Batal" ? "checked" : "unchecked"}
               />
               <Pressable
                 onPress={() => {
-                  setLanjutanCheck("Batal");
-                }}
-              >
-                <AText
-                  style={{ paddingLeft: 4 }}
-                  size={14}
-                  color={color.neutral.neutral700}
-                >
-                  Batalkan pelaksanaan survei
-                </AText>
-              </Pressable>
-            </View>
-          </RadioButton.Group>
-
-          <View
-            style={{
-              flexDirection: "row",
-              alignSelf: "flex-end",
-              marginTop: 52,
-              marginRight: 16,
-              marginBottom: 16,
-            }}
-          >
-            <TouchableOpacity
-              style={{ flexDirection: "row", paddingLeft: 4 }}
-              onPress={() => {
-                setLanjutanCheck(null);
-                toggleLanjutkanModal();
-              }}
-            >
-              <AText
-                size={14}
-                color={color.neutral.neutral700}
-                weight="semibold"
-              >
-                Batal
-              </AText>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{ flexDirection: "row", paddingLeft: 4, marginLeft: 32 }}
-              onPress={() => {
-                if (lanjutkanCheck != null) {
-                  toggleLanjutkanModal();
-                  toggleComfirm();
-                }
-              }}
-            >
-              <AText
-                size={14}
-                color={color.neutral.neutral700}
-                weight="semibold"
-              >
-                Simpan
-              </AText>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </ABottomSheet>
-    );
-  };
-
-  const tindakan_pelaksanaan = () => {
-    andalalinTindakan(
-      context.getUser().access_token,
-      permohonan.ind_andalalin,
-      lanjutkanCheck,
-      (response) => {
-        switch (response.status) {
-          case 201:
-            setLanjutanCheck(null);
-            reload();
-            break;
-          case 424:
-            authRefreshToken(context, (response) => {
-              if (response.status === 200) {
-                tindakan();
-              } else {
-                context.toggleLoading(false);
-              }
-            });
-            break;
-          default:
-            setLanjutanCheck(null);
-            context.toggleLoading(false);
-            toggleLanjutkanGagal();
-        }
-      }
-    );
-  };
-
-  const closeLanjutkanPemasangan = () => {
-    setKeputusan(null);
-    setKeputusanLanjut(null);
-    setKeputusanKeterangan(null);
-    togglePemasanganModal();
-  };
-
-  const lanjutkan_pemasangan = () => {
-    return (
-      <View>
-        <AText
-          style={{ paddingBottom: 16 }}
-          size={18}
-          color={color.neutral.neutral700}
-          weight="semibold"
-        >
-          Lanjutkan pemasangan perlengkapan lalu lintas
-        </AText>
-
-        {keputusanLanjut == null ? (
-          <RadioButton.Group onValueChange={(value) => setKeputusan(value)}>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <RadioButton
-                label="Pemasangan disegerakan"
-                value="Pemasangan disegerakan"
-                uncheckedColor={color.neutral.neutral300}
-                color={color.primary.primary600}
-                status={
-                  keputusan === "Pemasangan disegerakan"
-                    ? "checked"
-                    : "unchecked"
-                }
-              />
-              <Pressable
-                onPress={() => {
-                  setKeputusan("Pemasangan disegerakan");
-                }}
-              >
-                <AText
-                  style={{ paddingLeft: 4 }}
-                  size={14}
-                  color={color.neutral.neutral700}
-                >
-                  Pemasangan disegerakan
-                </AText>
-              </Pressable>
-            </View>
-
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                paddingTop: 8,
-              }}
-            >
-              <RadioButton
-                label="Batalkan permohonan"
-                value="Batalkan permohonan"
-                uncheckedColor={color.neutral.neutral300}
-                color={color.primary.primary600}
-                status={
-                  keputusan === "Batalkan permohonan" ? "checked" : "unchecked"
-                }
-              />
-              <Pressable
-                onPress={() => {
-                  setKeputusan("Batalkan permohonan");
+                  setTindakanPilihan("Batal");
                 }}
               >
                 <AText
@@ -2068,137 +1672,15 @@ function DetailNonUser({ permohonan, navigation, reload }) {
               </Pressable>
             </View>
           </RadioButton.Group>
-        ) : (
-          <View>
-            <ATextInput
-              bdColor={color.neutral.neutral300}
-              ktype={"default"}
-              hint={"Masukkan pertimbangan"}
-              rtype={"done"}
-              max={4}
-              maxHeight={90}
-              multi={true}
-              value={keputusanKeterangan}
-              onChangeText={(value) => {
-                setKeputusanKeterangan(value);
-              }}
-            />
           </View>
+          
+        ) : (
+          ""
         )}
 
-        <View
-          style={{
-            flexDirection: "row",
-            alignSelf: "flex-end",
-            marginTop: 52,
-            marginRight: 16,
-            marginBottom: 16,
-          }}
-        >
-          <TouchableOpacity
-            style={{ flexDirection: "row", paddingLeft: 4 }}
-            onPress={() => {
-              setKeputusan(null);
-              setKeputusanLanjut(null);
-              setKeputusan(null);
-              togglePemasanganModal();
-            }}
-          >
-            <AText size={14} color={color.neutral.neutral700} weight="semibold">
-              Batal
-            </AText>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{ flexDirection: "row", paddingLeft: 4, marginLeft: 32 }}
-            onPress={() => {
-              if (keputusanLanjut != null && keputusanKeterangan != null) {
-                togglePemasanganModal();
-                toggleKeputusanPemasanganKonfirmasi();
-              }
-              setKeputusanLanjut(keputusan);
-            }}
-          >
-            <AText size={14} color={color.neutral.neutral700} weight="semibold">
-              Lanjut
-            </AText>
-          </TouchableOpacity>
-        </View>
-      </View>
-    );
-  };
+        {pilih === "Batal" ? batalkan_perhomonan() : ""}
 
-  const close_tindakan_modal = () => {
-    toggleTindakanModal();
-  };
-
-  const tindakan_pilihan = () => {
-    return (
-      <View>
-        <AText
-          style={{ paddingBottom: 16 }}
-          size={18}
-          color={color.neutral.neutral700}
-          weight="semibold"
-        >
-          Pilih tindakan permohonan
-        </AText>
-        <RadioButton.Group onValueChange={(value) => setTindakanPilihan(value)}>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <RadioButton
-              label="Pemasangan"
-              value="Pemasangan"
-              uncheckedColor={color.neutral.neutral300}
-              color={color.primary.primary600}
-              status={
-                tindakanPilihan === "Pemasangan" ? "checked" : "unchecked"
-              }
-            />
-            <Pressable
-              onPress={() => {
-                setTindakanPilihan("Pemasangan");
-              }}
-            >
-              <AText
-                style={{ paddingLeft: 4 }}
-                size={14}
-                color={color.neutral.neutral700}
-              >
-                Pemasangan
-              </AText>
-            </Pressable>
-          </View>
-
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              paddingTop: 8,
-            }}
-          >
-            <RadioButton
-              label="Ganti petugas"
-              value="Ganti petugas"
-              uncheckedColor={color.neutral.neutral300}
-              color={color.primary.primary600}
-              status={
-                tindakanPilihan === "Ganti petugas" ? "checked" : "unchecked"
-              }
-            />
-            <Pressable
-              onPress={() => {
-                setTindakanPilihan("Ganti petugas");
-              }}
-            >
-              <AText
-                style={{ paddingLeft: 4 }}
-                size={14}
-                color={color.neutral.neutral700}
-              >
-                Ganti petugas
-              </AText>
-            </Pressable>
-          </View>
-        </RadioButton.Group>
+        {pilih === "Tunda" ? tunda_pemasangan() : ""}
 
         <View
           style={{
@@ -2229,6 +1711,22 @@ function DetailNonUser({ permohonan, navigation, reload }) {
                     kondisi: "Pemasangan",
                   }),
                     context.clearSurvei();
+                  break;
+                case "Tunda":
+                if (pilih != "" && pertimbangan != ""){
+                    close_tindakan_modal();
+                    toggleSimpanTindakan();
+                  }else{
+                    setPilih(tindakanPilihan);
+                  }
+                  break;
+                case "Batal":
+                  if (pilih != "" && pertimbangan != ""){
+                    close_tindakan_modal();
+                    toggleSimpanTindakan();
+                  }else{
+                    setPilih(tindakanPilihan); 
+                  }
                   break;
                 case "Ganti petugas":
                   navigation.push("Pilih Petugas", {
@@ -2971,7 +2469,7 @@ function DetailNonUser({ permohonan, navigation, reload }) {
               color={color.neutral.neutral900}
               weight="normal"
             >
-              Nomor telepon/Fax
+              Nomor telepon/WA
             </AText>
             <AText
               style={{ maxWidth: "50%" }}
@@ -3456,355 +2954,6 @@ function DetailNonUser({ permohonan, navigation, reload }) {
               {permohonan.kode_andalalin}
             </AText>
           </View>
-
-          <View style={styles.separator} />
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              padding: 16,
-            }}
-          >
-            <AText
-              style={{ maxWidth: "50%" }}
-              size={12}
-              color={color.neutral.neutral900}
-              weight="normal"
-            >
-              Lokasi pengambilan
-            </AText>
-            <AText
-              style={{ maxWidth: "50%" }}
-              size={12}
-              color={color.neutral.neutral500}
-              weight="normal"
-            >
-              {permohonan.lokasi_pengambilan}
-            </AText>
-          </View>
-
-          <View style={styles.separator} />
-
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              padding: 16,
-            }}
-          >
-            <AText
-              style={{ maxWidth: "50%" }}
-              size={12}
-              color={color.neutral.neutral900}
-              weight="normal"
-            >
-              Kategori utama
-            </AText>
-            <AText
-              style={{ maxWidth: "50%" }}
-              size={12}
-              color={color.neutral.neutral500}
-              weight="normal"
-            >
-              {permohonan.kategori_utama}
-            </AText>
-          </View>
-
-          <View style={styles.separator} />
-
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              padding: 16,
-            }}
-          >
-            <AText
-              style={{ maxWidth: "50%" }}
-              size={12}
-              color={color.neutral.neutral900}
-              weight="normal"
-            >
-              Kategori perlengkapan
-            </AText>
-            <AText
-              style={{ maxWidth: "50%" }}
-              size={12}
-              color={color.neutral.neutral500}
-              weight="normal"
-            >
-              {permohonan.kategori}
-            </AText>
-          </View>
-
-          <View style={styles.separator} />
-
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              padding: 16,
-            }}
-          >
-            <AText
-              style={{ maxWidth: "50%" }}
-              size={12}
-              color={color.neutral.neutral900}
-              weight="normal"
-            >
-              Jenis perlengkapan
-            </AText>
-            <AText
-              style={{ maxWidth: "50%" }}
-              size={12}
-              color={color.neutral.neutral500}
-              weight="normal"
-            >
-              {permohonan.jenis}
-            </AText>
-          </View>
-        </ADetailView>
-
-        <ADetailView style={{ marginTop: 20 }} title={"Lokasi pemasangan"}>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              padding: 16,
-            }}
-          >
-            <AText
-              style={{ maxWidth: "50%" }}
-              size={12}
-              color={color.neutral.neutral900}
-              weight="normal"
-            >
-              Negara pemasangan
-            </AText>
-            <AText
-              style={{ maxWidth: "50%" }}
-              size={12}
-              color={color.neutral.neutral500}
-              weight="normal"
-            >
-              {permohonan.negara_pemasangan}
-            </AText>
-          </View>
-
-          <View style={styles.separator} />
-
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              padding: 16,
-            }}
-          >
-            <AText
-              style={{ maxWidth: "50%" }}
-              size={12}
-              color={color.neutral.neutral900}
-              weight="normal"
-            >
-              Provinsi pemasangan
-            </AText>
-            <AText
-              style={{ maxWidth: "50%" }}
-              size={12}
-              color={color.neutral.neutral500}
-              weight="normal"
-            >
-              {permohonan.provinsi_pemasangan}
-            </AText>
-          </View>
-
-          <View style={styles.separator} />
-
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              padding: 16,
-            }}
-          >
-            <AText
-              style={{ maxWidth: "50%" }}
-              size={12}
-              color={color.neutral.neutral900}
-              weight="normal"
-            >
-              Kabupaten pemasangan
-            </AText>
-            <AText
-              style={{ maxWidth: "50%" }}
-              size={12}
-              color={color.neutral.neutral500}
-              weight="normal"
-            >
-              {permohonan.kabupaten_pemasangan}
-            </AText>
-          </View>
-
-          <View style={styles.separator} />
-
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              padding: 16,
-            }}
-          >
-            <AText
-              style={{ maxWidth: "50%" }}
-              size={12}
-              color={color.neutral.neutral900}
-              weight="normal"
-            >
-              Kecamatan pemasangan
-            </AText>
-            <AText
-              style={{ maxWidth: "50%" }}
-              size={12}
-              color={color.neutral.neutral500}
-              weight="normal"
-            >
-              {permohonan.kecamatan_pemasangan}
-            </AText>
-          </View>
-
-          <View style={styles.separator} />
-
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              padding: 16,
-            }}
-          >
-            <AText
-              style={{ maxWidth: "50%" }}
-              size={12}
-              color={color.neutral.neutral900}
-              weight="normal"
-            >
-              Kelurahan pemasangan
-            </AText>
-            <AText
-              style={{ maxWidth: "50%" }}
-              size={12}
-              color={color.neutral.neutral500}
-              weight="normal"
-            >
-              {permohonan.kelurahan_pemasangan}
-            </AText>
-          </View>
-
-          <View style={styles.separator} />
-
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              padding: 16,
-            }}
-          >
-            <AText
-              style={{ maxWidth: "50%" }}
-              size={12}
-              color={color.neutral.neutral900}
-              weight="normal"
-            >
-              Alamat pemasangan
-            </AText>
-            <AText
-              style={{ maxWidth: "50%" }}
-              size={12}
-              color={color.neutral.neutral500}
-              weight="normal"
-            >
-              {permohonan.alamat_pemasangan}
-            </AText>
-          </View>
-
-          <View style={styles.separator} />
-
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              padding: 16,
-            }}
-          >
-            <AText
-              style={{ maxWidth: "50%" }}
-              size={12}
-              color={color.neutral.neutral900}
-              weight="normal"
-            >
-              Nama jalan
-            </AText>
-            <AText
-              style={{ maxWidth: "50%" }}
-              size={12}
-              color={color.neutral.neutral500}
-              weight="normal"
-            >
-              {permohonan.nama_jalan}
-            </AText>
-          </View>
-
-          <View style={styles.separator} />
-
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              padding: 16,
-            }}
-          >
-            <AText
-              style={{ maxWidth: "50%" }}
-              size={12}
-              color={color.neutral.neutral900}
-              weight="normal"
-            >
-              Fungsi jalan
-            </AText>
-            <AText
-              style={{ maxWidth: "50%" }}
-              size={12}
-              color={color.neutral.neutral500}
-              weight="normal"
-            >
-              {permohonan.fungsi_jalan}
-            </AText>
-          </View>
-        </ADetailView>
-
-        <ADetailView
-          style={{ marginTop: 20 }}
-          title={"Lokasi pemasangan berdasarkan koordinat"}
-        >
-          <AText
-            style={{ padding: 16 }}
-            size={12}
-            color={color.neutral.neutral900}
-            weight="normal"
-          >
-            {permohonan.lokasi_pemasangan}
-          </AText>
         </ADetailView>
 
         <ADetailView style={{ marginTop: 20 }} title={"Informasi pemohon"}>
@@ -3906,7 +3055,7 @@ function DetailNonUser({ permohonan, navigation, reload }) {
               color={color.neutral.neutral900}
               weight="normal"
             >
-              Nomor telepon/Fax
+              Nomor telepon/WA
             </AText>
             <AText
               style={{ maxWidth: "50%" }}
@@ -3919,44 +3068,50 @@ function DetailNonUser({ permohonan, navigation, reload }) {
           </View>
         </ADetailView>
 
-        <ADetailView style={{ marginTop: 20 }} title={"Alasan"}>
-          <AText
-            style={{ padding: 16 }}
-            size={12}
-            color={color.neutral.neutral900}
-            weight="normal"
-          >
-            {permohonan.alasan}
-          </AText>
-        </ADetailView>
-
-        <ADetailView style={{ marginTop: 20 }} title={"Peruntukan"}>
-          <AText
-            style={{ padding: 16 }}
-            size={12}
-            color={color.neutral.neutral900}
-            weight="normal"
-          >
-            {permohonan.peruntukan}
-          </AText>
-        </ADetailView>
-
-        {permohonan.catatan != "" && permohonan.catatan != null ? (
-          <View>
-            <ADetailView style={{ marginTop: 20 }} title={"Catatan"}>
-              <AText
-                style={{ padding: 16 }}
-                size={12}
-                color={color.neutral.neutral900}
-                weight="normal"
+        <ADetailView
+          style={{ marginTop: 20 }}
+          title={"Perlengkapan lalu lintas"}
+        >
+          {permohonan.perlengkapan.map((item, index) => (
+            <View key={index}>
+              <View style={styles.separator} />
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  padding: 16,
+                }}
               >
-                {permohonan.catatan}
-              </AText>
-            </ADetailView>
-          </View>
-        ) : (
-          ""
-        )}
+                <AText
+                  style={{ maxWidth: "70%" }}
+                  size={12}
+                  color={color.neutral.neutral900}
+                  weight="normal"
+                >
+                  {"Perlengkapan " + (index + 1)}
+                </AText>
+
+                <TouchableOpacity
+                  style={{ flexDirection: "row", paddingLeft: 4 }}
+                  onPress={() => {
+                    navigation.push("Detail perlengkapan", {
+                      id: item.id_perlengkapan,
+                    });
+                  }}
+                >
+                  <AText
+                    size={14}
+                    color={color.neutral.neutral700}
+                    weight="semibold"
+                  >
+                    Lihat
+                  </AText>
+                </TouchableOpacity>
+              </View>
+            </View>
+          ))}
+        </ADetailView>
 
         <ADetailView style={{ marginTop: 20 }} title={"Berkas persyaratan"}>
           {permohonan.persyaratan != null
@@ -4046,6 +3201,23 @@ function DetailNonUser({ permohonan, navigation, reload }) {
             : ""}
         </ADetailView>
 
+        {permohonan.catatan != "" && permohonan.catatan != null ? (
+          <View>
+            <ADetailView style={{ marginTop: 20 }} title={"Catatan"}>
+              <AText
+                style={{ padding: 16 }}
+                size={12}
+                color={color.neutral.neutral900}
+                weight="normal"
+              >
+                {permohonan.catatan}
+              </AText>
+            </ADetailView>
+          </View>
+        ) : (
+          ""
+        )}
+
         {permohonan.pertimbangan_penolakan != "" &&
         permohonan.pertimbangan_penolakan != null ? (
           <ADetailView
@@ -4073,7 +3245,11 @@ function DetailNonUser({ permohonan, navigation, reload }) {
             style={{
               marginTop: 20,
             }}
-            title={"Pertimbangan penundaan permohonan"}
+            title={
+              permohonan.status_andalalin == "Permohonan ditunda"
+                ? "Pertimbangan penundaan permohonan"
+                : "Pertimbangan penundaan pemasangan"
+            }
           >
             <AText
               style={{ padding: 16 }}
@@ -4088,11 +3264,26 @@ function DetailNonUser({ permohonan, navigation, reload }) {
           ""
         )}
 
-        {survei()}
-
-        {keputusan_hasil()}
-
-        {pemasangan()}
+        {permohonan.pertimbangan_pembatalan != "" &&
+        permohonan.pertimbangan_pembatalan != null ? (
+          <ADetailView
+            style={{
+              marginTop: 20,
+            }}
+            title={"Pertimbangan pembatalan permohonan"}
+          >
+            <AText
+              style={{ padding: 16 }}
+              size={12}
+              color={color.neutral.neutral900}
+              weight="normal"
+            >
+              {permohonan.pertimbangan_pembatalan}
+            </AText>
+          </ADetailView>
+        ) : (
+          ""
+        )}
       </View>
     );
   };
@@ -4149,14 +3340,6 @@ function DetailNonUser({ permohonan, navigation, reload }) {
         {pemeriksaan()}
       </ABottomSheet>
 
-      <ABottomSheet visible={laporanModal} close={closeLaporanSurvei}>
-        {laporan_survei()}
-      </ABottomSheet>
-
-      <ABottomSheet visible={keputusanModal} close={closeKeputuan}>
-        {keputusan_modal()}
-      </ABottomSheet>
-
       <ABottomSheet visible={surveiModal} close={closeSurveiModal}>
         {survei_tindakan()}
       </ABottomSheet>
@@ -4165,16 +3348,11 @@ function DetailNonUser({ permohonan, navigation, reload }) {
         {tindakan_pilihan()}
       </ABottomSheet>
 
-      {pelaksanaan()}
-
-      <ABottomSheet visible={pemasanganModal} close={closeLanjutkanPemasangan}>
-        {lanjutkan_pemasangan()}
-      </ABottomSheet>
-
       <ADialog
         title={"Peringatan"}
         desc={"Terjadi kesalahan pada server, mohon coba lagi lain waktu"}
         visibleModal={gagal}
+        toggleModal={toggleGagal}
         btnOK={"OK"}
         onPressOKButton={() => {
           toggleGagal();
@@ -4185,11 +3363,12 @@ function DetailNonUser({ permohonan, navigation, reload }) {
         title={"Simpan"}
         desc={"Apakah Anda yakin ingin menyimpan tindakan?"}
         visibleModal={konfirmasi}
+        toggleVisibleModal={toggleKonfirmasi}
         btnOK={"Simpan"}
         btnBATAL={"Batal"}
         onPressBATALButton={() => {
-          toggleKonfirmasi();
           closeCekPersyaratan();
+          toggleKonfirmasi();
         }}
         onPressOKButton={() => {
           toggleKonfirmasi();
@@ -4207,8 +3386,33 @@ function DetailNonUser({ permohonan, navigation, reload }) {
 
       <AConfirmationDialog
         title={"Simpan"}
+        desc={"Apakah Anda yakin ingin menyimpan tindakan?"}
+        visibleModal={simpanTindakan}
+        toggleVisibleModal={toggleSimpanTindakan}
+        btnOK={"Simpan"}
+        btnBATAL={"Batal"}
+        onPressBATALButton={() => {
+          toggleSimpanTindakan();
+        }}
+        onPressOKButton={() => {
+          toggleSimpanTindakan();
+          context.toggleLoading(true);
+          switch (pilih) {
+            case "Batal":
+              simpan_pembatalan_permohonan();
+              break;
+            case "Tunda":
+              simpan_tunda_pemasangan();
+              break;
+          }
+        }}
+      />
+
+      <AConfirmationDialog
+        title={"Simpan"}
         desc={"Apakah Anda yakin ingin menyimpan berkas?"}
         visibleModal={konfirmasiUpload}
+        toggleVisibleModal={toggleKonfirmasiUpload}
         btnOK={"Simpan"}
         btnBATAL={"Batal"}
         onPressBATALButton={() => {
@@ -4227,6 +3431,7 @@ function DetailNonUser({ permohonan, navigation, reload }) {
         title={"Simpan"}
         desc={"Apakah Anda yakin ingin simpan hasil pemeriksaan?"}
         visibleModal={konfiermasiPemeriksaan}
+        toggleVisibleModal={toggleKonfirmasiPemeriksaan}
         btnOK={"Simpan"}
         btnBATAL={"Batal"}
         onPressBATALButton={() => {
@@ -4244,45 +3449,9 @@ function DetailNonUser({ permohonan, navigation, reload }) {
 
       <AConfirmationDialog
         title={"Simpan"}
-        desc={"Apakah Anda yakin ingin simpan laporan survei?"}
-        visibleModal={laporanKonfirmasi}
-        btnOK={"Simpan"}
-        btnBATAL={"Batal"}
-        onPressBATALButton={() => {
-          toggleLaporanKonfirmasi();
-          setLaporanFile(null);
-          setLaporanNamaFile(null);
-        }}
-        onPressOKButton={() => {
-          toggleLaporanKonfirmasi();
-          context.toggleLoading(true);
-          simpan_laporan_survei();
-        }}
-      />
-
-      <AConfirmationDialog
-        title={"Simpan"}
-        desc={"Apakah Anda yakin ingin simpan keputusan hasil?"}
-        visibleModal={keputusanKonfirmasi}
-        btnOK={"Simpan"}
-        btnBATAL={"Batal"}
-        onPressBATALButton={() => {
-          toggleKeputusanKonfirmasi();
-          setKeputusanKeterangan(null);
-          setKeputusan(null);
-          setKeputusanLanjut(null);
-        }}
-        onPressOKButton={() => {
-          toggleKeputusanKonfirmasi();
-          context.toggleLoading(true);
-          simpan_keputusan();
-        }}
-      />
-
-      <AConfirmationDialog
-        title={"Simpan"}
         desc={"Apakah Anda yakin ingin lanjutkan permohonan ini?"}
         visibleModal={lanjutkanPermohonan}
+        toggleVisibleModal={toggleLanjutkanPermohonan}
         btnOK={"Simpan"}
         btnBATAL={"Batal"}
         onPressBATALButton={() => {
@@ -4297,8 +3466,26 @@ function DetailNonUser({ permohonan, navigation, reload }) {
 
       <AConfirmationDialog
         title={"Simpan"}
+        desc={"Apakah Anda yakin ingin lanjutkan pemasangan ini?"}
+        visibleModal={lanjutkanPemasangan}
+        toggleVisibleModal={toggleLanjutkanPemasangan}
+        btnOK={"Simpan"}
+        btnBATAL={"Batal"}
+        onPressBATALButton={() => {
+          toggleLanjutkanPemasangan();
+        }}
+        onPressOKButton={() => {
+          toggleLanjutkanPemasangan();
+          context.toggleLoading(true);
+          lanjutkan_pemasangan();
+        }}
+      />
+
+      <AConfirmationDialog
+        title={"Simpan"}
         desc={"Tindakan akan disimpan"}
         visibleModal={confirm}
+        toggleVisibleModal={toggleComfirm}
         btnOK={"OK"}
         btnBATAL={"Batal"}
         onPressBATALButton={() => {
@@ -4312,29 +3499,11 @@ function DetailNonUser({ permohonan, navigation, reload }) {
         }}
       />
 
-      <AConfirmationDialog
-        title={"Simpan"}
-        desc={"Tindakan akan disimpan"}
-        visibleModal={keputusanPemasanganKonfirmasi}
-        btnOK={"Simpan"}
-        btnBATAL={"Batal"}
-        onPressBATALButton={() => {
-          toggleKeputusanPemasanganKonfirmasi();
-          setKeputusanKeterangan(null);
-          setKeputusan(null);
-          setKeputusanLanjut(null);
-        }}
-        onPressOKButton={() => {
-          toggleKeputusanPemasanganKonfirmasi();
-          context.toggleLoading(true);
-          simpan_keputusan();
-        }}
-      />
-
       <ADialog
         title={"Tindakan gagal disimpan"}
         desc={"Terjadi kesalahan pada server, mohon coba lagi lain waktu"}
         visibleModal={lanjutkanGagal}
+        toggleModal={toggleLanjutkanGagal}
         btnOK={"OK"}
         onPressOKButton={() => {
           toggleLanjutkanGagal();

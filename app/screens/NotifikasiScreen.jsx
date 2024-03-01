@@ -246,6 +246,7 @@ function NotifikasiScreen({ navigation }) {
         title={"Hapus notifikasi?"}
         desc={"Apakah Anda yakin menghapus notifikasi?"}
         visibleModal={confirmasi}
+        toggleVisibleModal={toggleComfirmasi}
         btnOK={"OK"}
         btnBATAL={"Batal"}
         onPressBATALButton={() => {

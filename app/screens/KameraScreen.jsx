@@ -21,9 +21,10 @@ import ImageViewer from "react-native-image-zoom-viewer";
 import { manipulateAsync, FlipType, SaveFormat } from "expo-image-manipulator";
 import { UserContext } from "../context/UserContext";
 import ADialog from "../component/utility/ADialog";
-import { useStateToggler } from "../hooks/useUtility";
 
 function KameraScreen({ navigation, route }) {
+  const kondisi = route.params.kondisi;
+
   let cameraRef = useRef(null);
   const [capturedPhoto, setCapturedPhoto] = useState(null);
   const [flashMode, setFlashMode] = useState("off");
@@ -38,7 +39,7 @@ function KameraScreen({ navigation, route }) {
 
   const [isReady, setIsReady] = useState(false);
 
-  const { survei, setSurvei } = useContext(UserContext);
+  const { survei, setSurvei, foto, setFoto, surveiMandiri, setSurveiMandiri } = useContext(UserContext);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
@@ -160,12 +161,31 @@ function KameraScreen({ navigation, route }) {
   };
 
   const pilih = () => {
-    let foto = {uri: capturedPhoto.uri, name: capturedPhoto.fileName}
-    updatedFoto = survei.foto;
-    updatedFoto.push(foto)
-    setSurvei({
-      foto: updatedFoto,
-    })
+    let fotoData = { uri: capturedPhoto.uri, name: capturedPhoto.fileName };
+    switch (kondisi) {
+      case "Perlengkapan":
+        updatedFoto = foto.length == 0 ? foto : foto.foto;
+        updatedFoto.push(fotoData);
+        setFoto({
+          foto: updatedFoto,
+        });
+        break;
+      case "Mandiri":
+        updatedFoto = surveiMandiri.foto;
+        updatedFoto.push(fotoData);
+        setSurveiMandiri({
+          foto: updatedFoto,
+        });
+        break;
+      default:
+        updatedFoto = survei.foto;
+        updatedFoto.push(fotoData);
+        setSurvei({
+          foto: updatedFoto,
+        });
+        break;
+    }
+
     navigation.goBack();
   };
 

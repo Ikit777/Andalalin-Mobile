@@ -34,6 +34,8 @@ function ADropDownPerlengkapan({
   dataDefault,
   rambuSelect,
   rambulalin,
+  imageRambu,
+  wajib,
 }) {
   const [open, setOpen] = useStateToggler();
   const [value, setValue] = useState();
@@ -146,7 +148,10 @@ function ADropDownPerlengkapan({
           color={color.neutral.neutral700}
           size={14}
         >
-          {judul}
+          {judul}{" "}
+          <AText color={color.error.error500} size={14}>
+            {wajib}
+          </AText>
         </AText>
       ) : (
         ""
@@ -308,6 +313,9 @@ function ADropDownPerlengkapan({
                     setRambu(item.rambu);
                     rambuSelect(item.rambu);
                     selected(item.value);
+                  }}
+                  onLongPress={() => {
+                    imageRambu(`data:image/png;base64,${item.rambu}`);
                   }}
                 >
                   <View

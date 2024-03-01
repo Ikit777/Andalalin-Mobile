@@ -254,6 +254,7 @@ function UpdateKelengkapanScreen({ navigation, route }) {
         title={"Simpan"}
         desc={"Perbaruan kelengkapan akan disimpan"}
         visibleModal={confirm}
+        toggleVisibleModal={toggleComfirm}
         btnOK={"OK"}
         btnBATAL={"Batal"}
         onPressBATALButton={() => {

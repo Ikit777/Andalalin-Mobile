@@ -325,7 +325,7 @@ function TambahUserScreen({ navigation }) {
 
         {emailNotExist ? (
           <AText
-            style={{ paddingTop: 6 }}
+            style={{ paddingTop: 8 }}
             color={color.error.error500}
             size={14}
             weight="normal"
@@ -425,10 +425,8 @@ function TambahUserScreen({ navigation }) {
         />
 
         <AText
-          style={{ paddingTop: 6 }}
-          color={
-            passwordError ? color.error.error500 : color.neutral.neutral300
-          }
+          style={{ paddingTop: 8 }}
+          color={color.neutral.neutral300}
           size={14}
           weight="normal"
         >
@@ -438,7 +436,7 @@ function TambahUserScreen({ navigation }) {
 
         {formError ? (
           <AText
-            style={{ paddingTop: 6 }}
+            style={{ paddingTop: 8 }}
             color={color.error.error500}
             size={14}
             weight="normal"
@@ -451,7 +449,7 @@ function TambahUserScreen({ navigation }) {
 
         {emailExist ? (
           <AText
-            style={{ paddingTop: 6 }}
+            style={{ paddingTop: 8 }}
             color={color.error.error500}
             size={14}
             weight="normal"
@@ -480,6 +478,7 @@ function TambahUserScreen({ navigation }) {
         title={"Tambah pengguna"}
         desc={"Apakah Anda yakin ingin menambah pengguna?"}
         visibleModal={confirm}
+        toggleVisibleModal={toggleComfirm}
         btnOK={"OK"}
         btnBATAL={"Batal"}
         onPressBATALButton={() => {

@@ -280,6 +280,7 @@ function SettingScreen({ navigation }) {
         title={"Keluar"}
         desc={"Apakah Anda yakin ingin keluar dari akun ini?"}
         visibleModal={konfirmasi}
+        toggleVisibleModal={toggleKonfirmasi}
         btnOK={"Keluar"}
         btnBATAL={"Batal"}
         onPressBATALButton={() => {

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   StyleSheet,
   View,
@@ -10,9 +10,12 @@ import {
 import color from "../../constants/color";
 import AText from "../utility/AText";
 import ExitApp from "react-native-exit-app";
+import { UserContext } from "../../context/UserContext";
 
 function AUpdateDialog({ visibleModal = false }) {
   const [visible, setVisible] = React.useState(visibleModal);
+
+  const context = useContext(UserContext);
 
   React.useEffect(() => {
     toggleModal();
@@ -20,6 +23,9 @@ function AUpdateDialog({ visibleModal = false }) {
 
   const toggleModal = () => {
     if (visibleModal) {
+      if (context.loading == true) {
+        context.toggleLoading(false);
+      }
       setVisible(true);
     } else {
       setTimeout(() => setVisible(false), 200);

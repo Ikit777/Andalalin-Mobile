@@ -54,6 +54,7 @@ function OnBoardingscreen({ navigation }) {
         title={"Keluar"}
         desc={"Apakah Anda yakin ingin keluar aplikasi?"}
         visibleModal={confirm}
+        toggleVisibleModal={toggleComfirm}
         btnOK={"OK"}
         btnBATAL={"Batal"}
         onPressBATALButton={() => {

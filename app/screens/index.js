@@ -21,8 +21,6 @@ export { default as KetentuanScreen } from "./KetentuanScreen";
 export { default as TambahUserScreen } from "./TambahUserScreen";
 export { default as DaftarPenggunaScreen } from "./DaftarPenggunaScreen";
 export { default as DetailSurveiScreen } from "./DetailSurveiScreen";
-export { default as UsulanPengelolaanScreen } from "./UsulanPengelolaanScreen";
-export { default as DetailUsulanScreen } from "./DetailUsulanScreen";
 export { default as PengelolaanProdukScreen } from "./PengelolaanProdukScreen";
 export { default as DaftarProdukScreen } from "./DaftarProdukScreen";
 export { default as MapScreen } from "./MapScreen";
@@ -40,3 +38,8 @@ export { default as CekKelengkapanAkhirScreen } from "./CekKelengkapanAkhirScree
 export { default as UpdateKelengkapanScreen } from "./UpdateKelengkapanScreen";
 export { default as PembuatanPenyusunDokumenScreen } from "./PembuatanPenyusunDokumenScreen";
 export { default as PemeriksaanDokumenScreen } from "./PemeriksaanDokumenScreen";
+export { default as TambahPerlengkapanScreen } from "./TambahPerlengkapanScreen";
+export { default as DetailPerlengkapanScreen } from "./DetailPerlengkapanScreen";
+export { default as SurveiMandiriScreen } from "./SurveiMandiriScreen";
+export { default as DetailSurveiMandiriScreen } from "./DetailSurveiMandiriScreen";
+export { default as PemeriksaanPerlengkapanScreen } from "./PemeriksaanPerlengkapanScreen";

@@ -304,7 +304,7 @@ function Pengembang({ onPress }) {
         bdColor={nomerError ? color.error.error500 : color.neutral.neutral300}
         ktype={"number-pad"}
         hint={"Masukkan nomor"}
-        title={"Nomor telepon/Fax pengembang"}
+        title={"Nomor telepon/WA pengembang"}
         rtype={"next"}
         blur={false}
         multi={false}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useContext } from "react";
 import { StyleSheet, View, BackHandler, Pressable } from "react-native";
 import AText from "../component/utility/AText";
 import color from "../constants/color";
@@ -8,16 +8,13 @@ import { useStateToggler } from "../hooks/useUtility";
 import { UserContext } from "../context/UserContext";
 import AProgressBar from "../component/utility/AProgressBar";
 import AConfirmationDialog from "../component/utility/AConfirmationDialog";
-import SurveiNavigator from "../component/survei/SurveiNavigator";
 import { useFocusEffect } from "@react-navigation/native";
+import MandiriNavigator from "../component/mandiri/MandiriNavigator";
 import { Feather } from "@expo/vector-icons";
 
-function SurveiScreen({ navigation, route }) {
+function SurveiMandiriScreen({ navigation }) {
   const [confirm, toggleComfirm] = useStateToggler();
   const context = useContext(UserContext);
-
-  const id = route.params.id;
-  const kondisi = route.params.kondisi;
 
   useFocusEffect(
     React.useCallback(() => {
@@ -30,21 +27,21 @@ function SurveiScreen({ navigation, route }) {
         back();
         return true;
       });
-    }, [context.indexSurvei])
+    }, [context.surveiMandiriIndex])
   );
 
   useEffect(() => {
-    context.setSurvei({
+    context.setSurveiMandiri({
       foto: [],
     });
   }, []);
 
   const back = () => {
-    if (context.indexSurvei == 1) {
+    if (context.surveiMandiriIndex == 1) {
       toggleComfirm();
     } else {
-      const newIndex = context.indexSurvei - 1;
-      context.setIndexSurvei(newIndex);
+      const newIndex = context.surveiMandiriIndex - 1;
+      context.setSurveiMandiriIndex(newIndex);
 
       navigation.replace("Back", {
         index: newIndex,
@@ -53,14 +50,12 @@ function SurveiScreen({ navigation, route }) {
   };
 
   const judul = () => {
-    switch (context.indexSurvei) {
+    switch (context.surveiMandiriIndex) {
       case 1:
-        return "Perlengkapan";
-      case 2:
         return "Tambah foto";
-      case 3:
+      case 2:
         return "Lokasi";
-      case 4:
+      case 3:
         return "Keterangan";
     }
   };
@@ -88,7 +83,7 @@ function SurveiScreen({ navigation, route }) {
         }}
         onPress={() => {
           setTimeout(() => {
-            navigation.push("Kamera", { kondisi: "Foto" });
+            navigation.push("Kamera", { kondisi: "Mandiri" });
           }, 500);
         }}
       >
@@ -109,11 +104,11 @@ function SurveiScreen({ navigation, route }) {
         >
           <ABackButton
             onPress={() => {
-              if (context.indexSurvei == 1) {
+              if (context.surveiMandiriIndex == 1) {
                 toggleComfirm();
               } else {
-                const newIndex = context.indexSurvei - 1;
-                context.setIndexSurvei(newIndex);
+                const newIndex = context.surveiMandiriIndex - 1;
+                context.setSurveiMandiriIndex(newIndex);
 
                 navigation.replace("Back", {
                   index: newIndex,
@@ -130,17 +125,15 @@ function SurveiScreen({ navigation, route }) {
             {judul()}
           </AText>
         </View>
-        <AProgressBar progress={Math.floor((context.indexSurvei * 100) / 4)} />
-      </View>
-      <View style={styles.content}>
-        <SurveiNavigator
-          index={context.indexSurvei}
-          id={id}
-          kondisi={kondisi}
+        <AProgressBar
+          progress={Math.floor((context.surveiMandiriIndex * 100) / 3)}
         />
       </View>
+      <View style={styles.content}>
+        <MandiriNavigator index={context.surveiMandiriIndex} />
+      </View>
 
-      {context.indexSurvei == 2 ? tambah() : ""}
+      {context.surveiMandiriIndex == 1 ? tambah() : ""}
 
       <AConfirmationDialog
         title={"Peringatan"}
@@ -153,11 +146,11 @@ function SurveiScreen({ navigation, route }) {
           toggleComfirm();
         }}
         onPressOKButton={() => {
-          context.setIndexSurvei(1);
-          context.clearSurvei();
+          context.setSurveiMandiriIndex(1);
+          context.clearSurveiMandiri();
           toggleComfirm();
 
-          navigation.navigate("Detail", { id: id });
+          navigation.goBack();
         }}
       />
     </AScreen>
@@ -171,4 +164,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SurveiScreen;
+export default SurveiMandiriScreen;

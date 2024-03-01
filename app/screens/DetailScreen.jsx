@@ -50,7 +50,7 @@ function DetailScreen({ navigation, route }) {
   const back = () => {
     switch (context.getUser().role) {
       case "User":
-        navigation.replace("Daftar");
+        navigation.replace("Daftar", { kondisi: "Diajukan" });
         break;
       case "Operator":
         navigation.replace("Daftar", { kondisi: "Diajukan" });
@@ -295,6 +295,7 @@ function DetailScreen({ navigation, route }) {
         title={"Permohoman gagal dimuat"}
         desc={"Terjadi kesalahan pada server, mohon coba lagi lain waktu"}
         visibleModal={gagal}
+        toggleModal={toggleGagal}
         btnOK={"OK"}
         onPressOKButton={() => {
           toggleGagal();
@@ -306,6 +307,7 @@ function DetailScreen({ navigation, route }) {
         title={"Survei kepuasan"}
         desc={"Anda harus menyelesaikan survei kepuasan terlebih dahulu"}
         visibleModal={surveiDialog}
+        toggleVisibleModal={toggleSurveiDialog}
         btnOK={"OK"}
         btnBATAL={"Batal"}
         onPressBATALButton={() => {

@@ -248,6 +248,7 @@ function ForgotPasswordScreen({ navigation }) {
           "Akun Anda belum terverifikasi oleh kami, silahkan lakukan verifikasi"
         }
         visibleModal={verif}
+        toggleModal={toggleVerif}
         btnOK={"Verifikasi"}
         onPressOKButton={() => {
           toggleVerif();
@@ -259,6 +260,7 @@ function ForgotPasswordScreen({ navigation }) {
         title={"Kirim"}
         desc={"Kode gagal dikirim, silahkan coba lagi lain waktu"}
         visibleModal={something}
+        toggleModal={toggleSomething}
         btnOK={"OK"}
         onPressOKButton={() => {
           toggleSomething();
@@ -269,6 +271,7 @@ function ForgotPasswordScreen({ navigation }) {
         title={"Verifikasi"}
         desc={"Kode verifikasi gagak dikirim, silahkan coba lagi lain waktu"}
         visibleModal={verify}
+        toggleModal={toggleVerify}
         btnOK={"OK"}
         onPressOKButton={() => {
           toggleVerify();

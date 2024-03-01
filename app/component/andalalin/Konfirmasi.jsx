@@ -124,22 +124,13 @@ function Konfirmasi({ navigation, kondisi }) {
     setJalan(jalan_item);
   };
 
-  const jalanSetPerlalin = () => {
-    let jalan_item = context.dataMaster.jalan.find((item) => {
-      return item.KodeJalan == perlalin.kode && item.Nama == perlalin.nama_jalan;
-    });
-
-    setJalan(jalan_item);
-  };
-
   useEffect(() => {
     context.toggleLoading(true);
     dataSet();
     if (kondisi == "Andalalin") {
       jalanSet();
-    } else {
-      jalanSetPerlalin();
     }
+
     setTimeout(() => {
       context.toggleLoading(false);
     }, 3000);
@@ -252,9 +243,6 @@ function Konfirmasi({ navigation, kondisi }) {
           case 200:
             (async () => {
               const result = await response.data;
-              clear();
-              setIndex(1);
-
               navigation.push("Detail", { id: result.data.id_andalalin });
             })();
             break;
@@ -277,36 +265,26 @@ function Konfirmasi({ navigation, kondisi }) {
   };
 
   const kirimPerlalin = () => {
+    const data_perlengkapan = [];
+
+    perlalin.perlengkapan.forEach((item) => {
+      const data = {
+        id_perlengkapan: item.id_perlengkapan,
+        kategori_utama: item.kategori_utama,
+        kategori: item.kategori,
+        perlengkapan: item.perlengkapan,
+        gambar: item.gambar,
+        pemasangan: item.pemasangan,
+        latitude: item.latitude,
+        longtitude: item.longtitude,
+        detail: item.detail,
+        alasan: item.alasan,
+      };
+      data_perlengkapan.push(data);
+    });
+
     const pengajuan = {
-      kategori_utama: perlalin.kategori_utama,
-      kategori: perlalin.kategori,
-      jenis_perlengkapan: perlalin.perlengkapan,
-      lokasi_pengambilan: perlalin.lokasi_pengambilan,
-      provinsi_pemasangan: perlalin.provinsi_pemasangan,
-      kabupaten_pemasangan: perlalin.kabupaten_pemasangan,
-      kecamatan_pemasangan: perlalin.kecamatan_pemasangan,
-      kelurahan_pemasangan: perlalin.kelurahan_pemasangan,
-      alamat_pemasangan: perlalin.alamat_pemasangan,
-      kode_jalan: jalan.KodeJalan,
-      kode_jalan_merge:
-        jalan.KodeProvinsi +
-        "/" +
-        jalan.KodeKabupaten +
-        "/" +
-        jalan.KodeKecamatan +
-        "/" +
-        jalan.KodeKelurahan +
-        "/" +
-        jalan.KodeJalan,
-      nama_jalan: jalan.Nama,
-      kelurahan: jalan.Kelurahan,
-      kecamatan: jalan.Kecamatan,
-      pangkal_jalan: jalan.Pangkal,
-      ujung_jalan: jalan.Ujung,
-      panjang_jalan: jalan.Panjang,
-      lebar_jalan: jalan.Lebar,
-      permukaan_jalan: jalan.Permukaan,
-      fungsi_jalan: jalan.Fungsi,
+      perlengkapan: data_perlengkapan,
       nik_pemohon: perlalin.nik_pemohon,
       tempat_lahir_pemohon: perlalin.tempat_lahir_pemohon,
       tanggal_lahir_pemohon: perlalin.tanggal_lahir_pemohon,
@@ -318,11 +296,6 @@ function Konfirmasi({ navigation, kondisi }) {
       alamat_pemohon: perlalin.alamat_pemohon,
       jenis_kelamin_pemohon: perlalin.jenis_kelamin_pemohon,
       nomer_pemohon: perlalin.nomer_pemohon,
-      alasan: perlalin.alasan,
-      peruntukan: perlalin.peruntukan,
-      lokasi_pemasangan: perlalin.titik_pemasangan,
-      latitude: perlalin.lat_pemasangan,
-      longtitude: perlalin.long_pemasangan,
       catatan: perlalin.catatan,
     };
 
@@ -330,15 +303,12 @@ function Konfirmasi({ navigation, kondisi }) {
       user.access_token,
       pengajuan,
       perlalin.persyaratan,
+      perlalin.perlengkapan,
       (response) => {
         switch (response.status) {
-          
           case 200:
             (async () => {
               const result = await response.data;
-              clear();
-              setIndex(1);
-
               navigation.push("Detail", { id: result.data.id_andalalin });
             })();
             break;
@@ -394,6 +364,7 @@ function Konfirmasi({ navigation, kondisi }) {
         title={"Ajukan permohonan?"}
         desc={"Data permohonan yang diisikan akan dikirim"}
         visibleModal={confirm}
+        toggleVisibleModal={toggleComfirm}
         btnOK={"OK"}
         btnBATAL={"Batal"}
         onPressBATALButton={() => {
@@ -413,6 +384,7 @@ function Konfirmasi({ navigation, kondisi }) {
         title={"Permohonan gagal dikirim"}
         desc={"Terjadi kesalahan pada server, mohon coba lagi lain waktu"}
         visibleModal={kirimGagal}
+        toggleModal={toggleKirimGagal}
         btnOK={"OK"}
         onPressOKButton={() => {
           toggleKirimGagal();

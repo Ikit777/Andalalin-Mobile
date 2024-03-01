@@ -24,9 +24,6 @@ import {
   KetentuanScreen,
   DaftarPenggunaScreen,
   DetailSurveiScreen,
-  LaporanBAPScreen,
-  UsulanPengelolaanScreen,
-  DetailUsulanScreen,
   PengelolaanProdukScreen,
   DaftarProdukScreen,
   MapScreen,
@@ -44,6 +41,11 @@ import {
   PembuatanPenyusunDokumenScreen,
   CekAdministrasiPerlalinScreen,
   PemeriksaanDokumenScreen,
+  TambahPerlengkapanScreen,
+  DetailPerlengkapanScreen,
+  SurveiMandiriScreen,
+  DetailSurveiMandiriScreen,
+  PemeriksaanPerlengkapanScreen,
 } from "../screens";
 
 const Stack = createNativeStackNavigator();
@@ -61,6 +63,7 @@ const Navigator = ({
   uri,
   komentar,
   kategori,
+  id_perlengkapan,
 }) => {
   return (
     <Stack.Navigator
@@ -86,7 +89,11 @@ const Navigator = ({
         component={LoginScreen}
         options={{ animation: "slide_from_left" }}
       />
-      <Stack.Screen name="Register" component={RegisterScreen} initialParams={{ kondisi }} />
+      <Stack.Screen
+        name="Register"
+        component={RegisterScreen}
+        initialParams={{ kondisi }}
+      />
       <Stack.Screen
         name="Verifikasi"
         component={VerifikasiScreen}
@@ -112,7 +119,7 @@ const Navigator = ({
       <Stack.Screen
         name="Detail Survei"
         component={DetailSurveiScreen}
-        initialParams={{ id, kondisi, jenis }}
+        initialParams={{ id, id_perlengkapan, jenis }}
       />
       <Stack.Screen
         name="Daftar"
@@ -163,16 +170,6 @@ const Navigator = ({
       <Stack.Screen name="Tambah User" component={TambahUserScreen} />
       <Stack.Screen name="Daftar User" component={DaftarPenggunaScreen} />
       <Stack.Screen name="Edit Akun" component={EditAkunScreen} />
-      <Stack.Screen
-        name="Usulan"
-        component={UsulanPengelolaanScreen}
-        initialParams={{ id }}
-      />
-      <Stack.Screen
-        name="Detail Usulan"
-        component={DetailUsulanScreen}
-        initialParams={{ id }}
-      />
       <Stack.Screen name="Pengelolaan" component={PengelolaanProdukScreen} />
       <Stack.Screen
         name="Produk"
@@ -185,7 +182,11 @@ const Navigator = ({
         initialParams={{ koordinat }}
       />
       <Stack.Screen name="Kepuasan" component={SurveiKepuasanScreen} />
-      <Stack.Screen name="Kamera" component={KameraScreen} />
+      <Stack.Screen
+        name="Kamera"
+        component={KameraScreen}
+        initialParams={{ kondisi }}
+      />
       <Stack.Screen
         name="Survei Kepuasan"
         component={SurveiKepuasanUserScreen}
@@ -223,6 +224,21 @@ const Navigator = ({
         name="Pemeriksaan dokumen"
         component={PemeriksaanDokumenScreen}
       />
+      <Stack.Screen
+        name="Tambah perlengkapan"
+        component={TambahPerlengkapanScreen}
+        initialParams={{ id, kondisi }}
+      />
+      <Stack.Screen
+        name="Detail perlengkapan"
+        component={DetailPerlengkapanScreen}
+        initialParams={{ id }}
+      />
+      <Stack.Screen name="Survei mandiri" component={SurveiMandiriScreen} />
+
+      <Stack.Screen name="Detail mandiri" component={DetailSurveiMandiriScreen} initialParams={{ id }}/>
+
+      <Stack.Screen name="Pemeriksaan perlengkapan" component={PemeriksaanPerlengkapanScreen} />
     </Stack.Navigator>
   );
 };

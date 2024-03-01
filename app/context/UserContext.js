@@ -98,19 +98,7 @@ const andalalinInit = {
 };
 
 const perlalinInit = {
-  kategori_utama: "",
-  kategori: "",
-  perlengkapan: "",
-  rambu: "",
-  lokasi_pengambilan: "",
-  wilayah_administratif_pemasangan: "",
-  provinsi_pemasangan: "",
-  kabupaten_pemasangan: "",
-  kecamatan_ppemasangan: "",
-  kelurahan_pemasangan: "",
-  nama_jalan: "",
-  kode: "",
-  alamat_pemasangan: "",
+  perlengkapan: null,
   nik_pemohon: "",
   tempat_lahir_pemohon: "",
   tanggal_lahir_pemohon: "",
@@ -122,16 +110,20 @@ const perlalinInit = {
   alamat_pemohon: "",
   jenis_kelamin_pemohon: "",
   nomer_pemohon: "",
-  alasan: "",
-  peruntukan: "",
-  titik_pemasangan: "",
-  lat_pemasangan: "",
-  long_pemasangan: "",
   catatan: "",
   persyaratan: [],
 };
 
 const surveiInit = {
+  id_perlengkapan: "",
+  foto: [],
+  lat: "",
+  long: "",
+  lokasi: "",
+  keterangan: "",
+};
+
+const surveiMandiriInit = {
   foto: [],
   lat: "",
   long: "",
@@ -174,6 +166,10 @@ const pemeriksaanInit = {
   pemeriksaan: [],
 };
 
+const pemeriksaanPerlengkapanInit = {
+  pemeriksaan: [],
+};
+
 export function UserProvider({ children }) {
   const [loading, toggleLoading] = useState(false);
 
@@ -189,6 +185,12 @@ export function UserProvider({ children }) {
   const [survei, setSurvei] = useReducer(reducer, surveiInit);
   const [kepuasan, setKepuasan] = useState(kepuasanInit);
   const [kritik, setKritik] = useReducer(reducer, saran);
+
+  const [surveiMandiri, setSurveiMandiri] = useReducer(
+    reducer,
+    surveiMandiriInit
+  );
+  const [surveiMandiriIndex, setSurveiMandiriIndex] = useState(1);
 
   const notificationListener = useRef();
   const responseListener = useRef();
@@ -222,6 +224,16 @@ export function UserProvider({ children }) {
   const [dataDokumen, setDataDokumen] = useState();
   const [uraian, setUraian] = useState("");
   const [pilihModal, togglePilihModal] = useState(false);
+
+  const [lokasi, setLokasi] = useState();
+  const [foto, setFoto] = useState([]);
+
+  const [indexPemeriksaanPerlengkapan, setIndexPemeriksaanPerlengkapan] =
+    useState(1);
+  const [pemeriksaanPerlengkapan, setPemeriksaanPerlengkapan] = useReducer(
+    reducer,
+    pemeriksaanPerlengkapanInit
+  );
 
   const checkUser = async () => {
     const value = await get("authState");
@@ -280,6 +292,11 @@ export function UserProvider({ children }) {
     setSurvei(surveiInit);
   };
 
+  const clearSurveiMandiri = () => {
+    setSurveiMandiriIndex(1);
+    setSurveiMandiri(surveiMandiriInit);
+  };
+
   const clearSurveiKepuasan = () => {
     setIndexSurvei(1);
     setKepuasan(kepuasanInit);
@@ -304,6 +321,11 @@ export function UserProvider({ children }) {
   const clearPemeriksaan = () => {
     setIndexPemeriksaan(1);
     setPemeriksaan(pemeriksaanInit);
+  };
+
+  const clearPemeriksaanPerlengkapan = () => {
+    setIndexPemeriksaanPerlengkapan(1);
+    setPemeriksaanPerlengkapan(pemeriksaanPerlengkapanInit);
   };
 
   const getUser = () => {
@@ -408,6 +430,20 @@ export function UserProvider({ children }) {
         pemeriksaan,
         setPemeriksaan,
         clearPemeriksaan,
+        lokasi,
+        setLokasi,
+        foto,
+        setFoto,
+        surveiMandiri,
+        setSurveiMandiri,
+        surveiMandiriIndex,
+        setSurveiMandiriIndex,
+        clearSurveiMandiri,
+        indexPemeriksaanPerlengkapan,
+        setIndexPemeriksaanPerlengkapan,
+        pemeriksaanPerlengkapan,
+        setPemeriksaanPerlengkapan,
+        clearPemeriksaanPerlengkapan,
       }}
     >
       {children}

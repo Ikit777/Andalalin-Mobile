@@ -4,7 +4,6 @@ import {
   View,
   Modal,
   TouchableOpacity,
-  Animated,
   Dimensions,
 } from "react-native";
 import color from "../../constants/color";
@@ -14,20 +13,24 @@ import ExitApp from "react-native-exit-app";
 
 function AServer({ visibleModal = false }) {
   const [visible, setVisible] = React.useState(visibleModal);
-  
+
   const context = useContext(UserContext);
+
   React.useEffect(() => {
     toggleModal();
   }, [visibleModal]);
+
   const toggleModal = () => {
     if (visibleModal) {
+      if (context.loading == true) {
+        context.toggleLoading(false);
+      }
       setVisible(true);
-      
     } else {
       setTimeout(() => setVisible(false), 200);
-      
     }
   };
+
   return (
     <Modal
       animationType="fade"
@@ -39,14 +42,14 @@ function AServer({ visibleModal = false }) {
       <View style={styles.container}>
         <View style={styles.horizontal}>
           <AText color={color.neutral.neutral900} size={18} weight="semibold">
-            Perbaikan
+            Telah terjadi sesuatu
           </AText>
           <AText
             style={{ paddingTop: 16 }}
             color={color.neutral.neutral500}
             size={14}
           >
-            Layanan kami sedang dalam perbaikan, silahkan mencoba kembali nanti
+            Layanan kami sedang dalam masalah, silahkan mencoba kembali nanti
           </AText>
           <TouchableOpacity
             style={{ alignItems: "flex-end", marginVertical: 24 }}

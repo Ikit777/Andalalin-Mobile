@@ -15,13 +15,21 @@ const ATextInput = React.forwardRef((props, ref) => {
     >
       {props.title != null ? (
         <AText color={color.neutral.neutral700} size={14}>
-          {props.title}
+          {props.title}{" "}
+          <AText color={color.error.error500} size={14}>
+            {props.wajib}
+          </AText>
         </AText>
       ) : (
         ""
       )}
 
-      <View style={[styles.border, { borderColor: props.bdColor, width: props.lebar }]}>
+      <View
+        style={[
+          styles.border,
+          { borderColor: props.bdColor, width: props.lebar },
+        ]}
+      >
         <TextInput
           style={[styles.input, { maxHeight: props.maxHeight }]}
           placeholderTextColor={color.neutral.neutral500}

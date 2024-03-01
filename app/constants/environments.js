@@ -47,27 +47,25 @@ const environments = {
       ANDALALIN_GANTI_PETUGAS: url + "/v1/permohonan/survey/petugas/ganti",
       ANDALALIN_GET_BY_TIKET_LEVEL_2: url + "/v1/permohonan/petugas",
       ANDALALIN_SURVEI_LAPANGAN: url + "/v1/permohonan/survey",
-      ANDALALIN_GET_ALL_SURVEI_LAPANGAN: url + "/v1/permohonan/survey/all",
       ANDALALIN_GET_SURVEI_LAPANGAN: url + "/v1/permohonan/survey/detail",
       ANDALALIN_GET_ALL: url + "/v1/permohonan/all",
       ANDALALIN_GET_STATUS: url + "/v1/permohonan/status",
       ANDALALIN_SIMPAN_PEMERIKSAAN: url + "/v1/permohonan/pemeriksaan/keputusan",
       ANDALALIN_CHECKLIST_KELENGKAPAN_AKHIR: url + "/v1/permohonan/pemeriksaan/kelengkapan",
-      ANDALALIN_USULAN_TINDAKAN: url + "/v1/permohonan/usulan",
-      ANDALALIN_GET_USULAN_TINDAKAN: url + "/v1/permohonan/usulan/all",
-      ANDALALIN_DETAIL_USULAN_TINDAKAN: url + "/v1/permohonan/usulan/detail",
-      ANDALALIN_TINDAKAN_USULAN: url + "/v1/permohonan/usulan/tindakan",
-      ANDALALIN_HAPUS_USULAN_TINDAKAN: url + "/v1/permohonan/usulan/hapus",
+      ANDALALIN_GET_PERLENGKAPAN: url + "/v1/permohonan/perlalin/perlengkapan",
+      
       ANDALALIN_GET_ALL_BY_TIKET_LEVEL2: url + "/v1/permohonan/tiket/2",
       ANDALALIN_PEMERIKSAAN_DOKUMEN_ANDALALIN: url + "/v1/permohonan/pemeriksaan/dokumen",
-      PERLALIN_LAPORAN_SURVEI: url + "/v1/permohonan/laporan/survei",
-      PERLALIN_KEPUTUSAN_HASIL: url + "/v1/permohonan/keputusan/hasil",
+
+      ANDALALIN_PENGECEKAN_PERLENGKAPAN: url + "/v1/permohonan/pengecekan/perlengkapan",
+      ANDALALIN_TUNDA_PEMASANGAN: url + "/v1/permohonan/pemasangan/tunda",
+      ANDALALIN_BATAL_PERMOHONAN: url + "/v1/permohonan/pemasangan/batal",
+      ANDALALIN_LANJUTKAN_PEMASANGAN: url + "/v1/permohonan/pemasangan/lanjutkan",
 
       //Pemasangan perlalin
       GET_PERMOHONAN_PEMASANGAN_PERLALIN: url + "/v1/permohonan/pemasangan",
       PEMASANGAN_PERLALIN: url + "/v1/permohonan/pemasangan/pasang",
       GET_PEMASANGAN_PERLALIN: url + "/v1/permohonan/pemasangan/detail",
-      GET_ALL_PEMASANGAN_PERLALIN: url + "/v1/permohonan/pemasangan/all",
 
       //Survei kepuasan
       CEK_SURVEI_KEPUASAN: url + "/v1/survey/kepuasan/cek",
@@ -76,11 +74,11 @@ const environments = {
       HASIL_SURVEI_KEPUASAN_TERTENTU: url + "/v1/survey/kepuasan/hasil/periode",
 
       //Survei mandiri
-      SURVEI_MANDIRI: url + "/v1/survey/mandiri",
-      ALL_SURVEI_MANDIRI: url + "/v1/survey/mandiri/daftar",
-      DETAIL_SURVEI_MANDIRI: url + "/v1/survey/mandiri/detail",
-      PETUGAS_SURVEI_MANDIRI: url + "/v1/survey/mandiri/daftar/petugas",
-      TERIMA_SURVEI_MANDIRI: url + "/v1/survey/mandiri/terima",
+      SURVEI_MANDIRI: url + "/v1/survey/pengaduan",
+      ALL_SURVEI_MANDIRI: url + "/v1/survey/pengaduan/daftar",
+      DETAIL_SURVEI_MANDIRI: url + "/v1/survey/pengaduan/detail",
+      PETUGAS_SURVEI_MANDIRI: url + "/v1/survey/pengaduan/daftar/petugas",
+      TERIMA_SURVEI_MANDIRI: url + "/v1/survey/pengaduan/terima",
 
       //Master
       DATA_MASTER_ANDALALIN: url + "/v1/master/andalalin",

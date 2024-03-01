@@ -35,7 +35,7 @@ export default function SaranKritik({ id, navigation }) {
               clearSurveiKepuasan();
               setIndexSurvei(1);
 
-              navigation.navigate("Detail", { id: id });
+              navigation.replace("Detail", { id: id });
             })();
             break;
           case 424:
@@ -92,6 +92,7 @@ export default function SaranKritik({ id, navigation }) {
         title={"Simpan"}
         desc={"Data survei akan di simpan"}
         visibleModal={confirm}
+        toggleVisibleModal={toggleComfirm}
         btnOK={"OK"}
         btnBATAL={"Batal"}
         onPressBATALButton={() => {
@@ -108,6 +109,7 @@ export default function SaranKritik({ id, navigation }) {
         title={"Survei gagal disimpan"}
         desc={"Terjadi kesalahan pada server, mohon coba lagi lain waktu"}
         visibleModal={kirimGagal}
+        toggleModal={toggleKirimGagal}
         btnOK={"OK"}
         onPressOKButton={() => {
           toggleKirimGagal();

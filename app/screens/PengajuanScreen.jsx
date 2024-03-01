@@ -1,5 +1,5 @@
 import React, { useEffect, useContext, useState } from "react";
-import { StyleSheet, View, BackHandler } from "react-native";
+import { StyleSheet, View, BackHandler, Pressable } from "react-native";
 import AScreen from "../component/utility/AScreen";
 import ABackButton from "../component/utility/ABackButton";
 import AText from "../component/utility/AText";
@@ -11,11 +11,18 @@ import AndalalinNavigator from "../component/andalalin/AndalalinNavigator";
 import { UserContext } from "../context/UserContext";
 import PerlalinNavigator from "../component/andalalin/PerlalinNavigator";
 import { useFocusEffect } from "@react-navigation/native";
+import { Feather } from "@expo/vector-icons";
 
 function PengajuanScreen({ navigation, route }) {
   const [confirm, toggleComfirm] = useStateToggler();
   const context = useContext(UserContext);
   const kondisi = route.params.kondisi;
+
+  const {
+    setLokasi,
+    setFoto,
+    perlalin: { perlengkapan },
+  } = useContext(UserContext);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -23,7 +30,7 @@ function PengajuanScreen({ navigation, route }) {
         back();
         return true;
       });
-  
+
       return BackHandler.removeEventListener("hardwareBackPress", () => {
         back();
         return true;
@@ -92,14 +99,12 @@ function PengajuanScreen({ navigation, route }) {
         case 1:
           return "Permohonan";
         case 2:
-          return "Permohonan";
+          return "Perlengkapan";
         case 3:
           return "Pemohon";
         case 4:
-          return "Kegiatan";
-        case 5:
           return "Persyaratan";
-        case 6:
+        case 5:
           return "Konfirmasi";
       }
     }
@@ -121,9 +126,42 @@ function PengajuanScreen({ navigation, route }) {
         return 8;
       }
     } else {
-      return 5;
+      return 4;
     }
   };
+  
+  const tambah = () => {
+    return (
+      <Pressable
+        android_ripple={{
+          color: "rgba(0, 0, 0, 0.1)",
+          borderless: false,
+          radius: 32,
+        }}
+        style={{
+          shadowColor: "rgba(0, 0, 0, 0.30)",
+          elevation: 8,
+          borderRadius: 16,
+          overflow: "hidden",
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: color.primary.primary100,
+          position: "absolute",
+          bottom: 54,
+          right: 38,
+          padding: 16,
+        }}
+        onPress={() => {
+          setLokasi();
+          setFoto([]);
+          navigation.push("Tambah perlengkapan", { kondisi: "Tambah" });
+        }}
+      >
+        <Feather name="plus" size={24} color={color.neutral.neutral900} />
+      </Pressable>
+    );
+  };
+
   return (
     <AScreen>
       <View style={styles.header}>
@@ -148,8 +186,8 @@ function PengajuanScreen({ navigation, route }) {
               }
             }}
           />
-         <AText
-            style={{ paddingLeft: 4}}
+          <AText
+            style={{ paddingLeft: 4 }}
             size={20}
             color={color.neutral.neutral900}
             weight="normal"
@@ -168,10 +206,13 @@ function PengajuanScreen({ navigation, route }) {
 
       <View style={styles.content}>{content()}</View>
 
+      {kondisi == "Perlalin" && context.index == 2 ? tambah() : ""}
+
       <AConfirmationDialog
         title={"Peringatan"}
         desc={"Data yang Anda masukkan akan hilang"}
         visibleModal={confirm}
+        toggleVisibleModal={toggleComfirm}
         btnOK={"OK"}
         btnBATAL={"Batal"}
         onPressBATALButton={() => {

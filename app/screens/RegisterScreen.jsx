@@ -249,7 +249,7 @@ function RegisterScreen({ navigation, route }) {
 
         {emailNotExist ? (
           <AText
-            style={{ paddingTop: 6 }}
+            style={{ paddingTop: 8 }}
             color={color.error.error500}
             size={14}
             weight="normal"
@@ -316,10 +316,8 @@ function RegisterScreen({ navigation, route }) {
         />
 
         <AText
-          style={{ paddingTop: 6 }}
-          color={
-            passwordError ? color.error.error500 : color.neutral.neutral300
-          }
+          style={{ paddingTop: 8 }}
+          color={color.neutral.neutral300}
           size={14}
           weight="normal"
         >
@@ -352,7 +350,7 @@ function RegisterScreen({ navigation, route }) {
 
         {formError ? (
           <AText
-            style={{ paddingTop: 6 }}
+            style={{ paddingTop: 8 }}
             color={color.error.error500}
             size={14}
             weight="normal"
@@ -365,7 +363,7 @@ function RegisterScreen({ navigation, route }) {
 
         {passNotSame ? (
           <AText
-            style={{ paddingTop: 6 }}
+            style={{ paddingTop: 8 }}
             color={color.error.error500}
             size={14}
             weight="normal"
@@ -378,7 +376,7 @@ function RegisterScreen({ navigation, route }) {
 
         {emailExist ? (
           <AText
-            style={{ paddingTop: 6 }}
+            style={{ paddingTop: 8 }}
             color={color.error.error500}
             size={14}
             weight="normal"

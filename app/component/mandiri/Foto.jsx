@@ -17,8 +17,8 @@ import { Feather } from "@expo/vector-icons";
 
 function Foto({ onPress, navigation }) {
   const {
-    survei: { foto },
-    setSurvei,
+    surveiMandiri: { foto },
+    setSurveiMandiri,
   } = useContext(UserContext);
 
   const [error, toggleError] = useStateToggler();
@@ -41,7 +41,7 @@ function Foto({ onPress, navigation }) {
       updated.splice(index, 1);
     }
 
-    setSurvei({
+    setSurveiMandiri({
       foto: updated,
     });
   };

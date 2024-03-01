@@ -407,6 +407,7 @@ function PembuatanSuratKeputusanScreen({ navigation }) {
         title={"Simpan"}
         desc={"Simpan data surat keputusan?"}
         visibleModal={konfirmasi}
+        toggleVisibleModal={toggleKonfirmasi}
         btnOK={"OK"}
         btnBATAL={"Batal"}
         onPressBATALButton={() => {

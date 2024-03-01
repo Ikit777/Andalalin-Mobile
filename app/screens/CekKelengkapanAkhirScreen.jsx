@@ -254,6 +254,7 @@ function CekKelengkapanAkhirScreen({ navigation }) {
         title={"Peringatan"}
         desc={"Data yang Anda masukkan akan hilang"}
         visibleModal={confirm}
+        toggleVisibleModal={toggleComfirm}
         btnOK={"OK"}
         btnBATAL={"Batal"}
         onPressBATALButton={() => {
@@ -271,6 +272,7 @@ function CekKelengkapanAkhirScreen({ navigation }) {
         title={"Kirim"}
         desc={"Kirim data cek kelengkapan akhir?"}
         visibleModal={konfirmasi}
+        toggleVisibleModal={toggleKonfirmasi}
         btnOK={"OK"}
         btnBATAL={"Batal"}
         onPressBATALButton={() => {
@@ -286,6 +288,7 @@ function CekKelengkapanAkhirScreen({ navigation }) {
         title={"Kirim gagal"}
         desc={"Terjadi kesalahan pada server, mohon coba lagi lain waktu"}
         visibleModal={gagal}
+        toggleModal={toggleGagal}
         btnOK={"OK"}
         onPressOKButton={() => {
           toggleGagal();

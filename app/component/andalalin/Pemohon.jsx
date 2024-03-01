@@ -86,7 +86,8 @@ function Pemohon({ onPress }) {
         alamatModal != "" &&
         nomerSeluler != "" &&
         nomerSertifikat != "" &&
-        klasifikasi != ""
+        klasifikasi != "" &&
+        nik.length == 16
       ) {
         {
           nikError ? togglenikError() : "";
@@ -180,7 +181,8 @@ function Pemohon({ onPress }) {
         alamatModal != "" &&
         nomerSeluler != "" &&
         nomerSertifikat != "" &&
-        klasifikasi != ""
+        klasifikasi != "" &&
+        nik.length == 16
       ) {
         {
           nikError ? togglenikError() : "";
@@ -294,7 +296,7 @@ function Pemohon({ onPress }) {
         bdColor={nikError ? color.error.error500 : color.neutral.neutral300}
         ktype={"number-pad"}
         hint={"Masukkan nik anda"}
-        title={"Nik"}
+        title={"NIK"}
         rtype={pemohon != "Perorangan" ? "next" : "done"}
         maksimal={16}
         blur={pemohon != "Perorangan" ? false : true}
@@ -302,13 +304,19 @@ function Pemohon({ onPress }) {
         value={nik}
         ref={nikInput}
         onChangeText={(value) => {
+          if (value.length > 0 && value.length < 16) {
+            nikError ? "" : togglenikError();
+          } else {
+            nikError ? togglenikError() : "";
+          }
           setNik(value);
         }}
         submit={() => {
-          {
+          if (nik.length > 0 && nik.length < 16) {
+            nikError ? "" : togglenikError();
+          } else {
             nikError ? togglenikError() : "";
           }
-
           {
             pemohon != "Perorangan" ? jabatanInput.current.focus() : "";
           }
@@ -322,7 +330,7 @@ function Pemohon({ onPress }) {
           size={14}
           weight="normal"
         >
-          Nik wajib
+          {nik != "" ? "NIK kurang dari 16 karakter" : "NIK wajib"}
         </AText>
       ) : (
         ""
@@ -507,8 +515,8 @@ function Pemohon({ onPress }) {
           nomerSelulerError ? color.error.error500 : color.neutral.neutral300
         }
         ktype={"number-pad"}
-        hint={"Masukkan nomer"}
-        title={"Nomer telepon/Fax"}
+        hint={"Masukkan nomor"}
+        title={"Nomor telepon/WA"}
         rtype={"next"}
         value={nomerSeluler}
         multi={false}
@@ -556,7 +564,7 @@ function Pemohon({ onPress }) {
           sertifikatError ? color.error.error500 : color.neutral.neutral300
         }
         ktype={"default"}
-        hint={"Masukkan nomer sertifikat"}
+        hint={"Masukkan nomor sertifikat"}
         title={"Nomer sertifikat"}
         rtype={"next"}
         multi={false}

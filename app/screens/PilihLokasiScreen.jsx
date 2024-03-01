@@ -214,7 +214,7 @@ function PilihLokasiScreen({ navigation, route }) {
         });
         navigation.goBack();
       } else if (kondisi == "Pengajuan perlalin") {
-        context.setPerlalin({
+        context.setLokasi({
           titik_pemasangan: alamatLengkap,
           lat_pemasangan: location.coords.latitude,
           long_pemasangan: location.coords.longitude,

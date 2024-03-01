@@ -15,15 +15,12 @@ import ABackButton from "../component/utility/ABackButton";
 import ACardPermohonan from "../component/utility/ACardPermohonan";
 import {
   andalalinGetAll,
-  andalalinGetAllPemasangan,
-  andalalinGetAllSurvei,
   andalalinGetAllSurveiMandiri,
   andalalinGetAllSurveiMandiriPetugas,
   andalalinGetByIdUser,
   andalalinGetByStatus,
   andalalinGetByTiketLevel2,
   andalalinGetPermohonanPemasangan,
-  andalalinGetUsulanTindakan,
 } from "../api/andalalin";
 import { authRefreshToken } from "../api/auth";
 import ADialog from "../component/utility/ADialog";
@@ -36,9 +33,6 @@ import { useFocusEffect } from "@react-navigation/native";
 
 function DaftarScreen({ navigation, route }) {
   const [gagal, toggleGagal] = useStateToggler();
-  const [surveiGagal, toggleSurveiGagal] = useStateToggler();
-  const [pemasanganGagal, togglePemasanganGagal] = useStateToggler();
-  const [usulanGagal, toggleUsulanGagal] = useStateToggler();
   const [permohonan, setPermohonan] = useState("permohonan");
   const [permohonanaDefault, setPermohonanDefault] = useState("permohonan");
   const [permohonanaFilterDefault, setPermohonanFilterDefault] = useState();
@@ -78,7 +72,14 @@ function DaftarScreen({ navigation, route }) {
         setPermohonan("permohonan");
         switch (context.getUser().role) {
           case "User":
-            loadDaftarPermohonan();
+            switch (kondisi) {
+              case "Diajukan":
+                loadDaftarPermohonan();
+                break;
+              case "Mandiri":
+                loadSurveiMandiriByPetugas();
+                break;
+            }
             break;
           case "Operator":
             switch (kondisi) {
@@ -92,20 +93,17 @@ function DaftarScreen({ navigation, route }) {
             break;
           case "Petugas":
             switch (kondisi) {
+              case "Diajukan":
+                loadPermohonanFiltered();
+                break;
               case "Survei":
                 loadDaftarByTiketLevel2("Buka");
                 break;
               case "Mandiri":
                 loadSurveiMandiriByPetugas();
                 break;
-              case "Daftar":
-                loadDaftarSurvei();
-                break;
               case "Pemasangan":
                 loadDaftarPermohonanPemasangan();
-                break;
-              case "Daftar Pemasangan":
-                loadDaftarPemasangan();
                 break;
             }
             break;
@@ -113,9 +111,6 @@ function DaftarScreen({ navigation, route }) {
             switch (kondisi) {
               case "Diajukan":
                 loadPermohonan();
-                break;
-              case "Pengawasan":
-                loadUsulanTindakan();
                 break;
               case "Mandiri":
                 loadSurveiMandiri();
@@ -140,9 +135,6 @@ function DaftarScreen({ navigation, route }) {
               case "Diajukan":
                 loadPermohonan();
                 break;
-              case "Pengawasan":
-                loadUsulanTindakan();
-                break;
             }
             break;
         }
@@ -166,6 +158,38 @@ function DaftarScreen({ navigation, route }) {
           authRefreshToken(context, (response) => {
             if (response.status === 200) {
               loadPermohonan();
+            } else {
+              context.toggleLoading(false);
+            }
+          });
+          break;
+        default:
+          context.toggleLoading(false);
+          toggleGagal();
+          break;
+      }
+    });
+  };
+
+  const loadPermohonanFiltered = () => {
+    andalalinGetAll(context.getUser().access_token, (response) => {
+      switch (response.status) {
+        case 200:
+          (async () => {
+            const result = await response.data;
+            let dataPermohonan = result.data.filter((item) => {
+              return item.status_andalalin != "Survei lapangan" &&
+                item.status_andalalin != "Pemasangan perlengkapan";
+            });
+            setPermohonan(dataPermohonan);
+            setPermohonanDefault(dataPermohonan);
+            context.toggleLoading(false);
+          })();
+          break;
+        case 424:
+          authRefreshToken(context, (response) => {
+            if (response.status === 200) {
+              loadPermohonanFiltered();
             } else {
               context.toggleLoading(false);
             }
@@ -298,34 +322,6 @@ function DaftarScreen({ navigation, route }) {
     );
   };
 
-  const loadDaftarSurvei = () => {
-    andalalinGetAllSurvei(context.getUser().access_token, (response) => {
-      switch (response.status) {
-        case 200:
-          (async () => {
-            const result = await response.data;
-            setPermohonan(result.data);
-            setPermohonanDefault(result.data);
-            context.toggleLoading(false);
-          })();
-          break;
-        case 424:
-          authRefreshToken(context, (response) => {
-            if (response.status === 200) {
-              loadDaftarSurvei();
-            } else {
-              context.toggleLoading(false);
-            }
-          });
-          break;
-        default:
-          context.toggleLoading(false);
-          toggleSurveiGagal();
-          break;
-      }
-    });
-  };
-
   const loadDaftarPermohonanPemasangan = () => {
     andalalinGetPermohonanPemasangan(
       context.getUser().access_token,
@@ -355,62 +351,6 @@ function DaftarScreen({ navigation, route }) {
         }
       }
     );
-  };
-
-  const loadDaftarPemasangan = () => {
-    andalalinGetAllPemasangan(context.getUser().access_token, (response) => {
-      switch (response.status) {
-        case 200:
-          (async () => {
-            const result = await response.data;
-            setPermohonan(result.data);
-            setPermohonanDefault(result.data);
-            context.toggleLoading(false);
-          })();
-          break;
-        case 424:
-          authRefreshToken(context, (response) => {
-            if (response.status === 200) {
-              loadDaftarPemasangan();
-            } else {
-              context.toggleLoading(false);
-            }
-          });
-          break;
-        default:
-          context.toggleLoading(false);
-          togglePemasanganGagal();
-          break;
-      }
-    });
-  };
-
-  const loadUsulanTindakan = () => {
-    andalalinGetUsulanTindakan(context.getUser().access_token, (response) => {
-      switch (response.status) {
-        case 200:
-          (async () => {
-            const result = await response.data;
-            setPermohonan(result.data);
-            setPermohonanDefault(result.data);
-            context.toggleLoading(false);
-          })();
-          break;
-        case 424:
-          authRefreshToken(context, (response) => {
-            if (response.status === 200) {
-              loadUsulanTindakan();
-            } else {
-              context.toggleLoading(false);
-            }
-          });
-          break;
-        default:
-          context.toggleLoading(false);
-          toggleUsulanGagal();
-          break;
-      }
-    });
   };
 
   const loadPermohonanByStatus = (status) => {
@@ -444,61 +384,100 @@ function DaftarScreen({ navigation, route }) {
   const helper = () => {
     switch (context.getUser().role) {
       case "User":
-        return (
-          <View>
-            {permohonan != "permohonan" ? (
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  marginTop: 6,
-                  marginBottom: 32,
-                }}
-              >
-                <View style={styles.searchInput}>
-                  <Feather
-                    style={{ paddingLeft: 14 }}
-                    name="search"
-                    size={20}
-                    color={color.primary.main}
-                  />
-                  <TextInput
-                    style={styles.input}
-                    placeholderTextColor={color.neutral.neutral500}
-                    allowFontScaling={false}
-                    placeholder="Pencarian permohonan"
-                    selectionColor={color.neutral.neutral400}
-                    autoComplete="off"
-                    returnKeyType="search"
-                    value={pencarian}
-                    autoCapitalize="none"
-                    onChangeText={(value) => {
-                      search(value);
+        switch (kondisi) {
+          case "Diajukan":
+            return (
+              <View>
+                {permohonan != "permohonan" ? (
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      marginTop: 6,
+                      marginBottom: 32,
                     }}
-                    onSubmitEditing={() => search(pencarian)}
-                  />
-                </View>
+                  >
+                    <View style={styles.searchInput}>
+                      <Feather
+                        style={{ paddingLeft: 14 }}
+                        name="search"
+                        size={20}
+                        color={color.primary.main}
+                      />
+                      <TextInput
+                        style={styles.input}
+                        placeholderTextColor={color.neutral.neutral500}
+                        allowFontScaling={false}
+                        placeholder="Pencarian permohonan"
+                        selectionColor={color.neutral.neutral400}
+                        autoComplete="off"
+                        returnKeyType="search"
+                        value={pencarian}
+                        autoCapitalize="none"
+                        onChangeText={(value) => {
+                          search(value);
+                        }}
+                        onSubmitEditing={() => search(pencarian)}
+                      />
+                    </View>
 
-                <Pressable
-                  android_ripple={{
-                    color: "rgba(0, 0, 0, 0.1)",
-                    borderless: false,
-                    radius: 32,
-                  }}
-                  style={styles.filter}
-                  onPress={() => {
-                    toggleFilterModal();
-                  }}
-                >
-                  <Feather name="filter" size={24} color={color.primary.main} />
-                </Pressable>
+                    <Pressable
+                      android_ripple={{
+                        color: "rgba(0, 0, 0, 0.1)",
+                        borderless: false,
+                        radius: 32,
+                      }}
+                      style={styles.filter}
+                      onPress={() => {
+                        toggleFilterModal();
+                      }}
+                    >
+                      <Feather
+                        name="filter"
+                        size={24}
+                        color={color.primary.main}
+                      />
+                    </Pressable>
+                  </View>
+                ) : (
+                  ""
+                )}
               </View>
-            ) : (
-              ""
-            )}
-          </View>
-        );
+            );
+          case "Mandiri":
+            return (
+              <View style={{ marginTop: 6, marginBottom: 32 }}>
+                {permohonan != "permohonan" ? (
+                  <View style={styles.searchInputMandiri}>
+                    <Feather
+                      style={{ paddingLeft: 14 }}
+                      name="search"
+                      size={20}
+                      color={color.primary.main}
+                    />
+                    <TextInput
+                      style={styles.input}
+                      placeholderTextColor={color.neutral.neutral500}
+                      allowFontScaling={false}
+                      placeholder="Pencarian pengaduan"
+                      selectionColor={color.neutral.neutral400}
+                      autoComplete="off"
+                      returnKeyType="search"
+                      value={pencarian}
+                      autoCapitalize="none"
+                      onChangeText={(value) => {
+                        searchMandiri(value);
+                      }}
+                      onSubmitEditing={() => searchMandiri(pencarian)}
+                    />
+                  </View>
+                ) : (
+                  ""
+                )}
+              </View>
+            );
+        }
       case "Operator":
         switch (kondisi) {
           case "Diajukan":
@@ -576,7 +555,7 @@ function DaftarScreen({ navigation, route }) {
                       style={styles.input}
                       placeholderTextColor={color.neutral.neutral500}
                       allowFontScaling={false}
-                      placeholder="Pencarian survei"
+                      placeholder="Pencarian pengaduan"
                       selectionColor={color.neutral.neutral400}
                       autoComplete="off"
                       returnKeyType="search"
@@ -597,6 +576,66 @@ function DaftarScreen({ navigation, route }) {
         break;
       case "Petugas":
         switch (kondisi) {
+          case "Diajukan":
+            return (
+              <View>
+                {permohonan != "permohonan" ? (
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      marginTop: 6,
+                      marginBottom: 32,
+                    }}
+                  >
+                    <View style={styles.searchInput}>
+                      <Feather
+                        style={{ paddingLeft: 14 }}
+                        name="search"
+                        size={20}
+                        color={color.primary.main}
+                      />
+                      <TextInput
+                        style={styles.input}
+                        placeholderTextColor={color.neutral.neutral500}
+                        allowFontScaling={false}
+                        placeholder="Pencarian permohonan"
+                        selectionColor={color.neutral.neutral400}
+                        autoComplete="off"
+                        returnKeyType="search"
+                        value={pencarian}
+                        autoCapitalize="none"
+                        onChangeText={(value) => {
+                          search(value);
+                        }}
+                        onSubmitEditing={() => search(pencarian)}
+                      />
+                    </View>
+
+                    <Pressable
+                      android_ripple={{
+                        color: "rgba(0, 0, 0, 0.1)",
+                        borderless: false,
+                        radius: 32,
+                      }}
+                      style={styles.filter}
+                      onPress={() => {
+                        toggleFilterModal();
+                      }}
+                    >
+                      <Feather
+                        name="filter"
+                        size={24}
+                        color={color.primary.main}
+                      />
+                    </Pressable>
+                  </View>
+                ) : (
+                  ""
+                )}
+              </View>
+            );
           case "Survei":
             return (
               <View>
@@ -696,7 +735,7 @@ function DaftarScreen({ navigation, route }) {
                       style={styles.input}
                       placeholderTextColor={color.neutral.neutral500}
                       allowFontScaling={false}
-                      placeholder="Pencarian survei"
+                      placeholder="Pencarian pengaduan"
                       selectionColor={color.neutral.neutral400}
                       autoComplete="off"
                       returnKeyType="search"
@@ -713,49 +752,7 @@ function DaftarScreen({ navigation, route }) {
                 )}
               </View>
             );
-          case "Daftar":
-            return (
-              <View>
-                {permohonan != "permohonan" ? (
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      marginTop: 6,
-                      marginBottom: 32,
-                    }}
-                  >
-                    <View style={styles.searchInputMandiri}>
-                      <Feather
-                        style={{ paddingLeft: 14 }}
-                        name="search"
-                        size={20}
-                        color={color.primary.main}
-                      />
-                      <TextInput
-                        style={styles.input}
-                        placeholderTextColor={color.neutral.neutral500}
-                        allowFontScaling={false}
-                        placeholder="Pencarian permohonan"
-                        selectionColor={color.neutral.neutral400}
-                        autoComplete="off"
-                        returnKeyType="search"
-                        value={pencarian}
-                        autoCapitalize="none"
-                        onChangeText={(value) => {
-                          searchSimple(value);
-                        }}
-                        onSubmitEditing={() => searchSimple(pencarian)}
-                      />
-                    </View>
-                  </View>
-                ) : (
-                  ""
-                )}
-              </View>
-            );
-          case "Daftar Pemasangan":
+
             return (
               <View>
                 {permohonan != "permohonan" ? (
@@ -861,7 +858,6 @@ function DaftarScreen({ navigation, route }) {
                 )}
               </View>
             );
-          case "Pengawasan":
             return (
               <View>
                 {permohonan != "permohonan" ? (
@@ -960,7 +956,7 @@ function DaftarScreen({ navigation, route }) {
                       style={styles.input}
                       placeholderTextColor={color.neutral.neutral500}
                       allowFontScaling={false}
-                      placeholder="Pencarian survei"
+                      placeholder="Pencarian pengaduan"
                       selectionColor={color.neutral.neutral400}
                       autoComplete="off"
                       returnKeyType="search"
@@ -1098,7 +1094,7 @@ function DaftarScreen({ navigation, route }) {
                       style={styles.input}
                       placeholderTextColor={color.neutral.neutral500}
                       allowFontScaling={false}
-                      placeholder="Pencarian survei"
+                      placeholder="Pencarian pengaduan"
                       selectionColor={color.neutral.neutral400}
                       autoComplete="off"
                       returnKeyType="search"
@@ -1194,7 +1190,7 @@ function DaftarScreen({ navigation, route }) {
                       style={styles.input}
                       placeholderTextColor={color.neutral.neutral500}
                       allowFontScaling={false}
-                      placeholder="Pencarian survei"
+                      placeholder="Pencarian pengaduan"
                       selectionColor={color.neutral.neutral400}
                       autoComplete="off"
                       returnKeyType="search"
@@ -1211,7 +1207,6 @@ function DaftarScreen({ navigation, route }) {
                 )}
               </View>
             );
-          case "Pengawasan":
             return (
               <View>
                 {permohonan != "permohonan" ? (
@@ -1479,9 +1474,6 @@ function DaftarScreen({ navigation, route }) {
               (item.jenis_andalalin &&
                 item.jenis_andalalin.toLowerCase().indexOf(cari.toLowerCase()) >
                   -1) ||
-              (item.pengembang &&
-                item.pengembang.toLowerCase().indexOf(cari.toLowerCase()) >
-                  -1) ||
               (item.petugas &&
                 item.petugas.toLowerCase().indexOf(cari.toLowerCase()) > -1)
             );
@@ -1509,9 +1501,6 @@ function DaftarScreen({ navigation, route }) {
                   .indexOf(cari.toLowerCase()) > -1) ||
               (item.jenis_andalalin &&
                 item.jenis_andalalin.toLowerCase().indexOf(cari.toLowerCase()) >
-                  -1) ||
-              (item.pengembang &&
-                item.pengembang.toLowerCase().indexOf(cari.toLowerCase()) >
                   -1) ||
               (item.petugas &&
                 item.petugas.toLowerCase().indexOf(cari.toLowerCase()) > -1)
@@ -1580,7 +1569,8 @@ function DaftarScreen({ navigation, route }) {
       if (permohonanaDefault != null && permohonanaDefault.length != 0) {
         const newData = permohonanaDefault.filter(function (item) {
           return (
-            item.Petugas.toLowerCase().indexOf(cari.toLowerCase()) > -1 ||
+            item.Nama.toLowerCase().indexOf(cari.toLowerCase()) > -1 ||
+            item.Email.toLowerCase().indexOf(cari.toLowerCase()) > -1 ||
             item.StatusSurvei.toLowerCase().indexOf(cari.toLowerCase()) > -1 ||
             item.TanggalSurvei.toLowerCase().indexOf(cari.toLowerCase()) > -1
           );
@@ -1600,11 +1590,16 @@ function DaftarScreen({ navigation, route }) {
   const judul = () => {
     switch (context.getUser().role) {
       case "User":
-        return "Daftar permohonan";
+        switch (kondisi) {
+          case "Mandiri":
+            return "Daftar pengaduan";
+          default:
+            return "Daftar permohonan";
+        }
       case "Operator":
         switch (kondisi) {
           case "Mandiri":
-            return "Daftar survei mandiri";
+            return "Daftar pengaduan";
           default:
             return "Daftar permohonan";
         }
@@ -1613,36 +1608,30 @@ function DaftarScreen({ navigation, route }) {
           case "Survei":
             return "Daftar permohonan";
           case "Mandiri":
-            return "Daftar survei mandiri";
-          case "Daftar":
-            return "Daftar survei";
+            return "Daftar pengaduan";
           case "Pemasangan":
             return "Daftar permohonan";
-          case "Daftar Pemasangan":
-            return "Daftar pemasangan";
+          default:
+            return "Daftar permohonan";
         }
       case "Admin":
         switch (kondisi) {
-          case "Pengawasan":
-            return "Daftar usulan";
           case "Mandiri":
-            return "Daftar survei mandiri";
+            return "Daftar pengaduan";
           default:
             return "Daftar permohonan";
         }
       case "Dinas Perhubungan":
         switch (kondisi) {
           case "Mandiri":
-            return "Daftar survei mandiri";
+            return "Daftar pengaduan";
           default:
             return "Daftar permohonan";
         }
       case "Super Admin":
         switch (kondisi) {
           case "Mandiri":
-            return "Daftar survei mandiri";
-          case "Pengawasan":
-            return "Daftar usulan";
+            return "Daftar pengaduan";
           default:
             return "Daftar permohonan";
         }
@@ -1652,14 +1641,19 @@ function DaftarScreen({ navigation, route }) {
   const doPress = (item) => {
     switch (context.getUser().role) {
       case "User":
-        return navigation.push("Detail", { id: item.id_andalalin });
+        switch (kondisi) {
+          case "Mandiri":
+            return navigation.push("Detail mandiri", {
+              id: item.IdPengaduan,
+            });
+          default:
+            return navigation.push("Detail", { id: item.id_andalalin });
+        }
       case "Operator":
         switch (kondisi) {
           case "Mandiri":
-            return navigation.push("Detail Survei", {
-              id: item.IdSurvey,
-              kondisi: "Operator",
-              jenis: "Mandiri",
+            return navigation.push("Detail mandiri", {
+              id: item.IdPengaduan,
             });
           default:
             return navigation.push("Detail", { id: item.id_andalalin });
@@ -1671,50 +1665,30 @@ function DaftarScreen({ navigation, route }) {
               id: item.id_andalalin,
             });
           case "Mandiri":
-            return navigation.push("Detail Survei", {
-              id: item.IdSurvey,
-              kondisi: "Petugas",
-              jenis: "Mandiri",
-            });
-          case "Daftar":
-            return navigation.push("Detail Survei", {
-              id: item.id_andalalin,
-              kondisi: "Petugas",
-              jenis: "Permohonan",
+            return navigation.push("Detail mandiri", {
+              id: item.IdPengaduan,
             });
           case "Pemasangan":
             return navigation.push("Detail", {
               id: item.id_andalalin,
             });
-          case "Daftar Pemasangan":
-            return navigation.push("Detail Survei", {
-              id: item.id_andalalin,
-              kondisi: "Petugas",
-              jenis: "Pemasangan",
-            });
+          default:
+            return navigation.push("Detail", { id: item.id_andalalin });
         }
-        break;
       case "Admin":
         switch (kondisi) {
-          case "Pengawasan":
-            return navigation.push("Detail Usulan", { id: item.id_andalalin });
           case "Mandiri":
-            return navigation.push("Detail Survei", {
-              id: item.IdSurvey,
-              kondisi: "Admin",
-              jenis: "Mandiri",
+            return navigation.push("Detail mandiri", {
+              id: item.IdPengaduan,
             });
           default:
             return navigation.push("Detail", { id: item.id_andalalin });
         }
-        break;
       case "Dinas Perhubungan":
         switch (kondisi) {
           case "Mandiri":
-            return navigation.push("Detail Survei", {
-              id: item.IdSurvey,
-              kondisi: "Dinas perhubungan",
-              jenis: "Mandiri",
+            return navigation.push("Detail mandiri", {
+              id: item.IdPengaduan,
             });
           default:
             return navigation.push("Detail", { id: item.id_andalalin });
@@ -1722,24 +1696,24 @@ function DaftarScreen({ navigation, route }) {
       case "Super Admin":
         switch (kondisi) {
           case "Mandiri":
-            return navigation.push("Detail Survei", {
-              id: item.IdSurvey,
-              kondisi: "Dinas perhubungan",
-              jenis: "Mandiri",
+            return navigation.push("Detail mandiri", {
+              id: item.IdPengaduan,
             });
-          case "Pengawasan":
-            return navigation.push("Detail Usulan", { id: item.id_andalalin });
           default:
             return navigation.push("Detail", { id: item.id_andalalin });
         }
-        break;
     }
   };
 
   const list_item = (item) => {
     switch (context.getUser().role) {
       case "User":
-        return list("Detail", item);
+        switch (kondisi) {
+          case "Mandiri":
+            return list_survei_mandiri("Detail", item);
+          default:
+            return list("Detail", item);
+        }
       case "Operator":
         switch (kondisi) {
           case "Mandiri":
@@ -1753,17 +1727,13 @@ function DaftarScreen({ navigation, route }) {
             return list("Detail", item);
           case "Mandiri":
             return list_survei_mandiri("Detail", item);
-          case "Daftar":
-            return list("Detail", item);
           case "Pemasangan":
             return list("Detail", item);
-          case "Daftar Pemasangan":
+          default:
             return list("Detail", item);
         }
       case "Admin":
         switch (kondisi) {
-          case "Pengawasan":
-            return list("Detail", item);
           case "Mandiri":
             return list_survei_mandiri("Detail", item);
           default:
@@ -1780,8 +1750,6 @@ function DaftarScreen({ navigation, route }) {
         switch (kondisi) {
           case "Mandiri":
             return list_survei_mandiri("Detail", item);
-          case "Pengawasan":
-            return list("Detail", item);
           default:
             return list("Detail", item);
         }
@@ -1796,7 +1764,14 @@ function DaftarScreen({ navigation, route }) {
       setPermohonan("permohonan");
       switch (context.getUser().role) {
         case "User":
-          loadDaftarPermohonan();
+          switch (kondisi) {
+            case "Diajukan":
+              loadDaftarPermohonan();
+              break;
+            case "Mandiri":
+              loadSurveiMandiriByPetugas();
+              break;
+          }
           break;
         case "Operator":
           switch (kondisi) {
@@ -1810,20 +1785,17 @@ function DaftarScreen({ navigation, route }) {
           break;
         case "Petugas":
           switch (kondisi) {
+            case "Diajukan":
+              loadPermohonanFiltered();
+              break;
             case "Survei":
               loadDaftarByTiketLevel2("Buka");
               break;
             case "Mandiri":
               loadSurveiMandiriByPetugas();
               break;
-            case "Daftar":
-              loadDaftarSurvei();
-              break;
             case "Pemasangan":
               loadDaftarPermohonanPemasangan();
-              break;
-            case "Daftar Pemasangan":
-              loadDaftarPemasangan();
               break;
           }
           break;
@@ -1831,9 +1803,6 @@ function DaftarScreen({ navigation, route }) {
           switch (kondisi) {
             case "Diajukan":
               loadPermohonan();
-              break;
-            case "Pengawasan":
-              loadUsulanTindakan();
               break;
             case "Mandiri":
               loadSurveiMandiri();
@@ -1858,9 +1827,6 @@ function DaftarScreen({ navigation, route }) {
             case "Diajukan":
               loadPermohonan();
               break;
-            case "Pengawasan":
-              loadUsulanTindakan();
-              break;
           }
           break;
       }
@@ -1877,7 +1843,6 @@ function DaftarScreen({ navigation, route }) {
         kode={item.kode_andalalin}
         pemohon={item.nama_pemohon}
         email={item.email_pemohon}
-        alamat={item.pengembang}
         title={text}
         onPress={() => {
           doPress(item);
@@ -1891,10 +1856,10 @@ function DaftarScreen({ navigation, route }) {
       <ACardPermohonan
         style={{ marginBottom: 16 }}
         tanggal={item.TanggalSurvei}
-        jenis={"Survei mandiri"}
+        jenis={"Pengaduan perlengkapan lalu lintas"}
         status={item.StatusSurvei}
-        kode={item.Petugas}
-        pemohon={item.EmailPetugas}
+        kode={item.Nama}
+        pemohon={item.Email}
         title={text}
         onPress={() => {
           doPress(item);
@@ -1996,45 +1961,13 @@ function DaftarScreen({ navigation, route }) {
       </View>
 
       <ADialog
-        title={"Permohoman gagal dimuat"}
+        title={"Daftar gagal dimuat"}
         desc={"Terjadi kesalahan pada server, mohon coba lagi lain waktu"}
         visibleModal={gagal}
+        toggleModal={toggleGagal}
         btnOK={"OK"}
         onPressOKButton={() => {
           toggleGagal();
-          navigation.navigate("Home");
-        }}
-      />
-
-      <ADialog
-        title={"Daftar survei gagal dimuat"}
-        desc={"Terjadi kesalahan pada server, mohon coba lagi lain waktu"}
-        visibleModal={surveiGagal}
-        btnOK={"OK"}
-        onPressOKButton={() => {
-          toggleSurveiGagal();
-          navigation.navigate("Home");
-        }}
-      />
-
-      <ADialog
-        title={"Daftar pemasangan gagal dimuat"}
-        desc={"Terjadi kesalahan pada server, mohon coba lagi lain waktu"}
-        visibleModal={pemasanganGagal}
-        btnOK={"OK"}
-        onPressOKButton={() => {
-          togglePemasanganGagal();
-          navigation.navigate("Home");
-        }}
-      />
-
-      <ADialog
-        title={"Usulan tindakan gagal dimuat"}
-        desc={"Terjadi kesalahan pada server, mohon coba lagi lain waktu"}
-        visibleModal={usulanGagal}
-        btnOK={"OK"}
-        onPressOKButton={() => {
-          toggleUsulanGagal();
           navigation.navigate("Home");
         }}
       />

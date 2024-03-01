@@ -1,93 +1,28 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import { StyleSheet, View, BackHandler, Pressable } from "react-native";
 import AText from "../component/utility/AText";
 import color from "../constants/color";
 import AScreen from "../component/utility/AScreen";
 import ABackButton from "../component/utility/ABackButton";
-import { useFocusEffect } from "@react-navigation/native";
 import { UserContext } from "../context/UserContext";
-import ADialog from "../component/utility/ADialog";
-import AConfirmationDialog from "../component/utility/AConfirmationDialog";
 import { useStateToggler } from "../hooks/useUtility";
+import AConfirmationDialog from "../component/utility/AConfirmationDialog";
 import AProgressBar from "../component/utility/AProgressBar";
 import { Feather } from "@expo/vector-icons";
-import PemeriksaanNavigator from "../component/pemeriksaan/PemeriksaanNavigator";
-import { andalalinPemeriksaanDokumenAndalalin } from "../api/andalalin";
+import { useFocusEffect } from "@react-navigation/native";
 import { authRefreshToken } from "../api/auth";
+import ADialog from "../component/utility/ADialog";
+import PengecekanNavigator from "../component/pengecekan/PengecekanNavigator";
+import { andalalinPengecekanPerlengkapan } from "../api/andalalin";
 
-function PemeriksaanDokumenScreen({ navigation }) {
+function PemeriksaanPerlengkapanScreen({ navigation }) {
+  const [confirm, toggleComfirm] = useStateToggler();
   const context = useContext(UserContext);
 
-  const [confirm, toggleComfirm] = useStateToggler();
   const [konfirmasi, toggleKonfirmasi] = useStateToggler();
   const [gagal, toggleGagal] = useStateToggler();
 
   const [item, setItem] = useState(0);
-
-  pemeriksaan_bangkitan_sedang = [
-    {
-      substansi: "BAB 1",
-      catatan: [],
-    },
-    {
-      substansi: "BAB 2",
-      catatan: [],
-    },
-    {
-      substansi: "BAB 3",
-      catatan: [],
-    },
-    {
-      substansi: "BAB 4",
-      catatan: [],
-    },
-    {
-      substansi: "BAB 5",
-      catatan: [],
-    },
-    {
-      substansi: "LAMPIRAN GAMBAR TEKNIS",
-      catatan: [],
-    },
-    {
-      substansi: "CATATAN DAN KETERANGAN TAMBAHAN",
-      catatan: [],
-    },
-  ];
-
-  useEffect(() => {
-    context.toggleLoading(true);
-
-    switch (context.detailPermohonan.kategori_bangkitan) {
-      case "Bangkitan sedang":
-        const status =
-          context.detailPermohonan.hasil_asistensi == null
-            ? ""
-            : context.detailPermohonan.hasil_asistensi;
-
-        const deepCopiedObject = JSON.parse(
-          JSON.stringify(context.detailPermohonan.catatan_asistensi)
-        );
-
-        let pemeriksaan =
-          context.detailPermohonan.catatan_asistensi == null
-            ? pemeriksaan_bangkitan_sedang
-            : deepCopiedObject;
-
-        setItem(pemeriksaan.length + 1);
-
-        context.setPemeriksaan({
-          status: status,
-          pemeriksaan: pemeriksaan,
-        });
-
-        break;
-    }
-
-    setTimeout(() => {
-      context.toggleLoading(false);
-    }, 3000);
-  }, []);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -100,43 +35,68 @@ function PemeriksaanDokumenScreen({ navigation }) {
         back();
         return true;
       });
-    }, [context.indexPemeriksaan])
+    }, [context.indexPemeriksaanPerlengkapan])
   );
 
+  useEffect(() => {
+    context.toggleLoading(true);
+
+    setItem(context.detailPermohonan.perlengkapan.length);
+    const data = [];
+
+    for (let i = 0; i < context.detailPermohonan.perlengkapan.length; i++) {
+      data.push({
+        id: context.detailPermohonan.perlengkapan[i].id_perlengkapan,
+        perlengkapan: context.detailPermohonan.perlengkapan[i].perlengkapan,
+        gambar: context.detailPermohonan.perlengkapan[i].gambar,
+        lokasi: context.detailPermohonan.perlengkapan[i].pemasangan,
+        setuju: "",
+        tidak: "",
+        pertimbangan: "",
+      });
+    }
+    context.setPemeriksaanPerlengkapan({
+      pemeriksaan: data,
+    });
+
+    setTimeout(() => {
+      context.toggleLoading(false);
+    }, 3000);
+  }, []);
+
   const back = () => {
-    if (context.indexPemeriksaan == 1) {
+    if (context.indexPemeriksaanPerlengkapan == 1) {
       toggleComfirm();
     } else {
-      const newIndex = context.indexPemeriksaan - 1;
-      context.setIndexPemeriksaan(newIndex);
+      const newIndex = context.indexPemeriksaanPerlengkapan - 1;
+      context.setIndexPemeriksaanPerlengkapan(newIndex);
 
-      navigation.replace("Back Pemeriksaan", {
+      navigation.replace("Back Pengecekan", {
         index: newIndex,
       });
     }
   };
 
   const onGoToNext = () => {
-    if (context.indexPemeriksaan < item) {
-      const newIndex = context.indexPemeriksaan + 1;
-      context.setIndexPemeriksaan(newIndex);
+    if (context.indexPemeriksaanPerlengkapan < item) {
+      const newIndex = context.indexPemeriksaanPerlengkapan + 1;
+      context.setIndexPemeriksaanPerlengkapan(newIndex);
 
-      navigation.push("PemeriksaanItem", {
+      navigation.push("PengecekanItem", {
         index: newIndex,
       });
     }
   };
 
-  const pemeriksaan_dokumen = () => {
+  const pengecekan = () => {
     context.toggleLoading(true);
-    andalalinPemeriksaanDokumenAndalalin(
+    andalalinPengecekanPerlengkapan(
       context.getUser().access_token,
       context.detailPermohonan.id_andalalin,
-      context.pemeriksaan.status,
-      context.pemeriksaan.pemeriksaan,
+      context.pemeriksaanPerlengkapan.pemeriksaan,
       (response) => {
         switch (response.status) {
-          case 200:
+          case 201:
             navigation.replace("Detail", {
               id: context.detailPermohonan.id_andalalin,
             });
@@ -144,7 +104,7 @@ function PemeriksaanDokumenScreen({ navigation }) {
           case 424:
             authRefreshToken(context, (response) => {
               if (response.status === 200) {
-                pemeriksaan_dokumen();
+                pengecekan();
               } else {
                 context.toggleLoading(false);
               }
@@ -161,7 +121,7 @@ function PemeriksaanDokumenScreen({ navigation }) {
 
   return (
     <AScreen>
-      <View style={styles.header}>
+      <View>
         <View
           style={{
             flexDirection: "row",
@@ -180,15 +140,17 @@ function PemeriksaanDokumenScreen({ navigation }) {
             color={color.neutral.neutral900}
             weight="normal"
           >
-            Pemeriksaan dokumen
+            Pemeriksaan
           </AText>
         </View>
         <AProgressBar
-          progress={Math.floor((context.indexPemeriksaan * 100) / item)}
+          progress={Math.floor(
+            (context.indexPemeriksaanPerlengkapan * 100) / item
+          )}
         />
       </View>
       <View style={styles.content}>
-        <PemeriksaanNavigator index={context.indexPemeriksaan} />
+        <PengecekanNavigator index={context.indexPemeriksaanPerlengkapan} />
       </View>
 
       <Pressable
@@ -211,23 +173,38 @@ function PemeriksaanDokumenScreen({ navigation }) {
           padding: 16,
         }}
         onPress={() => {
-          switch (context.indexPemeriksaan) {
-            case 1:
-              if (context.pemeriksaan.status != "") {
-                onGoToNext();
+          switch (context.indexPemeriksaanPerlengkapan) {
+            case item:
+              if (
+                context.pemeriksaanPerlengkapan.pemeriksaan[
+                  context.indexPemeriksaanPerlengkapan - 1
+                ].setuju != "" ||
+                context.pemeriksaanPerlengkapan.pemeriksaan[context.indexPemeriksaanPerlengkapan - 1]
+                  .tidak != ""
+              ) {
+                toggleKonfirmasi();
               }
               break;
-            case item:
-              toggleKonfirmasi();
-              break;
             default:
-              onGoToNext();
+              if (
+                context.pemeriksaanPerlengkapan.pemeriksaan[
+                  context.indexPemeriksaanPerlengkapan - 1
+                ].setuju != "" ||
+                context.pemeriksaanPerlengkapan.pemeriksaan[context.indexPemeriksaanPerlengkapan - 1]
+                  .tidak != ""
+              ) {
+                onGoToNext();
+              }
               break;
           }
         }}
       >
         <Feather
-          name={context.indexPemeriksaan != item ? "arrow-right" : "check"}
+          name={
+            context.indexPemeriksaanPerlengkapan != item
+              ? "arrow-right"
+              : "check"
+          }
           size={24}
           color={color.neutral.neutral900}
         />
@@ -235,7 +212,7 @@ function PemeriksaanDokumenScreen({ navigation }) {
 
       <AConfirmationDialog
         title={"Peringatan"}
-        desc={"Hasil pemeriksaan akan hilang jika anda kembali"}
+        desc={"Data yang Anda masukkan akan hilang"}
         visibleModal={confirm}
         toggleVisibleModal={toggleComfirm}
         btnOK={"OK"}
@@ -245,32 +222,33 @@ function PemeriksaanDokumenScreen({ navigation }) {
         }}
         onPressOKButton={() => {
           toggleComfirm();
-          context.setIndexPemeriksaan(1);
-          context.clearPemeriksaan();
+          context.setIndexPemeriksaanPerlengkapan(1);
+          context.clearPemeriksaanPerlengkapan();
           navigation.goBack();
         }}
       />
 
       <AConfirmationDialog
-        title={"Kirim"}
-        desc={"Kirim hasil pemeriksaan dokumen andalalin?"}
+        title={"Simpan"}
+        desc={"Simpan data cek perlengkapan?"}
         visibleModal={konfirmasi}
         toggleVisibleModal={toggleKonfirmasi}
-        btnOK={"OK"}
+        btnOK={"Simpan"}
         btnBATAL={"Batal"}
         onPressBATALButton={() => {
           toggleKonfirmasi();
         }}
         onPressOKButton={() => {
           toggleKonfirmasi();
-          pemeriksaan_dokumen();
+          pengecekan();
         }}
       />
 
       <ADialog
-        title={"Kirim gagal"}
+        title={"Simpan gagal"}
         desc={"Terjadi kesalahan pada server, mohon coba lagi lain waktu"}
         visibleModal={gagal}
+        toggleModal={toggleGagal}
         btnOK={"OK"}
         onPressOKButton={() => {
           toggleGagal();
@@ -281,11 +259,10 @@ function PemeriksaanDokumenScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  header: {},
   content: {
     paddingHorizontal: 16,
     flex: 1,
   },
 });
 
-export default PemeriksaanDokumenScreen;
+export default PemeriksaanPerlengkapanScreen;

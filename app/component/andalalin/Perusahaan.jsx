@@ -300,7 +300,7 @@ function Perusahaan({ onPress }) {
         bdColor={nomerError ? color.error.error500 : color.neutral.neutral300}
         ktype={"number-pad"}
         hint={"Masukkan nomor"}
-        title={"Nomor telepon/Fax perusahaan"}
+        title={"Nomor telepon/WA perusahaan"}
         rtype={"next"}
         blur={false}
         multi={false}

@@ -25,6 +25,8 @@ import { checkMaster, masterAndalalin } from "../api/master";
 import { get, remove } from "../utils/local-storage";
 import AKategoriBangkitan from "../component/utility/AKategoriBangkitan";
 import * as FileSystem from "expo-file-system";
+import { inflate } from "react-native-gzip";
+import { Buffer } from "buffer";
 
 function HomeScreen({ navigation }) {
   const context = useContext(UserContext);
@@ -101,11 +103,32 @@ function HomeScreen({ navigation }) {
             />
             <AMenuCard
               style={{ marginBottom: 20 }}
+              icon={"clipboard"}
+              title={"Pengaduan perlengkapan lalu lintas"}
+              desc={
+                "Sarana aduan perlengkapan yang tidak berfungsi dengan baik atau mengalami kerusakan"
+              }
+              onPress={() => {
+                context.clearSurveiMandiri();
+                navigation.push("Survei mandiri");
+              }}
+            />
+            <AMenuCard
+              style={{ marginBottom: 20 }}
               icon={"list"}
               title={"Daftar permohonan"}
               desc={"Daftar permohonan yang telah diajukan"}
               onPress={() => {
                 masterData("Daftar User");
+              }}
+            />
+            <AMenuCard
+              style={{ marginBottom: 20 }}
+              icon={"list"}
+              title={"Daftar pengaduan"}
+              desc={"Daftar pengaduan yang telah dilakukan"}
+              onPress={() => {
+                navigation.push("Daftar", { kondisi: "Mandiri" });
               }}
             />
           </View>
@@ -126,10 +149,8 @@ function HomeScreen({ navigation }) {
             <AMenuCard
               style={{ marginBottom: 20 }}
               icon={"list"}
-              title={"Daftar survei lapangan mandiri"}
-              desc={
-                "Daftar survei lapangan mandiri yang dilakukan oleh pertugas"
-              }
+              title={"Daftar pengaduan"}
+              desc={"Daftar pengaduan yang telah dilakukan"}
               onPress={() => {
                 navigation.push("Daftar", { kondisi: "Mandiri" });
               }}
@@ -153,20 +174,20 @@ function HomeScreen({ navigation }) {
           <View style={{ paddingBottom: 32 }}>
             <AMenuCard
               style={{ marginBottom: 20 }}
+              icon={"list"}
+              title={"Daftar permohonan"}
+              desc={"Daftar permohonan yang telah diajukan"}
+              onPress={() => {
+                navigation.push("Daftar", { kondisi: "Diajukan" });
+              }}
+            />
+            <AMenuCard
+              style={{ marginBottom: 20 }}
               icon={"map-pin"}
               title={"Survei lapangan"}
               desc={"Pengisian data survei lapangan permohonan"}
               onPress={() => {
                 navigation.push("Daftar", { kondisi: "Survei" });
-              }}
-            />
-            <AMenuCard
-              style={{ marginBottom: 20 }}
-              icon={"list"}
-              title={"Daftar survei lapangan"}
-              desc={"Daftar survei lapangan yang dilakukan"}
-              onPress={() => {
-                navigation.push("Daftar", { kondisi: "Daftar" });
               }}
             />
             <AMenuCard
@@ -180,32 +201,21 @@ function HomeScreen({ navigation }) {
             />
             <AMenuCard
               style={{ marginBottom: 20 }}
-              icon={"list"}
-              title={"Daftar pemasangan perlalin"}
-              desc={"Daftar pemasangan perlengkapan lalu lintas yang dilakukan"}
-              onPress={() => {
-                navigation.push("Daftar", { kondisi: "Daftar Pemasangan" });
-              }}
-            />
-            <AMenuCard
-              style={{ marginBottom: 20 }}
-              icon={"map-pin"}
-              title={"Survei lapangan mandiri"}
+              icon={"clipboard"}
+              title={"Pengaduan perlengkapan lalu lintas"}
               desc={
-                "Survei lapangan mandiri yang dilakukan oleh pertugas atau yang bersangkutan"
+                "Sarana penyampaian informasi maupun keluhan mengenai perlengkapan jalan yang tidak berfungsi dengan baik atau mengalami kerusakan"
               }
               onPress={() => {
-                context.clearSurvei();
-                navigation.push("Survei", { kondisi: "Mandiri" });
+                context.clearSurveiMandiri();
+                navigation.push("Survei mandiri");
               }}
             />
             <AMenuCard
               style={{ marginBottom: 20 }}
               icon={"list"}
-              title={"Daftar survei lapangan mandiri"}
-              desc={
-                "Daftar survei lapangan mandiri yang dilakukan oleh pertugas"
-              }
+              title={"Daftar pengaduan"}
+              desc={"Daftar pengaduan yang telah dilakukan"}
               onPress={() => {
                 navigation.push("Daftar", { kondisi: "Mandiri" });
               }}
@@ -257,36 +267,22 @@ function HomeScreen({ navigation }) {
 
             <AMenuCard
               style={{ marginBottom: 20 }}
-              icon={"paperclip"}
-              title={"Pengawasan tiket"}
+              icon={"clipboard"}
+              title={"Pengaduan perlengkapan lalu lintas"}
               desc={
-                "Pengawasan tiket bertujuan untuk menindaklanjuti usulan tindakan terhadap pelaksanaan survei lapangan"
+                "Sarana penyampaian informasi maupun keluhan mengenai perlengkapan jalan yang tidak berfungsi dengan baik atau mengalami kerusakan"
               }
               onPress={() => {
-                navigation.push("Daftar", { kondisi: "Pengawasan" });
-              }}
-            />
-
-            <AMenuCard
-              style={{ marginBottom: 20 }}
-              icon={"map-pin"}
-              title={"Survei lapangan mandiri"}
-              desc={
-                "Survei lapangan mandiri yang dilakukan oleh pertugas atau yang bersangkutan"
-              }
-              onPress={() => {
-                context.clearSurvei();
-                navigation.push("Survei", { kondisi: "Mandiri" });
+                context.clearSurveiMandiri();
+                navigation.push("Survei mandiri");
               }}
             />
 
             <AMenuCard
               style={{ marginBottom: 20 }}
               icon={"list"}
-              title={"Daftar survei lapangan mandiri"}
-              desc={
-                "Daftar survei lapangan mandiri yang dilakukan oleh pertugas"
-              }
+              title={"Daftar pengaduan"}
+              desc={"Daftar pengaduan yang telah dilakukan"}
               onPress={() => {
                 navigation.push("Daftar", { kondisi: "Mandiri" });
               }}
@@ -330,23 +326,9 @@ function HomeScreen({ navigation }) {
 
             <AMenuCard
               style={{ marginBottom: 20 }}
-              icon={"paperclip"}
-              title={"Pengawasan tiket"}
-              desc={
-                "Pengawasan tiket bertujuan untuk menindaklanjuti usulan tindakan terhadap pelaksanaan survei lapangan"
-              }
-              onPress={() => {
-                navigation.push("Daftar", { kondisi: "Pengawasan" });
-              }}
-            />
-
-            <AMenuCard
-              style={{ marginBottom: 20 }}
               icon={"list"}
-              title={"Daftar survei lapangan mandiri"}
-              desc={
-                "Daftar survei lapangan mandiri yang dilakukan oleh pertugas"
-              }
+              title={"Daftar pengaduan"}
+              desc={"Daftar pengaduan yang telah dilakukan"}
               onPress={() => {
                 navigation.push("Daftar", { kondisi: "Mandiri" });
               }}
@@ -393,10 +375,8 @@ function HomeScreen({ navigation }) {
             <AMenuCard
               style={{ marginBottom: 20 }}
               icon={"list"}
-              title={"Daftar survei lapangan mandiri"}
-              desc={
-                "Daftar survei lapangan mandiri yang dilakukan oleh pertugas"
-              }
+              title={"Daftar pengaduan"}
+              desc={"Daftar pengaduan yang telah dilakukan"}
               onPress={() => {
                 navigation.push("Daftar", { kondisi: "Mandiri" });
               }}
@@ -418,6 +398,17 @@ function HomeScreen({ navigation }) {
     }
   };
 
+  const decompressGzip = async (base64) => {
+    try {
+      const decompressed = await inflate(base64);
+      const decompressedString = Buffer.from(decompressed).toString("utf8");
+      console.log("Dekompresi selesai");
+      return decompressedString;
+    } catch (error) {
+      throw new Error(`Terjadi kesalahan saat melakukan dekompresi: ${error}`);
+    }
+  };
+
   const masterData = async (kondisi) => {
     context.toggleLoading(true);
 
@@ -428,44 +419,56 @@ function HomeScreen({ navigation }) {
         if (response.status === 200) {
           (async () => {
             const result = await response.data;
+            decompressGzip(result.data)
+              .then((jsonData) => {
+                const filePath = `${FileSystem.documentDirectory}data.json`;
+                FileSystem.writeAsStringAsync(filePath, jsonData, {
+                  encoding: FileSystem.EncodingType.UTF8,
+                })
+                  .then(() => {
+                    context.getDataMaster();
 
-            const filePath = `${FileSystem.documentDirectory}data.json`;
-            FileSystem.writeAsStringAsync(filePath, result.data, {
-              encoding: FileSystem.EncodingType.Base64,
-            })
-              .then(() => {
-                context.getDataMaster();
+                    switch (kondisi) {
+                      case "Andalalin":
+                        context.toggleLoading(false);
+                        toggleKategoriBangkitan();
+                        break;
+                      case "Perlalin":
+                        context.toggleLoading(false);
+                        context.setIndex(1);
+                        context.clear();
+                        context.setPerlalin({ perlengkapan: [] });
+                        navigation.push("Andalalin", {
+                          kondisi: "Perlalin",
+                        });
 
-                switch (kondisi) {
-                  case "Andalalin":
-                    context.toggleLoading(false);
-                    toggleKategoriBangkitan();
-                    break;
-                  case "Perlalin":
-                    context.toggleLoading(false);
-                    navigation.push("Andalalin", {
-                      kondisi: "Perlalin",
-                    });
-                    context.clear();
-                    context.setIndex(1);
-                    break;
-                  case "Daftar User":
-                    navigation.push("Daftar");
-                    break;
-                  case "Daftar Non User":
-                    navigation.push("Daftar", { kondisi: "Diajukan" });
-                    break;
-                }
+                        break;
+                      case "Daftar User":
+                        navigation.push("Daftar", { kondisi: "Diajukan" });
+                        break;
+                      case "Daftar Non User":
+                        navigation.push("Daftar", { kondisi: "Diajukan" });
+                        break;
+                    }
+                  })
+                  .catch((error) => {
+                    console.log(error);
+                    if (context.server != false) {
+                      context.toggleLoading(false);
+                      toggleGagal();
+                    }
+                  });
               })
               .catch((error) => {
-                if (context.server == false) {
+                console.log(error);
+                if (context.server != false) {
                   context.toggleLoading(false);
                   toggleGagal();
                 }
               });
           })();
         } else {
-          if (context.server == false) {
+          if (context.server != false) {
             context.toggleLoading(false);
             toggleGagal();
           }
@@ -481,44 +484,58 @@ function HomeScreen({ navigation }) {
                 if (response.status === 200) {
                   (async () => {
                     const result = await response.data;
+                    decompressGzip(result.data)
+                      .then((jsonData) => {
+                        const filePath = `${FileSystem.documentDirectory}data.json`;
+                        FileSystem.writeAsStringAsync(filePath, jsonData, {
+                          encoding: FileSystem.EncodingType.UTF8,
+                        })
+                          .then(() => {
+                            context.getDataMaster();
 
-                    const filePath = `${FileSystem.documentDirectory}data.json`;
-                    FileSystem.writeAsStringAsync(filePath, result.data, {
-                      encoding: FileSystem.EncodingType.Base64,
-                    })
-                      .then(() => {
-                        context.getDataMaster();
+                            switch (kondisi) {
+                              case "Andalalin":
+                                context.toggleLoading(false);
+                                toggleKategoriBangkitan();
+                                break;
+                              case "Perlalin":
+                                context.toggleLoading(false);
+                                context.setIndex(1);
+                                context.clear();
+                                context.setPerlalin({ perlengkapan: [] });
+                                navigation.push("Andalalin", {
+                                  kondisi: "Perlalin",
+                                });
 
-                        switch (kondisi) {
-                          case "Andalalin":
-                            context.toggleLoading(false);
-                            toggleKategoriBangkitan();
-                            break;
-                          case "Perlalin":
-                            context.toggleLoading(false);
-                            navigation.push("Andalalin", {
-                              kondisi: "Perlalin",
-                            });
-                            context.clear();
-                            context.setIndex(1);
-                            break;
-                          case "Daftar User":
-                            navigation.push("Daftar");
-                            break;
-                          case "Daftar Non User":
-                            navigation.push("Daftar", { kondisi: "Diajukan" });
-                            break;
-                        }
+                                break;
+                              case "Daftar User":
+                                navigation.push("Daftar", { kondisi: "Diajukan" });
+                                break;
+                              case "Daftar Non User":
+                                navigation.push("Daftar", {
+                                  kondisi: "Diajukan",
+                                });
+                                break;
+                            }
+                          })
+                          .catch((error) => {
+                            console.log(error);
+                            if (context.server != false) {
+                              context.toggleLoading(false);
+                              toggleGagal();
+                            }
+                          });
                       })
                       .catch((error) => {
-                        if (context.server == false) {
+                        console.log(error);
+                        if (context.server != false) {
                           context.toggleLoading(false);
                           toggleGagal();
                         }
                       });
                   })();
                 } else {
-                  if (context.server == false) {
+                  if (context.server != false) {
                     context.toggleLoading(false);
                     toggleGagal();
                   }
@@ -534,14 +551,15 @@ function HomeScreen({ navigation }) {
                   break;
                 case "Perlalin":
                   context.toggleLoading(false);
+                  context.setIndex(1);
+                  context.clear();
+                  context.setPerlalin({ perlengkapan: [] });
                   navigation.push("Andalalin", {
                     kondisi: "Perlalin",
                   });
-                  context.clear();
-                  context.setIndex(1);
                   break;
                 case "Daftar User":
-                  navigation.push("Daftar");
+                  navigation.push("Daftar", { kondisi: "Diajukan" });
                   break;
                 case "Daftar Non User":
                   navigation.push("Daftar", { kondisi: "Diajukan" });
@@ -550,7 +568,7 @@ function HomeScreen({ navigation }) {
             }
           })();
         } else {
-          if (context.server == false) {
+          if (context.server != false) {
             context.toggleLoading(false);
             toggleGagal();
           }
@@ -577,8 +595,10 @@ function HomeScreen({ navigation }) {
             });
             break;
           default:
-            context.toggleLoading(false);
-            toggleError();
+            if (context.server != false) {
+              context.toggleLoading(false);
+              toggleError();
+            }
             break;
         }
       });
@@ -592,7 +612,9 @@ function HomeScreen({ navigation }) {
           clearInterval(timerID);
           if (context.check == null) {
             setTimeout(() => {
-              me();
+              if (context.check == null) {
+                me();
+              }
             }, 1000);
           }
         }
@@ -706,6 +728,7 @@ function HomeScreen({ navigation }) {
         title={"Keluar"}
         desc={"Apakah Anda yakin ingin keluar aplikasi?"}
         visibleModal={confirm}
+        toggleVisibleModal={toggleComfirm}
         btnOK={"OK"}
         btnBATAL={"Batal"}
         onPressBATALButton={() => {
@@ -720,6 +743,7 @@ function HomeScreen({ navigation }) {
         title={"Telah terjadi sesuatu"}
         desc={"Akun Anda tidak dapat kami validasi, silahkan login kembali"}
         visibleModal={error}
+        toggleModal={toggleError}
         btnOK={"OK"}
         onPressOKButton={() => {
           navigation.replace("Login");
@@ -735,6 +759,7 @@ function HomeScreen({ navigation }) {
           "Aplikasi gagal disiapkan, silahkan buka kembali aplikasi untuk melanjutkan aktivitas"
         }
         visibleModal={gagal}
+        toggleModal={toggleGagal}
         btnOK={"OK"}
         onPressOKButton={() => {
           toggleGagal();

@@ -272,7 +272,7 @@ function LoginScreen({ navigation }) {
         />
         {emailNotExist ? (
           <AText
-            style={{ paddingTop: 6 }}
+            style={{ paddingTop: 8 }}
             color={color.error.error500}
             size={14}
             weight="normal"
@@ -382,6 +382,7 @@ function LoginScreen({ navigation }) {
         title={"Keluar"}
         desc={"Apakah Anda yakin ingin keluar aplikasi?"}
         visibleModal={confirm}
+        toggleVisibleModal={toggleComfirm}
         btnOK={"OK"}
         btnBATAL={"Batal"}
         onPressBATALButton={() => {

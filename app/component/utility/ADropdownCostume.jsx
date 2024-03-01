@@ -26,6 +26,7 @@ function ADropDownCostume({
   bdColor,
   max,
   notFound,
+  wajib,
 }) {
   const [open, setOpen] = useStateToggler();
   const [value, setValue] = useState();
@@ -54,7 +55,10 @@ function ADropDownCostume({
           color={color.neutral.neutral700}
           size={14}
         >
-          {judul}
+          {judul}{" "}
+          <AText color={color.error.error500} size={14}>
+            {wajib}
+          </AText>
         </AText>
       ) : (
         ""

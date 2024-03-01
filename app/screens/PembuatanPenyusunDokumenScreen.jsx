@@ -351,6 +351,7 @@ function PembuatanPenyusunDokumenScreen({ navigation }) {
         title={"Peringatan"}
         desc={"Data yang Anda masukkan akan hilang"}
         visibleModal={confirm}
+        toggleVisibleModal={toggleComfirm}
         btnOK={"OK"}
         btnBATAL={"Batal"}
         onPressBATALButton={() => {
@@ -368,6 +369,7 @@ function PembuatanPenyusunDokumenScreen({ navigation }) {
         title={"Simpan"}
         desc={"Simpan data penyusun dokumen?"}
         visibleModal={konfirmasi}
+        toggleVisibleModal={toggleKonfirmasi}
         btnOK={"Simpan"}
         btnBATAL={"Batal"}
         onPressBATALButton={() => {

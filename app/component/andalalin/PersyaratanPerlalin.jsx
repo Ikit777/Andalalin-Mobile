@@ -6,6 +6,7 @@ import ATextInputIcon from "../utility/ATextInputIcon";
 import { UserContext } from "../../context/UserContext";
 import AButton from "../utility/AButton";
 import * as DocumentPicker from "expo-document-picker";
+import { useStateToggler } from "../../hooks/useUtility";
 
 function PersyaratanPerlalin({ navigation, onPress }) {
   const {
@@ -19,6 +20,8 @@ function PersyaratanPerlalin({ navigation, onPress }) {
   const [stateVariables, setStateVariables] = useState([]);
 
   const stateError = false;
+
+  const [formError, toggleFormError] = useStateToggler();
 
   useEffect(() => {
     let persyaratan = dataMaster.persyaratan.PersyaratanPerlalin.map((item) => {
@@ -69,6 +72,27 @@ function PersyaratanPerlalin({ navigation, onPress }) {
     });
 
     setStateVariables(updateItems);
+
+    const tambahanItem = updateItems.map((item) => {
+      return {
+        persyaratan: item.persyaratan,
+        kebutuhan: item.kebutuhan,
+        nama: item.namaFile,
+        file: item.fileBerkas,
+      };
+    });
+
+    setPerlalin({
+      persyaratan: tambahanItem,
+    });
+
+    let not_empty = updateItems.filter((item) => {
+      return item.fileBerkas == "" && item.kebutuhan == "Wajib";
+    });
+
+    if (not_empty.length == 0) {
+      formError ? toggleFormError() : "";
+    }
   };
 
   const handleChangeAllError = () => {
@@ -103,6 +127,8 @@ function PersyaratanPerlalin({ navigation, onPress }) {
         persyaratan: tambahanItem,
       });
       onPress();
+    } else {
+      formError ? "" : toggleFormError();
     }
   };
 
@@ -165,23 +191,21 @@ function PersyaratanPerlalin({ navigation, onPress }) {
                   file(item.persyaratan, item.tipe);
                 }}
               />
-
-              {stateVariables.find((variabel) => {
-                return variabel.persyaratan == item.persyaratan;
-              }).stateError ? (
-                <AText
-                  style={{ paddingTop: 6 }}
-                  color={color.error.error500}
-                  size={14}
-                  weight="normal"
-                >
-                  Berkas {item.persyaratan.toLowerCase()} wajib
-                </AText>
-              ) : (
-                ""
-              )}
             </View>
           ))}
+
+          {formError ? (
+            <AText
+              style={{ paddingTop: 8 }}
+              color={color.error.error500}
+              size={14}
+              weight="normal"
+            >
+              Lengkapi persyaratan atau kolom yang tersedia dengan benar
+            </AText>
+          ) : (
+            ""
+          )}
 
           <AButton
             style={{ marginTop: 32, marginBottom: 32 }}

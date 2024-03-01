@@ -11,23 +11,30 @@ import AText from "../component/utility/AText";
 import color from "../constants/color";
 import AScreen from "../component/utility/AScreen";
 import ABackButton from "../component/utility/ABackButton";
-import { andalalinGetPemasangan, andalalinGetSurvei } from "../api/andalalin";
+import {
+  andalalinGetSurveiMandiri,
+  andalalinTerimaSurveiMandiri,
+} from "../api/andalalin";
 import { authRefreshToken } from "../api/auth";
 import { UserContext } from "../context/UserContext";
 import ADetailView from "../component/utility/ADetailView";
 import ADialog from "../component/utility/ADialog";
 import { useStateToggler } from "../hooks/useUtility";
+import AButton from "../component/utility/AButton";
 import AConfirmationDialog from "../component/utility/AConfirmationDialog";
+import ABottomSheet from "../component/utility/ABottomSheet";
+import ATextInput from "../component/utility/ATextInput";
 import * as Clipboard from "expo-clipboard";
 import ASnackBar from "../component/utility/ASnackBar";
 
-function DetailSurveiScreen({ navigation, route }) {
+function DetailSurveiMandiriScreen({ navigation, route }) {
   const context = useContext(UserContext);
   const [surveiGagal, toggleSurveiGagal] = useStateToggler();
-  const jenis = route.params.jenis;
   const [survei, setSurvei] = useState("survei");
 
+  const [tindakanModal, toggleTindakanModal] = useStateToggler();
   const [konfirmasi, toggleKonfirmasi] = useStateToggler();
+  const [keteranganTindakan, setKeteranganTindakan] = useState();
   const [gagal, toggleGagal] = useStateToggler();
 
   const [refreshing, setRefreshing] = useState(false);
@@ -54,6 +61,31 @@ function DetailSurveiScreen({ navigation, route }) {
     return unsubscribe;
   }, [navigation]);
 
+  useEffect(() => {
+    if (context.loading == false) {
+      context.toggleLoading(true);
+    }
+    loadSurveiMandiri();
+  }, []);
+
+  const back = () => {
+    switch (context.getUser().role) {
+      case "Petugas":
+        navigation.replace("Daftar", { kondisi: "Mandiri" });
+        break;
+      case "Super Admin":
+        navigation.replace("Daftar", { kondisi: "Mandiri" });
+        break;
+      default:
+        navigation.replace("Daftar", { kondisi: "Mandiri" });
+        break;
+    }
+  };
+
+  const judul = () => {
+    return "Detail pengaduan";
+  };
+
   const copyToClipboard = async (text) => {
     try {
       await Clipboard.setStringAsync(text);
@@ -71,111 +103,149 @@ function DetailSurveiScreen({ navigation, route }) {
     }, 3000);
   };
 
-  useEffect(() => {
-    if (context.loading == false) {
-      context.toggleLoading(true);
-    }
-    switch (jenis) {
-      case "Permohonan":
-        loadSurvei();
-        break;
-      case "Pemasangan":
-        loadPemasangan();
-        break;
-    }
-  }, []);
-
-  const back = () => {
-    switch (context.getUser().role) {
-      case "Petugas":
-        switch (jenis) {
-          case "Permohonan":
-            navigation.replace("Daftar", { kondisi: "Daftar" });
+  const loadSurveiMandiri = () => {
+    andalalinGetSurveiMandiri(
+      context.getUser().access_token,
+      route.params.id,
+      (response) => {
+        switch (response.status) {
+          case 201:
+            (async () => {
+              const result = await response.data;
+              setSurvei(result.data);
+              context.toggleLoading(false);
+            })();
             break;
-          case "Pemasangan":
-            navigation.replace("Daftar", { kondisi: "Daftar Pemasangan" });
+          case 424:
+            authRefreshToken(context, (response) => {
+              if (response.status === 200) {
+                loadSurveiMandiri();
+              } else {
+                context.toggleLoading(false);
+              }
+            });
+            break;
+          default:
+            context.toggleLoading(false);
+            toggleSurveiGagal();
             break;
         }
-        break;
-      case "Super Admin":
-        navigation.replace("Detail", { id: route.params.id });
-        break;
+      }
+    );
+  };
+
+  const terima = () => {
+    andalalinTerimaSurveiMandiri(
+      context.getUser().access_token,
+      route.params.id,
+      keteranganTindakan,
+      (response) => {
+        switch (response.status) {
+          case 201:
+            loadSurveiMandiri();
+            break;
+          case 424:
+            authRefreshToken(context, (response) => {
+              if (response.status === 200) {
+                terima();
+              } else {
+                context.toggleLoading(false);
+              }
+            });
+            break;
+          default:
+            context.toggleLoading(false);
+            toggleGagal();
+            break;
+        }
+      }
+    );
+  };
+
+  const closeTindakan = () => {
+    setKeteranganTindakan(null);
+    toggleTindakanModal();
+  };
+
+  const tindakan = () => {
+    return (
+      <View style={{ height: 250 }}>
+        <AText
+          style={{ paddingBottom: 16 }}
+          size={18}
+          color={color.neutral.neutral700}
+          weight="semibold"
+        >
+          Terima pengaduan
+        </AText>
+
+        <ATextInput
+          bdColor={color.neutral.neutral300}
+          ktype={"default"}
+          hint={"Masukkan catatan"}
+          rtype={"done"}
+          multi={true}
+          max={4}
+          maxHeight={90}
+          value={keteranganTindakan}
+          onChangeText={(value) => {
+            setKeteranganTindakan(value);
+          }}
+        />
+
+        <View
+          style={{
+            flexDirection: "row",
+            alignSelf: "flex-end",
+            position: "absolute",
+            bottom: 24,
+            right: 16,
+          }}
+        >
+          <TouchableOpacity
+            style={{ flexDirection: "row", paddingLeft: 4 }}
+            onPress={() => {
+              setKeteranganTindakan(null);
+              toggleTindakanModal();
+            }}
+          >
+            <AText size={14} color={color.neutral.neutral700} weight="semibold">
+              Batal
+            </AText>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{ flexDirection: "row", paddingLeft: 4, marginLeft: 32 }}
+            onPress={() => {
+              toggleTindakanModal();
+
+              keteranganTindakan != null ? toggleKonfirmasi() : "";
+            }}
+          >
+            <AText size={14} color={color.neutral.neutral700} weight="semibold">
+              Simpan
+            </AText>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  };
+
+  const status = () => {
+    switch (survei.StatusSurvei) {
+      case "Pengaduan diterima":
+        return color.success.success50;
       default:
-        navigation.goBack();
-        break;
+        return color.secondary.secondary50;
     }
   };
 
-  const judul = () => {
-    switch (jenis) {
-      case "Permohonan":
-        return "Detail survei";
-      case "Pemasangan":
-        return "Detail pemasangan";
+  const statusText = () => {
+    switch (survei.StatusSurvei) {
+      case "Pengaduan diterima":
+        return color.success.success700;
+      default:
+        return color.secondary.secondary700;
     }
-  };
-
-  const loadSurvei = () => {
-    andalalinGetSurvei(
-      context.getUser().access_token,
-      route.params.id,
-      route.params.id_perlengkapan,
-      (response) => {
-        switch (response.status) {
-          case 201:
-            (async () => {
-              const result = await response.data;
-              setSurvei(result.data);
-              context.toggleLoading(false);
-            })();
-            break;
-          case 424:
-            authRefreshToken(context, (response) => {
-              if (response.status === 200) {
-                loadSurvei();
-              } else {
-                context.toggleLoading(false);
-              }
-            });
-            break;
-          default:
-            context.toggleLoading(false);
-            toggleSurveiGagal();
-            break;
-        }
-      }
-    );
-  };
-
-  const loadPemasangan = () => {
-    andalalinGetPemasangan(
-      context.getUser().access_token,
-      route.params.id,
-      (response) => {
-        switch (response.status) {
-          case 201:
-            (async () => {
-              const result = await response.data;
-              setSurvei(result.data);
-              context.toggleLoading(false);
-            })();
-            break;
-          case 424:
-            authRefreshToken(context, (response) => {
-              if (response.status === 200) {
-                loadPemasangan();
-              } else {
-                context.toggleLoading(false);
-              }
-            });
-            break;
-          default:
-            context.toggleLoading(false);
-            toggleSurveiGagal();
-            break;
-        }
-      }
-    );
   };
 
   const onRefresh = React.useCallback(() => {
@@ -183,14 +253,7 @@ function DetailSurveiScreen({ navigation, route }) {
     setRefreshing(false);
     setTimeout(() => {
       context.toggleLoading(true);
-      switch (jenis) {
-        case "Permohonan":
-          loadSurvei();
-          break;
-        case "Pemasangan":
-          loadPemasangan();
-          break;
-      }
+      loadSurveiMandiri();
     }, 50);
   }, []);
 
@@ -234,7 +297,10 @@ function DetailSurveiScreen({ navigation, route }) {
             />
           }
         >
-          <ADetailView title={"Informasi petugas"} style={{ marginBottom: 20 }}>
+          <ADetailView
+            title={"Informasi pengaduan"}
+            style={{ marginBottom: 20 }}
+          >
             <View
               style={{
                 flexDirection: "row",
@@ -247,12 +313,60 @@ function DetailSurveiScreen({ navigation, route }) {
                 Nama
               </AText>
               <AText size={12} color={color.neutral.neutral500} weight="normal">
-                {survei.Petugas}
+                {survei.Nama}
+              </AText>
+            </View>
+            <View style={styles.separator} />
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                padding: 14,
+              }}
+            >
+              <AText size={12} color={color.neutral.neutral900} weight="normal">
+                Email
+              </AText>
+              <AText size={12} color={color.neutral.neutral500} weight="normal">
+                {survei.Email}
+              </AText>
+            </View>
+            <View style={styles.separator} />
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                padding: 16,
+              }}
+            >
+              <AText
+                style={{ maxWidth: "40%" }}
+                size={12}
+                color={color.neutral.neutral900}
+                weight="normal"
+              >
+                Status pengaduan
+              </AText>
+              <AText
+                style={{
+                  maxWidth: "60%",
+                  backgroundColor: status(),
+                  paddingHorizontal: 8,
+                  paddingVertical: 2,
+                  borderRadius: 15,
+                }}
+                size={12}
+                color={statusText()}
+                weight="normal"
+              >
+                {survei.StatusSurvei}
               </AText>
             </View>
           </ADetailView>
 
-          <ADetailView style={{ marginBottom: 20 }} title={"Waktu pelaksanaan"}>
+          <ADetailView style={{ marginBottom: 20 }} title={"Waktu pengaduan"}>
             <View
               style={{
                 flexDirection: "row",
@@ -265,9 +379,7 @@ function DetailSurveiScreen({ navigation, route }) {
                 Waktu
               </AText>
               <AText size={12} color={color.neutral.neutral500} weight="normal">
-                {jenis == "Pemasangan"
-                  ? survei.WaktuPemasangan
-                  : survei.WaktuSurvei}
+                {survei.WaktuSurvei}
               </AText>
             </View>
             <View style={styles.separator} />
@@ -283,16 +395,12 @@ function DetailSurveiScreen({ navigation, route }) {
                 Tanggal
               </AText>
               <AText size={12} color={color.neutral.neutral500} weight="normal">
-                {jenis == "Pemasangan"
-                  ? survei.TanggalPemasangan
-                  : survei.TanggalSurvei}
+                {survei.TanggalSurvei}
               </AText>
             </View>
           </ADetailView>
 
-          <ADetailView
-            title={`Foto ${jenis == "Pemasangan" ? "Pemasangan" : "Survei"}`}
-          >
+          <ADetailView title={`Foto pengaduan`}>
             {survei.Foto.length != 0
               ? survei.Foto.map((item, index) => (
                   <View key={index}>
@@ -335,128 +443,18 @@ function DetailSurveiScreen({ navigation, route }) {
                   </View>
                 ))
               : ""}
-            {survei.Foto1 != null ? (
-              <View>
-                <View style={styles.separator} />
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    padding: 16,
-                  }}
-                >
-                  <AText
-                    size={12}
-                    color={color.neutral.neutral900}
-                    weight="normal"
-                  >
-                    Foto 1
-                  </AText>
-
-                  <TouchableOpacity
-                    style={{ flexDirection: "row", paddingLeft: 4 }}
-                    onPress={() => {
-                      navigation.push("Foto", { foto: survei.Foto1 });
-                    }}
-                  >
-                    <AText
-                      size={14}
-                      color={color.neutral.neutral700}
-                      weight="semibold"
-                    >
-                      Lihat
-                    </AText>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            ) : (
-              ""
-            )}
-            {survei.Foto2 != null ? (
-              <View>
-                <View style={styles.separator} />
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    padding: 16,
-                  }}
-                >
-                  <AText
-                    size={12}
-                    color={color.neutral.neutral900}
-                    weight="normal"
-                  >
-                    Foto 2
-                  </AText>
-
-                  <TouchableOpacity
-                    style={{ flexDirection: "row", paddingLeft: 4 }}
-                    onPress={() => {
-                      navigation.push("Foto", { foto: survei.Foto2 });
-                    }}
-                  >
-                    <AText
-                      size={14}
-                      color={color.neutral.neutral700}
-                      weight="semibold"
-                    >
-                      Lihat
-                    </AText>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            ) : (
-              ""
-            )}
-            {survei.Foto3 != null ? (
-              <View>
-                <View style={styles.separator} />
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    padding: 16,
-                  }}
-                >
-                  <AText
-                    size={12}
-                    color={color.neutral.neutral900}
-                    weight="normal"
-                  >
-                    Foto 3
-                  </AText>
-
-                  <TouchableOpacity
-                    style={{ flexDirection: "row", paddingLeft: 4 }}
-                    onPress={() => {
-                      navigation.push("Foto", { foto: survei.Foto3 });
-                    }}
-                  >
-                    <AText
-                      size={14}
-                      color={color.neutral.neutral700}
-                      weight="semibold"
-                    >
-                      Lihat
-                    </AText>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            ) : (
-              ""
-            )}
           </ADetailView>
 
-          <ADetailView
-            style={{ marginTop: 20 }}
-            title={`Koordinat ${
-              jenis == "Pemasangan" ? "Pemasangan" : "Survei"
-            }`}
-          >
+          <ADetailView style={{ marginTop: 20 }} title={`Lokasi pengaduan`}>
+            <AText
+              style={{ padding: 16 }}
+              size={12}
+              color={color.neutral.neutral900}
+              weight="normal"
+            >
+              {survei.Lokasi}
+            </AText>
+            <View style={styles.separator} />
             <View
               style={{
                 flexDirection: "row",
@@ -468,6 +466,7 @@ function DetailSurveiScreen({ navigation, route }) {
               <AText size={12} color={color.neutral.neutral900} weight="normal">
                 Latitude
               </AText>
+
               <TouchableOpacity
                 onPress={() => {
                   copyToClipboard(survei.Latitude.toString());
@@ -543,27 +542,8 @@ function DetailSurveiScreen({ navigation, route }) {
             </View>
           </ADetailView>
 
-          <ADetailView
-            style={{ marginTop: 20 }}
-            title={`Lokasi ${jenis == "Pemasangan" ? "Pemasangan" : "Survei"}`}
-          >
-            <AText
-              style={{ padding: 16 }}
-              size={12}
-              color={color.neutral.neutral900}
-              weight="normal"
-            >
-              {survei.Lokasi}
-            </AText>
-          </ADetailView>
-
           {survei.Catatan != null && survei.Catatan != "" ? (
-            <ADetailView
-              style={{ marginTop: 20 }}
-              title={`Catatan ${
-                jenis == "Pemasangan" ? "pemasangan" : "survei"
-              }`}
-            >
+            <ADetailView style={{ marginTop: 20 }} title={`Catatan pengaduan`}>
               <AText
                 style={{ padding: 16 }}
                 size={12}
@@ -577,13 +557,49 @@ function DetailSurveiScreen({ navigation, route }) {
             ""
           )}
 
+          {survei.CatatanTindakan != "" && survei.CatatanTindakan != null ? (
+            <ADetailView style={{ marginTop: 20 }} title={"Catatan tindakan"}>
+              <AText
+                style={{ padding: 16 }}
+                size={12}
+                color={color.neutral.neutral900}
+                weight="normal"
+              >
+                {survei.CatatanTindakan}
+              </AText>
+            </ADetailView>
+          ) : (
+            ""
+          )}
+
           <View style={{ marginBottom: 32 }} />
+
+          {context.getUser().role != "Dinas Perhubungan" &&
+          context.getUser().role != "User" &&
+          context.getUser().role != "Petugas" &&
+          survei.StatusSurvei != "Pengaduan diterima" ? (
+            <AButton
+              style={{ marginBottom: 32 }}
+              title={"Terima aduan"}
+              mode="contained"
+              onPress={() => {
+                toggleTindakanModal();
+              }}
+            />
+          ) : (
+            ""
+          )}
         </ScrollView>
       ) : (
         ""
       )}
+
+      <ABottomSheet visible={tindakanModal} close={closeTindakan}>
+        {tindakan()}
+      </ABottomSheet>
+
       <ADialog
-        title={"Data gagal dimuat"}
+        title={"Pengaduan gagal dimuat"}
         desc={"Terjadi kesalahan pada server, mohon coba lagi lain waktu"}
         visibleModal={surveiGagal}
         toggleModal={toggleSurveiGagal}
@@ -595,7 +611,7 @@ function DetailSurveiScreen({ navigation, route }) {
       />
 
       <ADialog
-        title={"Terima survei gagal"}
+        title={"Terima pengaduan gagal"}
         desc={"Terjadi kesalahan pada server, mohon coba lagi lain waktu"}
         visibleModal={gagal}
         toggleModal={toggleGagal}
@@ -615,11 +631,9 @@ function DetailSurveiScreen({ navigation, route }) {
         onPressBATALButton={() => {
           toggleKonfirmasi();
           setKeteranganTindakan();
-          toggleTindakanModal();
         }}
         onPressOKButton={() => {
           toggleKonfirmasi();
-          toggleTindakanModal();
           context.toggleLoading(true);
           terima();
         }}
@@ -649,4 +663,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DetailSurveiScreen;
+export default DetailSurveiMandiriScreen;

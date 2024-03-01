@@ -6497,6 +6497,7 @@ function DaftarProdukScreen({ navigation, route }) {
         title={"Tambah " + title().toLowerCase()}
         desc={"Apakah Anda yakin ingin tambah " + title().toLowerCase() + "?"}
         visibleModal={tambahConfirms}
+        toggleVisibleModal={toggleTambahConfirms}
         btnOK={"OK"}
         btnBATAL={"Batal"}
         onPressBATALButton={() => {
@@ -6532,6 +6533,7 @@ function DaftarProdukScreen({ navigation, route }) {
         title={"Hapus " + title().toLowerCase()}
         desc={"Apakah Anda yakin ingin hapus " + pilih + "?"}
         visibleModal={hapusConfirms}
+        toggleVisibleModal={toggleHapusConfirms}
         btnOK={"OK"}
         btnBATAL={"Batal"}
         onPressBATALButton={() => {
@@ -6554,6 +6556,7 @@ function DaftarProdukScreen({ navigation, route }) {
         title={"Edit " + title().toLowerCase()}
         desc={"Apakah Anda yakin ingin edit " + pilih + "?"}
         visibleModal={editConfirms}
+        toggleVisibleModal={toggleEditConfirms}
         btnOK={"OK"}
         btnBATAL={"Batal"}
         onPressBATALButton={() => {
@@ -6570,6 +6573,7 @@ function DaftarProdukScreen({ navigation, route }) {
         title={"Tambah " + title().toLowerCase() + " gagal"}
         desc={"Terjadi kesalahan pada server, mohon coba lagi lain waktu"}
         visibleModal={tambahGagal}
+        toggleModal={toggleTambahGagal}
         btnOK={"OK"}
         onPressOKButton={() => {
           toggleTambahGagal();
@@ -6580,6 +6584,7 @@ function DaftarProdukScreen({ navigation, route }) {
         title={"Hapus " + title().toLowerCase() + " gagal"}
         desc={"Terjadi kesalahan pada server, mohon coba lagi lain waktu"}
         visibleModal={hapusGagal}
+        toggleModal={toggleHapusGagal}
         btnOK={"OK"}
         onPressOKButton={() => {
           toggleHapusGagal();
@@ -6590,6 +6595,7 @@ function DaftarProdukScreen({ navigation, route }) {
         title={"Edit " + title().toLowerCase() + " gagal"}
         desc={"Terjadi kesalahan pada server, mohon coba lagi lain waktu"}
         visibleModal={editGagal}
+        toggleModal={toggleEditGagal}
         btnOK={"OK"}
         onPressOKButton={() => {
           toggleEditGagal();
@@ -6602,6 +6608,7 @@ function DaftarProdukScreen({ navigation, route }) {
           title() + " yang diinputkan sudah tersedia, silahkan coba kembali"
         }
         visibleModal={dataExist}
+        toggleModal={toggleDataExist}
         btnOK={"OK"}
         onPressOKButton={() => {
           toggleDataExist();
@@ -6612,6 +6619,7 @@ function DaftarProdukScreen({ navigation, route }) {
         title={"Data master gagal dimuat"}
         desc={"Terjadi kesalahan pada server, mohon coba lagi lain waktu"}
         visibleModal={loadGagal}
+        toggleModal={toggleLoadGagal}
         btnOK={"OK"}
         onPressOKButton={() => {
           toggleLoadGagal();

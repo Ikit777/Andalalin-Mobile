@@ -11,9 +11,11 @@ import color from "../../constants/color";
 import AText from "../utility/AText";
 import { UserContext } from "../../context/UserContext";
 import * as RootNavigation from "../../navigation/RootNavigator.js";
+import { CheckContext } from "../../context/CheckContext";
 
 function ANoInternetDialog({ visibleModal = false }) {
   const context = useContext(UserContext);
+  const check = useContext(CheckContext);
   const [visible, setVisible] = React.useState(visibleModal);
 
   React.useEffect(() => {
@@ -25,6 +27,12 @@ function ANoInternetDialog({ visibleModal = false }) {
       if (context.loading == true) {
         context.toggleLoading(false);
       }
+
+      check.setIsServerOk(true);
+
+      if (check.isUpdate == true) {
+        check.setIsUpdate(false);
+      }
       setVisible(true);
     }
   };
@@ -33,7 +41,7 @@ function ANoInternetDialog({ visibleModal = false }) {
     setTimeout(() => setVisible(false), 200);
 
     if (context.getUser() != "user") {
-      RootNavigation.navigate("Home");
+      RootNavigation.replace("Home");
     }
   };
 

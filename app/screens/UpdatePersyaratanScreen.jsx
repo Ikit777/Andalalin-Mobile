@@ -282,6 +282,7 @@ function UpdatePersyaratanScreen({ navigation, route }) {
         title={"Simpan"}
         desc={"Pembaruan persyaratan akan disimpan"}
         visibleModal={confirm}
+        toggleVisibleModal={toggleComfirm}
         btnOK={"OK"}
         btnBATAL={"Batal"}
         onPressBATALButton={() => {

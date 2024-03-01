@@ -6,7 +6,6 @@ import Konfirmasi from "./Konfirmasi";
 import Informasi from "./Informasi";
 import PermohonanPerlalin from "./PermohonanPerlalin";
 import PemohonPerlalin from "./PemohonPerlalin";
-import KegiatanPerlalin from "./KegiatanPerlalin";
 import PersyaratanPerlalin from "./PersyaratanPerlalin";
 
 export default function PerlalinItem({ navigation, route }) {
@@ -15,7 +14,7 @@ export default function PerlalinItem({ navigation, route }) {
   const kondisi = route.params.kondisi;
 
   const onGoToNext = () => {
-    if (index < 6) {
+    if (index < 5) {
       const newIndex = index + 1;
 
       context.setIndex(newIndex);
@@ -41,12 +40,10 @@ export default function PerlalinItem({ navigation, route }) {
       case 3:
         return <PemohonPerlalin onPress={onGoToNext} />;
       case 4:
-        return <KegiatanPerlalin onPress={onGoToNext} />;
-      case 5:
         return (
           <PersyaratanPerlalin onPress={onGoToNext} navigation={navigation} />
         );
-      case 6:
+      case 5:
         return <Konfirmasi navigation={navigation} kondisi={kondisi} />;
     }
   };

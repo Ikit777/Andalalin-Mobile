@@ -443,6 +443,7 @@ function DaftarPenggunaScreen({ navigation }) {
         title={"Pengguna gagal dimuat"}
         desc={"Terjadi kesalahan pada server, mohon coba lagi lain waktu"}
         visibleModal={gagal}
+        toggleModal={toggleGagal}
         btnOK={"OK"}
         onPressOKButton={() => {
           toggleGagal();
@@ -454,6 +455,7 @@ function DaftarPenggunaScreen({ navigation }) {
         title={"Pengguna gagal dihapus"}
         desc={"Terjadi kesalahan pada server, mohon coba lagi lain waktu"}
         visibleModal={hapusGagal}
+        toggleModal={toggleHapusGagal}
         btnOK={"OK"}
         onPressOKButton={() => {
           toggleHapusGagal();
@@ -465,6 +467,7 @@ function DaftarPenggunaScreen({ navigation }) {
         title={"Hapus"}
         desc={"Apakah Anda yakin ingin hapus pengguna ini?"}
         visibleModal={konfirmasi}
+        toggleVisibleModal={toggleKonfirmasi}
         btnOK={"OK"}
         btnBATAL={"Batal"}
         onPressBATALButton={() => {

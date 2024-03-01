@@ -5,23 +5,18 @@ import color from "../../constants/color";
 import Foto from "./Foto";
 import Lokasi from "./Lokasi";
 import Keterangan from "./Keterangan";
-import Perlengkapan from "./Perlengkapan";
 
-export default function SurveiItem({ navigation, route }) {
+export default function MandiriItem({ navigation, route }) {
   const context = useContext(UserContext);
   const index = route.params.index;
-  const id = route.params.id;
-  const kondisi = route.params.kondisi;
 
   const onGoToNext = () => {
-    if (index < 4) {
+    if (index < 3) {
       const newIndex = index + 1;
-      context.setIndexSurvei(newIndex);
+      context.setSurveiMandiriIndex(newIndex);
 
-      navigation.push("SurveiItem", {
+      navigation.push("MandiriItem", {
         index: newIndex,
-        id: id,
-        kondisi,
       });
     }
   };
@@ -29,18 +24,14 @@ export default function SurveiItem({ navigation, route }) {
   const renderItem = () => {
     switch (index) {
       case 1:
-        return <Perlengkapan onPress={onGoToNext} navigation={navigation} kondisi={kondisi} />;
-      case 2:
         return <Foto onPress={onGoToNext} navigation={navigation} />;
+      case 2:
+        return <Lokasi onPress={onGoToNext} />;
       case 3:
-        return <Lokasi onPress={onGoToNext} id={id} />;
-      case 4:
         return (
           <Keterangan
             onPress={onGoToNext}
-            id={id}
             navigation={navigation}
-            kondisi={kondisi}
           />
         );
     }

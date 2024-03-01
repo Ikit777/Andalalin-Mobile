@@ -1,50 +1,63 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { health } from "../api/user";
 import Constants from "expo-constants";
-import { AppState } from "react-native";
+import { NetContext } from "./NetContext";
 
 export const CheckContext = createContext();
 
 export function CheckProvider({ children }) {
+  const net = useContext(NetContext);
+
   const [isServerOk, setIsServerOk] = useState(true);
   const [isUpdate, setIsUpdate] = useState(false);
 
-  const [appState, setAppState] = useState();
-
   useEffect(() => {
-    const subscription = AppState.addEventListener("change", (nextAppState) => {
-      setAppState(nextAppState);
-    });
+    if (net == true) {
+      checkServer();
 
-    return () => subscription.remove();
+      // checkVersion();
+
+      const intervalId = setInterval(async () => {
+        checkServer();
+        // checkVersion();
+      }, 5 * 60 * 1000);
+
+      return () => clearInterval(intervalId);
+    }
   }, []);
 
   useEffect(() => {
-    checkServer();
-    // checkVersion();
-
-    const intervalId = setInterval(async () => {
+    if (net == true) {
       checkServer();
       // checkVersion();
-    }, 15 * 60 * 1000);
+    }
+  }, [net]);
 
-    return () => clearInterval(intervalId);
-  }, [appState]);
+  useEffect(() => {
+    if (isServerOk == false && isUpdate == true) {
+      setIsServerOk(true);
+    }
+  }, [isUpdate]);
 
   const checkServer = () => {
-    if (appState == "active") {
+    setTimeout(() => {
       health((response) => {
         if (response == undefined) {
-          setIsServerOk(false);
-        } else {
-          if (response.status === 200) {
-            setIsServerOk(true);
-          } else {
+          if (response.code != "ERR_NETWORk") {
             setIsServerOk(false);
+          }
+        } else {
+          switch (response.status) {
+            case 200:
+              setIsServerOk(true);
+              break;
+            default:
+              setIsServerOk(false);
+              break;
           }
         }
       });
-    }
+    }, 500);
   };
 
   const checkVersion = async () => {
@@ -70,7 +83,9 @@ export function CheckProvider({ children }) {
   };
 
   return (
-    <CheckContext.Provider value={{ isServerOk, isUpdate }}>
+    <CheckContext.Provider
+      value={{ isServerOk, setIsServerOk, isUpdate, setIsUpdate }}
+    >
       {children}
     </CheckContext.Provider>
   );

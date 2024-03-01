@@ -204,6 +204,7 @@ function CekAdministrasiPerlalinScreen({ navigation }) {
         title={"Peringatan"}
         desc={"Data yang Anda masukkan akan hilang"}
         visibleModal={confirm}
+        toggleVisibleModal={toggleComfirm}
         btnOK={"OK"}
         btnBATAL={"Batal"}
         onPressBATALButton={() => {
@@ -221,6 +222,7 @@ function CekAdministrasiPerlalinScreen({ navigation }) {
         title={"Simpan"}
         desc={"Simpan data cek persyaratan?"}
         visibleModal={konfirmasi}
+        toggleVisibleModal={toggleKonfirmasi}
         btnOK={"Simpan"}
         btnBATAL={"Batal"}
         onPressBATALButton={() => {
@@ -236,6 +238,7 @@ function CekAdministrasiPerlalinScreen({ navigation }) {
         title={"Simpan gagal"}
         desc={"Terjadi kesalahan pada server, mohon coba lagi lain waktu"}
         visibleModal={gagal}
+        toggleModal={toggleGagal}
         btnOK={"OK"}
         onPressOKButton={() => {
           toggleGagal();

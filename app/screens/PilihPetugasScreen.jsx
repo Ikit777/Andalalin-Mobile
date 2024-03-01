@@ -428,6 +428,7 @@ function PilihPetugasScreen({ navigation, route }) {
         title={"Simpan"}
         desc={"Apakah Anda yakin ingin simpan petugas?"}
         visibleModal={konfirmasi}
+        toggleVisibleModal={toggleKonfirmasi}
         btnOK={"OK"}
         btnBATAL={"Batal"}
         onPressBATALButton={() => {

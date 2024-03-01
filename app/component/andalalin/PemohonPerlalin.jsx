@@ -26,6 +26,7 @@ function PemohonPerlalin({ onPress }) {
       kelurahan_pemohon,
       alamat_pemohon,
       nomer_pemohon,
+      catatan,
     },
     dataMaster,
     setPerlalin,
@@ -48,14 +49,18 @@ function PemohonPerlalin({ onPress }) {
   const [kelurahan, setKelurahan] = useState(kelurahan_pemohon);
   const [alamat, setAlamat] = useState(alamat_pemohon);
   const [nomer, setNomer] = useState(nomer_pemohon);
+  const [catatanTambahan, setCatatanTambahan] = useState(catatan);
 
   const [nikError, togglenikError] = useStateToggler();
+  const [nikError1, togglenikError1] = useStateToggler();
   const [tempatError, toggletempatError] = useStateToggler();
   const [tanggalError, toggletanggalError] = useStateToggler();
   const [jenisError, togglejenisError] = useStateToggler();
   const [alamatError, togglealamatError] = useStateToggler();
   const [alamat1Error, togglealamat1Error] = useStateToggler();
   const [nomerError, togglenomerError] = useStateToggler();
+
+  const [formError, toggleFormError] = useStateToggler();
 
   const [alamatInputModal, toggleAlamatInputModal] = useStateToggler();
 
@@ -71,26 +76,9 @@ function PemohonPerlalin({ onPress }) {
       tanggal != "" &&
       alamat != "" &&
       alamatModal != "" &&
-      nomer != ""
+      nomer != "" &&
+      nik.length == 16
     ) {
-      {
-        nikError ? togglenikError() : "";
-      }
-      {
-        tempatError ? toggletempatError() : "";
-      }
-      {
-        tanggalError ? toggletanggalError() : "";
-      }
-      {
-        alamatError ? togglealamatError() : "";
-      }
-      {
-        nomerError ? togglenomerError() : "";
-      }
-      {
-        alamat1Error ? togglealamat1Error() : "";
-      }
       setPerlalin({
         nik_pemohon: nik,
         jenis_kelamin_pemohon: jenis,
@@ -103,46 +91,60 @@ function PemohonPerlalin({ onPress }) {
         kelurahan_pemohon: kelurahan,
         alamat_pemohon: alamat,
         nomer_pemohon: nomer,
+        catatan: catatanTambahan,
       });
       onPress();
     } else {
-      {
-        nik == "" ? (nikError ? "" : togglenikError()) : "";
-      }
-      {
-        jenis == "" ? (jenisError ? "" : togglejenisError()) : "";
-      }
-      {
-        tempat == "" ? (tempatError ? "" : toggletempatError()) : "";
-      }
-      {
-        tanggal == "" ? (tempatError ? "" : toggletanggalError()) : "";
-      }
-      {
-        alamat == "" ? (alamatError ? "" : togglealamatError()) : "";
-      }
-      {
-        alamatModal == "" ? (alamat1Error ? "" : togglealamat1Error()) : "";
-      }
-      {
-        nomer == "" ? (nomerError ? "" : togglenomerError()) : "";
-      }
+      nik == "" ? (nikError ? "" : togglenikError()) : "";
+      jenis == "" ? (jenisError ? "" : togglejenisError()) : "";
+      tempat == "" ? (tempatError ? "" : toggletempatError()) : "";
+      tanggal == "" ? (tempatError ? "" : toggletanggalError()) : "";
+      alamat == "" ? (alamatError ? "" : togglealamatError()) : "";
+      alamatModal == "" ? (alamat1Error ? "" : togglealamat1Error()) : "";
+      nomer == "" ? (nomerError ? "" : togglenomerError()) : "";
+      formError ? "" : toggleFormError();
     }
   };
 
   useEffect(() => {
-    {
-      {
-        jenisError ? togglejenisError() : "";
-      }
-    }
-  }, [jenis]);
+    clear_error();
+  }, [jenis, alamatModal, tanggal, alamatModal]);
 
-  useEffect(() => {
-    {
-      alamat1Error ? togglealamat1Error() : "";
-    }
-  }, [alamatModal]);
+  const clear_error = () => {
+    setPerlalin({
+      nik_pemohon: nik,
+      jenis_kelamin_pemohon: jenis,
+      tempat_lahir_pemohon: tempat,
+      tanggal_lahir_pemohon: tanggal,
+      wilayah_administratif_pemohon: alamatModal,
+      provinsi_pemohon: provinsi,
+      kabupaten_pemohon: kabupaten,
+      kecamatan_pemohon: kecamatan,
+      kelurahan_pemohon: kelurahan,
+      alamat_pemohon: alamat,
+      nomer_pemohon: nomer,
+      catatan: catatanTambahan,
+    });
+    
+    jenis != "" ? (jenisError ? togglejenisError() : "") : "";
+    tempat != "" ? (tempatError ? toggletempatError() : "") : "";
+    tanggal != "" ? (tanggalError ? toggletanggalError() : "") : "";
+    alamat != "" ? (alamatError ? togglealamatError() : "") : "";
+    alamatModal != "" ? (alamat1Error ? togglealamat1Error() : "") : "";
+    nomer != "" ? (nomerError ? togglenomerError() : "") : "";
+
+    nik != "" &&
+    jenis != "" &&
+    tempat != "" &&
+    tanggal != "" &&
+    alamat != "" &&
+    alamatModal != "" &&
+    nomer != ""
+      ? formError
+        ? toggleFormError()
+        : ""
+      : "";
+  };
 
   return (
     <ScrollView
@@ -154,30 +156,44 @@ function PemohonPerlalin({ onPress }) {
         bdColor={nikError ? color.error.error500 : color.neutral.neutral300}
         ktype={"number-pad"}
         hint={"Masukkan nik anda"}
-        title={"Nik"}
+        title={"NIK"}
         rtype={"done"}
         maksimal={16}
+        wajib={"*"}
         multi={false}
         value={nik}
         ref={nikInput}
         onChangeText={(value) => {
+          if (value.length > 0 && value.length < 16) {
+            nikError ? "" : togglenikError();
+            nikError1 ? "" : togglenikError1();
+          } else {
+            nikError ? togglenikError() : "";
+            nikError1 ? togglenikError1() : "";
+          }
+          clear_error();
           setNik(value);
         }}
         submit={() => {
-          {
+          if (nik.length > 0 && nik.length < 16) {
+            nikError ? "" : togglenikError();
+            nikError1 ? "" : togglenikError1();
+          } else {
             nikError ? togglenikError() : "";
+            nikError1 ? togglenikError1() : "";
           }
+          clear_error();
         }}
       />
 
-      {nikError ? (
+      {nikError1 ? (
         <AText
-          style={{ paddingTop: 6 }}
+          style={{ paddingTop: 8 }}
           color={color.error.error500}
           size={14}
           weight="normal"
         >
-          Nik wajib
+          {"NIK kurang dari 16 karakter"}
         </AText>
       ) : (
         ""
@@ -189,21 +205,10 @@ function PemohonPerlalin({ onPress }) {
         hint={"Pilih jenis kelamin"}
         data={jenis_kelamin}
         padding={20}
+        wajib={"*"}
         selected={setJenis}
         saved={jenis}
       />
-      {jenisError ? (
-        <AText
-          style={{ paddingTop: 6 }}
-          color={color.error.error500}
-          size={14}
-          weight="normal"
-        >
-          Jenis kelamin wajib
-        </AText>
-      ) : (
-        ""
-      )}
 
       <ATextInput
         bdColor={tempatError ? color.error.error500 : color.neutral.neutral300}
@@ -211,38 +216,26 @@ function PemohonPerlalin({ onPress }) {
         hint={"Masukkan tempat lahir"}
         title={"Tempat lahir"}
         rtype={"done"}
+        wajib={"*"}
         multi={false}
         padding={20}
         value={tempat}
         ref={tempatLahirInput}
         onChangeText={(value) => {
+          clear_error();
           setTempat(value);
         }}
         submit={() => {
-          {
-            tempatError ? toggletempatError() : "";
-          }
+          clear_error();
         }}
       />
-
-      {tempatError ? (
-        <AText
-          style={{ paddingTop: 6 }}
-          color={color.error.error500}
-          size={14}
-          weight="normal"
-        >
-          Tempat lahir wajib
-        </AText>
-      ) : (
-        ""
-      )}
 
       <ATextInputIcon
         bdColor={tanggalError ? color.error.error500 : color.neutral.neutral300}
         hint={"Masukkan tanggal lahir"}
         title={"Tanggal lahir"}
         padding={20}
+        wajib={"*"}
         icon={"calendar"}
         value={tanggal}
         ref={tanggalLahirInput}
@@ -251,24 +244,12 @@ function PemohonPerlalin({ onPress }) {
         }}
       />
 
-      {tanggalError ? (
-        <AText
-          style={{ paddingTop: 6 }}
-          color={color.error.error500}
-          size={14}
-          weight="normal"
-        >
-          Tanggal lahir wajib
-        </AText>
-      ) : (
-        ""
-      )}
-
       <ATextInputIcon
         bdColor={alamat1Error ? color.error.error500 : color.neutral.neutral300}
         hint={"Pilih wilayah administratif"}
         title={"Wilayah administratif"}
         padding={20}
+        wajib={"*"}
         mult={true}
         width={true}
         icon={"map-pin"}
@@ -276,68 +257,44 @@ function PemohonPerlalin({ onPress }) {
         onPress={toggleAlamatInputModal}
       />
 
-      {alamat1Error ? (
-        <AText
-          style={{ paddingTop: 6 }}
-          color={color.error.error500}
-          size={14}
-          weight="normal"
-        >
-          Wilayah adiminstratif wajib
-        </AText>
-      ) : (
-        ""
-      )}
-
       <ATextInput
         bdColor={alamatError ? color.error.error500 : color.neutral.neutral300}
         ktype={"default"}
         hint={"Masukkan alamat"}
         title={"Alamat"}
+        wajib={"*"}
         multi={true}
         padding={20}
         value={alamat}
         ref={alamatInput}
         onChangeText={(value) => {
+          clear_error();
           setAlamat(value);
         }}
       />
 
-      {alamatError ? (
-        <AText
-          style={{ paddingTop: 6 }}
-          color={color.error.error500}
-          size={14}
-          weight="normal"
-        >
-          Alamat wajib
-        </AText>
-      ) : (
-        ""
-      )}
-
       <ATextInput
         bdColor={nomerError ? color.error.error500 : color.neutral.neutral300}
         ktype={"number-pad"}
-        hint={"Masukkan nomer"}
-        title={"Nomer telepon/Fax"}
+        hint={"Masukkan nomor"}
+        title={"Nomor telepon/WA"}
         rtype={"done"}
+        wajib={"*"}
         multi={false}
         value={nomer}
         padding={20}
         ref={nomerInput}
         onChangeText={(value) => {
+          clear_error();
           setNomer(value);
         }}
         submit={() => {
-          {
-            nomerError ? togglenomerError() : "";
-          }
+          clear_error();
         }}
       />
 
       <AText
-        style={{ paddingTop: 6 }}
+        style={{ paddingTop: 8 }}
         color={color.neutral.neutral300}
         size={14}
         weight="normal"
@@ -345,19 +302,31 @@ function PemohonPerlalin({ onPress }) {
         Contoh: 08••••••••••••
       </AText>
 
-      {nomerError ? (
+      <ATextInput
+        bdColor={color.neutral.neutral300}
+        ktype={"default"}
+        hint={"Masukkan catatan"}
+        title={"Catatan"}
+        multi={true}
+        padding={20}
+        value={catatanTambahan}
+        onChangeText={(value) => {
+          setCatatanTambahan(value);
+        }}
+      />
+
+      {formError ? (
         <AText
-          style={{ paddingTop: 6 }}
+          style={{ paddingTop: 8 }}
           color={color.error.error500}
           size={14}
           weight="normal"
         >
-          Nomer telepon wajib
+          Lengkapi formulir atau kolom yang tersedia dengan benar
         </AText>
       ) : (
         ""
       )}
-
       <AButton
         style={{ marginTop: 32, marginBottom: 50 }}
         title={"Lanjut"}
@@ -366,7 +335,6 @@ function PemohonPerlalin({ onPress }) {
           press();
         }}
       />
-
       <AInputAlamat
         visibleModal={alamatInputModal}
         master={dataMaster}
@@ -384,14 +352,10 @@ function PemohonPerlalin({ onPress }) {
           toggleAlamatInputModal();
         }}
       />
-
       <ADatePicker
         visibleModal={dateModal}
         onPressOKButton={() => {
           toggleDateModal();
-          {
-            tanggalError ? toggletanggalError() : "";
-          }
         }}
         onPressBATALButton={() => {
           toggleDateModal();

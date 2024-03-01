@@ -188,6 +188,7 @@ function PembuatanSuratPernyataanScreen({ navigation }) {
         title={"Simpan"}
         desc={"Simpan data kewajiban?"}
         visibleModal={konfirmasi}
+        toggleVisibleModal={toggleKonfirmasi}
         btnOK={"OK"}
         btnBATAL={"Batal"}
         onPressBATALButton={() => {
