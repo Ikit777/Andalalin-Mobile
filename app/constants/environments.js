@@ -140,6 +140,11 @@ const environments = {
       HAPUS_JALAN: url + "/v1/master/hapus/jalan",
       EDIT_JALAN: url + "/v1/master/edit/jalan",
 
+      TAMBAH_PANDUAN: url + "/v1/master/tambah/panduan",
+      HAPUS_PANDUAN: url + "/v1/master/hapus/panduan",
+      EDIT_PANDUAN: url + "/v1/master/edit/panduan",
+      GET_PANDUAN: url + "/v1/master/get/panduan",
+
       //Cek
       CEK_SERVER: url + "/v1/healthchecker",
       CEK_MASTER: url + "/v1/master/check",

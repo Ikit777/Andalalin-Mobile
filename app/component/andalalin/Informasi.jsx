@@ -1,10 +1,16 @@
-import React from "react";
+import React, { useContext } from "react";
 import { StyleSheet, View } from "react-native";
 import AText from "../utility/AText";
 import color from "../../constants/color";
 import AButton from "../utility/AButton";
+import { UserContext } from "../../context/UserContext";
+
 
 function Informasi({ navigation, onPress, kondisi }) {
+  const {
+    permohonan: { bangkitan },
+  } = useContext(UserContext);
+
   return (
     <View style={styles.content}>
       <AText size={24} weight="semibold" color={color.neutral.neutral900}>
@@ -27,9 +33,25 @@ function Informasi({ navigation, onPress, kondisi }) {
         lihat di bawah ini agar pengisian berjalan lancar.
       </AText>
 
+      {kondisi == "Andalalin" ? (
+        <AButton
+          style={{
+            marginTop: 32,
+            borderWidth: 1,
+            paddingVertical: 10,
+            borderColor: color.neutral.neutral300,
+          }}
+          title={"Panduan " + bangkitan.toLowerCase()}
+          mode="text"
+          onPress={() => {}}
+        />
+      ) : (
+        ""
+      )}
+
       <AButton
         style={{
-          marginTop: 32,
+          marginTop: 16,
           borderWidth: 1,
           paddingVertical: 10,
           borderColor: color.neutral.neutral300,
@@ -37,12 +59,11 @@ function Informasi({ navigation, onPress, kondisi }) {
         title={"Lihat persyaratan"}
         mode="text"
         onPress={() => {
-          if(kondisi == "Andalalin"){
+          if (kondisi == "Andalalin") {
             navigation.push("Ketentuan", { kondisi: "Pengajuan andalalin" });
-          }else{
+          } else {
             navigation.push("Ketentuan", { kondisi: "Pengajuan perlalin" });
           }
-          
         }}
       />
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -21,6 +21,9 @@ import ADialog from "../component/utility/ADialog";
 import { get, remove, store } from "../utils/local-storage";
 import * as ImagePicker from "expo-image-picker";
 import { userUpdatePhoto } from "../api/user";
+import { masterGetPanduan } from "../api/master";
+import { StorageAccessFramework } from "expo-file-system";
+import ASnackBar from "../component/utility/ASnackBar";
 
 function SettingScreen({ navigation }) {
   const context = useContext(UserContext);
@@ -30,6 +33,12 @@ function SettingScreen({ navigation }) {
   const [fotoGagal, toggleFotoGagal] = useStateToggler();
   const [permission, togglePermission] = useStateToggler();
   const [forgotError, toggleForgotError] = useStateToggler();
+
+  const [downloadConfirm, toggleDownloadConfirm] = useStateToggler();
+  const [uri, setUri] = useState();
+
+  const [message, setMessage] = useState();
+  const [isSnackbarVisible, setSnackbarVisible] = useStateToggler();
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
@@ -46,6 +55,13 @@ function SettingScreen({ navigation }) {
 
     return unsubscribe;
   }, [navigation]);
+
+  const showSnackbar = () => {
+    setSnackbarVisible();
+    setTimeout(() => {
+      setSnackbarVisible();
+    }, 3000);
+  };
 
   const logout = () => {
     authLogout(context.getUser().access_token, (response) => {
@@ -140,6 +156,68 @@ function SettingScreen({ navigation }) {
       context.toggleLoading(true);
       change(imagePickerResult.assets[0].uri);
     }
+  };
+
+  const download = async () => {
+    const permissions =
+      await StorageAccessFramework.requestDirectoryPermissionsAsync();
+    if (!permissions.granted) {
+      return;
+    }
+
+    setUri(permissions.directoryUri);
+    toggleDownloadConfirm();
+  };
+
+  const getDokumen = async () => {
+    context.toggleLoading(true);
+    masterGetPanduan(
+      context.getUser().access_token,
+      "Panduan umum",
+      (response) => {
+        switch (response.status) {
+          case 200:
+            (async () => {
+              const result = await response.data;
+
+              await StorageAccessFramework.createFileAsync(
+                uri,
+                "Panduan.pdf",
+                "application/pdf"
+              )
+                .then(async (uri) => {
+                  context.toggleLoading(true);
+                  await FileSystem.writeAsStringAsync(uri, result.data, {
+                    encoding: FileSystem.EncodingType.Base64,
+                  });
+                })
+                .catch(() => {
+                  context.toggleLoading(false);
+                  setMessage("Panduan gagal di download atau belum tersedia");
+                  showSnackbar();
+                })
+                .finally(() => {
+                  context.toggleLoading(false);
+                  setMessage("Panduan berhasil di download");
+                  showSnackbar();
+                });
+            })();
+            break;
+          case 424:
+            authRefreshToken(context, (response) => {
+              if (response.status === 200) {
+                getDokumen();
+              }
+            });
+            break;
+          default:
+            context.toggleLoading(false);
+            setMessage("Panduan gagal di download atau belum tersedia");
+            showSnackbar();
+            break;
+        }
+      }
+    );
   };
 
   return (
@@ -245,6 +323,13 @@ function SettingScreen({ navigation }) {
                 }}
               />
               <ASettingItem
+                icon={"book"}
+                title={"Panduan"}
+                onPress={() => {
+                  download();
+                }}
+              />
+              <ASettingItem
                 icon={"help-circle"}
                 title={"Bantuan"}
                 onPress={() => {
@@ -345,6 +430,30 @@ function SettingScreen({ navigation }) {
           navigation.replace("Login");
         }}
       />
+
+      <AConfirmationDialog
+        title={"Download"}
+        desc={"Panduan akan tersimpan pada folder yang Anda pilih"}
+        visibleModal={downloadConfirm}
+        toggleVisibleModal={toggleDownloadConfirm}
+        btnOK={"OK"}
+        btnBATAL={"Batal"}
+        onPressBATALButton={() => {
+          toggleDownloadConfirm();
+        }}
+        onPressOKButton={() => {
+          toggleDownloadConfirm();
+          getDokumen();
+        }}
+      />
+
+      <View style={{ paddingHorizontal: 16 }}>
+        {isSnackbarVisible ? (
+          <ASnackBar visible={isSnackbarVisible} message={message} />
+        ) : (
+          ""
+        )}
+      </View>
     </AScreen>
   );
 }

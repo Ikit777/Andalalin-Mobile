@@ -1095,3 +1095,108 @@ export const masterEditJalan = async (
   });
   masterRespone(response);
 };
+
+export const masterTambahPanduan = async (
+  accessToken,
+  id,
+  tipe,
+  file,
+  masterRespone
+) => {
+  const formData = new FormData();
+  formData.append("panduan", {
+    uri: file,
+    name: "panduan.pdf",
+    type: "application/pdf",
+  });
+  const data = JSON.stringify({
+    tipe: tipe,
+  });
+  formData.append("data", data);
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "multipart/form-data",
+  };
+  const body = formData;
+  const response = await axiosInstance({
+    method: "post",
+    url: ENDPOINTS.TAMBAH_PANDUAN + "/" + id,
+    headers: headers,
+    data: body,
+  });
+  masterRespone(response);
+};
+
+export const masterHapusPanduan = async (
+  accessToken,
+  id,
+  tipe,
+  masterRespone
+) => {
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "application/json",
+  };
+  const body = JSON.stringify({
+    tipe: tipe,
+  });
+  const response = await axiosInstance({
+    method: "post",
+    url: ENDPOINTS.HAPUS_PANDUAN + "/" + id,
+    headers: headers,
+    data: body,
+  });
+  masterRespone(response);
+};
+
+export const masterEditPanduan = async (
+  accessToken,
+  id,
+  tipe,
+  file,
+  masterRespone
+) => {
+  const formData = new FormData();
+  formData.append("panduan", {
+    uri: file,
+    name: "panduan.pdf",
+    type: "application/pdf",
+  });
+  const data = JSON.stringify({
+    tipe: tipe,
+  });
+  formData.append("data", data);
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "multipart/form-data",
+  };
+  const body = formData;
+  const response = await axiosInstance({
+    method: "post",
+    url: ENDPOINTS.EDIT_PANDUAN + "/" + id,
+    headers: headers,
+    data: body,
+  });
+  masterRespone(response);
+};
+
+export const masterGetPanduan = async (
+  accessToken,
+  tipe,
+  masterRespone
+) => {
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "application/json",
+  };
+  const body = JSON.stringify({
+    tipe: tipe,
+  });
+  const response = await axiosInstance({
+    method: "post",
+    url: ENDPOINTS.GET_PANDUAN,
+    headers: headers,
+    data: body,
+  });
+  masterRespone(response);
+};
