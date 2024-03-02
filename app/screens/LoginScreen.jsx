@@ -236,7 +236,7 @@ function LoginScreen({ navigation }) {
           size={16}
           weight="normal"
         >
-          Dapatkan kemudahan dalam urusan managemen lalu lintas
+          Dapatkan kemudahan dalam urusan manajemen lalu lintas
         </AText>
         <ATextInput
           bdColor={emailError ? color.error.error500 : color.neutral.neutral300}

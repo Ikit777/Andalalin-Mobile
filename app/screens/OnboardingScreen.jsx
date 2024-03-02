@@ -42,7 +42,7 @@ function OnBoardingscreen({ navigation }) {
         </AText>
         <View style={{ paddingTop: 8 }}>
           <AText color={color.neutral.neutral500} size={16} weight="normal">
-            Managemen lalu lintas dengan mudah dan tepat bersama andalalin
+            Manajemen lalu lintas dengan mudah dan tepat bersama andalalin
           </AText>
         </View>
         <View style={{ paddingTop: 128, paddingBottom: 16 }}>

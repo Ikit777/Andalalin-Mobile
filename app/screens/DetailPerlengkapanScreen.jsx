@@ -136,7 +136,7 @@ function DetailPerlengkapanScreen({ navigation, route }) {
   }, []);
 
   const survei = () => {
-    if (data.status != "pemeriksaan" && data.status != "Survei") {
+    if (data.status != "Pemeriksaan" && data.status != "Survei") {
       return (
         <ADetailView style={{ marginTop: 20 }} title={"Survei lapangan"}>
           <View
