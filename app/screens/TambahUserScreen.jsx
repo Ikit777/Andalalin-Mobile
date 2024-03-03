@@ -190,6 +190,7 @@ function TambahUserScreen({ navigation }) {
   const clear_error = () => {
     if (peran != "" && peran != "User") {
       nama != "" ? (namaError ? setNamaError() : "") : "";
+      email != "" && !emailNotExist ? (emailError ? setEmailError() : "") : "";
       nomor != "" ? (nomorError ? setNomorError() : "") : "";
       peran != "" ? (peranError ? setPeranError() : "") : "";
       nip != "" ? (nipError ? setNipError() : "") : "";
@@ -206,6 +207,7 @@ function TambahUserScreen({ navigation }) {
         : "";
     } else {
       nama != "" ? (namaError ? setNamaError() : "") : "";
+      email != "" && !emailNotExist ? (emailError ? setEmailError() : "") : "";
       nomor != "" ? (nomorError ? setNomorError() : "") : "";
       peran != "" ? (peranError ? setPeranError() : "") : "";
 

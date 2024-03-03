@@ -52,7 +52,6 @@ function PemohonPerlalin({ onPress }) {
   const [catatanTambahan, setCatatanTambahan] = useState(catatan);
 
   const [nikError, togglenikError] = useStateToggler();
-  const [nikError1, togglenikError1] = useStateToggler();
   const [tempatError, toggletempatError] = useStateToggler();
   const [tanggalError, toggletanggalError] = useStateToggler();
   const [jenisError, togglejenisError] = useStateToggler();
@@ -166,10 +165,8 @@ function PemohonPerlalin({ onPress }) {
         onChangeText={(value) => {
           if (value.length > 0 && value.length < 16) {
             nikError ? "" : togglenikError();
-            nikError1 ? "" : togglenikError1();
           } else {
             nikError ? togglenikError() : "";
-            nikError1 ? togglenikError1() : "";
           }
           clear_error();
           setNik(value);
@@ -177,16 +174,14 @@ function PemohonPerlalin({ onPress }) {
         submit={() => {
           if (nik.length > 0 && nik.length < 16) {
             nikError ? "" : togglenikError();
-            nikError1 ? "" : togglenikError1();
           } else {
             nikError ? togglenikError() : "";
-            nikError1 ? togglenikError1() : "";
           }
           clear_error();
         }}
       />
 
-      {nikError1 ? (
+      {nikError ? (
         <AText
           style={{ paddingTop: 8 }}
           color={color.error.error500}

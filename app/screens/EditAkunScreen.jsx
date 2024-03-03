@@ -33,6 +33,9 @@ function EditAkunScreen({ navigation }) {
   const [nipError, setNipError] = useStateToggler();
   const [nomorError, setNomorError] = useStateToggler();
 
+  const [formError, toggleFormError] = useStateToggler();
+  const [emailNotExist, toggleEmailNotExist] = useStateToggler();
+
   const namaRef = React.createRef();
   const emailRef = React.createRef();
   const nomorRef = React.createRef();
@@ -122,59 +125,91 @@ function EditAkunScreen({ navigation }) {
     });
   };
 
+  const validateEmail = (value) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(value)) {
+      emailError ? "" : setEmailError();
+      emailNotExist ? "" : toggleEmailNotExist();
+    } else {
+      emailError ? setEmailError() : "";
+      emailNotExist ? toggleEmailNotExist() : "";
+    }
+  };
+
   const press = () => {
     if (context.getUser().role != "User") {
       if (nama != "" && email != "" && nomor != "" && nip != "") {
-        {
+        if (!emailNotExist) {
           namaError ? setNamaError() : "";
-        }
-        {
+
           emailError ? setEmailError() : "";
-        }
-        {
+
           nomorError ? setNomorError() : "";
-        }
-        {
+
           nipError ? setNipError() : "";
+
+          formError ? toggleFormError() : "";
+
+          edit();
         }
-        edit();
       } else {
-        {
-          nama == "" ? (namaError ? "" : setNamaError()) : "";
-        }
-        {
-          email == "" ? (emailError ? "" : setEmailError()) : "";
-        }
-        {
-          nomor == "" ? (nomorError ? "" : setNomorError()) : "";
-        }
-        {
-          nip == "" ? (nipError ? "" : setNipError()) : "";
-        }
+        nama == "" ? (namaError ? "" : setNamaError()) : "";
+
+        email == "" ? (emailError ? "" : setEmailError()) : "";
+
+        nomor == "" ? (nomorError ? "" : setNomorError()) : "";
+
+        nip == "" ? (nipError ? "" : setNipError()) : "";
+
+        formError ? "" : toggleFormError();
       }
     } else {
       if (nama != "" && email != "" && nomor != "") {
-        {
+        if (!emailNotExist) {
           namaError ? setNamaError() : "";
-        }
-        {
+
           emailError ? setEmailError() : "";
-        }
-        {
+
           nomorError ? setNomorError() : "";
+
+          formError ? toggleFormError() : "";
+
+          edit();
         }
-        edit();
       } else {
-        {
-          nama == "" ? (namaError ? "" : setNamaError()) : "";
-        }
-        {
-          email == "" ? (emailError ? "" : setEmailError()) : "";
-        }
-        {
-          nomor == "" ? (nomorError ? "" : setNomorError()) : "";
-        }
+        nama == "" ? (namaError ? "" : setNamaError()) : "";
+
+        email == "" ? (emailError ? "" : setEmailError()) : "";
+
+        nomor == "" ? (nomorError ? "" : setNomorError()) : "";
+
+        formError ? "" : toggleFormError();
       }
+    }
+  };
+
+  const clear_error = () => {
+    if (context.getUser().role != "User") {
+      nama != "" ? (namaError ? setNamaError() : "") : "";
+      email != "" && !emailNotExist ? (emailError ? setEmailError() : "") : "";
+      nomor != "" ? (nomorError ? setNomorError() : "") : "";
+      nip != "" ? (nipError ? setNipError() : "") : "";
+
+      nama != "" && email != "" && nomor != "" && nip != ""
+        ? formError
+          ? toggleFormError()
+          : ""
+        : "";
+    } else {
+      nama != "" ? (namaError ? setNamaError() : "") : "";
+      email != "" && !emailNotExist ? (emailError ? setEmailError() : "") : "";
+      nomor != "" ? (nomorError ? setNomorError() : "") : "";
+
+      nama != "" && email != "" && nomor != ""
+        ? formError
+          ? toggleFormError()
+          : ""
+        : "";
     }
   };
 
@@ -193,8 +228,8 @@ function EditAkunScreen({ navigation }) {
               navigation.goBack();
             }}
           />
-         <AText
-            style={{ paddingLeft: 4}}
+          <AText
+            style={{ paddingLeft: 4 }}
             size={20}
             color={color.neutral.neutral900}
             weight="normal"
@@ -219,30 +254,14 @@ function EditAkunScreen({ navigation }) {
           value={nama}
           ref={namaRef}
           onChangeText={(value) => {
+            clear_error();
             setNama(value);
           }}
           submit={() => {
-            {
-              namaError ? setNamaError() : "";
-            }
-            {
-              nama != "" ? emailRef.current.focus() : "";
-            }
+            clear_error();
+            nama != "" ? emailRef.current.focus() : "";
           }}
         />
-
-        {namaError ? (
-          <AText
-            style={{ paddingTop: 6 }}
-            color={color.error.error500}
-            size={14}
-            weight="normal"
-          >
-            Nama wajib
-          </AText>
-        ) : (
-          ""
-        )}
 
         <ATextInput
           bdColor={emailError ? color.error.error500 : color.neutral.neutral300}
@@ -257,27 +276,35 @@ function EditAkunScreen({ navigation }) {
           ktype={"email-address"}
           inputMode={"email"}
           onChangeText={(value) => {
+            clear_error();
             setEmail(value);
+            if (value.length > 0) {
+              validateEmail(value);
+            } else {
+              emailError ? setEmailError() : "";
+              emailNotExist ? toggleEmailNotExist() : "";
+            }
           }}
           submit={() => {
-            {
+            clear_error();
+            if (email.length > 0) {
+              validateEmail(email);
+            } else {
               emailError ? setEmailError() : "";
+              emailNotExist ? toggleEmailNotExist() : "";
             }
-
-            {
-              email != "" ? nomorRef.current.focus() : "";
-            }
+            email != "" ? nomorRef.current.focus() : "";
           }}
         />
 
-        {emailError ? (
+        {emailNotExist ? (
           <AText
-            style={{ paddingTop: 6 }}
+            style={{ paddingTop: 8 }}
             color={color.error.error500}
             size={14}
             weight="normal"
           >
-            Email wajib
+            Email Anda tidak valid, masukkan email dengan benar
           </AText>
         ) : (
           ""
@@ -295,32 +322,16 @@ function EditAkunScreen({ navigation }) {
           value={nomor}
           ref={nomorRef}
           onChangeText={(value) => {
+            clear_error();
             setNomor(value);
           }}
           submit={() => {
-            {
-              nomorError ? setNomorError() : "";
-            }
+            clear_error();
             if (context.getUser().role != "User") {
-              {
-                nomor != "" ? nipRef.current.focus() : "";
-              }
+              nomor != "" ? nipRef.current.focus() : "";
             }
           }}
         />
-
-        {nomorError ? (
-          <AText
-            style={{ paddingTop: 6 }}
-            color={color.error.error500}
-            size={14}
-            weight="normal"
-          >
-            Nomor telepon wajib
-          </AText>
-        ) : (
-          ""
-        )}
 
         {context.getUser().role != "User" ? (
           <View>
@@ -337,28 +348,28 @@ function EditAkunScreen({ navigation }) {
               ref={nipRef}
               ktype={"number-pad"}
               onChangeText={(value) => {
+                clear_error();
                 setNip(value);
               }}
               submit={() => {
-                {
-                  nipError ? setNipError() : "";
-                }
+                clear_error();
+                nipError ? setNipError() : "";
               }}
             />
-
-            {nipError ? (
-              <AText
-                style={{ paddingTop: 6 }}
-                color={color.error.error500}
-                size={14}
-                weight="normal"
-              >
-                NIP wajib
-              </AText>
-            ) : (
-              ""
-            )}
           </View>
+        ) : (
+          ""
+        )}
+
+        {formError ? (
+          <AText
+            style={{ paddingTop: 8 }}
+            color={color.error.error500}
+            size={14}
+            weight="normal"
+          >
+            Lengkapi formulir atau kolom yang tersedia dengan benar
+          </AText>
         ) : (
           ""
         )}

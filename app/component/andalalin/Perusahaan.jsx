@@ -86,6 +86,8 @@ function Perusahaan({ onPress }) {
   const [wilayahModal, toggleWilayahModal] = useStateToggler();
   const [wilayahPimpinanModal, toggleWilayahPimpinanModal] = useStateToggler();
 
+  const [formError, toggleFormError] = useStateToggler();
+
   const jenis_kelamin = [{ value: "Laki-laki" }, { value: "Perempuan" }];
 
   const press = () => {
@@ -100,30 +102,16 @@ function Perusahaan({ onPress }) {
       wilayahPimpinan != "" &&
       alamatPimpinan != ""
     ) {
-      {
-        namaError ? toggleNamaError() : "";
-      }
-      {
-        alamatError ? toggleAlamatError() : "";
-      }
-      {
-        wilayahError ? toggleWilayahError() : "";
-      }
-      {
-        nomerError ? toggleNomerError() : "";
-      }
-      {
-        emailError ? toggleEmailError() : "";
-      }
-      {
-        pimpinanError ? togglePimpinanError() : "";
-      }
-      {
-        jabatanError ? toggleJabatanError() : "";
-      }
-      {
-        alamatPimpinanError ? toggleAlamatPimpinanError() : "";
-      }
+      namaError ? toggleNamaError() : "";
+      alamatError ? toggleAlamatError() : "";
+      wilayahError ? toggleWilayahError() : "";
+      nomerError ? toggleNomerError() : "";
+      emailError ? toggleEmailError() : "";
+      pimpinanError ? togglePimpinanError() : "";
+      jabatanError ? toggleJabatanError() : "";
+      alamatPimpinanError ? toggleAlamatPimpinanError() : "";
+      formError ? toggleFormError() : "";
+
       dispatch({
         nama_perusahaan: nama,
         alamat_perusahaan: alamat,
@@ -146,64 +134,75 @@ function Perusahaan({ onPress }) {
       });
       onPress();
     } else {
-      {
-        nama == "" ? (namaError ? "" : toggleNamaError()) : "";
-      }
-      {
-        alamat == "" ? (alamatError ? "" : toggleAlamatError()) : "";
-      }
-      {
-        wilayah == "" ? (wilayahError ? "" : toggleWilayahError()) : "";
-      }
-      {
-        nomer == "" ? (nomerError ? "" : toggleNomerError()) : "";
-      }
-      {
-        email == "" ? (emailError ? "" : toggleEmailError()) : "";
-      }
-      {
-        pimpinan == "" ? (pimpinanError ? "" : togglePimpinanError()) : "";
-      }
-      {
-        jabatan == "" ? (jabatanError ? "" : toggleJabatanError()) : "";
-      }
-      {
-        jenis == "" ? (jenisError ? "" : toggleJenisError()) : "";
-      }
-      {
-        wilayahPimpinan == ""
-          ? wilayahPimpinanError
-            ? ""
-            : toggleWilayahPimpinanError()
-          : "";
-      }
-      {
-        alamatPimpinan == ""
-          ? alamatPimpinanError
-            ? ""
-            : toggleAlamatPimpinanError()
-          : "";
-      }
+      nama == "" ? (namaError ? "" : toggleNamaError()) : "";
+      alamat == "" ? (alamatError ? "" : toggleAlamatError()) : "";
+      wilayah == "" ? (wilayahError ? "" : toggleWilayahError()) : "";
+      nomer == "" ? (nomerError ? "" : toggleNomerError()) : "";
+      email == "" ? (emailError ? "" : toggleEmailError()) : "";
+      pimpinan == "" ? (pimpinanError ? "" : togglePimpinanError()) : "";
+      jabatan == "" ? (jabatanError ? "" : toggleJabatanError()) : "";
+      jenis == "" ? (jenisError ? "" : toggleJenisError()) : "";
+      wilayahPimpinan == ""
+        ? wilayahPimpinanError
+          ? ""
+          : toggleWilayahPimpinanError()
+        : "";
+      alamatPimpinan == ""
+        ? alamatPimpinanError
+          ? ""
+          : toggleAlamatPimpinanError()
+        : "";
+
+      formError ? "" : toggleFormError();
     }
   };
 
   useEffect(() => {
-    {
-      jenisError ? toggleJenisError() : "";
-    }
+    clear_error();
   }, [jenis]);
 
   useEffect(() => {
-    {
-      wilayahError ? toggleWilayahError() : "";
-    }
+    clear_error();
   }, [wilayah]);
 
   useEffect(() => {
-    {
-      wilayahPimpinanError ? toggleWilayahPimpinanError() : "";
-    }
+    clear_error();
   }, [wilayahPimpinan]);
+
+  const clear_error = () => {
+    nama != "" ? (namaError ? toggleNamaError() : "") : "";
+    alamat != "" ? (alamatError ? toggleAlamatError() : "") : "";
+    wilayah != "" ? (wilayahError ? toggleWilayahError() : "") : "";
+    nomer != "" ? (nomerError ? toggleNomerError() : "") : "";
+    email != "" ? (emailError ? toggleEmailError() : "") : "";
+    pimpinan != "" ? (pimpinanError ? togglePimpinanError() : "") : "";
+    jabatan != "" ? (jabatanError ? toggleJabatanError() : "") : "";
+    jenis != "" ? (jenisError ? toggleJenisError() : "") : "";
+    wilayahPimpinan != ""
+      ? wilayahPimpinanError
+        ? toggleWilayahPimpinanError()
+        : ""
+      : "";
+    alamatPimpinan != ""
+      ? alamatPimpinanError
+        ? toggleAlamatPimpinanError()
+        : ""
+      : "";
+
+    nama != "" &&
+    alamat != "" &&
+    nomer != "" &&
+    email != "" &&
+    pimpinan != "" &&
+    jabatan != "" &&
+    jenis != "" &&
+    wilayahPimpinan != "" &&
+    alamatPimpinan != ""
+      ? formError
+        ? toggleFormError()
+        : ""
+      : "";
+  };
 
   return (
     <ScrollView
@@ -218,31 +217,18 @@ function Perusahaan({ onPress }) {
         title={"Nama perusahaan"}
         rtype={"done"}
         blur={true}
+        wajib={"*"}
         multi={false}
         value={nama}
         ref={namaInput}
         onChangeText={(value) => {
+          clear_error();
           setNama(value);
         }}
         submit={() => {
-          {
-            namaError ? toggleNamaError() : "";
-          }
+          clear_error();
         }}
       />
-
-      {namaError ? (
-        <AText
-          style={{ paddingTop: 6 }}
-          color={color.error.error500}
-          size={14}
-          weight="normal"
-        >
-          Nama perusahaan wajib
-        </AText>
-      ) : (
-        ""
-      )}
 
       <ATextInputIcon
         bdColor={wilayahError ? color.error.error500 : color.neutral.neutral300}
@@ -250,24 +236,12 @@ function Perusahaan({ onPress }) {
         title={"Wilayah administratif perusahaan"}
         padding={20}
         mult={true}
+        wajib={"*"}
         width={true}
         icon={"map-pin"}
         value={wilayah}
         onPress={toggleWilayahModal}
       />
-
-      {wilayahError ? (
-        <AText
-          style={{ paddingTop: 6 }}
-          color={color.error.error500}
-          size={14}
-          weight="normal"
-        >
-          Wilayah adiminstratif perusahaan wajib
-        </AText>
-      ) : (
-        ""
-      )}
 
       <ATextInput
         bdColor={alamatError ? color.error.error500 : color.neutral.neutral300}
@@ -276,25 +250,14 @@ function Perusahaan({ onPress }) {
         title={"Alamat perusahaan"}
         multi={true}
         padding={20}
+        wajib={"*"}
         value={alamat}
         ref={alamatInput}
         onChangeText={(value) => {
+          clear_error();
           setAlamat(value);
         }}
       />
-
-      {alamatError ? (
-        <AText
-          style={{ paddingTop: 6 }}
-          color={color.error.error500}
-          size={14}
-          weight="normal"
-        >
-          Alamat perusahaan wajib
-        </AText>
-      ) : (
-        ""
-      )}
 
       <ATextInput
         bdColor={nomerError ? color.error.error500 : color.neutral.neutral300}
@@ -304,16 +267,16 @@ function Perusahaan({ onPress }) {
         rtype={"next"}
         blur={false}
         multi={false}
+        wajib={"*"}
         value={nomer}
         padding={20}
         ref={nomerInput}
         onChangeText={(value) => {
+          clear_error();
           setNomer(value);
         }}
         submit={() => {
-          {
-            nomerError ? toggleNomerError() : "";
-          }
+          clear_error();
           emailInput.current.focus();
         }}
       />
@@ -327,19 +290,6 @@ function Perusahaan({ onPress }) {
         Contoh: 08••••••••••••
       </AText>
 
-      {nomerError ? (
-        <AText
-          style={{ paddingTop: 6 }}
-          color={color.error.error500}
-          size={14}
-          weight="normal"
-        >
-          Nomer telepon perusahaan wajib
-        </AText>
-      ) : (
-        ""
-      )}
-
       <ATextInput
         bdColor={emailError ? color.error.error500 : color.neutral.neutral300}
         hint={"Masukkan email"}
@@ -348,33 +298,20 @@ function Perusahaan({ onPress }) {
         blur={false}
         padding={20}
         ktype={"email-address"}
+        wajib={"*"}
         inputMode={"email"}
         multi={false}
         value={email}
         ref={emailInput}
         onChangeText={(value) => {
+          clear_error();
           setEmail(value);
         }}
         submit={() => {
-          {
-            emailError ? toggleEmailError() : "";
-          }
+          clear_error();
           pimpinanInput.current.focus();
         }}
       />
-
-      {emailError ? (
-        <AText
-          style={{ paddingTop: 6 }}
-          color={color.error.error500}
-          size={14}
-          weight="normal"
-        >
-          Email perusahaan wajib
-        </AText>
-      ) : (
-        ""
-      )}
 
       <ATextInput
         bdColor={
@@ -385,33 +322,20 @@ function Perusahaan({ onPress }) {
         title={"Nama pimpinan"}
         rtype={"next"}
         blur={false}
+        wajib={"*"}
         multi={false}
         value={pimpinan}
         padding={20}
         ref={pimpinanInput}
         onChangeText={(value) => {
+          clear_error();
           setPimpinan(value);
         }}
         submit={() => {
-          {
-            pimpinanError ? togglePimpinanError() : "";
-          }
+          clear_error();
           jabatanInput.current.focus();
         }}
       />
-
-      {pimpinanError ? (
-        <AText
-          style={{ paddingTop: 6 }}
-          color={color.error.error500}
-          size={14}
-          weight="normal"
-        >
-          Nama pimpinan wajib
-        </AText>
-      ) : (
-        ""
-      )}
 
       <ATextInput
         bdColor={jabatanError ? color.error.error500 : color.neutral.neutral300}
@@ -421,30 +345,17 @@ function Perusahaan({ onPress }) {
         rtype={"done"}
         multi={false}
         padding={20}
+        wajib={"*"}
         value={jabatan}
         ref={jabatanInput}
         onChangeText={(value) => {
+          clear_error();
           setJabatan(value);
         }}
         submit={() => {
-          {
-            jabatanError ? toggleJabatanError() : "";
-          }
+          clear_error();
         }}
       />
-
-      {jabatanError ? (
-        <AText
-          style={{ paddingTop: 6 }}
-          color={color.error.error500}
-          size={14}
-          weight="normal"
-        >
-          Jabatan pimpinan wajib
-        </AText>
-      ) : (
-        ""
-      )}
 
       <ADropDownCostume
         bdColor={jenisError ? color.error.error500 : color.neutral.neutral300}
@@ -452,21 +363,10 @@ function Perusahaan({ onPress }) {
         hint={"Pilih jenis kelamin"}
         data={jenis_kelamin}
         padding={20}
+        wajib={"*"}
         selected={setJenis}
         saved={jenis}
       />
-      {jenisError ? (
-        <AText
-          style={{ paddingTop: 6 }}
-          color={color.error.error500}
-          size={14}
-          weight="normal"
-        >
-          Jenis kelamin wajib
-        </AText>
-      ) : (
-        ""
-      )}
 
       <ATextInputIcon
         bdColor={
@@ -477,23 +377,11 @@ function Perusahaan({ onPress }) {
         padding={20}
         mult={true}
         width={true}
+        wajib={"*"}
         icon={"map-pin"}
         value={wilayahPimpinan}
         onPress={toggleWilayahPimpinanModal}
       />
-
-      {wilayahPimpinanError ? (
-        <AText
-          style={{ paddingTop: 6 }}
-          color={color.error.error500}
-          size={14}
-          weight="normal"
-        >
-          Wilayah adiminstratif pimpinan wajib
-        </AText>
-      ) : (
-        ""
-      )}
 
       <ATextInput
         bdColor={
@@ -505,19 +393,21 @@ function Perusahaan({ onPress }) {
         multi={true}
         padding={20}
         value={alamatPimpinan}
+        wajib={"*"}
         onChangeText={(value) => {
+          clear_error();
           setAlamatPimpinan(value);
         }}
       />
 
-      {alamatPimpinanError ? (
+      {formError ? (
         <AText
-          style={{ paddingTop: 6 }}
+          style={{ paddingTop: 8 }}
           color={color.error.error500}
           size={14}
           weight="normal"
         >
-          Alamat pimpinan wajib
+          Lengkapi formulir atau kolom yang tersedia dengan benar{" "}
         </AText>
       ) : (
         ""

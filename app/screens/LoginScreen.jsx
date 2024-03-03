@@ -147,6 +147,8 @@ function LoginScreen({ navigation }) {
       switch (response.status) {
         case 200:
           (async () => {
+            context.toggleLoading(false);
+
             const result = await response.data;
 
             const newAuthState = {

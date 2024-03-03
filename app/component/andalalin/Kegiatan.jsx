@@ -16,10 +16,10 @@ function Kegiatan({ onPress, navigation }) {
       peruntukan,
       total_luas_lahan,
       nilai_kriteria,
-      
+
       nomer_skrk,
       tanggal_skrk,
-      
+
       jenis,
       rencana_pembangunan,
       catatan,
@@ -38,16 +38,16 @@ function Kegiatan({ onPress, navigation }) {
   const [untuk, setPeruntukan] = useState(peruntukan);
   const [total, setTotal] = useState(total_luas_lahan);
   const [luas, setLuas] = useState(nilai_kriteria);
-  
+
   const [nomer, setNomer] = useState(nomer_skrk);
   const [tanggal, setTanggal] = useState(tanggal_skrk);
- 
+
   const [catatanTambahan, setCatatanTambahan] = useState(catatan);
 
   const [kegiatanError, toggleKegiatanError] = useStateToggler();
   const [peruntukanError, togglePeruntukanError] = useStateToggler();
   const [luasError, toggleLuasError] = useStateToggler();
-  
+
   const [nomerError, toggleNomerError] = useStateToggler();
   const [tanggalError, toggleTanggalError] = useStateToggler();
   const [totalError, toggleTotalError] = useStateToggler();
@@ -55,6 +55,8 @@ function Kegiatan({ onPress, navigation }) {
   const [data, setData] = useState("");
 
   const [dateModal, toggleDateModal] = useStateToggler();
+
+  const [formError, toggleFormError] = useStateToggler();
 
   const press = () => {
     if (data.Kriteria == "" && data.Kriteria == null) {
@@ -65,50 +67,30 @@ function Kegiatan({ onPress, navigation }) {
         tanggal != "" &&
         total != ""
       ) {
-        {
-          kegiatanError ? toggleKegiatanError() : "";
-        }
-        {
-          peruntukanError ? togglePeruntukanError() : "";
-        }
-        
-        {
-          nomerError ? toggleNomerError() : "";
-        }
-        {
-          tanggalError ? toggleTanggalError() : "";
-        }
-        {
-          totalError ? toggleTotalError() : "";
-        }
+        kegiatanError ? toggleKegiatanError() : "";
+        peruntukanError ? togglePeruntukanError() : "";
+        nomerError ? toggleNomerError() : "";
+        tanggalError ? toggleTanggalError() : "";
+        totalError ? toggleTotalError() : "";
+        formError ? toggleFormError() : "";
         dispatch({
           aktivitas: kegiatan,
           peruntukan: untuk,
           total_luas_lahan: total,
-          
+
           nomer_skrk: nomer,
           tanggal_skrk: tanggal,
-          
+
           catatan: catatanTambahan,
         });
         onPress();
       } else {
-        {
-          kegiatan == "" ? (kegiatanError ? "" : toggleKegiatanError()) : "";
-        }
-        {
-          untuk == "" ? (peruntukanError ? "" : togglePeruntukanError()) : "";
-        }
-        
-        {
-          nomer == "" ? (nomerError ? "" : toggleNomerError()) : "";
-        }
-        {
-          tanggal == "" ? (tanggalError ? "" : toggleTanggalError()) : "";
-        }
-        {
-          total == "" ? (totalError ? "" : toggleTotalError()) : "";
-        }
+        kegiatan == "" ? (kegiatanError ? "" : toggleKegiatanError()) : "";
+        untuk == "" ? (peruntukanError ? "" : togglePeruntukanError()) : "";
+        nomer == "" ? (nomerError ? "" : toggleNomerError()) : "";
+        tanggal == "" ? (tanggalError ? "" : toggleTanggalError()) : "";
+        total == "" ? (totalError ? "" : toggleTotalError()) : "";
+        formError ? "" : toggleFormError();
       }
     } else {
       if (
@@ -119,24 +101,13 @@ function Kegiatan({ onPress, navigation }) {
         tanggal != "" &&
         total != ""
       ) {
-        {
-          kegiatanError ? toggleKegiatanError() : "";
-        }
-        {
-          peruntukanError ? togglePeruntukanError() : "";
-        }
-        {
-          luasError ? toggleLuasError() : "";
-        }
-        {
-          nomerError ? toggleNomerError() : "";
-        }
-        {
-          tanggalError ? toggleTanggalError() : "";
-        }
-        {
-          totalError ? toggleTotalError() : "";
-        }
+        kegiatanError ? toggleKegiatanError() : "";
+        peruntukanError ? togglePeruntukanError() : "";
+        luasError ? toggleLuasError() : "";
+        nomerError ? toggleNomerError() : "";
+        tanggalError ? toggleTanggalError() : "";
+        totalError ? toggleTotalError() : "";
+        formError ? toggleFormError() : "";
         dispatch({
           aktivitas: kegiatan,
           peruntukan: untuk,
@@ -149,24 +120,13 @@ function Kegiatan({ onPress, navigation }) {
         });
         onPress();
       } else {
-        {
-          kegiatan == "" ? (kegiatanError ? "" : toggleKegiatanError()) : "";
-        }
-        {
-          untuk == "" ? (peruntukanError ? "" : togglePeruntukanError()) : "";
-        }
-        {
-          luas == "" ? (luasError ? "" : toggleLuasError()) : "";
-        }
-        {
-          nomer == "" ? (nomerError ? "" : toggleNomerError()) : "";
-        }
-        {
-          tanggal == "" ? (tanggalError ? "" : toggleTanggalError()) : "";
-        }
-        {
-          total == "" ? (totalError ? "" : toggleTotalError()) : "";
-        }
+        kegiatan == "" ? (kegiatanError ? "" : toggleKegiatanError()) : "";
+        untuk == "" ? (peruntukanError ? "" : togglePeruntukanError()) : "";
+        luas == "" ? (luasError ? "" : toggleLuasError()) : "";
+        nomer == "" ? (nomerError ? "" : toggleNomerError()) : "";
+        tanggal == "" ? (tanggalError ? "" : toggleTanggalError()) : "";
+        total == "" ? (totalError ? "" : toggleTotalError()) : "";
+        formError ? "" : toggleFormError();
       }
     }
   };
@@ -189,6 +149,46 @@ function Kegiatan({ onPress, navigation }) {
     dataSet();
   }, []);
 
+  useEffect(() => {
+    clear_error();
+  }, [tanggal]);
+
+  const clear_error = () => {
+    if (data.Kriteria == "" && data.Kriteria == null) {
+      kegiatan != "" ? (kegiatanError ? toggleKegiatanError() : "") : "";
+      untuk != "" ? (peruntukanError ? togglePeruntukanError() : "") : "";
+      total != "" ? (totalError ? toggleTotalError() : "") : "";
+      nomer != "" ? (nomerError ? toggleNomerError() : "") : "";
+      tanggal != "" ? (tanggalError ? toggleTanggalError() : "") : "";
+      kegiatan != "" &&
+      untuk != "" &&
+      nomer != "" &&
+      tanggal != "" &&
+      total != ""
+        ? formError
+          ? toggleFormError()
+          : ""
+        : "";
+    } else {
+      kegiatan != "" ? (kegiatanError ? toggleKegiatanError() : "") : "";
+      untuk != "" ? (peruntukanError ? togglePeruntukanError() : "") : "";
+      total != "" ? (totalError ? toggleTotalError() : "") : "";
+      nomer != "" ? (nomerError ? toggleNomerError() : "") : "";
+      tanggal != "" ? (tanggalError ? toggleTanggalError() : "") : "";
+      luas != "" ? (luasError ? toggleLuasError() : "") : "";
+      kegiatan != "" &&
+      untuk != "" &&
+      luas != "" &&
+      nomer != "" &&
+      tanggal != "" &&
+      total != ""
+        ? formError
+          ? toggleFormError()
+          : ""
+        : "";
+    }
+  };
+
   return (
     <ScrollView
       style={styles.content}
@@ -203,25 +203,14 @@ function Kegiatan({ onPress, navigation }) {
         hint={"Masukkan aktivitas"}
         title={"Aktivitas"}
         multi={true}
+        wajib={"*"}
         value={kegiatan}
         ref={kegiatanInput}
         onChangeText={(value) => {
+          clear_error()
           setKegiatan(value);
         }}
       />
-
-      {kegiatanError ? (
-        <AText
-          style={{ paddingTop: 6 }}
-          color={color.error.error500}
-          size={14}
-          weight="normal"
-        >
-          Aktivitas wajib
-        </AText>
-      ) : (
-        ""
-      )}
 
       <ATextInput
         bdColor={
@@ -232,25 +221,14 @@ function Kegiatan({ onPress, navigation }) {
         title={"Peruntukan"}
         multi={true}
         padding={20}
+        wajib={"*"}
         value={untuk}
         ref={peruntukanInput}
         onChangeText={(value) => {
+          clear_error()
           setPeruntukan(value);
         }}
       />
-
-      {peruntukanError ? (
-        <AText
-          style={{ paddingTop: 6 }}
-          color={color.error.error500}
-          size={14}
-          weight="normal"
-        >
-          Peruntukan wajib
-        </AText>
-      ) : (
-        ""
-      )}
 
       <ATextInput
         bdColor={totalError ? color.error.error500 : color.neutral.neutral300}
@@ -258,37 +236,25 @@ function Kegiatan({ onPress, navigation }) {
         hint={"Masukkan total"}
         title={"Total luas lahan (m²)"}
         multi={false}
+        wajib={"*"}
         padding={20}
-        rtype={data.Kriteria != "" && data.Kriteria != null ? "next" : "done"}
+        rtype={"next"}
         blur={data.Kriteria != "" && data.Kriteria != null ? false : true}
         value={total}
         ref={totalInput}
         onChangeText={(value) => {
+          clear_error()
           setTotal(value);
         }}
         submit={() => {
-          {
-            totalError ? toggleTotalError() : "";
-          }
-
+          clear_error()
           if (data.Kriteria != "" && data.Kriteria != null) {
             total != "" ? luasInput.current.focus() : "";
+          }else{
+            total != "" ? nomerInput.current.focus() : "";
           }
         }}
       />
-
-      {totalError ? (
-        <AText
-          style={{ paddingTop: 6 }}
-          color={color.error.error500}
-          size={14}
-          weight="normal"
-        >
-          Total luas lahan wajib
-        </AText>
-      ) : (
-        ""
-      )}
 
       {data.Kriteria != "" && data.Kriteria != null ? (
         <View>
@@ -299,34 +265,22 @@ function Kegiatan({ onPress, navigation }) {
             ktype={"number-pad"}
             hint={"Masukkan " + data.Kriteria.toLowerCase()}
             title={data.Kriteria + " " + "(" + data.Satuan.toLowerCase() + ")"}
-            rtype={"done"}
-            blur={true}
+            rtype={"next"}
+            blur={false}
+            wajib={"*"}
             multi={false}
             padding={20}
             value={luas}
             ref={luasInput}
             onChangeText={(value) => {
+              clear_error()
               setLuas(value);
             }}
             submit={() => {
-              {
-                luasError ? toggleLuasError() : "";
-              }
+              clear_error()
+              luas != "" ? nomerInput.current.focus() : "";
             }}
           />
-
-          {luasError ? (
-            <AText
-              style={{ paddingTop: 6 }}
-              color={color.error.error500}
-              size={14}
-              weight="normal"
-            >
-              {data.Kriteria} wajib
-            </AText>
-          ) : (
-            ""
-          )}
         </View>
       ) : (
         ""
@@ -339,56 +293,31 @@ function Kegiatan({ onPress, navigation }) {
         title={"Nomor SKRK"}
         rtype={"done"}
         multi={false}
+        wajib={"*"}
         value={nomer}
         padding={20}
         ref={nomerInput}
         onChangeText={(value) => {
+          clear_error()
           setNomer(value);
         }}
         submit={() => {
-          {
-            nomerError ? toggleNomerError() : "";
-          }
+          clear_error()
         }}
       />
-
-      {nomerError ? (
-        <AText
-          style={{ paddingTop: 6 }}
-          color={color.error.error500}
-          size={14}
-          weight="normal"
-        >
-          Nomor SKRK wajib
-        </AText>
-      ) : (
-        ""
-      )}
 
       <ATextInputIcon
         bdColor={tanggalError ? color.error.error500 : color.neutral.neutral300}
         hint={"Masukkan tanggal SKRK"}
         title={"Tanggal SKRK"}
         padding={20}
+        wajib={"*"}
         icon={"calendar"}
         value={tanggal}
         onPress={() => {
           toggleDateModal();
         }}
       />
-
-      {tanggalError ? (
-        <AText
-          style={{ paddingTop: 6 }}
-          color={color.error.error500}
-          size={14}
-          weight="normal"
-        >
-          Tanggal SKRK wajib
-        </AText>
-      ) : (
-        ""
-      )}
 
       <ATextInput
         bdColor={color.neutral.neutral300}
@@ -402,6 +331,19 @@ function Kegiatan({ onPress, navigation }) {
           setCatatanTambahan(value);
         }}
       />
+
+      {formError ? (
+        <AText
+          style={{ paddingTop: 8 }}
+          color={color.error.error500}
+          size={14}
+          weight="normal"
+        >
+          Lengkapi formulir atau kolom yang tersedia dengan benar{" "}
+        </AText>
+      ) : (
+        ""
+      )}
 
       <AButton
         style={{ marginTop: 32, marginBottom: 50 }}

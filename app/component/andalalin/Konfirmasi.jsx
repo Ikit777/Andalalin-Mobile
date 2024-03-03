@@ -95,8 +95,6 @@ function Konfirmasi({ navigation, kondisi }) {
     },
     perlalin,
     user,
-    clear,
-    setIndex,
     dataMaster,
   } = useContext(UserContext);
 

@@ -61,6 +61,8 @@ function Proyek({ onPress, navigation }) {
 
   const [wilayahModal, toggleWilayahModal] = useStateToggler();
 
+  const [formError, toggleFormError] = useStateToggler();
+
   let proyek = dataMaster.jenis_proyek.map((item) => {
     return { value: item };
   });
@@ -81,27 +83,21 @@ function Proyek({ onPress, navigation }) {
   };
 
   useEffect(() => {
-    {
-      jenisProyekError ? toggleJenisProyekError() : "";
-    }
+    clear_error();
     if (alamatInput.current) {
       alamatInput.current.blur();
     }
   }, [jenisProyek]);
 
   useEffect(() => {
-    {
-      jalanError ? toggleJalanError() : "";
-    }
+    clear_error();
     if (alamatInput.current) {
       alamatInput.current.blur();
     }
   }, [jalan]);
 
   useEffect(() => {
-    {
-      wilayahError ? toggleWilayahError() : "";
-    }
+    clear_error();
     if (alamatInput.current) {
       alamatInput.current.blur();
     }
@@ -126,13 +122,9 @@ function Proyek({ onPress, navigation }) {
       lokasi != "" &&
       jalan != ""
     ) {
-      {
-        alamatError ? toggleAlamatError() : "";
-      }
-
-      {
-        lokasiError ? toggleLokasiError() : "";
-      }
+      alamatError ? toggleAlamatError() : "";
+      lokasiError ? toggleLokasiError() : "";
+      formError ? toggleFormError() : "";
 
       dispatch({
         nama_proyek: namaProyek,
@@ -151,33 +143,38 @@ function Proyek({ onPress, navigation }) {
       });
       onPress();
     } else {
-      {
-        namaProyek == ""
-          ? namaProyekError
-            ? ""
-            : toggleNamaProyekError()
-          : "";
-      }
-      {
-        jenisProyek == ""
-          ? jenisProyekError
-            ? ""
-            : toggleJenisProyekError()
-          : "";
-      }
-      {
-        wilayah == "" ? (wilayahError ? "" : toggleWilayahError()) : "";
-      }
-      {
-        alamat == "" ? (alamatError ? "" : toggleAlamatError()) : "";
-      }
-      {
-        jalan == "" ? (jalanError ? "" : toggleJalanError()) : "";
-      }
-      {
-        lokasi == "" ? (lokasiError ? "" : toggleLokasiError()) : "";
-      }
+      namaProyek == "" ? (namaProyekError ? "" : toggleNamaProyekError()) : "";
+      jenisProyek == ""
+        ? jenisProyekError
+          ? ""
+          : toggleJenisProyekError()
+        : "";
+      wilayah == "" ? (wilayahError ? "" : toggleWilayahError()) : "";
+      alamat == "" ? (alamatError ? "" : toggleAlamatError()) : "";
+      jalan == "" ? (jalanError ? "" : toggleJalanError()) : "";
+      lokasi == "" ? (lokasiError ? "" : toggleLokasiError()) : "";
+      formError ? "" : toggleFormError();
     }
+  };
+
+  const clear_error = () => {
+    namaProyek != "" ? (namaProyekError ? toggleNamaProyekError() : "") : "";
+    jenisProyek != "" ? (jenisProyekError ? toggleJenisProyekError() : "") : "";
+    wilayah != "" ? (wilayahError ? toggleWilayahError() : "") : "";
+    alamat != "" ? (alamatError ? toggleAlamatError() : "") : "";
+    jalan != "" ? (jalanError ? toggleJalanError() : "") : "";
+    lokasi != "" ? (lokasiError ? toggleLokasiError() : "") : "";
+
+    namaProyek != "" &&
+    jenisProyek != "" &&
+    wilayah != "" &&
+    alamat != "" &&
+    lokasi != "" &&
+    jalan != ""
+      ? formError
+        ? toggleFormError()
+        : ""
+      : "";
   };
 
   useFocusEffect(
@@ -185,6 +182,7 @@ function Proyek({ onPress, navigation }) {
       setLokasi(lokasi_bangunan);
       setLat(lat_bangunan);
       setLong(long_bangunan);
+      clear_error();
     }, [lokasi_bangunan])
   );
 
@@ -202,35 +200,23 @@ function Proyek({ onPress, navigation }) {
         hint={"Masukkan nama"}
         title={"Nama proyek"}
         rtype={"done"}
+        wajib={"*"}
         multi={false}
         value={namaProyek}
         onChangeText={(value) => {
+          clear_error();
           setNamaProyek(value);
         }}
         submit={() => {
-          {
-            namaProyekError ? toggleNamaProyekError() : "";
-          }
+          clear_error();
         }}
       />
-
-      {namaProyekError ? (
-        <AText
-          style={{ paddingTop: 6 }}
-          color={color.error.error500}
-          size={14}
-          weight="normal"
-        >
-          Nama proyek wajib
-        </AText>
-      ) : (
-        ""
-      )}
 
       <ADropDownCostume
         judul={"Jenis proyek"}
         hint={"Pilih jenis"}
         data={proyek}
+        wajib={"*"}
         selected={setJenisProyek}
         max={200}
         padding={20}
@@ -240,19 +226,6 @@ function Proyek({ onPress, navigation }) {
         }
       />
 
-      {jenisProyekError ? (
-        <AText
-          style={{ paddingTop: 6 }}
-          color={color.error.error500}
-          size={14}
-          weight="normal"
-        >
-          Jenis proyek wajib
-        </AText>
-      ) : (
-        ""
-      )}
-
       <ATextInputIcon
         bdColor={wilayahError ? color.error.error500 : color.neutral.neutral300}
         hint={"Pilih wilayah administratif"}
@@ -260,23 +233,11 @@ function Proyek({ onPress, navigation }) {
         padding={20}
         mult={true}
         width={true}
+        wajib={"*"}
         icon={"map-pin"}
         value={wilayah}
         onPress={toggleWilayahModal}
       />
-
-      {wilayahError ? (
-        <AText
-          style={{ paddingTop: 6 }}
-          color={color.error.error500}
-          size={14}
-          weight="normal"
-        >
-          Wilayah adiminstratif wajib
-        </AText>
-      ) : (
-        ""
-      )}
 
       <ADropdownJalan
         bdColor={jalanError ? color.error.error500 : color.neutral.neutral300}
@@ -285,6 +246,7 @@ function Proyek({ onPress, navigation }) {
         data={jalanItem}
         setData={setJalanItem}
         dataDefault={jalanItemDefault}
+        wajib={"*"}
         max={300}
         padding={20}
         kode={setKodeJalan}
@@ -294,52 +256,39 @@ function Proyek({ onPress, navigation }) {
         notFound={"Wilayah administratif belum dipilih"}
       />
 
-      {jalanError ? (
-        <AText
-          style={{ paddingTop: 6 }}
-          color={color.error.error500}
-          size={14}
-          weight="normal"
-        >
-          Jalan wajib
-        </AText>
-      ) : (
-        ""
-      )}
+      <AText
+        style={{ paddingTop: 8 }}
+        color={color.neutral.neutral300}
+        size={14}
+        weight="normal"
+      >
+        Keterangan: Jika jalan tidak ditemukan, silahkan pilih yang paling
+        mendekati
+      </AText>
 
       <ATextInput
         bdColor={alamatError ? color.error.error500 : color.neutral.neutral300}
         ktype={"default"}
         hint={"Masukkan alamat proyek"}
-        title={"Alamat proyek"}
+        title={"Alamat lainnya"}
         rtype={"done"}
+        wajib={"*"}
         padding={20}
         multi={true}
         ref={alamatInput}
         value={alamat}
         onChangeText={(value) => {
+          clear_error();
           setAlamat(value);
         }}
       />
-
-      {alamatError ? (
-        <AText
-          style={{ paddingTop: 6 }}
-          color={color.error.error500}
-          size={14}
-          weight="normal"
-        >
-          Alamat wajib
-        </AText>
-      ) : (
-        ""
-      )}
 
       <ATextInputIcon
         bdColor={lokasiError ? color.error.error500 : color.neutral.neutral300}
         hint={"Pilih lokasi proyek"}
         title={"Lokasi proyek"}
         padding={20}
+        wajib={"*"}
         mult={true}
         width={true}
         icon={"map-pin"}
@@ -364,14 +313,23 @@ function Proyek({ onPress, navigation }) {
         }}
       />
 
-      {lokasiError ? (
+      <AText
+        style={{ paddingTop: 8 }}
+        color={color.neutral.neutral300}
+        size={14}
+        weight="normal"
+      >
+        Keterangan: Pemohon harus berada di lokasi proyek yang sebenarnya
+      </AText>
+
+      {formError ? (
         <AText
-          style={{ paddingTop: 6 }}
+          style={{ paddingTop: 8 }}
           color={color.error.error500}
           size={14}
           weight="normal"
         >
-          Lokasi bangunan wajib
+          Lengkapi formulir atau kolom yang tersedia dengan benar{" "}
         </AText>
       ) : (
         ""

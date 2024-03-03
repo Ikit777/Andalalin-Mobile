@@ -21,6 +21,7 @@ if (Platform.OS === "android") {
 
 function ADropdownJalan({
   judul,
+  wajib,
   hint,
   data,
   saved,
@@ -137,7 +138,10 @@ function ADropdownJalan({
           color={color.neutral.neutral700}
           size={14}
         >
-          {judul}
+          {judul}{" "}
+            <AText color={color.error.error500} size={14}>
+              {wajib}
+            </AText>
         </AText>
       ) : (
         ""

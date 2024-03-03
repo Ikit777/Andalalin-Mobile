@@ -304,6 +304,14 @@ function SettingScreen({ navigation }) {
           {context.getUser().role == "User" ? (
             <View>
               <ASettingItem
+                icon={"book"}
+                title={"Panduan"}
+                onPress={() => {
+                  download();
+                }}
+              />
+
+              <ASettingItem
                 icon={"shield"}
                 title={"Kebijakan privasi"}
                 onPress={() => {
@@ -323,13 +331,7 @@ function SettingScreen({ navigation }) {
                   );
                 }}
               />
-              <ASettingItem
-                icon={"book"}
-                title={"Panduan"}
-                onPress={() => {
-                  download();
-                }}
-              />
+
               <ASettingItem
                 icon={"help-circle"}
                 title={"Bantuan"}
