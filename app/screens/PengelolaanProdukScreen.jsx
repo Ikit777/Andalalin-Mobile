@@ -41,8 +41,8 @@ function PengelolaanProdukScreen({ navigation }) {
               navigation.goBack();
             }}
           />
-         <AText
-            style={{ paddingLeft: 4}}
+          <AText
+            style={{ paddingLeft: 4 }}
             size={20}
             color={color.neutral.neutral900}
             weight="normal"
@@ -56,6 +56,17 @@ function PengelolaanProdukScreen({ navigation }) {
         showsVerticalScrollIndicator={false}
         persistentScrollbar={true}
       >
+        <APengelolaanItem
+          style={{ marginBottom: 20 }}
+          title={"Panduan"}
+          desc={
+            "Mengelola panduan yang tersedia pada aplikasi sehingga dapat memudahkan pengguna"
+          }
+          onPress={() => {
+            navigation.push("Produk", { kondisi: "Panduan" });
+          }}
+        />
+
         <APengelolaanItem
           style={{ marginBottom: 20 }}
           title={"Jenis proyek"}
@@ -140,8 +151,7 @@ function PengelolaanProdukScreen({ navigation }) {
             "Jenis perlengkapan lalu lintas yang dapat dilakukan oleh pemohon berdasarkan kategori perlengkapan lalu lintas"
           }
           onPress={() => {
-              navigation.push("Produk", { kondisi: "Jenis perlalin" });
-            
+            navigation.push("Produk", { kondisi: "Jenis perlalin" });
           }}
         />
         <APengelolaanItem

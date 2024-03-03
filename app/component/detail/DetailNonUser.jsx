@@ -427,6 +427,11 @@ function DetailNonUser({ permohonan, navigation, reload }) {
                 }, "Pilih tindakan");
             }
             break;
+          case "Pengecekan perlengkapan":
+              return tindakan(() => {
+                context.clearPemeriksaanPerlengkapan();
+                navigation.push("Pemeriksaan perlengkapan");
+              }, "Cek perlengkapan");
           case "Pemasangan perlengkapan":
             return tindakan(() => {
               setPilih("");

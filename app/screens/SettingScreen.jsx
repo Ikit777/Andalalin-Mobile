@@ -24,6 +24,7 @@ import { userUpdatePhoto } from "../api/user";
 import { masterGetPanduan } from "../api/master";
 import { StorageAccessFramework } from "expo-file-system";
 import ASnackBar from "../component/utility/ASnackBar";
+import * as FileSystem from "expo-file-system";
 
 function SettingScreen({ navigation }) {
   const context = useContext(UserContext);

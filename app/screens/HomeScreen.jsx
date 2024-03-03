@@ -452,7 +452,6 @@ function HomeScreen({ navigation }) {
                     }
                   })
                   .catch((error) => {
-                    console.log(error);
                     if (context.server != false) {
                       context.toggleLoading(false);
                       toggleGagal();
@@ -460,7 +459,6 @@ function HomeScreen({ navigation }) {
                   });
               })
               .catch((error) => {
-                console.log(error);
                 if (context.server != false) {
                   context.toggleLoading(false);
                   toggleGagal();
@@ -519,7 +517,6 @@ function HomeScreen({ navigation }) {
                             }
                           })
                           .catch((error) => {
-                            console.log(error);
                             if (context.server != false) {
                               context.toggleLoading(false);
                               toggleGagal();
@@ -527,7 +524,6 @@ function HomeScreen({ navigation }) {
                           });
                       })
                       .catch((error) => {
-                        console.log(error);
                         if (context.server != false) {
                           context.toggleLoading(false);
                           toggleGagal();
@@ -583,20 +579,16 @@ function HomeScreen({ navigation }) {
         switch (response.status) {
           case 200:
             context.setCheck("userIsChecked");
-            context.toggleLoading(false);
             break;
           case 424:
             authRefreshToken(context, (response) => {
               if (response.status === 200) {
                 me();
-              } else {
-                context.toggleLoading(false);
               }
             });
             break;
           default:
             if (context.server != false) {
-              context.toggleLoading(false);
               toggleError();
             }
             break;

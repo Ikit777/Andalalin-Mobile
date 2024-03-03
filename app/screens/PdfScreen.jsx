@@ -16,80 +16,24 @@ import * as FileSystem from "expo-file-system";
 import ADialog from "../component/utility/ADialog";
 import { useStateToggler } from "../hooks/useUtility";
 import { UserContext } from "../context/UserContext";
-import { andalalinGetDokumen } from "../api/andalalin";
-import { authRefreshToken } from "../api/auth";
-import * as IntentLauncher from 'expo-intent-launcher';
 
-function PdfViewSreen({ navigation, route }) {
+function PdfSreen({ navigation, route }) {
   const context = useContext(UserContext);
   const [data, setData] = useState();
   const [gagal, toggleGagal] = useStateToggler();
 
   const load = async () => {
-    context.toggleLoading(true);
-    andalalinGetDokumen(
-      route.params.id,
-      context.getUser().access_token,
-      route.params.dokumen,
-      (response) => {
-        switch (response.status) {
-          case 200:
-            (async () => {
-              const result = await response.data;
+    const filePath = `${FileSystem.cacheDirectory}temp.pdf`;
 
-              switch (result.tipe) {
-                case "Pdf":
-                  const filePath = `${FileSystem.cacheDirectory}temp.pdf`;
-
-                  await FileSystem.writeAsStringAsync(filePath, result.data, {
-                    encoding: FileSystem.EncodingType.Base64,
-                  })
-                    .then(async () => {
-                      setData(filePath);
-                    })
-                    .catch((error) => {
-                      console.error("Error writing file:", error);
-                    });
-                  break;
-                case "Word":
-                  const docxPath = `${FileSystem.cacheDirectory}temp.docx`;
-
-                  await FileSystem.writeAsStringAsync(docxPath, result.data, {
-                    encoding: FileSystem.EncodingType.Base64,
-                  })
-                    .then(() => {
-                      context.toggleLoading(false);
-                      navigation.goBack();
-                      setTimeout(() => {
-                        FileSystem.getContentUriAsync(docxPath).then(cUri => {
-                          IntentLauncher.startActivityAsync('android.intent.action.VIEW', {
-                            data: cUri,
-                            flags: 1,
-                          });
-                        });
-                      }, 300);
-                    })
-                    .catch((error) => {
-                      console.error("Error writing file:", error);
-                    });
-                  break;
-              }
-            })();
-            break;
-          case 424:
-            authRefreshToken(context, (response) => {
-              if (response.status === 200) {
-                getDokumen();
-              }
-            });
-            break;
-          default:
-            context.toggleLoading(false);
-            toggleGagal();
-            break;
-        }
-      }
-    );
+    await FileSystem.writeAsStringAsync(filePath, route.params.dokumen, {
+      encoding: FileSystem.EncodingType.Base64,
+    })
+      .then(async () => {
+        setData(filePath);
+      })
+      .catch((error) => {
+        console.error("Error writing file:", error);
+      });
   };
 
   useEffect(() => {
@@ -170,4 +114,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PdfViewSreen;
+export default PdfSreen;

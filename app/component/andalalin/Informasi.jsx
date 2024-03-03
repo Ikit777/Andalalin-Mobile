@@ -9,6 +9,7 @@ import { StorageAccessFramework } from "expo-file-system";
 import { masterGetPanduan } from "../../api/master";
 import AConfirmationDialog from "../utility/AConfirmationDialog";
 import { useStateToggler } from "../../hooks/useUtility";
+import * as FileSystem from "expo-file-system";
 
 function Informasi({ navigation, onPress, kondisi }) {
   const {
@@ -47,6 +48,7 @@ function Informasi({ navigation, onPress, kondisi }) {
       context.getUser().access_token,
       "Panduan " + bangkitan.toLowerCase(),
       (response) => {
+        console.log(response)
         switch (response.status) {
           case 200:
             (async () => {
@@ -54,7 +56,7 @@ function Informasi({ navigation, onPress, kondisi }) {
 
               await StorageAccessFramework.createFileAsync(
                 uri,
-                "Panduan.pdf",
+                "Panduan "+bangkitan.toLowerCase()+" .pdf",
                 "application/pdf"
               )
                 .then(async (uri) => {

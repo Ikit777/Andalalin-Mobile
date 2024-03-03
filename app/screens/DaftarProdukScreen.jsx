@@ -35,6 +35,7 @@ import {
   masterEditKecamatan,
   masterEditKelurahan,
   masterEditLokasiPengambilan,
+  masterEditPanduan,
   masterEditPerlalin,
   masterEditPersyaratanAndalalin,
   masterEditPersyaratanPerlalin,
@@ -49,6 +50,7 @@ import {
   masterHapusKecamatan,
   masterHapusKelurahan,
   masterHapusLokasiPengambilan,
+  masterHapusPanduan,
   masterHapusPerlalin,
   masterHapusPersyaratanAndalalin,
   masterHapusPersyaratanPerlalin,
@@ -63,6 +65,7 @@ import {
   masterTambahKecamatan,
   masterTambahKelurahan,
   masterTambahLokasiPengambilan,
+  masterTambahPanduan,
   masterTambahPerlalin,
   masterTambahPersyaratanAndalalin,
   masterTambahPersyaratanPerlalin,
@@ -89,7 +92,7 @@ if (Platform.OS === "android") {
 function DaftarProdukScreen({ navigation, route }) {
   const context = useContext(UserContext);
   const kondisi = route.params.kondisi;
-  const [data, setData] = useState();
+  let [data, setData] = useState();
   const [IdMaster, setIdMaster] = useState();
 
   const [pilih, setPilih] = useState();
@@ -214,6 +217,8 @@ function DaftarProdukScreen({ navigation, route }) {
         return "Jenis proyek";
       case "Jalan":
         return "Jalan";
+      case "Panduan":
+        return "Panduan";
     }
   };
 
@@ -241,6 +246,8 @@ function DaftarProdukScreen({ navigation, route }) {
         return "Jenis proyek";
       case "Jalan":
         return "Jalan";
+      case "Panduan":
+        return "Panduan";
     }
   };
 
@@ -248,6 +255,13 @@ function DaftarProdukScreen({ navigation, route }) {
     "Bangkitan rendah",
     "Bangkitan sedang",
     "Bangkitan tinggi",
+  ];
+
+  const kategoriPanduan = [
+    { value: "Panduan umum" },
+    { value: "Panduan bangkitan rendah" },
+    { value: "Panduan bangkitan sedang" },
+    { value: "Panduan bangkitan tinggi" },
   ];
 
   const kategoriPilihan = [
@@ -309,6 +323,10 @@ function DaftarProdukScreen({ navigation, route }) {
       case "Jalan":
         context.toggleLoading(true);
         load_master("jalan", "jalan");
+        break;
+      case "Panduan":
+        context.toggleLoading(true);
+        load_master("panduan", "panduan");
         break;
     }
   };
@@ -480,6 +498,19 @@ function DaftarProdukScreen({ navigation, route }) {
                 }
               }, 1000);
               break;
+            case "panduan":
+              setTimeout(() => {
+                if (result.data.panduan == null) {
+                  setDataOn(true);
+                  setIdMaster(result.data.id_data_master);
+                  context.toggleLoading(false);
+                } else {
+                  setIdMaster(result.data.id_data_master);
+                  setData(result.data);
+                  context.toggleLoading(false);
+                }
+              }, 1000);
+              break;
           }
         })();
       } else {
@@ -496,841 +527,751 @@ function DaftarProdukScreen({ navigation, route }) {
   const list = () => {
     switch (kondisi) {
       case "Lokasi":
-        return (
-          <FlatList
-            data={data.lokasi_pengambilan}
-            overScrollMode="never"
-            bounces={false}
-            showsHorizontalScrollIndicator={false}
-            showsVerticalScrollIndicator={false}
-            vertical
-            refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={onRefresh}
-                colors={[color.primary.primary500]}
-                progressViewOffset={progressViewOffset}
-              />
-            }
-            renderItem={({ item, index }) => (
+        return data.lokasi_pengambilan != null ? (
+        <FlatList
+          data={data.lokasi_pengambilan}
+          overScrollMode="never"
+          bounces={false}
+          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
+          vertical
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={[color.primary.primary500]}
+              progressViewOffset={progressViewOffset}
+            />
+          }
+          renderItem={({ item, index }) => (
+            <View
+              style={{
+                paddingBottom: 24,
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
               <View
                 style={{
-                  paddingBottom: 24,
                   flexDirection: "row",
                   alignItems: "center",
-                  justifyContent: "space-between",
+                  width: "75%",
                 }}
               >
                 <View
                   style={{
-                    flexDirection: "row",
+                    width: 40,
+                    height: 40,
+                    borderRadius: 150 / 2,
+                    overflow: "hidden",
+                    justifyContent: "center",
                     alignItems: "center",
-                    width: "75%",
+                    backgroundColor: color.primary.primary100,
                   }}
                 >
-                  <View
-                    style={{
-                      width: 40,
-                      height: 40,
-                      borderRadius: 150 / 2,
-                      overflow: "hidden",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      backgroundColor: color.primary.primary100,
-                    }}
-                  >
-                    <AText size={16} color={color.primary.primary800}>
-                      {index + 1}
-                    </AText>
-                  </View>
-
-                  <View style={{ flexDirection: "column" }}>
-                    <AText
-                      style={{ paddingLeft: 20 }}
-                      size={14}
-                      color={color.neutral.neutral900}
-                    >
-                      {item}
-                    </AText>
-                  </View>
+                  <AText size={16} color={color.primary.primary800}>
+                    {index + 1}
+                  </AText>
                 </View>
-                <TouchableOpacity
-                  style={{ flexDirection: "row", padding: 8 }}
-                  onPress={() => {
-                    setPilih(item);
-                    toggleTindakan();
-                  }}
-                >
-                  <Feather
-                    name="more-vertical"
-                    size={20}
+
+                <View style={{ flexDirection: "column" }}>
+                  <AText
+                    style={{ paddingLeft: 20 }}
+                    size={14}
                     color={color.neutral.neutral900}
-                  />
-                </TouchableOpacity>
+                  >
+                    {item}
+                  </AText>
+                </View>
               </View>
-            )}
-          />
-        );
+              <TouchableOpacity
+                style={{ flexDirection: "row", padding: 8 }}
+                onPress={() => {
+                  setPilih(item);
+                  toggleTindakan();
+                }}
+              >
+                <Feather
+                  name="more-vertical"
+                  size={20}
+                  color={color.neutral.neutral900}
+                />
+              </TouchableOpacity>
+            </View>
+          )}
+        />
+        ) : ("")
       case "Kategori":
-        return (
-          <FlatList
-            data={data.kategori_rencana}
-            overScrollMode="never"
-            bounces={false}
-            showsHorizontalScrollIndicator={false}
-            showsVerticalScrollIndicator={false}
-            vertical
-            refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={onRefresh}
-                colors={[color.primary.primary500]}
-                progressViewOffset={progressViewOffset}
-              />
-            }
-            renderItem={({ item, index }) => (
+        return data.kategori_rencana != null ? (<FlatList
+          data={data.kategori_rencana}
+          overScrollMode="never"
+          bounces={false}
+          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
+          vertical
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={[color.primary.primary500]}
+              progressViewOffset={progressViewOffset}
+            />
+          }
+          renderItem={({ item, index }) => (
+            <View
+              style={{
+                paddingBottom: 24,
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
               <View
                 style={{
-                  paddingBottom: 24,
                   flexDirection: "row",
                   alignItems: "center",
-                  justifyContent: "space-between",
+                  width: "75%",
                 }}
               >
                 <View
                   style={{
-                    flexDirection: "row",
+                    width: 40,
+                    height: 40,
+                    borderRadius: 150 / 2,
+                    overflow: "hidden",
+                    justifyContent: "center",
                     alignItems: "center",
-                    width: "75%",
+                    backgroundColor: color.primary.primary100,
                   }}
                 >
-                  <View
-                    style={{
-                      width: 40,
-                      height: 40,
-                      borderRadius: 150 / 2,
-                      overflow: "hidden",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      backgroundColor: color.primary.primary100,
-                    }}
-                  >
-                    <AText size={16} color={color.primary.primary800}>
-                      {index + 1}
-                    </AText>
-                  </View>
-
-                  <View style={{ flexDirection: "column" }}>
-                    <AText
-                      style={{ paddingLeft: 20 }}
-                      size={14}
-                      color={color.neutral.neutral900}
-                    >
-                      {item}
-                    </AText>
-                  </View>
+                  <AText size={16} color={color.primary.primary800}>
+                    {index + 1}
+                  </AText>
                 </View>
-                <TouchableOpacity
-                  style={{ flexDirection: "row", padding: 8 }}
-                  onPress={() => {
-                    setPilih(item);
-                    toggleTindakan();
-                  }}
-                >
-                  <Feather
-                    name="more-vertical"
-                    size={20}
+
+                <View style={{ flexDirection: "column" }}>
+                  <AText
+                    style={{ paddingLeft: 20 }}
+                    size={14}
                     color={color.neutral.neutral900}
-                  />
-                </TouchableOpacity>
+                  >
+                    {item}
+                  </AText>
+                </View>
               </View>
-            )}
-          />
-        );
+              <TouchableOpacity
+                style={{ flexDirection: "row", padding: 8 }}
+                onPress={() => {
+                  setPilih(item);
+                  toggleTindakan();
+                }}
+              >
+                <Feather
+                  name="more-vertical"
+                  size={20}
+                  color={color.neutral.neutral900}
+                />
+              </TouchableOpacity>
+            </View>
+          )}
+        />) : ("")
       case "Jenis":
-        return (
-          <FlatList
-            data={data.jenis_rencana}
-            overScrollMode="never"
-            bounces={false}
-            showsHorizontalScrollIndicator={false}
-            showsVerticalScrollIndicator={false}
-            vertical
-            refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={onRefresh}
-                colors={[color.primary.primary500]}
-                progressViewOffset={progressViewOffset}
-              />
-            }
-            renderItem={({ item: pembangunan, index }) => (
-              <AJenisDropdown
-                hint={pembangunan.Kategori}
-                padding={index + 1 == 1 ? 0 : 20}
-                bdColor={color.neutral.neutral300}
-              >
-                <FlatList
-                  style={{ paddingTop: 16, flex: 1 }}
-                  data={pembangunan.JenisRencana}
-                  overScrollMode="never"
-                  bounces={false}
-                  showsHorizontalScrollIndicator={false}
-                  showsVerticalScrollIndicator={false}
-                  vertical
-                  renderItem={({ item: jenis, index }) => (
+        return data.jenis_rencana != null ? (<FlatList
+          data={data.jenis_rencana}
+          overScrollMode="never"
+          bounces={false}
+          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
+          vertical
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={[color.primary.primary500]}
+              progressViewOffset={progressViewOffset}
+            />
+          }
+          renderItem={({ item: pembangunan, index }) => (
+            <AJenisDropdown
+              hint={pembangunan.Kategori}
+              padding={index + 1 == 1 ? 0 : 20}
+              bdColor={color.neutral.neutral300}
+            >
+              <FlatList
+                style={{ paddingTop: 16, flex: 1 }}
+                data={pembangunan.JenisRencana}
+                overScrollMode="never"
+                bounces={false}
+                showsHorizontalScrollIndicator={false}
+                showsVerticalScrollIndicator={false}
+                vertical
+                renderItem={({ item: jenis, index }) => (
+                  <View
+                    style={{
+                      paddingBottom:
+                        index + 1 == pembangunan.JenisRencana.length ? 0 : 24,
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
                     <View
                       style={{
-                        paddingBottom:
-                          index + 1 == pembangunan.JenisRencana.length ? 0 : 24,
                         flexDirection: "row",
                         alignItems: "center",
-                        justifyContent: "space-between",
+                        width: "75%",
                       }}
                     >
                       <View
                         style={{
-                          flexDirection: "row",
+                          width: 40,
+                          height: 40,
+                          borderRadius: 150 / 2,
+                          overflow: "hidden",
+                          justifyContent: "center",
                           alignItems: "center",
-                          width: "75%",
+                          backgroundColor: color.primary.primary100,
                         }}
                       >
-                        <View
-                          style={{
-                            width: 40,
-                            height: 40,
-                            borderRadius: 150 / 2,
-                            overflow: "hidden",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            backgroundColor: color.primary.primary100,
-                          }}
-                        >
-                          <AText size={16} color={color.primary.primary800}>
-                            {index + 1}
-                          </AText>
-                        </View>
-
-                        <View style={{ flexDirection: "column" }}>
-                          <AText
-                            style={{ paddingLeft: 20 }}
-                            size={14}
-                            color={color.neutral.neutral900}
-                          >
-                            {jenis.Jenis}
-                          </AText>
-                        </View>
+                        <AText size={16} color={color.primary.primary800}>
+                          {index + 1}
+                        </AText>
                       </View>
-                      <TouchableOpacity
-                        style={{ flexDirection: "row", padding: 8 }}
-                        onPress={() => {
-                          setPilih(jenis.Jenis);
-                          setPilih2(pembangunan.Kategori);
-                          setPilih3(jenis.Kriteria);
-                          setPilih4(jenis.Satuan);
-                          setPilih5(jenis.Terbilang);
-                          toggleTindakan();
-                        }}
-                      >
-                        <Feather
-                          name="more-vertical"
-                          size={20}
+
+                      <View style={{ flexDirection: "column" }}>
+                        <AText
+                          style={{ paddingLeft: 20 }}
+                          size={14}
                           color={color.neutral.neutral900}
-                        />
-                      </TouchableOpacity>
+                        >
+                          {jenis.Jenis}
+                        </AText>
+                      </View>
                     </View>
-                  )}
-                />
-              </AJenisDropdown>
-            )}
-          />
-        );
+                    <TouchableOpacity
+                      style={{ flexDirection: "row", padding: 8 }}
+                      onPress={() => {
+                        setPilih(jenis.Jenis);
+                        setPilih2(pembangunan.Kategori);
+                        setPilih3(jenis.Kriteria);
+                        setPilih4(jenis.Satuan);
+                        setPilih5(jenis.Terbilang);
+                        toggleTindakan();
+                      }}
+                    >
+                      <Feather
+                        name="more-vertical"
+                        size={20}
+                        color={color.neutral.neutral900}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                )}
+              />
+            </AJenisDropdown>
+          )}
+        />) : ("")
       case "Kategori utama":
-        return (
-          <FlatList
-            style={{ paddingTop: 12, flex: 1 }}
-            data={data.kategori_utama}
-            overScrollMode="never"
-            bounces={false}
-            showsHorizontalScrollIndicator={false}
-            showsVerticalScrollIndicator={false}
-            vertical
-            refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={onRefresh}
-                colors={[color.primary.primary500]}
-                progressViewOffset={progressViewOffset}
-              />
-            }
-            renderItem={({ item, index }) => (
+        return data.kategori_utama != null ? (<FlatList
+          style={{ paddingTop: 12, flex: 1 }}
+          data={data.kategori_utama}
+          overScrollMode="never"
+          bounces={false}
+          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
+          vertical
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={[color.primary.primary500]}
+              progressViewOffset={progressViewOffset}
+            />
+          }
+          renderItem={({ item, index }) => (
+            <View
+              style={{
+                paddingBottom: 24,
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
               <View
                 style={{
-                  paddingBottom: 24,
                   flexDirection: "row",
                   alignItems: "center",
-                  justifyContent: "space-between",
+                  width: "75%",
                 }}
               >
                 <View
                   style={{
-                    flexDirection: "row",
+                    width: 40,
+                    height: 40,
+                    borderRadius: 150 / 2,
+                    overflow: "hidden",
+                    justifyContent: "center",
                     alignItems: "center",
-                    width: "75%",
+                    backgroundColor: color.primary.primary100,
                   }}
                 >
-                  <View
-                    style={{
-                      width: 40,
-                      height: 40,
-                      borderRadius: 150 / 2,
-                      overflow: "hidden",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      backgroundColor: color.primary.primary100,
-                    }}
-                  >
-                    <AText size={16} color={color.primary.primary800}>
-                      {index + 1}
-                    </AText>
-                  </View>
-
-                  <View style={{ flexDirection: "column" }}>
-                    <AText
-                      style={{ paddingLeft: 20 }}
-                      size={14}
-                      color={color.neutral.neutral900}
-                    >
-                      {item}
-                    </AText>
-                  </View>
+                  <AText size={16} color={color.primary.primary800}>
+                    {index + 1}
+                  </AText>
                 </View>
-                <TouchableOpacity
-                  style={{ flexDirection: "row", padding: 8 }}
-                  onPress={() => {
-                    setPilih(item);
-                    toggleTindakan();
-                  }}
-                >
-                  <Feather
-                    name="more-vertical"
-                    size={20}
+
+                <View style={{ flexDirection: "column" }}>
+                  <AText
+                    style={{ paddingLeft: 20 }}
+                    size={14}
                     color={color.neutral.neutral900}
-                  />
-                </TouchableOpacity>
+                  >
+                    {item}
+                  </AText>
+                </View>
               </View>
-            )}
-          />
-        );
+              <TouchableOpacity
+                style={{ flexDirection: "row", padding: 8 }}
+                onPress={() => {
+                  setPilih(item);
+                  toggleTindakan();
+                }}
+              >
+                <Feather
+                  name="more-vertical"
+                  size={20}
+                  color={color.neutral.neutral900}
+                />
+              </TouchableOpacity>
+            </View>
+          )}
+        />) : ("")
       case "Kategori perlalin":
-        return (
-          <FlatList
-            data={data.kategori_perlengkapan}
-            overScrollMode="never"
-            bounces={false}
-            showsHorizontalScrollIndicator={false}
-            showsVerticalScrollIndicator={false}
-            vertical
-            refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={onRefresh}
-                colors={[color.primary.primary500]}
-                progressViewOffset={progressViewOffset}
-              />
-            }
-            renderItem={({ item: utama, index }) => (
-              <AJenisDropdown
-                hint={utama.KategoriUtama}
-                padding={index + 1 == 1 ? 0 : 20}
-                bdColor={color.neutral.neutral300}
-              >
-                <FlatList
-                  style={{ paddingTop: 16, flex: 1 }}
-                  data={utama.Kategori}
-                  overScrollMode="never"
-                  bounces={false}
-                  showsHorizontalScrollIndicator={false}
-                  showsVerticalScrollIndicator={false}
-                  vertical
-                  renderItem={({ item: kategori, index }) => (
+        return data.kategori_perlengkapan != null ? (<FlatList
+          data={data.kategori_perlengkapan}
+          overScrollMode="never"
+          bounces={false}
+          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
+          vertical
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={[color.primary.primary500]}
+              progressViewOffset={progressViewOffset}
+            />
+          }
+          renderItem={({ item: utama, index }) => (
+            <AJenisDropdown
+              hint={utama.KategoriUtama}
+              padding={index + 1 == 1 ? 0 : 20}
+              bdColor={color.neutral.neutral300}
+            >
+              <FlatList
+                style={{ paddingTop: 16, flex: 1 }}
+                data={utama.Kategori}
+                overScrollMode="never"
+                bounces={false}
+                showsHorizontalScrollIndicator={false}
+                showsVerticalScrollIndicator={false}
+                vertical
+                renderItem={({ item: kategori, index }) => (
+                  <View
+                    style={{
+                      paddingBottom: index + 1 == kategori.length ? 0 : 24,
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
                     <View
                       style={{
-                        paddingBottom: index + 1 == kategori.length ? 0 : 24,
                         flexDirection: "row",
                         alignItems: "center",
-                        justifyContent: "space-between",
+                        width: "75%",
                       }}
                     >
                       <View
                         style={{
-                          flexDirection: "row",
+                          width: 40,
+                          height: 40,
+                          borderRadius: 150 / 2,
+                          overflow: "hidden",
+                          justifyContent: "center",
                           alignItems: "center",
-                          width: "75%",
+                          backgroundColor: color.primary.primary100,
                         }}
                       >
-                        <View
-                          style={{
-                            width: 40,
-                            height: 40,
-                            borderRadius: 150 / 2,
-                            overflow: "hidden",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            backgroundColor: color.primary.primary100,
-                          }}
-                        >
-                          <AText size={16} color={color.primary.primary800}>
-                            {index + 1}
-                          </AText>
-                        </View>
-
-                        <View style={{ flexDirection: "column" }}>
-                          <AText
-                            style={{ paddingLeft: 20 }}
-                            size={14}
-                            color={color.neutral.neutral900}
-                          >
-                            {kategori}
-                          </AText>
-                        </View>
+                        <AText size={16} color={color.primary.primary800}>
+                          {index + 1}
+                        </AText>
                       </View>
-                      <TouchableOpacity
-                        style={{ flexDirection: "row", padding: 8 }}
-                        onPress={() => {
-                          setPilih2(utama.KategoriUtama);
-                          setPilih(kategori)
-                          toggleTindakan();
-                        }}
-                      >
-                        <Feather
-                          name="more-vertical"
-                          size={20}
+
+                      <View style={{ flexDirection: "column" }}>
+                        <AText
+                          style={{ paddingLeft: 20 }}
+                          size={14}
                           color={color.neutral.neutral900}
-                        />
-                      </TouchableOpacity>
+                        >
+                          {kategori}
+                        </AText>
+                      </View>
                     </View>
-                  )}
-                />
-              </AJenisDropdown>
-            )}
-          />
-        );
+                    <TouchableOpacity
+                      style={{ flexDirection: "row", padding: 8 }}
+                      onPress={() => {
+                        setPilih2(utama.KategoriUtama);
+                        setPilih(kategori)
+                        toggleTindakan();
+                      }}
+                    >
+                      <Feather
+                        name="more-vertical"
+                        size={20}
+                        color={color.neutral.neutral900}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                )}
+              />
+            </AJenisDropdown>
+          )}
+        />) : ("")
       case "Jenis perlalin":
-        return (
-          <FlatList
-            style={{ flex: 1 }}
-            data={data.perlengkapan}
-            overScrollMode="never"
-            bounces={false}
-            showsHorizontalScrollIndicator={false}
-            showsVerticalScrollIndicator={false}
-            vertical
-            refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={onRefresh}
-                colors={[color.primary.primary500]}
-                progressViewOffset={progressViewOffset}
-              />
-            }
-            renderItem={({ item: perlalin, index }) => (
-              <AJenisDropdown
-                hint={perlalin.Kategori}
-                padding={index + 1 == 1 ? 0 : 20}
-                bdColor={color.neutral.neutral300}
-              >
-                <FlatList
-                  style={{ paddingTop: 16, flex: 1 }}
-                  data={perlalin.Perlengkapan}
-                  overScrollMode="never"
-                  bounces={false}
-                  showsHorizontalScrollIndicator={false}
-                  showsVerticalScrollIndicator={false}
-                  vertical
-                  renderItem={({ item: perlengkapan, index }) => (
+        return data.perlengkapan != null ? (<FlatList
+          style={{ flex: 1 }}
+          data={data.perlengkapan}
+          overScrollMode="never"
+          bounces={false}
+          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
+          vertical
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={[color.primary.primary500]}
+              progressViewOffset={progressViewOffset}
+            />
+          }
+          renderItem={({ item: perlalin, index }) => (
+            <AJenisDropdown
+              hint={perlalin.Kategori}
+              padding={index + 1 == 1 ? 0 : 20}
+              bdColor={color.neutral.neutral300}
+            >
+              <FlatList
+                style={{ paddingTop: 16, flex: 1 }}
+                data={perlalin.Perlengkapan}
+                overScrollMode="never"
+                bounces={false}
+                showsHorizontalScrollIndicator={false}
+                showsVerticalScrollIndicator={false}
+                vertical
+                renderItem={({ item: perlengkapan, index }) => (
+                  <View
+                    style={{
+                      paddingBottom:
+                        index + 1 == perlalin.Perlengkapan.length ? 0 : 24,
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
                     <View
                       style={{
-                        paddingBottom:
-                          index + 1 == perlalin.Perlengkapan.length ? 0 : 24,
                         flexDirection: "row",
                         alignItems: "center",
-                        justifyContent: "space-between",
+                        width: "75%",
                       }}
                     >
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          alignItems: "center",
-                          width: "75%",
-                        }}
-                      >
-                        <TouchableOpacity
-                          style={{
-                            width: 45,
-                            height: 45,
-                            borderRadius: 150 / 2,
-                            overflow: "hidden",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            backgroundColor: color.text.white,
-                          }}
-                          onPress={() => {
-                            setImageUri(
-                              `data:image/png;base64,${perlengkapan.GambarPerlengkapan}`
-                            );
-                            toggleImage();
-                          }}
-                        >
-                          <Image
-                            style={{
-                              width: 40,
-                              height: 40,
-                              resizeMode: "contain",
-                            }}
-                            source={{
-                              uri: `data:image/png;base64,${perlengkapan.GambarPerlengkapan}`,
-                            }}
-                          />
-                        </TouchableOpacity>
-
-                        <View style={{ flexDirection: "column" }}>
-                          <AText
-                            style={{ paddingLeft: 20 }}
-                            size={14}
-                            color={color.neutral.neutral900}
-                          >
-                            {perlengkapan.JenisPerlengkapan}
-                          </AText>
-                        </View>
-                      </View>
                       <TouchableOpacity
-                        style={{ flexDirection: "row", padding: 8 }}
-                        onPress={() => {
-                          setPilih(perlengkapan.JenisPerlengkapan);
-                          setPilih2(perlalin.Kategori);
-                          setPilih3(perlalin.KategoriUtama);
-                          toggleTindakan();
-                        }}
-                      >
-                        <Feather
-                          name="more-vertical"
-                          size={20}
-                          color={color.neutral.neutral900}
-                        />
-                      </TouchableOpacity>
-                    </View>
-                  )}
-                />
-              </AJenisDropdown>
-            )}
-          />
-        );
-      case "Andalalin":
-        return (
-          <FlatList
-            data={kategoriBangkitan}
-            overScrollMode="never"
-            bounces={false}
-            showsHorizontalScrollIndicator={false}
-            showsVerticalScrollIndicator={false}
-            vertical
-            refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={onRefresh}
-                colors={[color.primary.primary500]}
-                progressViewOffset={progressViewOffset}
-              />
-            }
-            renderItem={({ item: kategori, index }) => (
-              <AJenisDropdown
-                hint={kategori}
-                padding={index + 1 == 1 ? 0 : 20}
-                bdColor={color.neutral.neutral300}
-              >
-                <FlatList
-                  style={{ paddingTop: 16, flex: 1 }}
-                  data={data.filter((bangkitan) => {
-                    return bangkitan.bangkitan == kategori;
-                  })}
-                  overScrollMode="never"
-                  bounces={false}
-                  showsHorizontalScrollIndicator={false}
-                  showsVerticalScrollIndicator={false}
-                  vertical
-                  renderItem={({ item: persyaratan, index }) => (
-                    <View
-                      style={{
-                        paddingBottom: index + 1 == kategori.length ? 0 : 24,
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                      }}
-                    >
-                      <View
                         style={{
-                          flexDirection: "row",
+                          width: 45,
+                          height: 45,
+                          borderRadius: 150 / 2,
+                          overflow: "hidden",
+                          justifyContent: "center",
                           alignItems: "center",
-                          width: "75%",
+                          backgroundColor: color.text.white,
+                        }}
+                        onPress={() => {
+                          setImageUri(
+                            `data:image/png;base64,${perlengkapan.GambarPerlengkapan}`
+                          );
+                          toggleImage();
                         }}
                       >
-                        <View
+                        <Image
                           style={{
                             width: 40,
                             height: 40,
-                            borderRadius: 150 / 2,
-                            overflow: "hidden",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            backgroundColor: color.primary.primary100,
+                            resizeMode: "contain",
                           }}
-                        >
-                          <AText size={16} color={color.primary.primary800}>
-                            {index + 1}
-                          </AText>
-                        </View>
-
-                        <View style={{ flexDirection: "column" }}>
-                          <AText
-                            style={{ paddingLeft: 20 }}
-                            size={14}
-                            color={color.neutral.neutral900}
-                          >
-                            {persyaratan.persyaratan}
-                          </AText>
-                        </View>
-                      </View>
-                      <TouchableOpacity
-                        style={{ flexDirection: "row", padding: 8 }}
-                        onPress={() => {
-                          setPilih(persyaratan.persyaratan);
-                          setPilih2(persyaratan.bangkitan);
-                          setPilih3(persyaratan.keterangan);
-                          setPilih4(persyaratan.kebutuhan);
-                          setPilih5(persyaratan.tipe);
-                          toggleTindakan();
-                        }}
-                      >
-                        <Feather
-                          name="more-vertical"
-                          size={20}
-                          color={color.neutral.neutral900}
+                          source={{
+                            uri: `data:image/png;base64,${perlengkapan.GambarPerlengkapan}`,
+                          }}
                         />
                       </TouchableOpacity>
+
+                      <View style={{ flexDirection: "column" }}>
+                        <AText
+                          style={{ paddingLeft: 20 }}
+                          size={14}
+                          color={color.neutral.neutral900}
+                        >
+                          {perlengkapan.JenisPerlengkapan}
+                        </AText>
+                      </View>
                     </View>
-                  )}
-                />
-              </AJenisDropdown>
-            )}
-          />
-        );
+                    <TouchableOpacity
+                      style={{ flexDirection: "row", padding: 8 }}
+                      onPress={() => {
+                        setPilih(perlengkapan.JenisPerlengkapan);
+                        setPilih2(perlalin.Kategori);
+                        setPilih3(perlalin.KategoriUtama);
+                        toggleTindakan();
+                      }}
+                    >
+                      <Feather
+                        name="more-vertical"
+                        size={20}
+                        color={color.neutral.neutral900}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                )}
+              />
+            </AJenisDropdown>
+          )}
+        />) : ("")
+      case "Andalalin":
+        return data.length != 0 ? (<FlatList
+          data={kategoriBangkitan}
+          overScrollMode="never"
+          bounces={false}
+          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
+          vertical
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={[color.primary.primary500]}
+              progressViewOffset={progressViewOffset}
+            />
+          }
+          renderItem={({ item: kategori, index }) => (
+            <AJenisDropdown
+              hint={kategori}
+              padding={index + 1 == 1 ? 0 : 20}
+              bdColor={color.neutral.neutral300}
+            >
+              <FlatList
+                style={{ paddingTop: 16, flex: 1 }}
+                data={data.filter((bangkitan) => {
+                  return bangkitan.bangkitan == kategori;
+                })}
+                overScrollMode="never"
+                bounces={false}
+                showsHorizontalScrollIndicator={false}
+                showsVerticalScrollIndicator={false}
+                vertical
+                renderItem={({ item: persyaratan, index }) => (
+                  <View
+                    style={{
+                      paddingBottom: index + 1 == kategori.length ? 0 : 24,
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        width: "75%",
+                      }}
+                    >
+                      <View
+                        style={{
+                          width: 40,
+                          height: 40,
+                          borderRadius: 150 / 2,
+                          overflow: "hidden",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          backgroundColor: color.primary.primary100,
+                        }}
+                      >
+                        <AText size={16} color={color.primary.primary800}>
+                          {index + 1}
+                        </AText>
+                      </View>
+
+                      <View style={{ flexDirection: "column" }}>
+                        <AText
+                          style={{ paddingLeft: 20 }}
+                          size={14}
+                          color={color.neutral.neutral900}
+                        >
+                          {persyaratan.persyaratan}
+                        </AText>
+                      </View>
+                    </View>
+                    <TouchableOpacity
+                      style={{ flexDirection: "row", padding: 8 }}
+                      onPress={() => {
+                        setPilih(persyaratan.persyaratan);
+                        setPilih2(persyaratan.bangkitan);
+                        setPilih3(persyaratan.keterangan);
+                        setPilih4(persyaratan.kebutuhan);
+                        setPilih5(persyaratan.tipe);
+                        toggleTindakan();
+                      }}
+                    >
+                      <Feather
+                        name="more-vertical"
+                        size={20}
+                        color={color.neutral.neutral900}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                )}
+              />
+            </AJenisDropdown>
+          )}
+        />) : ("")
+       
       case "Perlalin":
-        return (
-          <FlatList
-            data={data}
-            overScrollMode="never"
-            bounces={false}
-            showsHorizontalScrollIndicator={false}
-            showsVerticalScrollIndicator={false}
-            vertical
-            refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={onRefresh}
-                colors={[color.primary.primary500]}
-                progressViewOffset={progressViewOffset}
-              />
-            }
-            renderItem={({ item, index }) => (
+        return data.length != 0 ? ( <FlatList
+          data={data}
+          overScrollMode="never"
+          bounces={false}
+          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
+          vertical
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={[color.primary.primary500]}
+              progressViewOffset={progressViewOffset}
+            />
+          }
+          renderItem={({ item, index }) => (
+            <View
+              style={{
+                paddingBottom: 24,
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
               <View
                 style={{
-                  paddingBottom: 24,
                   flexDirection: "row",
                   alignItems: "center",
-                  justifyContent: "space-between",
+                  width: "75%",
                 }}
               >
                 <View
                   style={{
-                    flexDirection: "row",
+                    width: 40,
+                    height: 40,
+                    borderRadius: 150 / 2,
+                    overflow: "hidden",
+                    justifyContent: "center",
                     alignItems: "center",
-                    width: "75%",
+                    backgroundColor: color.primary.primary100,
                   }}
                 >
-                  <View
-                    style={{
-                      width: 40,
-                      height: 40,
-                      borderRadius: 150 / 2,
-                      overflow: "hidden",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      backgroundColor: color.primary.primary100,
-                    }}
-                  >
-                    <AText size={16} color={color.primary.primary800}>
-                      {index + 1}
-                    </AText>
-                  </View>
-
-                  <View style={{ flexDirection: "column" }}>
-                    <AText
-                      style={{ paddingLeft: 20 }}
-                      size={14}
-                      color={color.neutral.neutral900}
-                    >
-                      {item.persyaratan}
-                    </AText>
-                  </View>
+                  <AText size={16} color={color.primary.primary800}>
+                    {index + 1}
+                  </AText>
                 </View>
-                <TouchableOpacity
-                  style={{ flexDirection: "row", padding: 8 }}
-                  onPress={() => {
-                    setPilih(item.persyaratan);
-                    setPilih2(item.keterangan);
-                    setPilih3(item.kebutuhan);
-                    setPilih4(item.tipe);
-                    toggleTindakan();
-                  }}
-                >
-                  <Feather
-                    name="more-vertical"
-                    size={20}
+
+                <View style={{ flexDirection: "column" }}>
+                  <AText
+                    style={{ paddingLeft: 20 }}
+                    size={14}
                     color={color.neutral.neutral900}
-                  />
-                </TouchableOpacity>
+                  >
+                    {item.persyaratan}
+                  </AText>
+                </View>
               </View>
-            )}
-          />
-        );
+              <TouchableOpacity
+                style={{ flexDirection: "row", padding: 8 }}
+                onPress={() => {
+                  setPilih(item.persyaratan);
+                  setPilih2(item.keterangan);
+                  setPilih3(item.kebutuhan);
+                  setPilih4(item.tipe);
+                  toggleTindakan();
+                }}
+              >
+                <Feather
+                  name="more-vertical"
+                  size={20}
+                  color={color.neutral.neutral900}
+                />
+              </TouchableOpacity>
+            </View>
+          )}
+        />) : ("")
+        
       case "Wilayah":
-        return (
-          <FlatList
-            data={data.provinsi}
-            overScrollMode="never"
-            bounces={false}
-            showsHorizontalScrollIndicator={false}
-            showsVerticalScrollIndicator={false}
-            vertical
-            refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={onRefresh}
-                colors={[color.primary.primary500]}
-                progressViewOffset={progressViewOffset}
-              />
-            }
-            renderItem={({ item: provinsi, index }) => (
-              <View style={{ paddingTop: index + 1 == 1 ? 0 : 20 }}>
-                <TouchableOpacity
-                  style={{
-                    borderColor: color.neutral.neutral300,
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    paddingVertical: 10,
-                    paddingHorizontal: 14,
-                    borderWidth: 1,
-                    borderRadius: 8,
-                    backgroundColor: color.text.white,
-                    alignItems: "center",
-                  }}
-                  onPress={() => {
-                    const kab = data.kabupaten.filter((item) => {
-                      return item.IdProvinsi == provinsi.Id;
-                    });
-                    if (kab.length != 0) {
-                      toggleWilayah();
-                      setPilih3(provinsi);
-                    }
-                  }}
-                >
-                  <AText size={16} color={color.neutral.neutral900}>
-                    {provinsi.Name}
-                  </AText>
-
-                  <TouchableOpacity
-                    style={{ flexDirection: "row" }}
-                    onPress={() => {
-                      setPilih(provinsi.Name);
-                      setPilih2("Provinsi");
-                      toggleTindakan();
-                    }}
-                  >
-                    <Feather
-                      name="more-vertical"
-                      size={20}
-                      color={color.neutral.neutral900}
-                    />
-                  </TouchableOpacity>
-                </TouchableOpacity>
-              </View>
-            )}
-          />
-        );
-      case "Proyek":
-        return (
-          <FlatList
-            data={data.jenis_proyek}
-            overScrollMode="never"
-            bounces={false}
-            showsHorizontalScrollIndicator={false}
-            showsVerticalScrollIndicator={false}
-            vertical
-            refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={onRefresh}
-                colors={[color.primary.primary500]}
-                progressViewOffset={progressViewOffset}
-              />
-            }
-            renderItem={({ item, index }) => (
-              <View
+        return data.provinsi != null ? (<FlatList
+          data={data.provinsi}
+          overScrollMode="never"
+          bounces={false}
+          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
+          vertical
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={[color.primary.primary500]}
+              progressViewOffset={progressViewOffset}
+            />
+          }
+          renderItem={({ item: provinsi, index }) => (
+            <View style={{ paddingTop: index + 1 == 1 ? 0 : 20 }}>
+              <TouchableOpacity
                 style={{
-                  paddingBottom: 24,
+                  borderColor: color.neutral.neutral300,
                   flexDirection: "row",
-                  alignItems: "center",
                   justifyContent: "space-between",
+                  paddingVertical: 10,
+                  paddingHorizontal: 14,
+                  borderWidth: 1,
+                  borderRadius: 8,
+                  backgroundColor: color.text.white,
+                  alignItems: "center",
+                }}
+                onPress={() => {
+                  const kab = data.kabupaten.filter((item) => {
+                    return item.IdProvinsi == provinsi.Id;
+                  });
+                  if (kab.length != 0) {
+                    toggleWilayah();
+                    setPilih3(provinsi);
+                  }
                 }}
               >
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    width: "75%",
-                  }}
-                >
-                  <View
-                    style={{
-                      width: 40,
-                      height: 40,
-                      borderRadius: 150 / 2,
-                      overflow: "hidden",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      backgroundColor: color.primary.primary100,
-                    }}
-                  >
-                    <AText size={16} color={color.primary.primary800}>
-                      {index + 1}
-                    </AText>
-                  </View>
+                <AText size={16} color={color.neutral.neutral900}>
+                  {provinsi.Name}
+                </AText>
 
-                  <View style={{ flexDirection: "column" }}>
-                    <AText
-                      style={{ paddingLeft: 20 }}
-                      size={14}
-                      color={color.neutral.neutral900}
-                    >
-                      {item}
-                    </AText>
-                  </View>
-                </View>
                 <TouchableOpacity
-                  style={{ flexDirection: "row", padding: 8 }}
+                  style={{ flexDirection: "row" }}
                   onPress={() => {
-                    setPilih(item);
+                    setPilih(provinsi.Name);
+                    setPilih2("Provinsi");
                     toggleTindakan();
                   }}
                 >
@@ -1340,59 +1281,188 @@ function DaftarProdukScreen({ navigation, route }) {
                     color={color.neutral.neutral900}
                   />
                 </TouchableOpacity>
-              </View>
-            )}
-          />
-        );
-      case "Jalan":
-        return (
-          <FlatList
-            data={data.kecamatan}
-            overScrollMode="never"
-            bounces={false}
-            showsHorizontalScrollIndicator={false}
-            showsVerticalScrollIndicator={false}
-            vertical
-            refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={onRefresh}
-                colors={[color.primary.primary500]}
-                progressViewOffset={progressViewOffset}
-              />
-            }
-            renderItem={({ item: kec, index }) => (
-              <View style={{ paddingTop: index + 1 == 1 ? 0 : 20 }}>
-                <TouchableOpacity
+              </TouchableOpacity>
+            </View>
+          )}
+        />) : ("")
+      case "Proyek":
+        return data.jenis_proyek != null ? ( <FlatList
+          data={data.jenis_proyek}
+          overScrollMode="never"
+          bounces={false}
+          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
+          vertical
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={[color.primary.primary500]}
+              progressViewOffset={progressViewOffset}
+            />
+          }
+          renderItem={({ item, index }) => (
+            <View
+              style={{
+                paddingBottom: 24,
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  width: "75%",
+                }}
+              >
+                <View
                   style={{
-                    borderColor: color.neutral.neutral300,
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    paddingVertical: 10,
-                    paddingHorizontal: 14,
-                    borderWidth: 1,
-                    borderRadius: 8,
-                    backgroundColor: color.text.white,
+                    width: 40,
+                    height: 40,
+                    borderRadius: 150 / 2,
+                    overflow: "hidden",
+                    justifyContent: "center",
                     alignItems: "center",
-                  }}
-                  onPress={() => {
-                    const kel = data.kelurahan.filter((item) => {
-                      return item.IdKecamatan == kec.Id;
-                    });
-                    if (kel.length != 0) {
-                      toggleJalan();
-                      setPilih5(kec.Id);
-                    }
+                    backgroundColor: color.primary.primary100,
                   }}
                 >
-                  <AText size={16} color={color.neutral.neutral900}>
-                    {kec.Name}
+                  <AText size={16} color={color.primary.primary800}>
+                    {index + 1}
                   </AText>
-                </TouchableOpacity>
+                </View>
+
+                <View style={{ flexDirection: "column" }}>
+                  <AText
+                    style={{ paddingLeft: 20 }}
+                    size={14}
+                    color={color.neutral.neutral900}
+                  >
+                    {item}
+                  </AText>
+                </View>
               </View>
-            )}
-          />
-        );
+              <TouchableOpacity
+                style={{ flexDirection: "row", padding: 8 }}
+                onPress={() => {
+                  setPilih(item);
+                  toggleTindakan();
+                }}
+              >
+                <Feather
+                  name="more-vertical"
+                  size={20}
+                  color={color.neutral.neutral900}
+                />
+              </TouchableOpacity>
+            </View>
+          )}
+        />) : ("")
+      case "Jalan":
+        return data.kecamatan != null ? (<FlatList
+          data={data.kecamatan}
+          overScrollMode="never"
+          bounces={false}
+          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
+          vertical
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={[color.primary.primary500]}
+              progressViewOffset={progressViewOffset}
+            />
+          }
+          renderItem={({ item: kec, index }) => (
+            <View style={{ paddingTop: index + 1 == 1 ? 0 : 20 }}>
+              <TouchableOpacity
+                style={{
+                  borderColor: color.neutral.neutral300,
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  paddingVertical: 10,
+                  paddingHorizontal: 14,
+                  borderWidth: 1,
+                  borderRadius: 8,
+                  backgroundColor: color.text.white,
+                  alignItems: "center",
+                }}
+                onPress={() => {
+                  const kel = data.kelurahan.filter((item) => {
+                    return item.IdKecamatan == kec.Id;
+                  });
+                  if (kel.length != 0) {
+                    toggleJalan();
+                    setPilih5(kec.Id);
+                  }
+                }}
+              >
+                <AText size={16} color={color.neutral.neutral900}>
+                  {kec.Name}
+                </AText>
+              </TouchableOpacity>
+            </View>
+          )}
+        />) : ("")
+      case "Panduan":
+        return data.panduan != null ? (<FlatList
+          data={data.panduan}
+          overScrollMode="never"
+          bounces={false}
+          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
+          vertical
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={[color.primary.primary500]}
+              progressViewOffset={progressViewOffset}
+            />
+          }
+          renderItem={({ item, index }) => (
+            <View style={{ paddingTop: index + 1 == 1 ? 0 : 20 }}>
+              <TouchableOpacity
+                style={{
+                  borderColor: color.neutral.neutral300,
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  paddingVertical: 10,
+                  paddingHorizontal: 14,
+                  borderWidth: 1,
+                  borderRadius: 8,
+                  backgroundColor: color.text.white,
+                  alignItems: "center",
+                }}
+                onPress={() => {
+                  navigation.push("Pdf view", {
+                    dokumen: item.File,
+                  })
+                }}
+              >
+                <AText size={16} color={color.neutral.neutral900}>
+                  {item.Tipe}
+                </AText>
+
+                <TouchableOpacity
+                  style={{ flexDirection: "row" }}
+                  onPress={() => {
+                    setPilih(item.Tipe);
+                    toggleTindakan();
+                  }}
+                >
+                  <Feather
+                    name="more-vertical"
+                    size={20}
+                    color={color.neutral.neutral900}
+                  />
+                </TouchableOpacity>
+              </TouchableOpacity>
+            </View>
+          )}
+        />) : ("")
     }
   };
 
@@ -1438,6 +1508,16 @@ function DaftarProdukScreen({ navigation, route }) {
   const file = async () => {
     const result = await DocumentPicker.getDocumentAsync({
       type: "image/*",
+    });
+    if (!result.canceled) {
+      setRambuName(result.assets[0].name);
+      setRambuFile(result.assets[0].uri);
+    }
+  };
+
+  const filePdf = async () => {
+    const result = await DocumentPicker.getDocumentAsync({
+      type: "application/pdf",
     });
     if (!result.canceled) {
       setRambuName(result.assets[0].name);
@@ -2192,6 +2272,7 @@ function DaftarProdukScreen({ navigation, route }) {
               hint={"Masukkan rambu lalu lintas"}
               icon={"image"}
               mult={true}
+              width={true}
               value={rambuName}
               onPress={() => {
                 file();
@@ -2662,6 +2743,93 @@ function DaftarProdukScreen({ navigation, route }) {
             </View>
           </View>
         );
+      case "Panduan":
+        return (
+          <View>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: 16,
+              }}
+            >
+              <AText
+                size={18}
+                color={color.neutral.neutral700}
+                weight="semibold"
+              >
+                Tambah panduan
+              </AText>
+            </View>
+
+            <ADropDownCostume
+              hint={"Pilih panduan"}
+              saved={""}
+              data={kategoriPanduan}
+              selected={setPilih}
+              bdColor={color.neutral.neutral300}
+              max={150}
+            />
+            <View style={{ paddingBottom: 16 }} />
+            <ATextInputIcon
+              bdColor={color.neutral.neutral300}
+              hint={"Masukkan berkas panduan"}
+              icon={"file-plus"}
+              mult={true}
+              width={true}
+              value={rambuName}
+              onPress={() => {
+                filePdf();
+              }}
+            />
+
+            <View
+              style={{
+                flexDirection: "row",
+                alignSelf: "flex-end",
+                marginTop: 32,
+                marginRight: 16,
+                marginBottom: 16,
+              }}
+            >
+              <TouchableOpacity
+                style={{ flexDirection: "row", paddingLeft: 4 }}
+                onPress={() => {
+                  setRambuFile();
+                  setRambuName();
+                  toggleTambah();
+                }}
+              >
+                <AText
+                  size={14}
+                  color={color.neutral.neutral700}
+                  weight="semibold"
+                >
+                  Batal
+                </AText>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={{ flexDirection: "row", paddingLeft: 4, marginLeft: 32 }}
+                onPress={() => {
+                  if (pilih != "" && rambuFile != null){
+                    toggleTambah();
+                    toggleTambahConfirms();
+                  }
+                }}
+              >
+                <AText
+                  size={14}
+                  color={color.neutral.neutral700}
+                  weight="semibold"
+                >
+                  Simpan
+                </AText>
+              </TouchableOpacity>
+            </View>
+          </View>
+        );
     }
   };
 
@@ -2684,6 +2852,8 @@ function DaftarProdukScreen({ navigation, route }) {
       setInput8("");
       setInput9("");
       setInput10("");
+      setRambuFile();
+      setRambuName();
     }
   };
 
@@ -3810,6 +3980,7 @@ function DaftarProdukScreen({ navigation, route }) {
                 hint={"Masukkan perlalin"}
                 icon={"image"}
                 mult={true}
+                width={true}
                 value={rambuName}
                 onPress={() => {
                   file();
@@ -4243,6 +4414,91 @@ function DaftarProdukScreen({ navigation, route }) {
               </View>
             </View>
           );
+        case "Panduan":
+          return (
+            <View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: 16,
+                }}
+              >
+                <AText
+                  size={18}
+                  color={color.neutral.neutral700}
+                  weight="semibold"
+                >
+                  Edit {judul().toLowerCase()}
+                </AText>
+              </View>
+
+              <ATextInputIcon
+                bdColor={color.neutral.neutral300}
+                hint={"Masukkan berkas panduan"}
+                icon={"file-plus"}
+                mult={true}
+                width={true}
+                value={rambuName}
+                onPress={() => {
+                  filePdf();
+                }}
+              />
+
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignSelf: "flex-end",
+                  marginTop: 32,
+                  marginRight: 16,
+                  marginBottom: 16,
+                }}
+              >
+                <TouchableOpacity
+                  style={{ flexDirection: "row", paddingLeft: 4 }}
+                  onPress={() => {
+                    setInput("");
+                    setRambuFile();
+                    setRambuName();
+                    toggleTindakan();
+                    toggleEdit();
+                  }}
+                >
+                  <AText
+                    size={14}
+                    color={color.neutral.neutral700}
+                    weight="semibold"
+                  >
+                    Batal
+                  </AText>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={{
+                    flexDirection: "row",
+                    paddingLeft: 4,
+                    marginLeft: 32,
+                  }}
+                  onPress={() => {
+                    if (rambuFile != null) {
+                      toggleTindakan();
+                      toggleEdit();
+                      toggleEditConfirms();
+                    }
+                  }}
+                >
+                  <AText
+                    size={14}
+                    color={color.neutral.neutral700}
+                    weight="semibold"
+                  >
+                    Simpan
+                  </AText>
+                </TouchableOpacity>
+              </View>
+            </View>
+          );
         default:
           return (
             <View>
@@ -4348,7 +4604,7 @@ function DaftarProdukScreen({ navigation, route }) {
                   setInput("");
 
                   const result = await response.data;
-                  data.lokasi_pengambilan = result.data.lokasi_pengambilan;
+                  setData(result.data);
                   setDataOn(false);
                   setTimeout(() => {
                     context.toggleLoading(false);
@@ -4392,7 +4648,7 @@ function DaftarProdukScreen({ navigation, route }) {
                   setInput("");
 
                   const result = await response.data;
-                  data.kategori_rencana = result.data.kategori_rencana;
+                  setData(result.data);
 
                   setDataOn(false);
                       setTimeout(() => {
@@ -4444,7 +4700,7 @@ function DaftarProdukScreen({ navigation, route }) {
                   setInput4("");
 
                   const result = await response.data;
-                  data.jenis_rencana = result.data.jenis_rencana;
+                  setData(result.data);
 
                   setDataOn(false);
                       setTimeout(() => {
@@ -4495,8 +4751,7 @@ function DaftarProdukScreen({ navigation, route }) {
                   setInput("");
 
                   const result = await response.data;
-                  data.kategori_utama =
-                    result.data.kategori_utama;
+                  setData(result.data);
 
                     setDataOn(false);
                     setTimeout(() => {
@@ -4542,8 +4797,7 @@ function DaftarProdukScreen({ navigation, route }) {
                   setInput("");
 
                   const result = await response.data;
-                  data.kategori_perlengkapan =
-                    result.data.kategori_perlengkapan;
+                  setData(result.data);
 
                     setDataOn(false);
                     setTimeout(() => {
@@ -4593,7 +4847,7 @@ function DaftarProdukScreen({ navigation, route }) {
                   setRambuName();
 
                   const result = await response.data;
-                  data.perlengkapan = result.data.perlengkapan;
+                  setData(result.data);
 
                   setDataOn(false);
                       setTimeout(() => {
@@ -4752,7 +5006,7 @@ function DaftarProdukScreen({ navigation, route }) {
 
                       const result = await response.data;
 
-                      data.provinsi = result.data.provinsi;
+                      setData(result.data);
 
                       setDataOn(false);
                       setTimeout(() => {
@@ -4804,7 +5058,7 @@ function DaftarProdukScreen({ navigation, route }) {
                       setInput("");
 
                       const result = await response.data;
-                      data.kabupaten = result.data.kabupaten;
+                      setData(result.data);
                       setDataOn(false);
                       setTimeout(() => {
                         context.toggleLoading(false);
@@ -4855,7 +5109,7 @@ function DaftarProdukScreen({ navigation, route }) {
                       setInput("");
 
                       const result = await response.data;
-                      data.kecamatan = result.data.kecamatan;
+                      setData(result.data);
                       setDataOn(false);
                       setTimeout(() => {
                         context.toggleLoading(false);
@@ -4906,7 +5160,7 @@ function DaftarProdukScreen({ navigation, route }) {
                       setInput("");
 
                       const result = await response.data;
-                      data.kelurahan = result.data.kelurahan;
+                      setData(result.data);
 
                       setDataOn(false);
                       setTimeout(() => {
@@ -4957,7 +5211,7 @@ function DaftarProdukScreen({ navigation, route }) {
                   setInput("");
 
                   const result = await response.data;
-                  data.jenis_proyek = result.data.jenis_proyek;
+                  setData(result.data);
                   setDataOn(false);
 
                   setTimeout(() => {
@@ -5028,7 +5282,7 @@ function DaftarProdukScreen({ navigation, route }) {
                   setKategori2([]);
 
                   const result = await response.data;
-                  data.jalan = result.data.jalan;
+                  setData(result.data);
 
                   setDataOn(false);
                   setTimeout(() => {
@@ -5085,6 +5339,54 @@ function DaftarProdukScreen({ navigation, route }) {
           }
         );
         break;
+      case "Panduan":
+        masterTambahPanduan(
+          context.getUser().access_token,
+          IdMaster,
+          pilih,
+          rambuFile,
+          (response) => {
+            switch (response.status) {
+              case 200:
+                (async () => {
+                  setRambuFile();
+                  setRambuName();
+
+                  const result = await response.data;
+                  setData(result.data);
+                  setDataOn(false);
+                  setTimeout(() => {
+                    context.toggleLoading(false);
+                    setMessage("Panduan berhasil ditambahkan");
+                    showSnackbar();
+                  }, 1000);
+                })();
+                break;
+              case 409:
+                context.toggleLoading(false);
+                setRambuFile();
+                setRambuName();
+                toggleDataExist();
+                break;
+              case 424:
+                authRefreshToken(context, (response) => {
+                  if (response.status === 200) {
+                    tambah_data();
+                  } else {
+                    context.toggleLoading(false);
+                  }
+                });
+                break;
+              default:
+                context.toggleLoading(false);
+                setRambuFile();
+                setRambuName();
+                toggleTambahGagal();
+                break;
+            }
+          }
+        );
+        break;
     }
   };
 
@@ -5107,7 +5409,7 @@ function DaftarProdukScreen({ navigation, route }) {
               case 200:
                 (async () => {
                   const result = await response.data;
-                  data.lokasi_pengambilan = result.data.lokasi_pengambilan;
+                  setData(result.data);
                   if (result.data.lokasi_pengambilan == null) {
                     setDataOn(true);
                   } else {
@@ -5147,7 +5449,7 @@ function DaftarProdukScreen({ navigation, route }) {
               case 200:
                 (async () => {
                   const result = await response.data;
-                  data.kategori_rencana = result.data.kategori_rencana;
+                  setData(result.data);
 
                   if (result.data.kategori_rencana == null) {
                         setDataOn(true);
@@ -5189,7 +5491,7 @@ function DaftarProdukScreen({ navigation, route }) {
               case 200:
                 (async () => {
                   const result = await response.data;
-                  data.jenis_rencana = result.data.jenis_rencana;
+                  setData(result.data);
 
                   if (result.data.jenis_rencana == null) {
                         setDataOn(true);
@@ -5230,8 +5532,7 @@ function DaftarProdukScreen({ navigation, route }) {
               case 200:
                 (async () => {
                   const result = await response.data;
-                  data.kategori_utama =
-                    result.data.kategori_utama;
+                  setData(result.data);
 
                     if (result.data.kategori_utama == null) {
                       setDataOn(true);
@@ -5273,8 +5574,7 @@ function DaftarProdukScreen({ navigation, route }) {
               case 200:
                 (async () => {
                   const result = await response.data;
-                  data.kategori_perlengkapan =
-                    result.data.kategori_perlengkapan;
+                  setData(result.data);
 
                     if (result.data.kategori_perlengkapan == null) {
                       setDataOn(true);
@@ -5317,7 +5617,7 @@ function DaftarProdukScreen({ navigation, route }) {
               case 200:
                 (async () => {
                   const result = await response.data;
-                  data.perlengkapan = result.data.perlengkapan;
+                  setData(result.data);
 
                   if (result.data.perlengkapan == null) {
                     setDataOn(true);
@@ -5458,7 +5758,7 @@ function DaftarProdukScreen({ navigation, route }) {
                   case 200:
                     (async () => {
                       const result = await response.data;
-                      data.provinsi = result.data.provinsi;
+                      setData(result.data);
 
                       if (result.data.provinsi == null) {
                         setDataOn(true);
@@ -5500,7 +5800,7 @@ function DaftarProdukScreen({ navigation, route }) {
                   case 200:
                     (async () => {
                       const result = await response.data;
-                      data.kabupaten = result.data.kabupaten;
+                      setData(result.data);
 
                       setTimeout(() => {
                         context.toggleLoading(false);
@@ -5537,7 +5837,7 @@ function DaftarProdukScreen({ navigation, route }) {
                   case 200:
                     (async () => {
                       const result = await response.data;
-                      data.kecamatan = result.data.kecamatan;
+                      setData(result.data);
                       setTimeout(() => {
                         context.toggleLoading(false);
                         setMessage("Kecamatan berhasil dihapus");
@@ -5573,7 +5873,7 @@ function DaftarProdukScreen({ navigation, route }) {
                   case 200:
                     (async () => {
                       const result = await response.data;
-                      data.kelurahan = result.data.kelurahan;
+                      setData(result.data);
                       setTimeout(() => {
                         context.toggleLoading(false);
                         setMessage("Kelurahan berhasil dihapus");
@@ -5610,7 +5910,7 @@ function DaftarProdukScreen({ navigation, route }) {
               case 200:
                 (async () => {
                   const result = await response.data;
-                  data.jenis_proyek = result.data.jenis_proyek;
+                  setData(result.data);
                   if (result.data.jenis_proyek == null) {
                     setDataOn(true);
                   } else {
@@ -5651,7 +5951,7 @@ function DaftarProdukScreen({ navigation, route }) {
               case 200:
                 (async () => {
                   const result = await response.data;
-                  data.jalan = result.data.jalan;
+                  setData(result.data);
 
                   if (result.data.jalan == null) {
                     setDataOn(true);
@@ -5661,6 +5961,46 @@ function DaftarProdukScreen({ navigation, route }) {
                   setTimeout(() => {
                     context.toggleLoading(false);
                     setMessage("Jalan berhasil dihapus");
+                    showSnackbar();
+                  }, 1000);
+                })();
+                break;
+              case 424:
+                authRefreshToken(context, (response) => {
+                  if (response.status === 200) {
+                    hapus_data();
+                  } else {
+                    context.toggleLoading(false);
+                  }
+                });
+                break;
+              default:
+                context.toggleLoading(false);
+                toggleHapusGagal();
+                break;
+            }
+          }
+        );
+        break;
+      case "Panduan":
+        masterHapusPanduan(
+          context.getUser().access_token,
+          IdMaster,
+          pilih,
+          (response) => {
+            switch (response.status) {
+              case 200:
+                (async () => {
+                  const result = await response.data;
+                  setData(result.data);
+                  if (result.data.panduan == null) {
+                    setDataOn(true);
+                  } else {
+                    setDataOn(false);
+                  }
+                  setTimeout(() => {
+                    context.toggleLoading(false);
+                    setMessage("Panduan berhasil dihapus");
                     showSnackbar();
                   }, 1000);
                 })();
@@ -5700,7 +6040,7 @@ function DaftarProdukScreen({ navigation, route }) {
                   setInput("");
 
                   const result = await response.data;
-                  data.lokasi_pengambilan = result.data.lokasi_pengambilan;
+                  setData(result.data);
                   setDataOn(false);
 
                   setTimeout(() => {
@@ -5741,7 +6081,7 @@ function DaftarProdukScreen({ navigation, route }) {
                   setInput("");
 
                   const result = await response.data;
-                  data.kategori_rencana = result.data.kategori_rencana;
+                  setData(result.data);
 
                   setDataOn(false);
                       setTimeout(() => {
@@ -5789,7 +6129,7 @@ function DaftarProdukScreen({ navigation, route }) {
                   setInput4("");
 
                   const result = await response.data;
-                  data.jenis_rencana = result.data.jenis_rencana;
+                  setData(result.data);
 
                   setDataOn(false);
                       setTimeout(() => {
@@ -5833,8 +6173,7 @@ function DaftarProdukScreen({ navigation, route }) {
                   setInput("");
 
                   const result = await response.data;
-                  data.kategori_utama =
-                    result.data.kategori_utama;
+                  setData(result.data);
 
                     setDataOn(false);
                     setTimeout(() => {
@@ -5876,8 +6215,7 @@ function DaftarProdukScreen({ navigation, route }) {
                   setInput("");
 
                   const result = await response.data;
-                  data.kategori_perlengkapan =
-                    result.data.kategori_perlengkapan;
+                  setData(result.data);
 
                     setDataOn(false);
                     setTimeout(() => {
@@ -5923,7 +6261,7 @@ function DaftarProdukScreen({ navigation, route }) {
                   setRambuName();
 
                   const result = await response.data;
-                  data.perlengkapan = result.data.perlengkapan;
+                  setData(result.data);
 
                   setDataOn(false);
                       setTimeout(() => {
@@ -6061,7 +6399,7 @@ function DaftarProdukScreen({ navigation, route }) {
                       setInput("");
 
                       const result = await response.data;
-                      data.provinsi = result.data.provinsi;
+                      setData(result.data);
 
                       setDataOn(false);
 
@@ -6104,7 +6442,7 @@ function DaftarProdukScreen({ navigation, route }) {
                       setInput("");
 
                       const result = await response.data;
-                      data.kabupaten = result.data.kabupaten;
+                      setData(result.data);
                       setDataOn(false);
 
                       setTimeout(() => {
@@ -6146,7 +6484,7 @@ function DaftarProdukScreen({ navigation, route }) {
                       setInput("");
 
                       const result = await response.data;
-                      data.kecamatan = result.data.kecamatan;
+                      setData(result.data);
                       setDataOn(false);
 
                       setTimeout(() => {
@@ -6188,7 +6526,7 @@ function DaftarProdukScreen({ navigation, route }) {
                       setInput("");
 
                       const result = await response.data;
-                      data.kelurahan = result.data.kelurahan;
+                      setData(result.data);
                       setDataOn(false);
 
                       setTimeout(() => {
@@ -6231,7 +6569,7 @@ function DaftarProdukScreen({ navigation, route }) {
                   setInput("");
 
                   const result = await response.data;
-                  data.jenis_proyek = result.data.jenis_proyek;
+                  setData(result.data);
                   setDataOn(false);
 
                   setTimeout(() => {
@@ -6297,7 +6635,7 @@ function DaftarProdukScreen({ navigation, route }) {
                   setInput8("");
 
                   const result = await response.data;
-                  data.jalan = result.data.jalan;
+                  setData(result.data);
                   setDataOn(false);
 
                   setTimeout(() => {
@@ -6329,6 +6667,57 @@ function DaftarProdukScreen({ navigation, route }) {
                 setInput7("");
                 setInput8("");
                 toggleEditGagal();
+                break;
+            }
+          }
+        );
+        break;
+      case "Panduan":
+        masterEditPanduan(
+          context.getUser().access_token,
+          IdMaster,
+          input,
+          rambuFile,
+          (response) => {
+            switch (response.status) {
+              case 200:
+                (async () => {
+                  setInput("");
+                  setRambuFile();
+                  setRambuName();
+
+                  const result = await response.data;
+                  setData(result.data);
+                  setDataOn(false);
+                  setTimeout(() => {
+                    context.toggleLoading(false);
+                    setMessage("Panduan berhasil diedit");
+                    showSnackbar();
+                  }, 1000);
+                })();
+                break;
+              case 409:
+                context.toggleLoading(false);
+                setInput("");
+                setRambuFile();
+                setRambuName();
+                toggleDataExist();
+                break;
+              case 424:
+                authRefreshToken(context, (response) => {
+                  if (response.status === 200) {
+                    tambah_data();
+                  } else {
+                    context.toggleLoading(false);
+                  }
+                });
+                break;
+              default:
+                context.toggleLoading(false);
+                setInput("");
+                setRambuFile();
+                setRambuName();
+                toggleTambahGagal();
                 break;
             }
           }
@@ -6424,7 +6813,7 @@ function DaftarProdukScreen({ navigation, route }) {
             backgroundColor: color.primary.primary100,
             position: "absolute",
             bottom: 64,
-            right: 16,
+            right: 32,
             padding: 16,
           }}
           onPress={() => {
