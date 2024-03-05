@@ -4,7 +4,6 @@ import React, {
   useEffect,
   useReducer,
   useRef,
-  useContext,
 } from "react";
 
 import * as Notifications from "expo-notifications";
@@ -200,14 +199,10 @@ export function UserProvider({ children }) {
 
   const [dataMaster, setDataMaster] = useState("master");
 
-  const [check, setCheck] = useState();
-
   const [uri, setUri] = useState();
 
   const [isSnackbarVisible, setSnackbarVisible] = useState(false);
   const [message, setMessage] = useState();
-
-  const [server, setServer] = useState(false);
 
   const [indexAdministrasi, setIndexAdministrasi] = useState(1);
   const [administrasi, setAdministrasi] = useReducer(reducer, administrasiInit);
@@ -332,10 +327,6 @@ export function UserProvider({ children }) {
     return user;
   };
 
-  const getServer = () => {
-    return server;
-  };
-
   const getSession = () => {
     return session;
   };
@@ -363,8 +354,6 @@ export function UserProvider({ children }) {
         loading,
         toggleLoading,
         getLoading,
-        check,
-        setCheck,
         user,
         setUser,
         getUser,
@@ -399,9 +388,6 @@ export function UserProvider({ children }) {
         setSnackbarVisible,
         message,
         setMessage,
-        server,
-        setServer,
-        getServer,
         indexAdministrasi,
         setIndexAdministrasi,
         clearAdministrasi,

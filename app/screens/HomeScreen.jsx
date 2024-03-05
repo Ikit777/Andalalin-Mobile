@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState } from "react";
+import React, { useEffect, useContext } from "react";
 import {
   StyleSheet,
   View,
@@ -17,21 +17,19 @@ import { UserContext } from "../context/UserContext";
 import AConfirmationDialog from "../component/utility/AConfirmationDialog";
 import { useStateToggler } from "../hooks/useUtility";
 import ADialog from "../component/utility/ADialog";
-import { authRefreshToken } from "../api/auth";
-import { userMe } from "../api/user";
 import ExitApp from "react-native-exit-app";
-import { useFocusEffect } from "@react-navigation/native";
 import { checkMaster, masterAndalalin } from "../api/master";
 import { get, remove } from "../utils/local-storage";
 import AKategoriBangkitan from "../component/utility/AKategoriBangkitan";
 import * as FileSystem from "expo-file-system";
 import { inflate } from "react-native-gzip";
 import { Buffer } from "buffer";
+import { CheckContext } from "../context/CheckContext";
 
 function HomeScreen({ navigation }) {
   const context = useContext(UserContext);
+  const check = useContext(CheckContext);
   const [confirm, toggleComfirm] = useStateToggler();
-  const [error, toggleError] = useStateToggler();
   const [gagal, toggleGagal] = useStateToggler();
   const [kategoriBangkitan, toggleKategoriBangkitan] = useStateToggler();
 
@@ -452,21 +450,21 @@ function HomeScreen({ navigation }) {
                     }
                   })
                   .catch((error) => {
-                    if (context.server != false) {
+                    if (check.isServerOk != false) {
                       context.toggleLoading(false);
                       toggleGagal();
                     }
                   });
               })
               .catch((error) => {
-                if (context.server != false) {
+                if (check.isServerOk != false) {
                   context.toggleLoading(false);
                   toggleGagal();
                 }
               });
           })();
         } else {
-          if (context.server != false) {
+          if (check.isServerOk != false) {
             context.toggleLoading(false);
             toggleGagal();
           }
@@ -517,21 +515,21 @@ function HomeScreen({ navigation }) {
                             }
                           })
                           .catch((error) => {
-                            if (context.server != false) {
+                            if (check.isServerOk != false) {
                               context.toggleLoading(false);
                               toggleGagal();
                             }
                           });
                       })
                       .catch((error) => {
-                        if (context.server != false) {
+                        if (check.isServerOk != false) {
                           context.toggleLoading(false);
                           toggleGagal();
                         }
                       });
                   })();
                 } else {
-                  if (context.server != false) {
+                  if (check.isServerOk != false) {
                     context.toggleLoading(false);
                     toggleGagal();
                   }
@@ -564,7 +562,7 @@ function HomeScreen({ navigation }) {
             }
           })();
         } else {
-          if (context.server != false) {
+          if (check.isServerOk != false) {
             context.toggleLoading(false);
             toggleGagal();
           }
@@ -572,50 +570,6 @@ function HomeScreen({ navigation }) {
       });
     }
   };
-
-  const me = () => {
-    if (context.getUser() != "user") {
-      userMe(context.getUser().access_token, (response) => {
-        switch (response.status) {
-          case 200:
-            context.setCheck("userIsChecked");
-            break;
-          case 424:
-            authRefreshToken(context, (response) => {
-              if (response.status === 200) {
-                me();
-              }
-            });
-            break;
-          default:
-            if (context.server != false) {
-              toggleError();
-            }
-            break;
-        }
-      });
-    }
-  };
-
-  useFocusEffect(
-    React.useCallback(() => {
-      const timerID = setInterval(() => {
-        if (context.getUser() != "user") {
-          clearInterval(timerID);
-          if (context.check == null) {
-            setTimeout(() => {
-              if (context.check == null) {
-                me();
-              }
-            }, 1000);
-          }
-        }
-      }, 1000);
-      return () => {
-        clearInterval(timerID);
-      };
-    }, [context.getUser()])
-  );
 
   return (
     <AScreen full statusbar={"light"}>
@@ -729,19 +683,6 @@ function HomeScreen({ navigation }) {
         onPressOKButton={() => {
           ExitApp.exitApp();
           toggleComfirm();
-        }}
-      />
-      <ADialog
-        title={"Telah terjadi sesuatu"}
-        desc={"Akun Anda tidak dapat kami validasi, silahkan login kembali"}
-        visibleModal={error}
-        toggleModal={toggleError}
-        btnOK={"OK"}
-        onPressOKButton={() => {
-          navigation.replace("Login");
-          remove("authState");
-          context.setCheck();
-          toggleError();
         }}
       />
 

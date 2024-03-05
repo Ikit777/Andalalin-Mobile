@@ -44,6 +44,8 @@ function ACardPermohonan({
         return color.error.error50;
       case "Permohonan ditunda":
         return color.error.error50;
+        case "Pemasangan ditunda":
+          return color.error.error50;
       case "Permohonan selesai":
         return color.success.success50;
       case "Pemasangan selesai":
@@ -69,6 +71,8 @@ function ACardPermohonan({
         return color.error.error700;
       case "Permohonan ditunda":
         return color.error.error700;
+        case "Pemasangan ditunda":
+          return color.error.error700;
       case "Permohonan selesai":
         return color.success.success700;
       case "Pemasangan selesai":

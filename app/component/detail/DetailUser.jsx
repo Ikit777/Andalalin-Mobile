@@ -45,6 +45,8 @@ function DetailUser({ permohonan, navigation, reload }) {
         return color.error.error50;
       case "Permohonan ditunda":
         return color.error.error50;
+        case "Pemasangan ditunda":
+          return color.error.error50;
       case "Permohonan selesai":
         return color.success.success50;
       case "Pemasangan selesai":
@@ -68,6 +70,8 @@ function DetailUser({ permohonan, navigation, reload }) {
         return color.error.error700;
       case "Permohonan ditunda":
         return color.error.error700;
+        case "Pemasangan ditunda":
+          return color.error.error700;
       case "Permohonan selesai":
         return color.success.success700;
       case "Pemasangan selesai":
@@ -167,50 +171,7 @@ function DetailUser({ permohonan, navigation, reload }) {
         return <View style={{ paddingBottom: 32 }} />;
     }
   };
-
-  const pemasangan = () => {
-    if (permohonan.status_andalalin == "Pemasangan selesai") {
-      return (
-        <ADetailView
-          style={{ marginBottom: 50 }}
-          title={"Hasil pemasangan perlalin"}
-        >
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              padding: 16,
-            }}
-          >
-            <AText size={12} color={color.neutral.neutral900} weight="normal">
-              Data hasil pemasangan
-            </AText>
-
-            <TouchableOpacity
-              style={{ flexDirection: "row", paddingLeft: 4 }}
-              onPress={() => {
-                navigation.push("Detail Survei", {
-                  id: permohonan.id_andalalin,
-                  kondisi: context.getUser().role,
-                  jenis: "Pemasangan",
-                });
-              }}
-            >
-              <AText
-                size={14}
-                color={color.neutral.neutral700}
-                weight="semibold"
-              >
-                Lihat
-              </AText>
-            </TouchableOpacity>
-          </View>
-        </ADetailView>
-      );
-    }
-  };
-
+  
   const perlalin = () => {
     return (
       <View>
@@ -1555,24 +1516,7 @@ function DetailUser({ permohonan, navigation, reload }) {
             {permohonan.peruntukan}
           </AText>
         </ADetailView>
-
-        {permohonan.catatan != "" && permohonan.catatan != null ? (
-          <View>
-            <ADetailView style={{ marginTop: 20 }} title={"Catatan"}>
-              <AText
-                style={{ padding: 16 }}
-                size={12}
-                color={color.neutral.neutral900}
-                weight="normal"
-              >
-                {permohonan.catatan}
-              </AText>
-            </ADetailView>
-          </View>
-        ) : (
-          ""
-        )}
-
+        
         <ADetailView style={{ marginTop: 20 }} title={"Berkas persyaratan"}>
           {permohonan.persyaratan != null
             ? permohonan.persyaratan.map((item, index) => (
@@ -1666,25 +1610,64 @@ function DetailUser({ permohonan, navigation, reload }) {
             : ""}
         </ADetailView>
 
-        {permohonan.pertimbangan != "" && permohonan.pertimbangan != null ? (
-          <ADetailView
-            style={{
-              marginTop: 20,
-            }}
-            title={"Pertimbangan penolakan permohonan"}
-          >
-            <AText
-              style={{ padding: 16 }}
-              size={12}
-              color={color.neutral.neutral900}
-              weight="normal"
-            >
-              {permohonan.pertimbangan}
-            </AText>
-          </ADetailView>
+        {permohonan.catatan != "" && permohonan.catatan != null ? (
+          <View>
+            <ADetailView style={{ marginTop: 20 }} title={"Catatan"}>
+              <AText
+                style={{ padding: 16 }}
+                size={12}
+                color={color.neutral.neutral900}
+                weight="normal"
+              >
+                {permohonan.catatan}
+              </AText>
+            </ADetailView>
+          </View>
         ) : (
           ""
         )}
+
+        {permohonan.pertimbangan_penolakan != "" &&
+          permohonan.pertimbangan_penolakan != null ? (
+            <ADetailView
+              style={{
+                marginTop: 20,
+              }}
+              title={"Pertimbangan penolakan permohonan"}
+            >
+              <AText
+                style={{ padding: 16 }}
+                size={12}
+                color={color.neutral.neutral900}
+                weight="normal"
+              >
+                {permohonan.pertimbangan_penolakan}
+              </AText>
+            </ADetailView>
+          ) : (
+            ""
+          )}
+
+          {permohonan.pertimbangan_penundaan != "" &&
+          permohonan.pertimbangan_penundaan != null ? (
+            <ADetailView
+              style={{
+                marginTop: 20,
+              }}
+              title={"Pertimbangan penundaan permohonan"}
+            >
+              <AText
+                style={{ padding: 16 }}
+                size={12}
+                color={color.neutral.neutral900}
+                weight="normal"
+              >
+                {permohonan.pertimbangan_penundaan}
+              </AText>
+            </ADetailView>
+          ) : (
+            ""
+          )}
 
         {buttonAndalalin()}
       </View>

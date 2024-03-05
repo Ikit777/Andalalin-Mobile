@@ -10,11 +10,13 @@ import color from "../../constants/color";
 import AText from "../utility/AText";
 import { UserContext } from "../../context/UserContext";
 import ExitApp from "react-native-exit-app";
+import { CheckContext } from "../../context/CheckContext";
 
 function AServer({ visibleModal = false }) {
   const [visible, setVisible] = React.useState(visibleModal);
 
   const context = useContext(UserContext);
+  const check = useContext(CheckContext);
 
   React.useEffect(() => {
     toggleModal();
@@ -54,7 +56,7 @@ function AServer({ visibleModal = false }) {
           <TouchableOpacity
             style={{ alignItems: "flex-end", marginVertical: 24 }}
             onPress={() => {
-              context.setServer(false);
+              check.setIsServerOk(true);
               setVisible(false);
               ExitApp.exitApp();
             }}

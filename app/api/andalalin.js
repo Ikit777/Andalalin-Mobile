@@ -954,3 +954,29 @@ export const andalalinUploadDokumen = async (
   });
   andalalinRespone(response);
 };
+
+export const andalalinPerbaruiLokasi = async (
+  accessToken,
+  id,
+  lokasi,
+  latitude,
+  longtitude,
+  andalalinRespone
+) => {
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "application/json",
+  };
+  const body = JSON.stringify({
+    lokasi: lokasi,
+    latitude: latitude,
+    longtitude: longtitude,
+  });
+  const response = await axiosInstance({
+    method: "post",
+    url: ENDPOINTS.ANDALALIN_PERBARUI_LOKASI + "/" + id,
+    headers: headers,
+    data: body,
+  });
+  andalalinRespone(response);
+};

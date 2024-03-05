@@ -79,6 +79,8 @@ function DetailNonUser({ permohonan, navigation, reload }) {
         return color.error.error50;
       case "Permohonan ditunda":
         return color.error.error50;
+      case "Pemasangan ditunda":
+        return color.error.error50;
       case "Permohonan selesai":
         return color.success.success50;
       case "Pemasangan selesai":
@@ -101,6 +103,8 @@ function DetailNonUser({ permohonan, navigation, reload }) {
       case "Permohonan ditolak":
         return color.error.error700;
       case "Permohonan ditunda":
+        return color.error.error700;
+      case "Pemasangan ditunda":
         return color.error.error700;
       case "Permohonan selesai":
         return color.success.success700;
@@ -130,6 +134,10 @@ function DetailNonUser({ permohonan, navigation, reload }) {
             return tindakan(() => {
               setPersyaratanModal();
             }, "Pilih tindakan");
+          case "Permohonan ditunda":
+              return tindakan(() => {
+                toggleLanjutkanPermohonan();
+              }, "Lanjutkan permohonan");
           case "Persetujuan administrasi":
             return tindakan(() => {
               setDokumen("Checklist administrasi");
@@ -246,6 +254,10 @@ function DetailNonUser({ permohonan, navigation, reload }) {
             return tindakan(() => {
               setPersyaratanModal();
             }, "Pilih tindakan");
+            case "Permohonan ditunda":
+              return tindakan(() => {
+                toggleLanjutkanPermohonan();
+              }, "Lanjutkan permohonan");
           case "Persetujuan administrasi":
             return tindakan(() => {
               setDokumen("Checklist administrasi");
@@ -565,6 +577,37 @@ function DetailNonUser({ permohonan, navigation, reload }) {
                   color={color.neutral.neutral700}
                 >
                   Cek persyaratan
+                </AText>
+              </Pressable>
+            </View>
+
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                paddingTop: 8,
+              }}
+            >
+              <RadioButton
+                label="Tunda permohonan"
+                value="Tunda permohonan"
+                uncheckedColor={color.neutral.neutral300}
+                color={color.primary.primary600}
+                status={
+                  checked === "Tunda permohonan" ? "checked" : "unchecked"
+                }
+              />
+              <Pressable
+                onPress={() => {
+                  setChecked("Tunda permohonan");
+                }}
+              >
+                <AText
+                  style={{ paddingLeft: 4 }}
+                  size={14}
+                  color={color.neutral.neutral700}
+                >
+                  Tunda permohonan
                 </AText>
               </Pressable>
             </View>
@@ -2359,6 +2402,32 @@ function DetailNonUser({ permohonan, navigation, reload }) {
               {permohonan.fungsi_jalan}
             </AText>
           </View>
+          <View style={styles.separator} />
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: 16,
+            }}
+          >
+            <AText
+              style={{ maxWidth: "50%" }}
+              size={12}
+              color={color.neutral.neutral900}
+              weight="normal"
+            >
+              Status jalan
+            </AText>
+            <AText
+              style={{ maxWidth: "50%" }}
+              size={12}
+              color={color.neutral.neutral500}
+              weight="normal"
+            >
+              {permohonan.status_jalan}
+            </AText>
+          </View>
         </ADetailView>
 
         <ADetailView
@@ -2633,23 +2702,6 @@ function DetailNonUser({ permohonan, navigation, reload }) {
           </AText>
         </ADetailView>
 
-        {permohonan.catatan != "" && permohonan.catatan != null ? (
-          <View>
-            <ADetailView style={{ marginTop: 20 }} title={"Catatan"}>
-              <AText
-                style={{ padding: 16 }}
-                size={12}
-                color={color.neutral.neutral900}
-                weight="normal"
-              >
-                {permohonan.catatan}
-              </AText>
-            </ADetailView>
-          </View>
-        ) : (
-          ""
-        )}
-
         <ADetailView style={{ marginTop: 20 }} title={"Berkas persyaratan"}>
           {permohonan.persyaratan != null
             ? permohonan.persyaratan.map((item, index) => (
@@ -2740,23 +2792,64 @@ function DetailNonUser({ permohonan, navigation, reload }) {
             : ""}
         </ADetailView>
 
-        {permohonan.pertimbangan != "" && permohonan.pertimbangan != null ? (
-          <ADetailView
-            style={{ marginTop: 20 }}
-            title={"Pertimbangan penolakan permohonan"}
-          >
-            <AText
-              style={{ padding: 16 }}
-              size={12}
-              color={color.neutral.neutral900}
-              weight="normal"
-            >
-              {permohonan.pertimbangan}
-            </AText>
-          </ADetailView>
+        {permohonan.catatan != "" && permohonan.catatan != null ? (
+          <View>
+            <ADetailView style={{ marginTop: 20 }} title={"Catatan"}>
+              <AText
+                style={{ padding: 16 }}
+                size={12}
+                color={color.neutral.neutral900}
+                weight="normal"
+              >
+                {permohonan.catatan}
+              </AText>
+            </ADetailView>
+          </View>
         ) : (
           ""
         )}
+
+        {permohonan.pertimbangan_penolakan != "" &&
+          permohonan.pertimbangan_penolakan != null ? (
+            <ADetailView
+              style={{
+                marginTop: 20,
+              }}
+              title={"Pertimbangan penolakan permohonan"}
+            >
+              <AText
+                style={{ padding: 16 }}
+                size={12}
+                color={color.neutral.neutral900}
+                weight="normal"
+              >
+                {permohonan.pertimbangan_penolakan}
+              </AText>
+            </ADetailView>
+          ) : (
+            ""
+          )}
+
+          {permohonan.pertimbangan_penundaan != "" &&
+          permohonan.pertimbangan_penundaan != null ? (
+            <ADetailView
+              style={{
+                marginTop: 20,
+              }}
+              title={"Pertimbangan penundaan permohonan"}
+            >
+              <AText
+                style={{ padding: 16 }}
+                size={12}
+                color={color.neutral.neutral900}
+                weight="normal"
+              >
+                {permohonan.pertimbangan_penundaan}
+              </AText>
+            </ADetailView>
+          ) : (
+            ""
+          )}
 
         {permohonan.hasil_pemeriksaan != "" &&
         permohonan.hasil_pemeriksaan != null ? (

@@ -161,6 +161,7 @@ function LoginScreen({ navigation }) {
               role: result.data.role,
               photo: result.data.photo,
               nip: result.data.nip,
+              push_token: result.data.push_token,
             };
 
             context.setUser(newAuthState);

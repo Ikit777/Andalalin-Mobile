@@ -11,6 +11,7 @@ import color from "../../constants/color";
 import AText from "../utility/AText";
 import ExitApp from "react-native-exit-app";
 import { UserContext } from "../../context/UserContext";
+import { remove } from "../../utils/local-storage";
 
 function AUpdateDialog({ visibleModal = false }) {
   const [visible, setVisible] = React.useState(visibleModal);
@@ -55,6 +56,7 @@ function AUpdateDialog({ visibleModal = false }) {
           <TouchableOpacity
             style={{ alignItems: "flex-end", marginVertical: 24 }}
             onPress={() => {
+              remove("authState");
               Linking.openURL("market://details?id=com.andalalin");
               ExitApp.exitApp();
             }}

@@ -15,6 +15,7 @@ import AUpdateDialog from "./app/component/utility/AUpdateDialog";
 import AServer from "./app/component/utility/AServer";
 import SplashScreen from "./app/screens/SplashScreen";
 import { CheckContext, CheckProvider } from "./app/context/CheckContext";
+import ADialogAkun from "./app/component/utility/ADialogAkun";
 
 export default function App() {
   const [isAppReady, setIsAppReady] = useState(false);
@@ -69,8 +70,8 @@ export default function App() {
       ) : (
         <Animated.View style={{ flex: 1, opacity: fadeAnim }}>
           <NetProvider>
-            <CheckProvider>
-              <UserProvider>
+            <UserProvider>
+              <CheckProvider>
                 <NavigationContainer ref={navigationRef}>
                   <NetContext.Consumer>
                     {(isAvailable) => (
@@ -86,6 +87,10 @@ export default function App() {
                     {(check) => <AUpdateDialog visibleModal={check.isUpdate} />}
                   </CheckContext.Consumer>
 
+                  <CheckContext.Consumer>
+                    {(check) => <ADialogAkun visibleModal={check.isUser} />}
+                  </CheckContext.Consumer>
+
                   <UserContext.Consumer>
                     {(isEnd) => (
                       <ASessionEnd visibleModal={isEnd.getSession()} />
@@ -98,8 +103,8 @@ export default function App() {
 
                   <Navigator isLogged={isLogged} />
                 </NavigationContainer>
-              </UserProvider>
-            </CheckProvider>
+              </CheckProvider>
+            </UserProvider>
           </NetProvider>
         </Animated.View>
       )}

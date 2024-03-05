@@ -121,7 +121,7 @@ export const authLogout = async (accessToken, authRespone) => {
     "Content-Type": "application/json",
   };
   const response = await axiosInstance({
-    method: "get",
+    method: "post",
     url: ENDPOINTS.AUTH_LOGOUT,
     headers: headers,
   });
@@ -149,6 +149,7 @@ export const authRefreshToken = async (user, authRespone) => {
       role: user.getUser().role,
       photo: user.getUser().photo,
       nip: user.getUser().nip,
+      push_token: user.getUser().push_token,
     };
     store("authState", newAuthState);
   } else if (response.status === 424) {

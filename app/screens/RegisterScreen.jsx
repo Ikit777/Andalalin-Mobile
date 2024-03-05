@@ -468,7 +468,7 @@ function RegisterScreen({ navigation, route }) {
           <TouchableOpacity
             style={{ flexDirection: "row", paddingLeft: 4 }}
             onPress={() => {
-              navigation.replace("Back Login");
+              navigation.replace("Login");
             }}
           >
             <AText size={14} color={color.neutral.neutral700} weight="semibold">

@@ -382,7 +382,6 @@ function ResetPasswordScreen({ navigation, route }) {
           toggleResetBerhasil();
           if (kondisi == "Logged") {
             remove("authState");
-            context.setCheck();
           }
 
           navigation.replace("Login");

@@ -71,7 +71,6 @@ function SettingScreen({ navigation }) {
           context.toggleLoading(false);
           remove(context.getUser().id);
           remove("authState");
-          context.setCheck();
           navigation.replace("Login");
           break;
         case 424:
@@ -429,7 +428,6 @@ function SettingScreen({ navigation }) {
           toggleForgotError();
           remove(context.getUser().id);
           remove("authState");
-          context.setCheck();
           navigation.replace("Login");
         }}
       />

@@ -55,6 +55,8 @@ function LanjutanScreen({ navigation, route }) {
         return color.error.error50;
       case "Permohonan ditunda":
         return color.error.error50;
+        case "Pemasangan ditunda":
+          return color.error.error50;
       case "Permohonan selesai":
         return color.success.success50;
       case "Pemasangan selesai":
@@ -78,6 +80,8 @@ function LanjutanScreen({ navigation, route }) {
         return color.error.error700;
       case "Permohonan ditunda":
         return color.error.error700;
+        case "Pemasangan ditunda":
+          return color.error.error700;
       case "Permohonan selesai":
         return color.success.success700;
       case "Pemasangan selesai":
@@ -355,9 +359,12 @@ function LanjutanScreen({ navigation, route }) {
             </View>
           </ADetailView>
 
-          {permohonan.pertimbangan != "" && permohonan.pertimbangan != null ? (
+          {permohonan.pertimbangan_penolakan != "" &&
+          permohonan.pertimbangan_penolakan != null ? (
             <ADetailView
-              style={{ marginTop: 20 }}
+              style={{
+                marginTop: 20,
+              }}
               title={"Pertimbangan penolakan permohonan"}
             >
               <AText
@@ -366,7 +373,28 @@ function LanjutanScreen({ navigation, route }) {
                 color={color.neutral.neutral900}
                 weight="normal"
               >
-                {permohonan.pertimbangan}
+                {permohonan.pertimbangan_penolakan}
+              </AText>
+            </ADetailView>
+          ) : (
+            ""
+          )}
+
+          {permohonan.pertimbangan_penundaan != "" &&
+          permohonan.pertimbangan_penundaan != null ? (
+            <ADetailView
+              style={{
+                marginTop: 20,
+              }}
+              title={"Pertimbangan penundaan permohonan"}
+            >
+              <AText
+                style={{ padding: 16 }}
+                size={12}
+                color={color.neutral.neutral900}
+                weight="normal"
+              >
+                {permohonan.pertimbangan_penundaan}
               </AText>
             </ADetailView>
           ) : (
@@ -1108,6 +1136,33 @@ function LanjutanScreen({ navigation, route }) {
               {permohonan.fungsi_jalan}
             </AText>
           </View>
+
+          <View style={styles.separator} />
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: 16,
+            }}
+          >
+            <AText
+              style={{ maxWidth: "50%" }}
+              size={12}
+              color={color.neutral.neutral900}
+              weight="normal"
+            >
+              Status jalan
+            </AText>
+            <AText
+              style={{ maxWidth: "50%" }}
+              size={12}
+              color={color.neutral.neutral500}
+              weight="normal"
+            >
+              {permohonan.status_jalan}
+            </AText>
+          </View>
         </ADetailView>
 
         <ADetailView
@@ -1212,6 +1267,39 @@ function LanjutanScreen({ navigation, route }) {
                 weight="semibold"
               >
                 Lihat
+              </AText>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.separator} />
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: 14,
+            }}
+          >
+            <AText
+              style={{ maxWidth: "50%" }}
+              size={12}
+              color={color.neutral.neutral900}
+              weight="normal"
+            >
+              Perbarui lokasi
+            </AText>
+            <TouchableOpacity
+              style={{ flexDirection: "row", paddingLeft: 4 }}
+              onPress={() => {
+                navigation.push("Pilih Lokasi", { kondisi: "Perbarui lokasi" });
+              }}
+            >
+              <AText
+                size={14}
+                color={color.neutral.neutral700}
+                weight="semibold"
+              >
+                Perbarui
               </AText>
             </TouchableOpacity>
           </View>

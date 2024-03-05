@@ -19,6 +19,8 @@ import { WebView } from "react-native-webview";
 import { Feather } from "@expo/vector-icons";
 import ADialog from "../component/utility/ADialog";
 import AButton from "../component/utility/AButton";
+import { andalalinPerbaruiLokasi } from "../api/andalalin";
+import { authRefreshToken } from "../api/auth";
 
 function PilihLokasiScreen({ navigation, route }) {
   const context = useContext(UserContext);
@@ -33,6 +35,8 @@ function PilihLokasiScreen({ navigation, route }) {
   const [location, setLocation] = useState();
   const [lokasiKosong, toggleLokasiKosong] = useStateToggler();
   const [load, toggleLoad] = useState(false);
+
+  const [perbaruiGagal, togglePerbaruiGagal] = useStateToggler();
 
   const [tile, setTile] = useState("OpenStreetMap");
 
@@ -204,6 +208,31 @@ function PilihLokasiScreen({ navigation, route }) {
     }
   }
 
+  const perbarui = () => {
+    andalalinPerbaruiLokasi(context.getUser().access_token, context.detailPermohonan.id_andalalin, alamatLengkap, location.coords.latitude, location.coords.longitude, (response) => {
+      switch (response.status) {
+        case 200:
+          navigation.replace("Detail", {
+            id: context.detailPermohonan.id_andalalin,
+          });
+          break;
+        case 424:
+          authRefreshToken(context, (response) => {
+            if (response.status === 200) {
+              perbarui();
+            }else{
+              context.toggleLoading(false);
+            }
+          });
+          break;
+        default:
+          context.toggleLoading(false);
+          togglePerbaruiGagal();
+          break;
+      }
+    });
+  }
+
   const pilih_lokasi = () => {
     if (alamatLengkap != "") {
       if (kondisi == "Pengajuan andalalin") {
@@ -220,6 +249,9 @@ function PilihLokasiScreen({ navigation, route }) {
           long_pemasangan: location.coords.longitude,
         });
         navigation.goBack();
+      } else if (kondisi == "Perbarui lokasi"){
+        context.toggleLoading(true);
+        perbarui();
       }
     } else {
       toggleLokasiKosong();
@@ -438,6 +470,19 @@ function PilihLokasiScreen({ navigation, route }) {
           btnOK={"OK"}
           onPressOKButton={() => {
             toggleGagal();
+            navigation.goBack();
+          }}
+        />
+
+        <ADialog
+          title={"Perbarui gagal"}
+          desc={
+            "Terjadi kesalahan pada server, mohon coba lagi lain waktu"
+          }
+          visibleModal={perbaruiGagal}
+          btnOK={"OK"}
+          onPressOKButton={() => {
+            togglePerbaruiGagal();
             navigation.goBack();
           }}
         />

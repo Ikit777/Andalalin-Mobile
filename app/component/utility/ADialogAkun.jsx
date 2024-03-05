@@ -12,14 +12,18 @@ import AText from "../utility/AText";
 import { UserContext } from "../../context/UserContext";
 import { remove } from "../../utils/local-storage";
 import * as RootNavigation from "../../navigation/RootNavigator.js";
+import { CheckContext } from "../../context/CheckContext";
 
-function ASessionEnd({ visibleModal = false }) {
+function ADialogAkun({ visibleModal = false }) {
   const [visible, setVisible] = React.useState(visibleModal);
 
   const context = useContext(UserContext);
+  const check = useContext(CheckContext);
+
   React.useEffect(() => {
     toggleModal();
   }, [visibleModal]);
+
   const toggleModal = () => {
     if (visibleModal) {
       setVisible(true);
@@ -41,19 +45,19 @@ function ASessionEnd({ visibleModal = false }) {
       <View style={styles.container}>
         <View style={styles.horizontal}>
           <AText color={color.neutral.neutral900} size={18} weight="semibold">
-            Session berakhir
+            Akun
           </AText>
           <AText
             style={{ paddingTop: 16 }}
             color={color.neutral.neutral500}
             size={14}
           >
-            Session anda telah berakhir, silahkan login kembali
+            Akun Anda tidak dapat kami validasi, silahkan masuk kembali
           </AText>
           <TouchableOpacity
             style={{ alignItems: "flex-end", marginVertical: 24 }}
             onPress={() => {
-              context.setSession(false);
+              check.setIsUser(false);
               setVisible(false);
               remove("authState");
               RootNavigation.replace("Login");
@@ -93,4 +97,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ASessionEnd;
+export default ADialogAkun;

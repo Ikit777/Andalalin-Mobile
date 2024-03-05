@@ -169,6 +169,7 @@ function Konfirmasi({ navigation, kondisi }) {
       lebar_jalan: jalan.Lebar,
       permukaan_jalan: jalan.Permukaan,
       fungsi_jalan: jalan.Fungsi,
+      status_jalan: jalan.Status,
 
       nik_pemohon: nik_pemohon,
       tempat_lahir_pemohon: tempat_lahir_pemohon,

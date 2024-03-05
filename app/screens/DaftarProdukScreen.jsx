@@ -1773,6 +1773,21 @@ function DaftarProdukScreen({ navigation, route }) {
                 setInput8(value);
               }}
             />
+
+            <View style={{ paddingBottom: 16 }} />
+
+            <ATextInput
+              bdColor={color.neutral.neutral300}
+              ktype={"default"}
+              hint={"Masukkan status jalan"}
+              rtype={"done"}
+              blur={true}
+              value={input9}
+              ref={input9Ref}
+              onChangeText={(value) => {
+                setInput9(value);
+              }}
+            />
           </ScrollView>
         );
     }
@@ -2723,7 +2738,8 @@ function DaftarProdukScreen({ navigation, route }) {
                         input5 != "" &&
                         input6 != "" &&
                         input7 != "" &&
-                        input8 != ""
+                        input8 != "" &&
+                        input9 != ""
                       ) {
                         toggleTambah();
                         toggleTambahConfirms();
@@ -3646,6 +3662,7 @@ function DaftarProdukScreen({ navigation, route }) {
                   setInput6(getJalan(pilih2, pilih).Lebar);
                   setInput7(getJalan(pilih2, pilih).Permukaan);
                   setInput8(getJalan(pilih2, pilih).Fungsi);
+                  setInput9(getJalan(pilih2, pilih).Status);
                   break;
                 default:
                   setInput(pilih);
@@ -4343,6 +4360,21 @@ function DaftarProdukScreen({ navigation, route }) {
                     setInput8(value);
                   }}
                 />
+
+                <View style={{ paddingBottom: 16 }} />
+
+                <ATextInput
+                  bdColor={color.neutral.neutral300}
+                  ktype={"default"}
+                  hint={"Masukkan status jalan"}
+                  rtype={"done"}
+                  blur={true}
+                  value={input9}
+                  ref={input9Ref}
+                  onChangeText={(value) => {
+                    setInput9(value);
+                  }}
+                />
               </ScrollView>
 
               <View
@@ -4367,6 +4399,7 @@ function DaftarProdukScreen({ navigation, route }) {
                     setInput6("");
                     setInput7("");
                     setInput8("");
+                    setInput9("");
                     toggleTindakan();
                     toggleEdit();
                   }}
@@ -4395,7 +4428,8 @@ function DaftarProdukScreen({ navigation, route }) {
                       input5 != "" &&
                       input6 != "" &&
                       input7 != "" &&
-                      input8 != ""
+                      input8 != "" &&
+                      input9 != ""
                     ) {
                       toggleTindakan();
                       toggleEdit();
@@ -5258,6 +5292,7 @@ function DaftarProdukScreen({ navigation, route }) {
           lebar: input6,
           permukaan: input7,
           fungsi: input8,
+          status: input9,
         };
         masterTambahJalan(
           context.getUser().access_token,
@@ -6612,6 +6647,7 @@ function DaftarProdukScreen({ navigation, route }) {
           lebar: input6,
           permukaan: input7,
           fungsi: input8,
+          status: input9,
         };
         masterEditJalan(
           context.getUser().access_token,
@@ -6633,6 +6669,7 @@ function DaftarProdukScreen({ navigation, route }) {
                   setInput6("");
                   setInput7("");
                   setInput8("");
+                  setInput9("");
 
                   const result = await response.data;
                   setData(result.data);
@@ -6666,6 +6703,7 @@ function DaftarProdukScreen({ navigation, route }) {
                 setInput6("");
                 setInput7("");
                 setInput8("");
+                setInput9("");
                 toggleEditGagal();
                 break;
             }
