@@ -27,8 +27,6 @@ function Pemohon({ onPress }) {
       alamat_pemohon,
       nomer_pemohon,
       pemohon,
-      nomer_serifikat,
-      klasifikasi_pemohon,
     },
     getUser,
     dispatch,
@@ -41,8 +39,6 @@ function Pemohon({ onPress }) {
   const jabatanInput = React.createRef();
   const alamatInput = React.createRef();
   const nomerSelulerInput = React.createRef();
-  const sertifikatInput = React.createRef();
-  const klasifikasiInput = React.createRef();
 
   const [nik, setNik] = useState(nik_pemohon);
   const [tempat, setTempat] = useState(tempat_lahir_pemohon);
@@ -56,8 +52,6 @@ function Pemohon({ onPress }) {
   const [kecamatan, setKecamatan] = useState(kecamatan_pemohon);
   const [kelurahan, setKelurahan] = useState(kelurahan_pemohon);
   const [nomerSeluler, setNomerSeluler] = useState(nomer_pemohon);
-  const [nomerSertifikat, setNomerSertifikat] = useState(nomer_serifikat);
-  const [klasifikasi, setKlasifikasi] = useState(klasifikasi_pemohon);
 
   const [nikError, togglenikError] = useStateToggler();
   const [tempatError, toggletempatError] = useStateToggler();
@@ -67,8 +61,6 @@ function Pemohon({ onPress }) {
   const [alamatError, togglealamatError] = useStateToggler();
   const [alamat1Error, togglealamat1Error] = useStateToggler();
   const [nomerSelulerError, togglenomerSelulerError] = useStateToggler();
-  const [sertifikatError, toggleSertifikatError] = useStateToggler();
-  const [klasifikasiError, toggleKlasifikasiError] = useStateToggler();
 
   const [alamatInputModal, toggleAlamatInputModal] = useStateToggler();
 
@@ -88,8 +80,6 @@ function Pemohon({ onPress }) {
         alamat != "" &&
         alamatModal != "" &&
         nomerSeluler != "" &&
-        nomerSertifikat != "" &&
-        klasifikasi != "" &&
         nik.length == 16
       ) {
         nikError ? togglenikError() : "";
@@ -98,8 +88,7 @@ function Pemohon({ onPress }) {
         alamatError ? togglealamatError() : "";
         nomerSelulerError ? togglenomerSelulerError() : "";
         alamat1Error ? togglealamat1Error() : "";
-        sertifikatError ? toggleSertifikatError() : "";
-        klasifikasiError ? toggleKlasifikasiError() : "";
+
         formError ? toggleFormError() : "";
         dispatch({
           nik_pemohon: nik,
@@ -113,8 +102,6 @@ function Pemohon({ onPress }) {
           kelurahan_pemohon: kelurahan,
           alamat_pemohon: alamat,
           nomer_pemohon: nomerSeluler,
-          nomer_serifikat: nomerSertifikat,
-          klasifikasi_pemohon: klasifikasi,
         });
         dispatch({
           nama_pengembang: getUser().nama,
@@ -149,16 +136,6 @@ function Pemohon({ onPress }) {
             ? ""
             : togglenomerSelulerError()
           : "";
-        nomerSertifikat == ""
-          ? sertifikatError
-            ? ""
-            : toggleSertifikatError()
-          : "";
-        klasifikasi == ""
-          ? klasifikasiError
-            ? ""
-            : toggleKlasifikasiError()
-          : "";
 
         formError ? "" : toggleFormError();
       }
@@ -172,8 +149,6 @@ function Pemohon({ onPress }) {
         alamat != "" &&
         alamatModal != "" &&
         nomerSeluler != "" &&
-        nomerSertifikat != "" &&
-        klasifikasi != "" &&
         nik.length == 16
       ) {
         nikError ? togglenikError() : "";
@@ -182,8 +157,6 @@ function Pemohon({ onPress }) {
         tanggalError ? toggletanggalError() : "";
         alamatError ? togglealamatError() : "";
         nomerSelulerError ? togglenomerSelulerError() : "";
-        sertifikatError ? toggleSertifikatError() : "";
-        klasifikasiError ? toggleKlasifikasiError() : "";
         formError ? toggleFormError() : "";
         dispatch({
           nik_pemohon: nik,
@@ -198,8 +171,6 @@ function Pemohon({ onPress }) {
           kelurahan_pemohon: kelurahan,
           alamat_pemohon: alamat,
           nomer_pemohon: nomerSeluler,
-          nomer_serifikat: nomerSertifikat,
-          klasifikasi_pemohon: klasifikasi,
         });
         onPress();
       } else {
@@ -214,16 +185,6 @@ function Pemohon({ onPress }) {
           ? nomerSelulerError
             ? ""
             : togglenomerSelulerError()
-          : "";
-        nomerSertifikat == ""
-          ? sertifikatError
-            ? ""
-            : toggleSertifikatError()
-          : "";
-        klasifikasi == ""
-          ? klasifikasiError
-            ? ""
-            : toggleKlasifikasiError()
           : "";
 
         formError ? "" : toggleFormError();
@@ -255,16 +216,6 @@ function Pemohon({ onPress }) {
           : ""
         : "";
       alamatModal != "" ? (alamat1Error ? togglealamat1Error() : "") : "";
-      nomerSertifikat != ""
-        ? sertifikatError
-          ? toggleSertifikatError()
-          : ""
-        : "";
-      klasifikasi != ""
-        ? klasifikasiError
-          ? toggleKlasifikasiError()
-          : ""
-        : "";
 
       nik != "" &&
       jenis != "" &&
@@ -273,8 +224,6 @@ function Pemohon({ onPress }) {
       alamat != "" &&
       alamatModal != "" &&
       nomerSeluler != "" &&
-      nomerSertifikat != "" &&
-      klasifikasi != "" &&
       nik.length == 16
         ? formError
           ? toggleFormError()
@@ -291,16 +240,7 @@ function Pemohon({ onPress }) {
           : ""
         : "";
       alamatModal != "" ? (alamat1Error ? togglealamat1Error() : "") : "";
-      nomerSertifikat != ""
-        ? sertifikatError
-          ? toggleSertifikatError()
-          : ""
-        : "";
-      klasifikasi != ""
-        ? klasifikasiError
-          ? toggleKlasifikasiError()
-          : ""
-        : "";
+
       jabatan != "" ? (jabatanError ? togglejabatanError() : "") : "";
 
       nik != "" &&
@@ -311,8 +251,6 @@ function Pemohon({ onPress }) {
       alamat != "" &&
       alamatModal != "" &&
       nomerSeluler != "" &&
-      nomerSertifikat != "" &&
-      klasifikasi != "" &&
       nik.length == 16
         ? formError
           ? toggleFormError()
@@ -510,72 +448,6 @@ function Pemohon({ onPress }) {
         weight="normal"
       >
         Contoh: 08••••••••••••
-      </AText>
-
-      <ATextInput
-        bdColor={
-          sertifikatError ? color.error.error500 : color.neutral.neutral300
-        }
-        ktype={"default"}
-        hint={"Masukkan nomor sertifikat"}
-        title={"Nomer sertifikat"}
-        rtype={"next"}
-        multi={false}
-        padding={20}
-        wajib={"*"}
-        blur={false}
-        value={nomerSertifikat}
-        ref={sertifikatInput}
-        onChangeText={(value) => {
-          clear_error();
-          setNomerSertifikat(value);
-        }}
-        submit={() => {
-          clear_error();
-          {
-            nomerSertifikat != "" ? klasifikasiInput.current.focus() : "";
-          }
-        }}
-      />
-
-      <AText
-        style={{ paddingTop: 6 }}
-        color={color.neutral.neutral300}
-        size={14}
-        weight="normal"
-      >
-        Keterangan: Nomor sertifikat penyusun dokumen andalalin
-      </AText>
-
-      <ATextInput
-        bdColor={
-          klasifikasiError ? color.error.error500 : color.neutral.neutral300
-        }
-        ktype={"default"}
-        hint={"Masukkan klasifikasi"}
-        title={"Klasifikasi"}
-        rtype={"done"}
-        multi={false}
-        wajib={"*"}
-        padding={20}
-        value={klasifikasi}
-        ref={klasifikasiInput}
-        onChangeText={(value) => {
-          clear_error();
-          setKlasifikasi(value);
-        }}
-        submit={() => {
-          clear_error();
-        }}
-      />
-
-      <AText
-        style={{ paddingTop: 6 }}
-        color={color.neutral.neutral300}
-        size={14}
-        weight="normal"
-      >
-        Keterangan: Klasifikasi penyusun dokumen andalalin
       </AText>
 
       {formError ? (

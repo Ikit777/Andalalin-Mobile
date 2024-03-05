@@ -17,6 +17,7 @@ function reducer(state, action) {
 }
 
 const andalalinInit = {
+  //Proyek
   nama_proyek: "",
   jenis_proyek: "",
   wilayah_administratif_proyek: "",
@@ -27,6 +28,8 @@ const andalalinInit = {
   nama_jalan: "",
   kode: "",
   alamat_proyek: "",
+
+  //Pemohon
   bangkitan: "",
   pemohon: "",
   jenis: "",
@@ -44,8 +47,29 @@ const andalalinInit = {
   jenis_kelamin_pemohon: "",
   nomer_pemohon: "",
   jabatan_pemohon: "",
-  nomer_serifikat: "",
-  klasifikasi_pemohon: "",
+
+  //Konsultan
+  nama_konsultan: "",
+  wilayah_administratif_konsultan: "",
+  provinsi_konsultan: "",
+  kabupaten_konsultan: "",
+  kecamatan_konsultan: "",
+  kelurahan_konsultan: "",
+  alamat_konsultan: "",
+  nomer_konsultan: "",
+  email_konsultan: "",
+  nama_penyusun: "",
+  jenis_kelamin_penyusun: "",
+  wilayah_administratif_penyusun: "",
+  provinsi_penyusun: "",
+  kabupaten_penyusun: "",
+  kecamatan_penyusun: "",
+  kelurahan_penyusun: "",
+  alamat_penyusun: "",
+  nomer_serifikat_penyusun: "",
+  klasifikasi_penyusun: "",
+
+  //Pengembang
   nama_pengembang: "",
   wilayah_administratif_pengembang: "",
   provinsi_pengembang: "",
@@ -64,6 +88,8 @@ const andalalinInit = {
   alamat_pimpinan_pengembang: "",
   jabatan_pimpinan_pengembang: "",
   jenis_kelamin_pimpinan_pengembang: "",
+
+  //perusahaan
   nama_perusahaan: "",
   alamat_perusahaan: "",
   wilayah_administratif_perusahaan: "",

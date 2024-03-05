@@ -11,6 +11,7 @@ import Informasi from "./Informasi";
 import Persyaratan from "./Persyaratan";
 import Pengembang from "./Pengembang";
 import Proyek from "./Proyek";
+import Konsultan from "./Konsultan";
 
 export default function AndalalinItem({ navigation, route }) {
   const context = useContext(UserContext);
@@ -18,80 +19,270 @@ export default function AndalalinItem({ navigation, route }) {
   const kondisi = route.params.kondisi;
 
   const onGoToNext = () => {
-    if (index < 8) {
-      const newIndex = index + 1;
+    switch (context.permohonan.bangkitan) {
+      case "Bangkitan rendah":
+        if (context.permohonan.pemohon == "Perorangan") {
+          if (index < 7) {
+            const newIndex = index + 1;
 
-      context.setIndex(newIndex);
+            context.setIndex(newIndex);
 
-      navigation.push("AndalalinItem", {
-        index: newIndex,
-      });
+            navigation.push("AndalalinItem", {
+              index: newIndex,
+            });
+          }
+        } else {
+          if (index < 8) {
+            const newIndex = index + 1;
+
+            context.setIndex(newIndex);
+
+            navigation.push("AndalalinItem", {
+              index: newIndex,
+            });
+          }
+        }
+        break;
+      case "Bangkitan sedang":
+        if (context.permohonan.pemohon == "Perorangan") {
+          if (index < 8) {
+            const newIndex = index + 1;
+
+            context.setIndex(newIndex);
+
+            navigation.push("AndalalinItem", {
+              index: newIndex,
+            });
+          }
+        } else {
+          if (index < 9) {
+            const newIndex = index + 1;
+
+            context.setIndex(newIndex);
+
+            navigation.push("AndalalinItem", {
+              index: newIndex,
+            });
+          }
+        }
+        break;
+      case "Bangkitan tinggi":
+        if (context.permohonan.pemohon == "Perorangan") {
+          if (index < 8) {
+            const newIndex = index + 1;
+
+            context.setIndex(newIndex);
+
+            navigation.push("AndalalinItem", {
+              index: newIndex,
+            });
+          }
+        } else {
+          if (index < 9) {
+            const newIndex = index + 1;
+
+            context.setIndex(newIndex);
+
+            navigation.push("AndalalinItem", {
+              index: newIndex,
+            });
+          }
+        }
+        break;
     }
   };
 
-  const renderItem = () => {
-    switch (index) {
-      case 1:
-        return (
-          <Informasi
-            onPress={onGoToNext}
-            navigation={navigation}
-            kondisi={kondisi}
-          />
-        );
-      case 2:
-        return <Permohonan onPress={onGoToNext} />;
-      case 3:
-        return <Proyek onPress={onGoToNext} navigation={navigation} />;
-      case 4:
-        return <Pemohon onPress={onGoToNext} />;
-      case 5:
-        return <Perusahaan onPress={onGoToNext} />;
-      case 6:
-        return <Pengembang onPress={onGoToNext} />;
-      case 7:
-        return <Kegiatan onPress={onGoToNext} navigation={navigation} />;
-      case 8:
-        return <Persyaratan onPress={onGoToNext} navigation={navigation} />;
-      case 9:
-        return <Konfirmasi navigation={navigation} kondisi={kondisi} />;
+  const render_content = () => {
+    switch (context.permohonan.bangkitan) {
+      case "Bangkitan rendah":
+        if (context.permohonan.pemohon == "Perorangan") {
+          switch (index) {
+            case 1:
+              return (
+                <Informasi
+                  onPress={onGoToNext}
+                  navigation={navigation}
+                  kondisi={kondisi}
+                />
+              );
+            case 2:
+              return <Permohonan onPress={onGoToNext} />;
+            case 3:
+              return <Proyek onPress={onGoToNext} navigation={navigation} />;
+            case 4:
+              return <Pemohon onPress={onGoToNext} />;
+            case 5:
+              return <Pengembang onPress={onGoToNext} />;
+            case 6:
+              return <Kegiatan onPress={onGoToNext} navigation={navigation} />;
+            case 7:
+              return (
+                <Persyaratan onPress={onGoToNext} navigation={navigation} />
+              );
+            case 8:
+              return <Konfirmasi navigation={navigation} kondisi={kondisi} />;
+          }
+        } else {
+          switch (index) {
+            case 1:
+              return (
+                <Informasi
+                  onPress={onGoToNext}
+                  navigation={navigation}
+                  kondisi={kondisi}
+                />
+              );
+            case 2:
+              return <Permohonan onPress={onGoToNext} />;
+            case 3:
+              return <Proyek onPress={onGoToNext} navigation={navigation} />;
+            case 4:
+              return <Pemohon onPress={onGoToNext} />;
+            case 5:
+              return <Perusahaan onPress={onGoToNext} />;
+            case 6:
+              return <Pengembang onPress={onGoToNext} />;
+            case 7:
+              return <Kegiatan onPress={onGoToNext} navigation={navigation} />;
+            case 8:
+              return (
+                <Persyaratan onPress={onGoToNext} navigation={navigation} />
+              );
+            case 9:
+              return <Konfirmasi navigation={navigation} kondisi={kondisi} />;
+          }
+        }
+        break;
+      case "Bangkitan sedang":
+        if (context.permohonan.pemohon == "Perorangan") {
+          switch (index) {
+            case 1:
+              return (
+                <Informasi
+                  onPress={onGoToNext}
+                  navigation={navigation}
+                  kondisi={kondisi}
+                />
+              );
+            case 2:
+              return <Permohonan onPress={onGoToNext} />;
+            case 3:
+              return <Proyek onPress={onGoToNext} navigation={navigation} />;
+            case 4:
+              return <Pemohon onPress={onGoToNext} />;
+            case 5:
+              return <Pengembang onPress={onGoToNext} />;
+            case 6:
+              return <Konsultan onPress={onGoToNext} />;
+            case 7:
+              return <Kegiatan onPress={onGoToNext} navigation={navigation} />;
+            case 8:
+              return (
+                <Persyaratan onPress={onGoToNext} navigation={navigation} />
+              );
+            case 9:
+              return <Konfirmasi navigation={navigation} kondisi={kondisi} />;
+          }
+        } else {
+          switch (index) {
+            case 1:
+              return (
+                <Informasi
+                  onPress={onGoToNext}
+                  navigation={navigation}
+                  kondisi={kondisi}
+                />
+              );
+            case 2:
+              return <Permohonan onPress={onGoToNext} />;
+            case 3:
+              return <Proyek onPress={onGoToNext} navigation={navigation} />;
+            case 4:
+              return <Pemohon onPress={onGoToNext} />;
+            case 5:
+              return <Perusahaan onPress={onGoToNext} />;
+            case 6:
+              return <Pengembang onPress={onGoToNext} />;
+            case 7:
+              return <Konsultan onPress={onGoToNext} />;
+            case 8:
+              return <Kegiatan onPress={onGoToNext} navigation={navigation} />;
+            case 9:
+              return (
+                <Persyaratan onPress={onGoToNext} navigation={navigation} />
+              );
+            case 10:
+              return <Konfirmasi navigation={navigation} kondisi={kondisi} />;
+          }
+        }
+        break;
+      case "Bangkitan tinggi":
+        if (context.permohonan.pemohon == "Perorangan") {
+          switch (index) {
+            case 1:
+              return (
+                <Informasi
+                  onPress={onGoToNext}
+                  navigation={navigation}
+                  kondisi={kondisi}
+                />
+              );
+            case 2:
+              return <Permohonan onPress={onGoToNext} />;
+            case 3:
+              return <Proyek onPress={onGoToNext} navigation={navigation} />;
+            case 4:
+              return <Pemohon onPress={onGoToNext} />;
+            case 5:
+              return <Pengembang onPress={onGoToNext} />;
+            case 6:
+              return <Konsultan onPress={onGoToNext} />;
+            case 7:
+              return <Kegiatan onPress={onGoToNext} navigation={navigation} />;
+            case 8:
+              return (
+                <Persyaratan onPress={onGoToNext} navigation={navigation} />
+              );
+            case 9:
+              return <Konfirmasi navigation={navigation} kondisi={kondisi} />;
+          }
+        } else {
+          switch (index) {
+            case 1:
+              return (
+                <Informasi
+                  onPress={onGoToNext}
+                  navigation={navigation}
+                  kondisi={kondisi}
+                />
+              );
+            case 2:
+              return <Permohonan onPress={onGoToNext} />;
+            case 3:
+              return <Proyek onPress={onGoToNext} navigation={navigation} />;
+            case 4:
+              return <Pemohon onPress={onGoToNext} />;
+            case 5:
+              return <Perusahaan onPress={onGoToNext} />;
+            case 6:
+              return <Pengembang onPress={onGoToNext} />;
+            case 7:
+              return <Konsultan onPress={onGoToNext} />;
+            case 8:
+              return <Kegiatan onPress={onGoToNext} navigation={navigation} />;
+            case 9:
+              return (
+                <Persyaratan onPress={onGoToNext} navigation={navigation} />
+              );
+            case 10:
+              return <Konfirmasi navigation={navigation} kondisi={kondisi} />;
+          }
+        }
+        break;
     }
   };
 
-  const renderItemPerorangan = () => {
-    switch (index) {
-      case 1:
-        return (
-          <Informasi
-            onPress={onGoToNext}
-            navigation={navigation}
-            kondisi={kondisi}
-          />
-        );
-      case 2:
-        return <Permohonan onPress={onGoToNext} />;
-      case 3:
-        return <Proyek onPress={onGoToNext} navigation={navigation} />;
-      case 4:
-        return <Pemohon onPress={onGoToNext} />;
-      case 5:
-        return <Pengembang onPress={onGoToNext} />;
-      case 6:
-        return <Kegiatan onPress={onGoToNext} navigation={navigation} />;
-      case 7:
-        return <Persyaratan onPress={onGoToNext} navigation={navigation} />;
-      case 8:
-        return <Konfirmasi navigation={navigation} kondisi={kondisi} />;
-    }
-  };
-
-  return (
-    <View style={styles.container}>
-      {context.permohonan.pemohon == "Perorangan"
-        ? renderItemPerorangan()
-        : renderItem()}
-    </View>
-  );
+  return <View style={styles.container}>{render_content()}</View>;
 }
 
 const styles = StyleSheet.create({

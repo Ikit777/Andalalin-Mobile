@@ -53,46 +53,144 @@ function PengajuanScreen({ navigation, route }) {
 
   const judul = () => {
     if (kondisi == "Andalalin") {
-      if (context.permohonan.pemohon == "Perorangan") {
-        switch (context.index) {
-          case 1:
-            return "Permohonan";
-          case 2:
-            return "Permohonan";
-          case 3:
-            return "Proyek";
-          case 4:
-            return "Pemohon";
-          case 5:
-            return "Pengembang";
-          case 6:
-            return "Kegiatan";
-          case 7:
-            return "Persyaratan";
-          case 8:
-            return "Konfirmasi";
-        }
-      } else {
-        switch (context.index) {
-          case 1:
-            return "Permohonan";
-          case 2:
-            return "Permohonan";
-          case 3:
-            return "Proyek";
-          case 4:
-            return "Pemohon";
-          case 5:
-            return "Perusahaan";
-          case 6:
-            return "Pengembang";
-          case 7:
-            return "Kegiatan";
-          case 8:
-            return "Persyaratan";
-          case 9:
-            return "Konfirmasi";
-        }
+      switch (context.permohonan.bangkitan) {
+        case "Bangkitan rendah":
+          if (context.permohonan.pemohon == "Perorangan") {
+            switch (context.index) {
+              case 1:
+                return "Permohonan";
+              case 2:
+                return "Permohonan";
+              case 3:
+                return "Proyek";
+              case 4:
+                return "Pemohon";
+              case 5:
+                return "Pengembang";
+              case 6:
+                return "Kegiatan";
+              case 7:
+                return "Persyaratan";
+              case 8:
+                return "Konfirmasi";
+            }
+          } else {
+            switch (context.index) {
+              case 1:
+                return "Permohonan";
+              case 2:
+                return "Permohonan";
+              case 3:
+                return "Proyek";
+              case 4:
+                return "Pemohon";
+              case 5:
+                return "Perusahaan";
+              case 6:
+                return "Pengembang";
+              case 7:
+                return "Kegiatan";
+              case 8:
+                return "Persyaratan";
+              case 9:
+                return "Konfirmasi";
+            }
+          }
+          break;
+        case "Bangkitan sedang":
+          if (context.permohonan.pemohon == "Perorangan") {
+            switch (context.index) {
+              case 1:
+                return "Permohonan";
+              case 2:
+                return "Permohonan";
+              case 3:
+                return "Proyek";
+              case 4:
+                return "Pemohon";
+              case 5:
+                return "Pengembang";
+              case 6:
+                return "Konsultan";
+              case 7:
+                return "Kegiatan";
+              case 8:
+                return "Persyaratan";
+              case 9:
+                return "Konfirmasi";
+            }
+          } else {
+            switch (context.index) {
+              case 1:
+                return "Permohonan";
+              case 2:
+                return "Permohonan";
+              case 3:
+                return "Proyek";
+              case 4:
+                return "Pemohon";
+              case 5:
+                return "Perusahaan";
+              case 6:
+                return "Pengembang";
+              case 7:
+                return "Konsultan";
+              case 8:
+                return "Kegiatan";
+              case 9:
+                return "Persyaratan";
+              case 10:
+                return "Konfirmasi";
+            }
+          }
+          break;
+        case "Bangkitan tinggi":
+          if (context.permohonan.pemohon == "Perorangan") {
+            switch (context.index) {
+              case 1:
+                return "Permohonan";
+              case 2:
+                return "Permohonan";
+              case 3:
+                return "Proyek";
+              case 4:
+                return "Pemohon";
+              case 5:
+                return "Pengembang";
+              case 6:
+                return "Konsultan";
+              case 7:
+                return "Kegiatan";
+              case 8:
+                return "Persyaratan";
+              case 9:
+                return "Konfirmasi";
+            }
+          } else {
+            switch (context.index) {
+              case 1:
+                return "Permohonan";
+              case 2:
+                return "Permohonan";
+              case 3:
+                return "Proyek";
+              case 4:
+                return "Pemohon";
+              case 5:
+                return "Perusahaan";
+              case 6:
+                return "Pengembang";
+              case 7:
+                return "Konsultan";
+              case 8:
+                return "Kegiatan";
+              case 9:
+                return "Persyaratan";
+              case 10:
+                return "Konfirmasi";
+            }
+          }
+          break;
       }
     } else {
       switch (context.index) {
@@ -120,16 +218,31 @@ function PengajuanScreen({ navigation, route }) {
 
   const item = () => {
     if (kondisi == "Andalalin") {
-      if (context.permohonan.pemohon == "Perorangan") {
-        return 7;
-      } else {
-        return 8;
+      switch (context.permohonan.bangkitan) {
+        case "Bangkitan rendah":
+          if (context.permohonan.pemohon == "Perorangan") {
+            return 7;
+          } else {
+            return 8;
+          }
+        case "bangkitan sedang":
+          if (context.permohonan.pemohon == "Perorangan") {
+            return 8;
+          } else {
+            return 9;
+          }
+        case "Bangkitan tinggi":
+          if (context.permohonan.pemohon == "Perorangan") {
+            return 8;
+          } else {
+            return 9;
+          }
       }
     } else {
       return 4;
     }
   };
-  
+
   const tambah = () => {
     return (
       <Pressable
