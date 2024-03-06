@@ -141,7 +141,7 @@ export const authRefreshToken = async (user, authRespone) => {
     status: "Mobile",
   });
   const response = await axiosInstance({
-    method: "get",
+    method: "post",
     url: ENDPOINTS.AUTH_REFRESH_TOKEN,
     headers: headers,
     data: body,
