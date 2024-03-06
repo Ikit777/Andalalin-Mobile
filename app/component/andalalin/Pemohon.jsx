@@ -421,11 +421,11 @@ function Pemohon({ onPress }) {
         ktype={"number-pad"}
         hint={"Masukkan nomor"}
         title={"Nomor telepon/WA"}
-        rtype={"next"}
+        rtype={"done"}
         value={nomerSeluler}
         wajib={"*"}
         multi={false}
-        blur={false}
+        blur={true}
         padding={20}
         ref={nomerSelulerInput}
         onChangeText={(value) => {
@@ -434,10 +434,6 @@ function Pemohon({ onPress }) {
         }}
         submit={() => {
           clear_error();
-
-          {
-            nomerSeluler != "" ? sertifikatInput.current.focus() : "";
-          }
         }}
       />
 

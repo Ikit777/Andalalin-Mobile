@@ -143,6 +143,7 @@ function AFilterModal({
       value: "Kelengkapan tidak terpenuhi",
     },
     { sort: "Permohonan ditolak", value: "Permohonan ditolak" },
+    { sort: "Permohonan ditunda", value: "Permohonan ditunda" },
     { sort: "Permohonan selesai", value: "Permohonan selesai" },
   ];
 
@@ -154,14 +155,11 @@ function AFilterModal({
       value: "Persyaratan tidak terpenuhi",
     },
     { sort: "Survei lapangan", value: "Survei lapangan" },
-    { sort: "Laporan survei", value: "Laporan survei" },
-    { sort: "Survei ditunda", value: "Survei ditunda" },
-    { sort: "Survei dibatalkan", value: "Survei dibatalkan" },
-    { sort: "Menunggu hasil keputusan", value: "Menunggu hasil keputusan" },
-    { sort: "Pemasangan ditunda", value: "Pemasangan ditunda" },
+    { sort: "Pengecekan perlengkapan", value: "Pengecekan perlengkapan" },
+    { sort: "Pemasangan perlengkapan", value: "Pemasangan perlengkapan" },
     {
-      sort: "Pemasangan sedang dilakukan",
-      value: "Pemasangan sedang dilakukan",
+      sort: "Pemasangan ditunda",
+      value: "Pemasangan ditunda",
     },
     { sort: "Permohonan ditunda", value: "Permohonan ditunda" },
     { sort: "Permohonan ditolak", value: "Permohonan ditolak" },

@@ -120,10 +120,14 @@ export const authLogout = async (accessToken, authRespone) => {
     Authorization: "Bearer " + accessToken,
     "Content-Type": "application/json",
   };
+  const body = JSON.stringify({
+    status: "Mobile",
+  });
   const response = await axiosInstance({
     method: "post",
     url: ENDPOINTS.AUTH_LOGOUT,
     headers: headers,
+    data: body,
   });
   authRespone(response);
 };
@@ -133,10 +137,14 @@ export const authRefreshToken = async (user, authRespone) => {
     Authorization: "Bearer " + user.getUser().refresh_token,
     "Content-Type": "application/json",
   };
+  const body = JSON.stringify({
+    status: "Mobile",
+  });
   const response = await axiosInstance({
     method: "get",
     url: ENDPOINTS.AUTH_REFRESH_TOKEN,
     headers: headers,
+    data: body,
   });
   if (response.status === 200) {
     const newAuthState = {

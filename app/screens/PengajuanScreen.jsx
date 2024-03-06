@@ -21,7 +21,6 @@ function PengajuanScreen({ navigation, route }) {
   const {
     setLokasi,
     setFoto,
-    perlalin: { perlengkapan },
   } = useContext(UserContext);
 
   useFocusEffect(

@@ -22,7 +22,7 @@ export default function AndalalinItem({ navigation, route }) {
     switch (context.permohonan.bangkitan) {
       case "Bangkitan rendah":
         if (context.permohonan.pemohon == "Perorangan") {
-          if (index < 7) {
+          if (index < 8) {
             const newIndex = index + 1;
 
             context.setIndex(newIndex);
@@ -32,7 +32,7 @@ export default function AndalalinItem({ navigation, route }) {
             });
           }
         } else {
-          if (index < 8) {
+          if (index < 9) {
             const newIndex = index + 1;
 
             context.setIndex(newIndex);
@@ -45,7 +45,7 @@ export default function AndalalinItem({ navigation, route }) {
         break;
       case "Bangkitan sedang":
         if (context.permohonan.pemohon == "Perorangan") {
-          if (index < 8) {
+          if (index < 9) {
             const newIndex = index + 1;
 
             context.setIndex(newIndex);
@@ -55,7 +55,7 @@ export default function AndalalinItem({ navigation, route }) {
             });
           }
         } else {
-          if (index < 9) {
+          if (index < 10) {
             const newIndex = index + 1;
 
             context.setIndex(newIndex);
@@ -68,7 +68,7 @@ export default function AndalalinItem({ navigation, route }) {
         break;
       case "Bangkitan tinggi":
         if (context.permohonan.pemohon == "Perorangan") {
-          if (index < 8) {
+          if (index < 9) {
             const newIndex = index + 1;
 
             context.setIndex(newIndex);
@@ -78,7 +78,7 @@ export default function AndalalinItem({ navigation, route }) {
             });
           }
         } else {
-          if (index < 9) {
+          if (index < 10) {
             const newIndex = index + 1;
 
             context.setIndex(newIndex);

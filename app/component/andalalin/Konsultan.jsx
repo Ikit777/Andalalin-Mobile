@@ -32,6 +32,7 @@ function Konsultan({ onPress }) {
       alamat_penyusun,
       nomer_serifikat_penyusun,
       klasifikasi_penyusun,
+      bangkitan,
     },
     dispatch,
     dataMaster,
@@ -476,6 +477,42 @@ function Konsultan({ onPress }) {
         >
           Lengkapi formulir atau kolom yang tersedia dengan benar{" "}
         </AText>
+      ) : (
+        ""
+      )}
+
+      {!formError ? (
+        <View
+          style={{
+            borderColor: color.neutral.neutral300,
+            flexDirection: "row",
+            justifyContent: "space-between",
+            paddingVertical: 10,
+            marginTop: 25,
+            paddingHorizontal: 14,
+            borderWidth: 1,
+            borderRadius: 8,
+            backgroundColor: color.text.white,
+            alignItems: "center",
+          }}
+        >
+          <AText
+            style={{ width: "65%" }}
+            size={16}
+            color={color.neutral.neutral900}
+          >
+            Format surat permohonan andalalin
+          </AText>
+
+          <TouchableOpacity
+            style={{ flexDirection: "row", paddingLeft: 4 }}
+            onPress={() => {}}
+          >
+            <AText size={14} color={color.neutral.neutral700} weight="semibold">
+              Download
+            </AText>
+          </TouchableOpacity>
+        </View>
       ) : (
         ""
       )}

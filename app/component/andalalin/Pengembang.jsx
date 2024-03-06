@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import { StyleSheet, ScrollView } from "react-native";
+import { StyleSheet, ScrollView, View, TouchableOpacity } from "react-native";
 import AText from "../../component/utility/AText";
 import color from "../../constants/color";
 import ATextInput from "../utility/ATextInput";
@@ -31,6 +31,7 @@ function Pengembang({ onPress }) {
       alamat_pimpinan_pengembang,
       jabatan_pimpinan_pengembang,
       jenis_kelamin_pimpinan_pengembang,
+      bangkitan,
     },
     dispatch,
     dataMaster,
@@ -412,6 +413,42 @@ function Pengembang({ onPress }) {
         >
           Lengkapi formulir atau kolom yang tersedia dengan benar{" "}
         </AText>
+      ) : (
+        ""
+      )}
+
+      {!formError && bangkitan == "Bangkitan rendah" ? (
+        <View
+          style={{
+            borderColor: color.neutral.neutral300,
+            flexDirection: "row",
+            justifyContent: "space-between",
+            paddingVertical: 10,
+            marginTop: 25,
+            paddingHorizontal: 14,
+            borderWidth: 1,
+            borderRadius: 8,
+            backgroundColor: color.text.white,
+            alignItems: "center",
+          }}
+        >
+          <AText
+            style={{ width: "65%" }}
+            size={16}
+            color={color.neutral.neutral900}
+          >
+            Format surat permohonan andalalin
+          </AText>
+
+          <TouchableOpacity
+            style={{ flexDirection: "row", paddingLeft: 4 }}
+            onPress={() => {}}
+          >
+            <AText size={14} color={color.neutral.neutral700} weight="semibold">
+              Download
+            </AText>
+          </TouchableOpacity>
+        </View>
       ) : (
         ""
       )}

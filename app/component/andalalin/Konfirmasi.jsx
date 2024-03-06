@@ -151,12 +151,14 @@ function Konfirmasi({ navigation, kondisi }) {
 
   const kirim = () => {
     const pengajuan = {
+      //Data Permohonan
       kategori_bangkitan: bangkitan,
       kategori_pemohon: pemohon,
       kategori: jenis,
       jenis_rencana_pembangunan: rencana_pembangunan,
       lokasi_pengambilan: lokasi_pengambilan,
 
+      //Data Proyek
       nama_proyek: nama_proyek,
       jenis_proyek: jenis_proyek,
       provinsi_proyek: provinsi_proyek,
@@ -186,6 +188,7 @@ function Konfirmasi({ navigation, kondisi }) {
       fungsi_jalan: jalan.Fungsi,
       status_jalan: jalan.Status,
 
+      //Data Pemohon
       nik_pemohon: nik_pemohon,
       tempat_lahir_pemohon: tempat_lahir_pemohon,
       tanggal_lahir_pemohon: tanggal_lahir_pemohon,
@@ -197,9 +200,8 @@ function Konfirmasi({ navigation, kondisi }) {
       jenis_kelamin_pemohon: jenis_kelamin_pemohon,
       nomer_pemohon: nomer_pemohon,
       jabatan_pemohon: jabatan_pemohon,
-      nomer_sertifikat_pemohon: nomer_serifikat,
-      klasifikasi_pemohon: klasifikasi_pemohon,
 
+      //Data Perusahaan
       nama_perusahaan: nama_perusahaan,
       provinsi_perusahaan: provinsi_perusahaan,
       kabupaten_perusahaan: kabupaten_perusahaan,
@@ -217,6 +219,7 @@ function Konfirmasi({ navigation, kondisi }) {
       kelurahan_pimpinan_perusahaan: kelurahan_pimpinan_perusahaan,
       alamat_pimpinan_perusahaan: alamat_pimpinan,
 
+      //Data Konsultan
       nama_konsultan: nama_konsultan,
       provinsi_konsultan: provinsi_konsultan,
       kabupaten_konsultan: kabupaten_konsultan,
@@ -226,7 +229,7 @@ function Konfirmasi({ navigation, kondisi }) {
       nomer_konsultan: nomer_konsultan,
       email_konsultan: email_konsultan,
       nama_penyusun_dokumen: nama_penyusun,
-      jenis_kelaim_penyusun_dokumen: jenis_kelamin_penyusun,
+      jenis_kelamin_penyusun_dokumen: jenis_kelamin_penyusun,
       provinsi_penyusun_dokumen: provinsi_penyusun,
       kabupaten_penyusun_dokumen: kabupaten_penyusun,
       kecamatan_penyusun_dokumen: kecamatan_penyusun,
@@ -235,6 +238,7 @@ function Konfirmasi({ navigation, kondisi }) {
       nomer_sertifikat_penyusun_dokumen: nomer_serifikat_penyusun,
       klasifikasi_penyusun_dokumen: klasifikasi_penyusun,
 
+      //Data Pengembang
       nama_pengembang: nama_pengembang,
       provinsi_pengembang: provinsi_pengembang,
       kabupaten_pengembang: kabupaten_pengembang,
@@ -252,6 +256,7 @@ function Konfirmasi({ navigation, kondisi }) {
       kelurahan_pimpinan_pengembang: kelurahan_pimpinan_pengembang,
       alamat_pimpinan_pengembang: alamat_pimpinan_pengembang,
 
+      //Data Lain nya
       aktivitas: aktivitas,
       peruntukan: peruntukan,
       total_luas: total_luas_lahan,
