@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import { StyleSheet, ScrollView, View } from "react-native";
+import { StyleSheet, ScrollView, View, TouchableOpacity } from "react-native";
 import AText from "../utility/AText";
 import color from "../../constants/color";
 import ATextInput from "../utility/ATextInput";
@@ -207,7 +207,7 @@ function Kegiatan({ onPress, navigation }) {
         value={kegiatan}
         ref={kegiatanInput}
         onChangeText={(value) => {
-          clear_error()
+          clear_error();
           setKegiatan(value);
         }}
       />
@@ -225,7 +225,7 @@ function Kegiatan({ onPress, navigation }) {
         value={untuk}
         ref={peruntukanInput}
         onChangeText={(value) => {
-          clear_error()
+          clear_error();
           setPeruntukan(value);
         }}
       />
@@ -243,14 +243,14 @@ function Kegiatan({ onPress, navigation }) {
         value={total}
         ref={totalInput}
         onChangeText={(value) => {
-          clear_error()
+          clear_error();
           setTotal(value);
         }}
         submit={() => {
-          clear_error()
+          clear_error();
           if (data.Kriteria != "" && data.Kriteria != null) {
             total != "" ? luasInput.current.focus() : "";
-          }else{
+          } else {
             total != "" ? nomerInput.current.focus() : "";
           }
         }}
@@ -273,11 +273,11 @@ function Kegiatan({ onPress, navigation }) {
             value={luas}
             ref={luasInput}
             onChangeText={(value) => {
-              clear_error()
+              clear_error();
               setLuas(value);
             }}
             submit={() => {
-              clear_error()
+              clear_error();
               luas != "" ? nomerInput.current.focus() : "";
             }}
           />
@@ -298,11 +298,11 @@ function Kegiatan({ onPress, navigation }) {
         padding={20}
         ref={nomerInput}
         onChangeText={(value) => {
-          clear_error()
+          clear_error();
           setNomer(value);
         }}
         submit={() => {
-          clear_error()
+          clear_error();
         }}
       />
 
@@ -331,6 +331,42 @@ function Kegiatan({ onPress, navigation }) {
           setCatatanTambahan(value);
         }}
       />
+
+      {!formError ? (
+        <View
+          style={{
+            borderColor: color.neutral.neutral300,
+            flexDirection: "row",
+            justifyContent: "space-between",
+            paddingVertical: 10,
+            marginTop: 25,
+            paddingHorizontal: 14,
+            borderWidth: 1,
+            borderRadius: 8,
+            backgroundColor: color.text.white,
+            alignItems: "center",
+          }}
+        >
+          <AText
+            style={{ width: "65%" }}
+            size={16}
+            color={color.neutral.neutral900}
+          >
+            Format surat permohonan andalalin
+          </AText>
+
+          <TouchableOpacity
+            style={{ flexDirection: "row", paddingLeft: 4 }}
+            onPress={() => {}}
+          >
+            <AText size={14} color={color.neutral.neutral700} weight="semibold">
+              Download
+            </AText>
+          </TouchableOpacity>
+        </View>
+      ) : (
+        ""
+      )}
 
       {formError ? (
         <AText

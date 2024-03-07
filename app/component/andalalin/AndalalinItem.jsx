@@ -9,7 +9,6 @@ import Kegiatan from "./Kegiatan";
 import Konfirmasi from "./Konfirmasi";
 import Informasi from "./Informasi";
 import Persyaratan from "./Persyaratan";
-import Pengembang from "./Pengembang";
 import Proyek from "./Proyek";
 import Konsultan from "./Konsultan";
 
@@ -21,6 +20,29 @@ export default function AndalalinItem({ navigation, route }) {
   const onGoToNext = () => {
     switch (context.permohonan.bangkitan) {
       case "Bangkitan rendah":
+        if (context.permohonan.pemohon == "Perorangan") {
+          if (index < 7) {
+            const newIndex = index + 1;
+
+            context.setIndex(newIndex);
+
+            navigation.push("AndalalinItem", {
+              index: newIndex,
+            });
+          }
+        } else {
+          if (index < 8) {
+            const newIndex = index + 1;
+
+            context.setIndex(newIndex);
+
+            navigation.push("AndalalinItem", {
+              index: newIndex,
+            });
+          }
+        }
+        break;
+      case "Bangkitan sedang":
         if (context.permohonan.pemohon == "Perorangan") {
           if (index < 8) {
             const newIndex = index + 1;
@@ -43,32 +65,9 @@ export default function AndalalinItem({ navigation, route }) {
           }
         }
         break;
-      case "Bangkitan sedang":
-        if (context.permohonan.pemohon == "Perorangan") {
-          if (index < 9) {
-            const newIndex = index + 1;
-
-            context.setIndex(newIndex);
-
-            navigation.push("AndalalinItem", {
-              index: newIndex,
-            });
-          }
-        } else {
-          if (index < 10) {
-            const newIndex = index + 1;
-
-            context.setIndex(newIndex);
-
-            navigation.push("AndalalinItem", {
-              index: newIndex,
-            });
-          }
-        }
-        break;
       case "Bangkitan tinggi":
         if (context.permohonan.pemohon == "Perorangan") {
-          if (index < 9) {
+          if (index < 8) {
             const newIndex = index + 1;
 
             context.setIndex(newIndex);
@@ -78,7 +77,7 @@ export default function AndalalinItem({ navigation, route }) {
             });
           }
         } else {
-          if (index < 10) {
+          if (index < 9) {
             const newIndex = index + 1;
 
             context.setIndex(newIndex);
@@ -112,14 +111,12 @@ export default function AndalalinItem({ navigation, route }) {
             case 4:
               return <Pemohon onPress={onGoToNext} />;
             case 5:
-              return <Pengembang onPress={onGoToNext} />;
-            case 6:
               return <Kegiatan onPress={onGoToNext} navigation={navigation} />;
-            case 7:
+            case 6:
               return (
                 <Persyaratan onPress={onGoToNext} navigation={navigation} />
               );
-            case 8:
+            case 7:
               return <Konfirmasi navigation={navigation} kondisi={kondisi} />;
           }
         } else {
@@ -141,14 +138,12 @@ export default function AndalalinItem({ navigation, route }) {
             case 5:
               return <Perusahaan onPress={onGoToNext} />;
             case 6:
-              return <Pengembang onPress={onGoToNext} />;
-            case 7:
               return <Kegiatan onPress={onGoToNext} navigation={navigation} />;
-            case 8:
+            case 7:
               return (
                 <Persyaratan onPress={onGoToNext} navigation={navigation} />
               );
-            case 9:
+            case 8:
               return <Konfirmasi navigation={navigation} kondisi={kondisi} />;
           }
         }
@@ -171,16 +166,14 @@ export default function AndalalinItem({ navigation, route }) {
             case 4:
               return <Pemohon onPress={onGoToNext} />;
             case 5:
-              return <Pengembang onPress={onGoToNext} />;
-            case 6:
               return <Konsultan onPress={onGoToNext} />;
-            case 7:
+            case 6:
               return <Kegiatan onPress={onGoToNext} navigation={navigation} />;
-            case 8:
+            case 7:
               return (
                 <Persyaratan onPress={onGoToNext} navigation={navigation} />
               );
-            case 9:
+            case 8:
               return <Konfirmasi navigation={navigation} kondisi={kondisi} />;
           }
         } else {
@@ -202,16 +195,14 @@ export default function AndalalinItem({ navigation, route }) {
             case 5:
               return <Perusahaan onPress={onGoToNext} />;
             case 6:
-              return <Pengembang onPress={onGoToNext} />;
-            case 7:
               return <Konsultan onPress={onGoToNext} />;
-            case 8:
+            case 7:
               return <Kegiatan onPress={onGoToNext} navigation={navigation} />;
-            case 9:
+            case 8:
               return (
                 <Persyaratan onPress={onGoToNext} navigation={navigation} />
               );
-            case 10:
+            case 9:
               return <Konfirmasi navigation={navigation} kondisi={kondisi} />;
           }
         }
@@ -234,16 +225,14 @@ export default function AndalalinItem({ navigation, route }) {
             case 4:
               return <Pemohon onPress={onGoToNext} />;
             case 5:
-              return <Pengembang onPress={onGoToNext} />;
-            case 6:
               return <Konsultan onPress={onGoToNext} />;
-            case 7:
+            case 6:
               return <Kegiatan onPress={onGoToNext} navigation={navigation} />;
-            case 8:
+            case 7:
               return (
                 <Persyaratan onPress={onGoToNext} navigation={navigation} />
               );
-            case 9:
+            case 8:
               return <Konfirmasi navigation={navigation} kondisi={kondisi} />;
           }
         } else {
@@ -265,16 +254,14 @@ export default function AndalalinItem({ navigation, route }) {
             case 5:
               return <Perusahaan onPress={onGoToNext} />;
             case 6:
-              return <Pengembang onPress={onGoToNext} />;
-            case 7:
               return <Konsultan onPress={onGoToNext} />;
-            case 8:
+            case 7:
               return <Kegiatan onPress={onGoToNext} navigation={navigation} />;
-            case 9:
+            case 8:
               return (
                 <Persyaratan onPress={onGoToNext} navigation={navigation} />
               );
-            case 10:
+            case 9:
               return <Konfirmasi navigation={navigation} kondisi={kondisi} />;
           }
         }

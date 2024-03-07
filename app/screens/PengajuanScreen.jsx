@@ -65,12 +65,10 @@ function PengajuanScreen({ navigation, route }) {
               case 4:
                 return "Pemohon";
               case 5:
-                return "Pengembang";
-              case 6:
                 return "Kegiatan";
-              case 7:
+              case 6:
                 return "Persyaratan";
-              case 8:
+              case 7:
                 return "Konfirmasi";
             }
           } else {
@@ -86,12 +84,10 @@ function PengajuanScreen({ navigation, route }) {
               case 5:
                 return "Perusahaan";
               case 6:
-                return "Pengembang";
-              case 7:
                 return "Kegiatan";
-              case 8:
+              case 7:
                 return "Persyaratan";
-              case 9:
+              case 8:
                 return "Konfirmasi";
             }
           }
@@ -108,14 +104,12 @@ function PengajuanScreen({ navigation, route }) {
               case 4:
                 return "Pemohon";
               case 5:
-                return "Pengembang";
-              case 6:
                 return "Konsultan";
-              case 7:
+              case 6:
                 return "Kegiatan";
-              case 8:
+              case 7:
                 return "Persyaratan";
-              case 9:
+              case 8:
                 return "Konfirmasi";
             }
           } else {
@@ -131,14 +125,12 @@ function PengajuanScreen({ navigation, route }) {
               case 5:
                 return "Perusahaan";
               case 6:
-                return "Pengembang";
-              case 7:
                 return "Konsultan";
-              case 8:
+              case 7:
                 return "Kegiatan";
-              case 9:
+              case 8:
                 return "Persyaratan";
-              case 10:
+              case 9:
                 return "Konfirmasi";
             }
           }
@@ -155,14 +147,12 @@ function PengajuanScreen({ navigation, route }) {
               case 4:
                 return "Pemohon";
               case 5:
-                return "Pengembang";
-              case 6:
                 return "Konsultan";
-              case 7:
+              case 6:
                 return "Kegiatan";
-              case 8:
+              case 7:
                 return "Persyaratan";
-              case 9:
+              case 8:
                 return "Konfirmasi";
             }
           } else {
@@ -178,14 +168,12 @@ function PengajuanScreen({ navigation, route }) {
               case 5:
                 return "Perusahaan";
               case 6:
-                return "Pengembang";
-              case 7:
                 return "Konsultan";
-              case 8:
+              case 7:
                 return "Kegiatan";
-              case 9:
+              case 8:
                 return "Persyaratan";
-              case 10:
+              case 9:
                 return "Konfirmasi";
             }
           }
@@ -220,21 +208,21 @@ function PengajuanScreen({ navigation, route }) {
       switch (context.permohonan.bangkitan) {
         case "Bangkitan rendah":
           if (context.permohonan.pemohon == "Perorangan") {
+            return 6;
+          } else {
+            return 7;
+          }
+        case "bangkitan sedang":
+          if (context.permohonan.pemohon == "Perorangan") {
             return 7;
           } else {
             return 8;
           }
-        case "bangkitan sedang":
-          if (context.permohonan.pemohon == "Perorangan") {
-            return 8;
-          } else {
-            return 9;
-          }
         case "Bangkitan tinggi":
           if (context.permohonan.pemohon == "Perorangan") {
-            return 8;
+            return 7;
           } else {
-            return 9;
+            return 8;
           }
       }
     } else {

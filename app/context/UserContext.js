@@ -69,26 +69,6 @@ const andalalinInit = {
   nomer_serifikat_penyusun: "",
   klasifikasi_penyusun: "",
 
-  //Pengembang
-  nama_pengembang: "",
-  wilayah_administratif_pengembang: "",
-  provinsi_pengembang: "",
-  kabupaten_pengembang: "",
-  kecamatan_pengembang: "",
-  kelurahan_pengembang: "",
-  alamat_pengembang: "",
-  nomer_pengembang: "",
-  email_pengembang: "",
-  nama_pimpinan_pengembang: "",
-  wilayah_administratif_pimpinan_pengembang: "",
-  provinsi_pimpinan_pengembang: "",
-  kabupaten_pimpinan_pengembang: "",
-  kecamatan_pimpinan_pengembang: "",
-  kelurahan_pimpinan_pengembang: "",
-  alamat_pimpinan_pengembang: "",
-  jabatan_pimpinan_pengembang: "",
-  jenis_kelamin_pimpinan_pengembang: "",
-
   //perusahaan
   nama_perusahaan: "",
   alamat_perusahaan: "",
