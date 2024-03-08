@@ -146,6 +146,7 @@ export const authRefreshToken = async (user, authRespone) => {
     headers: headers,
     data: body,
   });
+  console.log(response.status)
   if (response.status === 200) {
     const newAuthState = {
       access_token: response.data.data.access_token,

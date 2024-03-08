@@ -16,7 +16,7 @@ import AServer from "./app/component/utility/AServer";
 import SplashScreen from "./app/screens/SplashScreen";
 import { CheckContext, CheckProvider } from "./app/context/CheckContext";
 import ADialogAkun from "./app/component/utility/ADialogAkun";
-import { ModalContext, ModalProvider } from "./app/context/ModalContext";
+import { ModalProvider } from "./app/context/ModalContext";
 
 export default function App() {
   const [isAppReady, setIsAppReady] = useState(false);

@@ -164,7 +164,6 @@ function Informasi({ navigation, onPress, kondisi }) {
         title={"Download"}
         desc={"Panduan akan tersimpan pada folder yang Anda pilih"}
         visibleModal={downloadConfirm}
-        toggleVisibleModal={toggleDownloadConfirm}
         btnOK={"OK"}
         btnBATAL={"Batal"}
         onPressBATALButton={() => {

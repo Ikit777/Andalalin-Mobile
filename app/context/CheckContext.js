@@ -40,7 +40,7 @@ export function CheckProvider({ children }) {
       setTimeout(() => {
         health((response) => {
           if (response == undefined) {
-            setIsServerOk(false);
+            setIsServerOk(true);
           } else {
             switch (response.status) {
               case 200:
@@ -85,6 +85,7 @@ export function CheckProvider({ children }) {
 
     if (value && net == true && isServerOk == true && isUpdate == false) {
       userMe(context.getUser().access_token, (response) => {
+        console.log("Cek " + response.status);
         switch (response.status) {
           case 200:
             (async () => {

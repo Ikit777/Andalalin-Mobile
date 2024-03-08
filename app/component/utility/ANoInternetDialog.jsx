@@ -27,12 +27,12 @@ function ANoInternetDialog({ visibleModal = false }) {
       if (context.loading == true) {
         context.toggleLoading(false);
       }
-      handleOpenModal("superHighPriorityModal");
+      handleOpenModal("NoInternetModal");
     }
   };
 
   const ok = () => {
-    setTimeout(() => handleCloseModal("superHighPriorityModal"), 200);
+    setTimeout(() => handleCloseModal("NoInternetModal"), 200);
 
     if (context.getUser() != "user") {
       RootNavigation.replace("Home");
@@ -50,7 +50,7 @@ function ANoInternetDialog({ visibleModal = false }) {
   return (
     <Modal
       animationType="fade"
-      visible={modalState.superHighPriorityModal.visible}
+      visible={modalState.NoInternetModal.visible}
       transparent={true}
       statusBarTranslucent
       deviceHeight={Dimensions.get("screen").height}

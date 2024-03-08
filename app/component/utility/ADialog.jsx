@@ -18,17 +18,16 @@ function ADialog({
   btnOK,
 }) {
   const [visible, setVisible] = React.useState(visibleModal);
-  
+
   React.useEffect(() => {
     toggleModal();
   }, [visibleModal]);
+  
   const toggleModal = () => {
     if (visibleModal) {
       setVisible(true);
-      
     } else {
       setTimeout(() => setVisible(false), 200);
-      
     }
   };
   return (
