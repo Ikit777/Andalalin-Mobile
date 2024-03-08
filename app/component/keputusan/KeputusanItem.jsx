@@ -1,49 +1,28 @@
-import React, { useEffect, useContext, useState } from "react";
-import {
-  StyleSheet,
-  View,
-  BackHandler,
-  ScrollView,
-  Pressable,
-} from "react-native";
-import AText from "../component/utility/AText";
-import color from "../constants/color";
-import AScreen from "../component/utility/AScreen";
-import ABackButton from "../component/utility/ABackButton";
-import { useStateToggler } from "../hooks/useUtility";
-import { UserContext } from "../context/UserContext";
-import ADialog from "../component/utility/ADialog";
-import AConfirmationDialog from "../component/utility/AConfirmationDialog";
-import ATextInput from "../component/utility/ATextInput";
-import ATextInputIcon from "../component/utility/ATextInputIcon";
-import AButton from "../component/utility/AButton";
-import { authRefreshToken } from "../api/auth";
-import { andalalinPembuatanSuratKeputusan } from "../api/andalalin";
-import ADatePicker from "../component/utility/ADatePicker";
-import KeputusanNavigator from "../component/keputusan/KeputusanNavigator";
-import { Feather } from "@expo/vector-icons";
+import React, { useContext, useState, useEffect } from "react";
+import { StyleSheet, View, TouchableOpacity, ScrollView } from "react-native";
+import { UserContext } from "../../context/UserContext";
+import color from "../../constants/color";
+import AText from "../utility/AText";
+import { useStateToggler } from "../../hooks/useUtility";
+import { MaterialIcons } from "@expo/vector-icons";
+import ADialogInputText from "../utility/ADialogInputText";
+import ATextInput from "../utility/ATextInput";
+import ATextInputIcon from "../utility/ATextInputIcon";
 
-function PembuatanSuratKeputusanScreen({ navigation }) {
-  const [confirm, toggleComfirm] = useStateToggler();
+export default function PenyusunItem({ navigation, route }) {
+  const { keputusan, setKeputusan } = useContext(UserContext);
   const context = useContext(UserContext);
-
-  const [konfirmasi, toggleKonfirmasi] = useStateToggler();
-  const [gagal, toggleGagal] = useStateToggler();
+  const index = route.params.index;
 
   const [item, setItem] = useState(0);
 
-  useFocusEffect(
-    React.useCallback(() => {
-      BackHandler.addEventListener("hardwareBackPress", () => {
-        back();
-        return true;
-      });
+  const [tambah, setTambah] = useState("");
+  const [tanggal, setTanggal] = useState("");
 
-      return BackHandler.removeEventListener("hardwareBackPress", () => {
-        back();
-        return true;
-      });
-    }, [context.indexKeputusan])
+  const [dateModal, toggleDateModal] = useStateToggler();
+
+  const alphabetArray = Array.from({ length: 26 }, (_, index) =>
+    String.fromCharCode(97 + index)
   );
 
   const lampiran_keputusan = [
@@ -153,164 +132,188 @@ function PembuatanSuratKeputusanScreen({ navigation }) {
   ];
 
   useEffect(() => {
-    context.toggleLoading(true);
     setItem(lampiran_keputusan.length + 1);
-
-    context.setKeputusan({
-      keputusan: lampiran_keputusan,
-    });
-
-    setTimeout(() => {
-      context.toggleLoading(false);
-    }, 3000);
   }, []);
 
-  const back = () => {
-    if (context.indexKeputusan == 1) {
-      toggleComfirm();
-    } else {
-      const newIndex = context.indexKeputusan - 1;
-      context.setIndexKeputusan(newIndex);
+  const generateElements = () => {
+    const elements = [];
+    for (let i = 0; i < item; i++) {
+      if (i == 0) {
+        const keputusanRef = React.createRef();
+        const lampiranRef = React.createRef();
+        const kesanggupanRef = React.createRef();
+        const namaRef = React.createRef();
+        const nipRef = React.createRef();
 
-      navigation.replace("Back Keputusan", {
-        index: newIndex,
-      });
+        elements.push(
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            persistentScrollbar={true}
+            style={{
+              flex: 1,
+              backgroundColor: color.primary.primary25,
+            }}
+          >
+            <ATextInput
+              bdColor={color.neutral.neutral300}
+              ktype={"default"}
+              hint={"Masukkan nomor"}
+              title={"Nomor keputusan pemberi persetujuan"}
+              rtype={"next"}
+              multi={false}
+              blur={false}
+              value={keputusan.nomor_keputusan}
+              ref={keputusanRef}
+              onChangeText={(value) => {
+                setKeputusan({
+                  nomor_keputusan: value,
+                });
+              }}
+              submit={() => {
+                keputusan.nomor_keputusan != ""
+                  ? lampiranRef.current.focus()
+                  : "";
+              }}
+            />
+
+            <ATextInput
+              bdColor={color.neutral.neutral300}
+              ktype={"default"}
+              hint={"Masukkan nomor"}
+              title={"Nomor lampiran keputusan pemberi persetujuan"}
+              rtype={"next"}
+              multi={false}
+              padding={20}
+              blur={false}
+              value={keputusan.nomor_lampiran}
+              ref={lampiranRef}
+              onChangeText={(value) => {
+                setKeputusan({
+                  nomor_lampiran: value,
+                });
+              }}
+              submit={() => {
+                keputusan.nomor_lampiran != ""
+                  ? kesanggupanRef.current.focus()
+                  : "";
+              }}
+            />
+
+            <ATextInput
+              bdColor={color.neutral.neutral300}
+              ktype={"default"}
+              hint={"Masukkan nomor"}
+              title={"Nomor surat pernyataan kesanggupan"}
+              rtype={"done"}
+              multi={false}
+              padding={20}
+              blur={true}
+              value={keputusan.nomor_kesanggupan}
+              ref={kesanggupanRef}
+              onChangeText={(value) => {
+                setKeputusan({
+                  nomor_kesanggupan: value,
+                });
+              }}
+            />
+
+            <ATextInputIcon
+              bdColor={color.neutral.neutral300}
+              hint={"Masukkan tanggal"}
+              title={"Tanggal surat pernyataan kesanggupan"}
+              padding={20}
+              icon={"calendar"}
+              value={keputusan.tanggal_kesanggupan}
+              onPress={() => {
+                toggleDateModal();
+              }}
+            />
+
+            <ATextInput
+              bdColor={
+                namaError ? color.error.error500 : color.neutral.neutral300
+              }
+              ktype={"default"}
+              hint={"Masukkan nama"}
+              title={"Nama kepala dinas perhubungan"}
+              rtype={"next"}
+              multi={false}
+              padding={20}
+              blur={false}
+              value={keputusan.nama_kadis}
+              ref={namaRef}
+              onChangeText={(value) => {
+                setKeputusan({
+                  nama_kadis: value,
+                });
+              }}
+              submit={() => {
+                keputusan.nama_kadis != "" ? nipRef.current.focus() : "";
+              }}
+            />
+
+            <ATextInput
+              bdColor={
+                nipError ? color.error.error500 : color.neutral.neutral300
+              }
+              ktype={"number-pad"}
+              hint={"Masukkan nip"}
+              title={"NIP kepala dinas perhubungan"}
+              rtype={"done"}
+              multi={false}
+              padding={20}
+              blur={true}
+              value={keputusan.nip_kadis}
+              ref={nipRef}
+              onChangeText={(value) => {
+                setKeputusan({
+                  nip_kadis: value,
+                });
+              }}
+            />
+
+            <View style={{ paddingBottom: 32 }} />
+          </ScrollView>
+        );
+      } else {
+        elements.push(
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            persistentScrollbar={true}
+            style={{
+              flex: 1,
+              backgroundColor: color.primary.primary25,
+            }}
+          ></ScrollView>
+        );
+      }
     }
-  };
-
-  const onGoToNext = () => {
-    if (context.indexKeputusan < item) {
-      const newIndex = context.indexKeputusan + 1;
-      context.setIndexKeputusan(newIndex);
-
-      navigation.push("KeputusanItem", {
-        index: newIndex,
-      });
-    }
+    return elements;
   };
 
   return (
-    <AScreen>
-      <View>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            paddingVertical: 8,
-          }}
-        >
-          <ABackButton
-            onPress={() => {
-              back();
-            }}
-          />
-          <AText
-            style={{ paddingLeft: 4 }}
-            size={20}
-            color={color.neutral.neutral900}
-            weight="normal"
-          >
-            Surat keputusan
-          </AText>
-        </View>
-        <AProgressBar
-          progress={Math.floor((context.indexKeputusan * 100) / item)}
-        />
-      </View>
-
-      <View style={styles.content}>
-        <KeputusanNavigator index={context.indexKeputusan} />
-      </View>
-
-      <Pressable
-        android_ripple={{
-          color: "rgba(0, 0, 0, 0.1)",
-          borderless: false,
-          radius: 32,
+    <View style={styles.container}>
+      {generateElements()[index - 1]}
+      <ADatePicker
+        visibleModal={dateModal}
+        onPressOKButton={() => {
+          toggleDateModal();
+          setKeputusan({
+            nomor_lampiran: tanggal,
+          });
         }}
-        style={{
-          shadowColor: "rgba(0, 0, 0, 0.30)",
-          elevation: 8,
-          borderRadius: 16,
-          overflow: "hidden",
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: color.primary.primary100,
-          position: "absolute",
-          bottom: 64,
-          right: 32,
-          padding: 16,
-        }}
-        onPress={() => {
-          switch (context.indexKeputusan) {
-            case item:
-              toggleKonfirmasi();
-              break;
-            default:
-              onGoToNext();
-              break;
-          }
-        }}
-      >
-        <Feather
-          name={context.indexKeputusan != item ? "arrow-right" : "check"}
-          size={24}
-          color={color.neutral.neutral900}
-        />
-      </Pressable>
-
-      <AConfirmationDialog
-        title={"Peringatan"}
-        desc={"Data yang Anda masukkan akan hilang"}
-        visibleModal={confirm}
-        toggleVisibleModal={toggleComfirm}
-        btnOK={"OK"}
-        btnBATAL={"Batal"}
         onPressBATALButton={() => {
-          toggleComfirm();
+          toggleDateModal();
         }}
-        onPressOKButton={() => {
-          toggleComfirm();
-          context.setIndexKeputusan(1);
-          context.clearKeputusan();
-          navigation.goBack();
-        }}
+        pilih={setTanggal}
       />
-
-      <AConfirmationDialog
-        title={"Simpan"}
-        desc={"Simpan data surat keputusan?"}
-        visibleModal={konfirmasi}
-        toggleVisibleModal={toggleKonfirmasi}
-        btnOK={"Simpan"}
-        btnBATAL={"Batal"}
-        onPressBATALButton={() => {
-          toggleKonfirmasi();
-        }}
-        onPressOKButton={() => {
-          toggleKonfirmasi();
-        }}
-      />
-
-      <ADialog
-        title={"Simpan gagal"}
-        desc={"Terjadi kesalahan pada server, mohon coba lagi lain waktu"}
-        visibleModal={gagal}
-        btnOK={"OK"}
-        onPressOKButton={() => {
-          toggleGagal();
-        }}
-      />
-    </AScreen>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  header: {},
-  content: {
-    paddingHorizontal: 16,
-    paddingBottom: 16,
+  container: {
+    flex: 1,
+    backgroundColor: color.primary.primary25,
   },
 });
-
-export default PembuatanSuratKeputusanScreen;

@@ -56,7 +56,7 @@ function ASessionEnd({ visibleModal = false }) {
               context.setSession(false);
               setVisible(false);
               remove("authState");
-              RootNavigation.replace("Login");
+              RootNavigation.push("Back Login");
             }}
           >
             <AText

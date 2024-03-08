@@ -16,6 +16,7 @@ import AServer from "./app/component/utility/AServer";
 import SplashScreen from "./app/screens/SplashScreen";
 import { CheckContext, CheckProvider } from "./app/context/CheckContext";
 import ADialogAkun from "./app/component/utility/ADialogAkun";
+import { ModalContext, ModalProvider } from "./app/context/ModalContext";
 
 export default function App() {
   const [isAppReady, setIsAppReady] = useState(false);
@@ -72,37 +73,43 @@ export default function App() {
           <NetProvider>
             <UserProvider>
               <CheckProvider>
-                <NavigationContainer ref={navigationRef}>
-                  <NetContext.Consumer>
-                    {(isAvailable) => (
-                      <ANoInternetDialog visibleModal={!isAvailable} />
-                    )}
-                  </NetContext.Consumer>
+                <ModalProvider>
+                  <NavigationContainer ref={navigationRef}>
+                    <NetContext.Consumer>
+                      {(isAvailable) => (
+                        <ANoInternetDialog visibleModal={!isAvailable} />
+                      )}
+                    </NetContext.Consumer>
 
-                  <CheckContext.Consumer>
-                    {(check) => <AServer visibleModal={!check.isServerOk} />}
-                  </CheckContext.Consumer>
+                    <CheckContext.Consumer>
+                      {(check) => <AServer visibleModal={!check.isServerOk} />}
+                    </CheckContext.Consumer>
 
-                  <CheckContext.Consumer>
-                    {(check) => <AUpdateDialog visibleModal={check.isUpdate} />}
-                  </CheckContext.Consumer>
+                    <CheckContext.Consumer>
+                      {(check) => (
+                        <AUpdateDialog visibleModal={check.isUpdate} />
+                      )}
+                    </CheckContext.Consumer>
 
-                  <CheckContext.Consumer>
-                    {(check) => <ADialogAkun visibleModal={check.isUser} />}
-                  </CheckContext.Consumer>
+                    <CheckContext.Consumer>
+                      {(check) => <ADialogAkun visibleModal={check.isUser} />}
+                    </CheckContext.Consumer>
 
-                  <UserContext.Consumer>
-                    {(isEnd) => (
-                      <ASessionEnd visibleModal={isEnd.getSession()} />
-                    )}
-                  </UserContext.Consumer>
+                    <UserContext.Consumer>
+                      {(isEnd) => (
+                        <ASessionEnd visibleModal={isEnd.getSession()} />
+                      )}
+                    </UserContext.Consumer>
 
-                  <UserContext.Consumer>
-                    {(value) => <ALoading visibleModal={value.getLoading()} />}
-                  </UserContext.Consumer>
+                    <UserContext.Consumer>
+                      {(value) => (
+                        <ALoading visibleModal={value.getLoading()} />
+                      )}
+                    </UserContext.Consumer>
 
-                  <Navigator isLogged={isLogged} />
-                </NavigationContainer>
+                    <Navigator isLogged={isLogged} />
+                  </NavigationContainer>
+                </ModalProvider>
               </CheckProvider>
             </UserProvider>
           </NetProvider>

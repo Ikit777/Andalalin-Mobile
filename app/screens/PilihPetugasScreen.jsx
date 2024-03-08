@@ -92,8 +92,6 @@ function PilihPetugasScreen({ navigation, route }) {
           authRefreshToken(context, (response) => {
             if (response.status === 200) {
               load_petugas();
-            } else {
-              context.toggleLoading(false);
             }
           });
           break;
@@ -141,8 +139,6 @@ function PilihPetugasScreen({ navigation, route }) {
                 authRefreshToken(context, (response) => {
                   if (response.status === 200) {
                     doPilih();
-                  } else {
-                    context.toggleLoading(false);
                   }
                 });
                 break;
@@ -170,8 +166,6 @@ function PilihPetugasScreen({ navigation, route }) {
                 authRefreshToken(context, (response) => {
                   if (response.status === 200) {
                     doPilih();
-                  } else {
-                    context.toggleLoading(false);
                   }
                 });
                 break;

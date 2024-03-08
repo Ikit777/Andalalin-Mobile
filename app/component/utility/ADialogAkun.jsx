@@ -60,7 +60,7 @@ function ADialogAkun({ visibleModal = false }) {
               check.setIsUser(false);
               setVisible(false);
               remove("authState");
-              RootNavigation.replace("Login");
+              RootNavigation.push("Back Login");
             }}
           >
             <AText

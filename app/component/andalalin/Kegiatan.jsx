@@ -8,6 +8,12 @@ import { useStateToggler } from "../../hooks/useUtility";
 import { UserContext } from "../../context/UserContext";
 import AButton from "../utility/AButton";
 import ADatePicker from "../utility/ADatePicker";
+import { andalalinPembuatanSuratPermohonan } from "../../api/andalalin";
+import { authRefreshToken } from "../../api/auth";
+import { StorageAccessFramework } from "expo-file-system";
+import AConfirmationDialog from "../utility/AConfirmationDialog";
+import * as FileSystem from "expo-file-system";
+import ASnackBar from "../utility/ASnackBar";
 
 function Kegiatan({ onPress, navigation }) {
   const {
@@ -23,10 +29,26 @@ function Kegiatan({ onPress, navigation }) {
       jenis,
       rencana_pembangunan,
       catatan,
+
+      kode,
+      bangkitan,
+      pemohon,
+      jabatan_pemohon,
+      jenis_proyek,
+      nama_proyek,
+      provinsi_proyek,
+      kabupaten_proyek,
+      kecamatan_proyek,
+      kelurahan_proyek,
+      nama_jalan,
+      nama_perusahaan,
+      nama_konsultan,
     },
     dispatch,
     dataMaster,
   } = useContext(UserContext);
+
+  const context = useContext(UserContext);
 
   const kegiatanInput = React.createRef();
   const peruntukanInput = React.createRef();
@@ -57,6 +79,103 @@ function Kegiatan({ onPress, navigation }) {
   const [dateModal, toggleDateModal] = useStateToggler();
 
   const [formError, toggleFormError] = useStateToggler();
+
+  const [downloadConfirm, toggleDownloadConfirm] = useStateToggler();
+  const [uri, setUri] = useState();
+
+  const [message, setMessage] = useState();
+  const [isSnackbarVisible, setSnackbarVisible] = useStateToggler();
+
+  const showSnackbar = () => {
+    setSnackbarVisible();
+    setTimeout(() => {
+      setSnackbarVisible();
+    }, 3000);
+  };
+
+  const download = async () => {
+    const permissions =
+      await StorageAccessFramework.requestDirectoryPermissionsAsync();
+    if (!permissions.granted) {
+      return;
+    }
+
+    setUri(permissions.directoryUri);
+    toggleDownloadConfirm();
+  };
+
+  const surat = () => {
+    context.toggleLoading(true);
+
+    let jalan = context.dataMaster.jalan.find((item) => {
+      return item.KodeJalan == kode && item.Nama == nama_jalan;
+    });
+
+    const data = {
+      bangkitan: bangkitan,
+      pemohon: pemohon,
+      nama: context.getUser().nama,
+      jabatan: jabatan_pemohon,
+      jenis: jenis_proyek,
+      proyek: nama_proyek,
+      jalan: nama_jalan,
+      kelurahan: kelurahan_proyek,
+      kecamatan: kecamatan_proyek,
+      kabupaten: kabupaten_proyek,
+      provinsi: provinsi_proyek,
+      status: jalan.Status,
+      pengembang: nama_perusahaan,
+      konsultan: nama_konsultan,
+    };
+
+    andalalinPembuatanSuratPermohonan(
+      context.getUser().access_token,
+      data,
+      (response) => {
+        switch (response.status) {
+          case 200:
+            (async () => {
+              const result = await response.data;
+
+              await StorageAccessFramework.createFileAsync(
+                uri,
+                "Format surat permohonan.docx",
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+              )
+                .then(async (uri) => {
+                  context.toggleLoading(true);
+                  await FileSystem.writeAsStringAsync(uri, result.data, {
+                    encoding: FileSystem.EncodingType.Base64,
+                  });
+                })
+                .catch(() => {
+                  context.toggleLoading(false);
+                  setMessage("Surat permohonan gagal di download");
+                  showSnackbar();
+                })
+                .finally(() => {
+                  context.toggleLoading(false);
+                  setMessage("Surat permohonan berhasil di download");
+                  showSnackbar();
+                });
+            })();
+            break;
+          case 424:
+            authRefreshToken(context, (response) => {
+              if (response.status === 200) {
+                surat();
+              }
+            });
+            break;
+          default:
+            context.toggleLoading(false);
+            setMessage("Surat permohonan gagal di download");
+            showSnackbar();
+            break;
+        }
+      }
+    );
+  };
 
   const press = () => {
     if (data.Kriteria == "" && data.Kriteria == null) {
@@ -190,149 +309,153 @@ function Kegiatan({ onPress, navigation }) {
   };
 
   return (
-    <ScrollView
-      style={styles.content}
-      showsVerticalScrollIndicator={false}
-      persistentScrollbar={true}
-    >
-      <ATextInput
-        bdColor={
-          kegiatanError ? color.error.error500 : color.neutral.neutral300
-        }
-        ktype={"default"}
-        hint={"Masukkan aktivitas"}
-        title={"Aktivitas"}
-        multi={true}
-        wajib={"*"}
-        value={kegiatan}
-        ref={kegiatanInput}
-        onChangeText={(value) => {
-          clear_error();
-          setKegiatan(value);
-        }}
-      />
-
-      <ATextInput
-        bdColor={
-          peruntukanError ? color.error.error500 : color.neutral.neutral300
-        }
-        ktype={"default"}
-        hint={"Masukkan peruntukan"}
-        title={"Peruntukan"}
-        multi={true}
-        padding={20}
-        wajib={"*"}
-        value={untuk}
-        ref={peruntukanInput}
-        onChangeText={(value) => {
-          clear_error();
-          setPeruntukan(value);
-        }}
-      />
-
-      <ATextInput
-        bdColor={totalError ? color.error.error500 : color.neutral.neutral300}
-        ktype={"number-pad"}
-        hint={"Masukkan total"}
-        title={"Total luas lahan (m²)"}
-        multi={false}
-        wajib={"*"}
-        padding={20}
-        rtype={"next"}
-        blur={data.Kriteria != "" && data.Kriteria != null ? false : true}
-        value={total}
-        ref={totalInput}
-        onChangeText={(value) => {
-          clear_error();
-          setTotal(value);
-        }}
-        submit={() => {
-          clear_error();
-          if (data.Kriteria != "" && data.Kriteria != null) {
-            total != "" ? luasInput.current.focus() : "";
-          } else {
-            total != "" ? nomerInput.current.focus() : "";
+    <View style={styles.content}>
+      <ScrollView
+        style={{ flexGrow: 1 }}
+        showsVerticalScrollIndicator={false}
+        persistentScrollbar={true}
+      >
+        <ATextInput
+          bdColor={
+            kegiatanError ? color.error.error500 : color.neutral.neutral300
           }
-        }}
-      />
+          ktype={"default"}
+          hint={"Masukkan aktivitas"}
+          title={"Aktivitas"}
+          multi={true}
+          wajib={"*"}
+          value={kegiatan}
+          ref={kegiatanInput}
+          onChangeText={(value) => {
+            clear_error();
+            setKegiatan(value);
+          }}
+        />
 
-      {data.Kriteria != "" && data.Kriteria != null ? (
-        <View>
-          <ATextInput
-            bdColor={
-              luasError ? color.error.error500 : color.neutral.neutral300
+        <ATextInput
+          bdColor={
+            peruntukanError ? color.error.error500 : color.neutral.neutral300
+          }
+          ktype={"default"}
+          hint={"Masukkan peruntukan"}
+          title={"Peruntukan"}
+          multi={true}
+          padding={20}
+          wajib={"*"}
+          value={untuk}
+          ref={peruntukanInput}
+          onChangeText={(value) => {
+            clear_error();
+            setPeruntukan(value);
+          }}
+        />
+
+        <ATextInput
+          bdColor={totalError ? color.error.error500 : color.neutral.neutral300}
+          ktype={"number-pad"}
+          hint={"Masukkan total"}
+          title={"Total luas lahan (m²)"}
+          multi={false}
+          wajib={"*"}
+          padding={20}
+          rtype={"next"}
+          blur={data.Kriteria != "" && data.Kriteria != null ? false : true}
+          value={total}
+          ref={totalInput}
+          onChangeText={(value) => {
+            clear_error();
+            setTotal(value);
+          }}
+          submit={() => {
+            clear_error();
+            if (data.Kriteria != "" && data.Kriteria != null) {
+              total != "" ? luasInput.current.focus() : "";
+            } else {
+              total != "" ? nomerInput.current.focus() : "";
             }
-            ktype={"number-pad"}
-            hint={"Masukkan " + data.Kriteria.toLowerCase()}
-            title={data.Kriteria + " " + "(" + data.Satuan.toLowerCase() + ")"}
-            rtype={"next"}
-            blur={false}
-            wajib={"*"}
-            multi={false}
-            padding={20}
-            value={luas}
-            ref={luasInput}
-            onChangeText={(value) => {
-              clear_error();
-              setLuas(value);
-            }}
-            submit={() => {
-              clear_error();
-              luas != "" ? nomerInput.current.focus() : "";
-            }}
-          />
-        </View>
-      ) : (
-        ""
-      )}
+          }}
+        />
 
-      <ATextInput
-        bdColor={nomerError ? color.error.error500 : color.neutral.neutral300}
-        ktype={"default"}
-        hint={"Masukkan nomor SKRK"}
-        title={"Nomor SKRK"}
-        rtype={"done"}
-        multi={false}
-        wajib={"*"}
-        value={nomer}
-        padding={20}
-        ref={nomerInput}
-        onChangeText={(value) => {
-          clear_error();
-          setNomer(value);
-        }}
-        submit={() => {
-          clear_error();
-        }}
-      />
+        {data.Kriteria != "" && data.Kriteria != null ? (
+          <View>
+            <ATextInput
+              bdColor={
+                luasError ? color.error.error500 : color.neutral.neutral300
+              }
+              ktype={"number-pad"}
+              hint={"Masukkan " + data.Kriteria.toLowerCase()}
+              title={
+                data.Kriteria + " " + "(" + data.Satuan.toLowerCase() + ")"
+              }
+              rtype={"next"}
+              blur={false}
+              wajib={"*"}
+              multi={false}
+              padding={20}
+              value={luas}
+              ref={luasInput}
+              onChangeText={(value) => {
+                clear_error();
+                setLuas(value);
+              }}
+              submit={() => {
+                clear_error();
+                luas != "" ? nomerInput.current.focus() : "";
+              }}
+            />
+          </View>
+        ) : (
+          ""
+        )}
 
-      <ATextInputIcon
-        bdColor={tanggalError ? color.error.error500 : color.neutral.neutral300}
-        hint={"Masukkan tanggal SKRK"}
-        title={"Tanggal SKRK"}
-        padding={20}
-        wajib={"*"}
-        icon={"calendar"}
-        value={tanggal}
-        onPress={() => {
-          toggleDateModal();
-        }}
-      />
+        <ATextInput
+          bdColor={nomerError ? color.error.error500 : color.neutral.neutral300}
+          ktype={"default"}
+          hint={"Masukkan nomor SKRK"}
+          title={"Nomor SKRK"}
+          rtype={"done"}
+          multi={false}
+          wajib={"*"}
+          value={nomer}
+          padding={20}
+          ref={nomerInput}
+          onChangeText={(value) => {
+            clear_error();
+            setNomer(value);
+          }}
+          submit={() => {
+            clear_error();
+          }}
+        />
 
-      <ATextInput
-        bdColor={color.neutral.neutral300}
-        ktype={"default"}
-        hint={"Masukkan catatan"}
-        title={"Catatan"}
-        multi={true}
-        padding={20}
-        value={catatanTambahan}
-        onChangeText={(value) => {
-          setCatatanTambahan(value);
-        }}
-      />
+        <ATextInputIcon
+          bdColor={
+            tanggalError ? color.error.error500 : color.neutral.neutral300
+          }
+          hint={"Masukkan tanggal SKRK"}
+          title={"Tanggal SKRK"}
+          padding={20}
+          wajib={"*"}
+          icon={"calendar"}
+          value={tanggal}
+          onPress={() => {
+            toggleDateModal();
+          }}
+        />
 
-      {!formError ? (
+        <ATextInput
+          bdColor={color.neutral.neutral300}
+          ktype={"default"}
+          hint={"Masukkan catatan"}
+          title={"Catatan"}
+          multi={true}
+          padding={20}
+          value={catatanTambahan}
+          onChangeText={(value) => {
+            setCatatanTambahan(value);
+          }}
+        />
+
         <View
           style={{
             borderColor: color.neutral.neutral300,
@@ -357,53 +480,75 @@ function Kegiatan({ onPress, navigation }) {
 
           <TouchableOpacity
             style={{ flexDirection: "row", paddingLeft: 4 }}
-            onPress={() => {}}
+            onPress={() => {
+              download();
+            }}
           >
             <AText size={14} color={color.neutral.neutral700} weight="semibold">
               Download
             </AText>
           </TouchableOpacity>
         </View>
-      ) : (
-        ""
-      )}
 
-      {formError ? (
-        <AText
-          style={{ paddingTop: 8 }}
-          color={color.error.error500}
-          size={14}
-          weight="normal"
-        >
-          Lengkapi formulir atau kolom yang tersedia dengan benar{" "}
-        </AText>
-      ) : (
-        ""
-      )}
+        {formError ? (
+          <AText
+            style={{ paddingTop: 8 }}
+            color={color.error.error500}
+            size={14}
+            weight="normal"
+          >
+            Lengkapi formulir atau kolom yang tersedia dengan benar{" "}
+          </AText>
+        ) : (
+          ""
+        )}
 
-      <AButton
-        style={{ marginTop: 32, marginBottom: 50 }}
-        title={"Lanjut"}
-        mode="contained"
-        onPress={() => {
-          press();
-        }}
-      />
+        <AButton
+          style={{ marginTop: 32, marginBottom: 16 }}
+          title={"Lanjut"}
+          mode="contained"
+          onPress={() => {
+            press();
+          }}
+        />
 
-      <ADatePicker
-        visibleModal={dateModal}
-        onPressOKButton={() => {
-          toggleDateModal();
-          {
-            tanggalError ? toggleTanggalError() : "";
-          }
-        }}
+        <ADatePicker
+          visibleModal={dateModal}
+          onPressOKButton={() => {
+            toggleDateModal();
+            {
+              tanggalError ? toggleTanggalError() : "";
+            }
+          }}
+          onPressBATALButton={() => {
+            toggleDateModal();
+          }}
+          pilih={setTanggal}
+        />
+      </ScrollView>
+
+      <AConfirmationDialog
+        title={"Download"}
+        desc={"Surat permohonan akan tersimpan pada folder yang Anda pilih"}
+        visibleModal={downloadConfirm}
+        toggleVisibleModal={toggleDownloadConfirm}
+        btnOK={"OK"}
+        btnBATAL={"Batal"}
         onPressBATALButton={() => {
-          toggleDateModal();
+          toggleDownloadConfirm();
         }}
-        pilih={setTanggal}
+        onPressOKButton={() => {
+          toggleDownloadConfirm();
+          surat();
+        }}
       />
-    </ScrollView>
+
+      {isSnackbarVisible ? (
+        <ASnackBar visible={isSnackbarVisible} message={message} />
+      ) : (
+        ""
+      )}
+    </View>
   );
 }
 
@@ -412,7 +557,6 @@ const styles = StyleSheet.create({
     padding: 16,
     width: "100%",
     height: "100%",
-    flexGrow: 1,
   },
 });
 

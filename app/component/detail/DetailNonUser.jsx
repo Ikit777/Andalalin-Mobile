@@ -834,9 +834,7 @@ function DetailNonUser({ permohonan, navigation, reload }) {
           case 424:
             authRefreshToken(context, (response) => {
               if (response.status === 200) {
-                simpan_persyaratan_terpenuhi();
-              } else {
-                context.toggleLoading(false);
+                simpan_tolak_permohonan();
               }
             });
             break;
@@ -864,8 +862,6 @@ function DetailNonUser({ permohonan, navigation, reload }) {
             authRefreshToken(context, (response) => {
               if (response.status === 200) {
                 simpan_tunda_permohonan();
-              } else {
-                context.toggleLoading(false);
               }
             });
             break;
@@ -892,8 +888,6 @@ function DetailNonUser({ permohonan, navigation, reload }) {
             authRefreshToken(context, (response) => {
               if (response.status === 200) {
                 lanjutkan_permohonan();
-              } else {
-                context.toggleLoading(false);
               }
             });
             break;
@@ -1073,7 +1067,6 @@ function DetailNonUser({ permohonan, navigation, reload }) {
               } else {
                 setUploadFile([]);
                 setUploadNamaFile(null);
-                context.toggleLoading(false);
               }
             });
             break;
@@ -1296,9 +1289,7 @@ function DetailNonUser({ permohonan, navigation, reload }) {
           case 424:
             authRefreshToken(context, (response) => {
               if (response.status === 200) {
-                simpan_persetujuan();
-              } else {
-                context.toggleLoading(false);
+                simpan_pemeriksaan();
               }
             });
             break;
@@ -1520,8 +1511,6 @@ function DetailNonUser({ permohonan, navigation, reload }) {
             authRefreshToken(context, (response) => {
               if (response.status === 200) {
                 simpan_tunda_pemasangan();
-              } else {
-                context.toggleLoading(false);
               }
             });
             break;
@@ -1548,8 +1537,6 @@ function DetailNonUser({ permohonan, navigation, reload }) {
             authRefreshToken(context, (response) => {
               if (response.status === 200) {
                 simpan_pembatalan_permohonan();
-              } else {
-                context.toggleLoading(false);
               }
             });
             break;
@@ -1575,8 +1562,6 @@ function DetailNonUser({ permohonan, navigation, reload }) {
             authRefreshToken(context, (response) => {
               if (response.status === 200) {
                 lanjutkan_pemasangan();
-              } else {
-                context.toggleLoading(false);
               }
             });
             break;

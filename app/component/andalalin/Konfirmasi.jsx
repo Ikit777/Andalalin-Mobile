@@ -62,22 +62,6 @@ function Konfirmasi({ navigation, kondisi }) {
       kecamatan_pimpinan_perusahaan,
       kelurahan_pimpinan_perusahaan,
       alamat_pimpinan,
-      nama_pengembang,
-      provinsi_pengembang,
-      kabupaten_pengembang,
-      kecamatan_pengembang,
-      kelurahan_pengembang,
-      alamat_pengembang,
-      nomer_pengembang,
-      email_pengembang,
-      nama_pimpinan_pengembang,
-      provinsi_pimpinan_pengembang,
-      kabupaten_pimpinan_pengembang,
-      kecamatan_pimpinan_pengembang,
-      kelurahan_pimpinan_pengembang,
-      alamat_pimpinan_pengembang,
-      jabatan_pimpinan_pengembang,
-      jenis_kelamin_pimpinan_pengembang,
       aktivitas,
       peruntukan,
       total_luas_lahan,
@@ -178,8 +162,6 @@ function Konfirmasi({ navigation, kondisi }) {
         "/" +
         jalan.KodeJalan,
       nama_jalan: jalan.Nama,
-      kelurahan: jalan.Kelurahan,
-      kecamatan: jalan.Kecamatan,
       pangkal_jalan: jalan.Pangkal,
       ujung_jalan: jalan.Ujung,
       panjang_jalan: jalan.Panjang,
@@ -238,24 +220,6 @@ function Konfirmasi({ navigation, kondisi }) {
       nomer_sertifikat_penyusun_dokumen: nomer_serifikat_penyusun,
       klasifikasi_penyusun_dokumen: klasifikasi_penyusun,
 
-      //Data Pengembang
-      nama_pengembang: nama_pengembang,
-      provinsi_pengembang: provinsi_pengembang,
-      kabupaten_pengembang: kabupaten_pengembang,
-      kecamatan_pengembang: kecamatan_pengembang,
-      kelurahan_pengembang: kelurahan_pengembang,
-      alamat_pengembang: alamat_pengembang,
-      nomer_pengembang: nomer_pengembang,
-      email_pengembang: email_pengembang,
-      nama_pimpinan_pengembang: nama_pimpinan_pengembang,
-      jabatan_pimpinan_pengembang: jabatan_pimpinan_pengembang,
-      jenis_kelamin_pimpinan_pengembang: jenis_kelamin_pimpinan_pengembang,
-      provinsi_pimpinan_pengembang: provinsi_pimpinan_pengembang,
-      kabupaten_pimpinan_pengembang: kabupaten_pimpinan_pengembang,
-      kecamatan_pimpinan_pengembang: kecamatan_pimpinan_pengembang,
-      kelurahan_pimpinan_pengembang: kelurahan_pimpinan_pengembang,
-      alamat_pimpinan_pengembang: alamat_pimpinan_pengembang,
-
       //Data Lain nya
       aktivitas: aktivitas,
       peruntukan: peruntukan,
@@ -287,9 +251,6 @@ function Konfirmasi({ navigation, kondisi }) {
             authRefreshToken(context, (response) => {
               if (response.status === 200) {
                 kirim();
-              } else {
-                context.toggleLoading(false);
-                toggleKirimGagal();
               }
             });
             break;
@@ -352,10 +313,7 @@ function Konfirmasi({ navigation, kondisi }) {
           case 424:
             authRefreshToken(context, (response) => {
               if (response.status === 200) {
-                kirim();
-              } else {
-                context.toggleLoading(false);
-                toggleKirimGagal();
+                kirimPerlalin();
               }
             });
             break;

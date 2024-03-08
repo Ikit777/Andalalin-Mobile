@@ -112,8 +112,6 @@ function CekAdministrasiScreen({ navigation }) {
             authRefreshToken(context, (response) => {
               if (response.status === 200) {
                 check_administrasi();
-              } else {
-                context.toggleLoading(false);
               }
             });
             break;

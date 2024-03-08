@@ -88,6 +88,8 @@ const andalalinInit = {
   alamat_pimpinan: "",
   jabatan_pimpinan: "",
   jenis_kelamin_pimpinan: "",
+
+  
   aktivitas: "",
   peruntukan: "",
   total_luas_lahan: "",
@@ -175,6 +177,16 @@ const pemeriksaanPerlengkapanInit = {
   pemeriksaan: [],
 };
 
+const keputusanInit = {
+  nomor_keputusan: "",
+  nomor_lampiran: "",
+  nomor_kesanggupan: "",
+  tanggal_kesanggupan: "",
+  nama_kadis: "",
+  nip_kadis: "",
+  keputusan: [],
+};
+
 export function UserProvider({ children }) {
   const [loading, toggleLoading] = useState(false);
 
@@ -221,6 +233,9 @@ export function UserProvider({ children }) {
 
   const [indexPemeriksaan, setIndexPemeriksaan] = useState(1);
   const [pemeriksaan, setPemeriksaan] = useReducer(reducer, pemeriksaanInit);
+
+  const [indexKeputusan, setIndexKeputusan] = useState(1);
+  const [keputusan, setKeputusan] = useReducer(reducer, keputusanInit);
 
   const [dataDokumen, setDataDokumen] = useState();
   const [uraian, setUraian] = useState("");
@@ -327,6 +342,11 @@ export function UserProvider({ children }) {
   const clearPemeriksaanPerlengkapan = () => {
     setIndexPemeriksaanPerlengkapan(1);
     setPemeriksaanPerlengkapan(pemeriksaanPerlengkapanInit);
+  };
+
+  const clearKeputusan = () => {
+    setIndexKeputusan(1);
+    setKepuasan(keputusanInit);
   };
 
   const getUser = () => {
@@ -436,6 +456,11 @@ export function UserProvider({ children }) {
         pemeriksaanPerlengkapan,
         setPemeriksaanPerlengkapan,
         clearPemeriksaanPerlengkapan,
+        keputusan,
+        setKeputusan,
+        indexKeputusan,
+        setIndexKeputusan,
+        clearKeputusan,
       }}
     >
       {children}

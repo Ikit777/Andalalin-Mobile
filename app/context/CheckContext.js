@@ -4,6 +4,7 @@ import Constants from "expo-constants";
 import { NetContext } from "./NetContext";
 import { UserContext } from "./UserContext";
 import { authRefreshToken } from "../api/auth";
+import { get } from "../utils/local-storage";
 
 export const CheckContext = createContext();
 
@@ -17,14 +18,10 @@ export function CheckProvider({ children }) {
   const [isUser, setIsUser] = useState(false);
 
   useEffect(() => {
-    checkServer();
-    check_user();
-    // checkVersion();
-
     const intervalId = setInterval(async () => {
       checkServer();
-      check_user();
       // checkVersion();
+      check_user();
     }, 5 * 60 * 1000);
 
     return () => clearInterval(intervalId);
@@ -33,37 +30,17 @@ export function CheckProvider({ children }) {
   useEffect(() => {
     if (net == true) {
       checkServer();
-      check_user();
       // checkVersion();
+      check_user();
     }
   }, [net]);
 
-  useEffect(() => {
-    if (isServerOk == false && isUpdate == true) {
-      setIsServerOk(true);
-    }
-  }, [isUpdate]);
-
-  useEffect(() => {
-    if (isUser == true && isUpdate == true) {
-      setIsUser(false);
-    }
-  }, [isUpdate]);
-
-  useEffect(() => {
-    if (isServerOk == false && isUser == true) {
-      setIsUser(false);
-    }
-  }, [isServerOk]);
-
   const checkServer = () => {
-    if (net == true) {
+    if (net == true && isUpdate == false) {
       setTimeout(() => {
         health((response) => {
           if (response == undefined) {
-            if (response.code != "ERR_NETWORk") {
-              setIsServerOk(false);
-            }
+            setIsServerOk(false);
           } else {
             switch (response.status) {
               case 200:
@@ -104,7 +81,9 @@ export function CheckProvider({ children }) {
   };
 
   const check_user = async () => {
-    if (context.getUser() != "user" && net == true) {
+    const value = await get("authState");
+
+    if (value && net == true && isServerOk == true && isUpdate == false) {
       userMe(context.getUser().access_token, (response) => {
         switch (response.status) {
           case 200:

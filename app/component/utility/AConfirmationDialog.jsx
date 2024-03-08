@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   StyleSheet,
   View,
@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import color from "../../constants/color";
 import AText from "../utility/AText";
+import { ModalContext } from "../../context/ModalContext";
 
 function AConfirmationDialog({
   visibleModal = false,
@@ -19,24 +20,25 @@ function AConfirmationDialog({
   btnOK,
   btnBATAL,
 }) {
-  const [visible, setVisible] = React.useState(visibleModal);
-  
+  const { modalState, handleOpenModal, handleCloseModal } =
+    useContext(ModalContext);
+
   React.useEffect(() => {
     toggleModal();
   }, [visibleModal]);
+
   const toggleModal = () => {
     if (visibleModal) {
-      setVisible(true);
-      
+      handleOpenModal("lowPriorityModal");
     } else {
-      setTimeout(() => setVisible(false), 200);
-      
+      setTimeout(() => handleCloseModal("lowPriorityModal"), 200);
     }
   };
+
   return (
     <Modal
       animationType="fade"
-      visible={visible}
+      visible={modalState.lowPriorityModal.visible}
       transparent={true}
       statusBarTranslucent
       deviceHeight={Dimensions.get("screen").height}

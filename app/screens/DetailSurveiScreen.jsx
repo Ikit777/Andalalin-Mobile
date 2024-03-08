@@ -133,8 +133,6 @@ function DetailSurveiScreen({ navigation, route }) {
             authRefreshToken(context, (response) => {
               if (response.status === 200) {
                 loadSurvei();
-              } else {
-                context.toggleLoading(false);
               }
             });
             break;
@@ -164,8 +162,6 @@ function DetailSurveiScreen({ navigation, route }) {
             authRefreshToken(context, (response) => {
               if (response.status === 200) {
                 loadPemasangan();
-              } else {
-                context.toggleLoading(false);
               }
             });
             break;

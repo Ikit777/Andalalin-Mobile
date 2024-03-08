@@ -2048,7 +2048,6 @@ function DetailUser({ permohonan, navigation, reload }) {
                 setUploadFile([]);
                 setUploadNamaFile(null);
                 setUploadNamaFile2(null);
-                context.toggleLoading(false);
               }
             });
             break;

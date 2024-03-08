@@ -980,3 +980,37 @@ export const andalalinPerbaruiLokasi = async (
   });
   andalalinRespone(response);
 };
+
+export const andalalinPembuatanSuratPermohonan = async (
+  accessToken,
+  data,
+  andalalinRespone
+) => {
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "application/json",
+  };
+  const body = JSON.stringify({
+    bangkitan: data.bangkitan,
+    pemohon: data.pemohon,
+    nama: data.nama,
+    jabatan: data.jabatan,
+    jenis: data.jenis,
+    proyek: data.proyek,
+    jalan: data.jalan,
+    kelurahan: data.kelurahan,
+    kecamatan: data.kecamatan,
+    kabupaten: data.kabupaten,
+    provinsi: data.provinsi,
+    status: data.status,
+    pengembang: data.pengembang,
+    konsultan: data.konsultan,
+  });
+  const response = await axiosInstance({
+    method: "post",
+    url: ENDPOINTS.ANDALALIN_PEMBUATAN_SURAT_PERMOHONAN,
+    headers: headers,
+    data: body,
+  });
+  andalalinRespone(response);
+};

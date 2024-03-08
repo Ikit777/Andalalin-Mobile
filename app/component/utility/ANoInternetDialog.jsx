@@ -3,7 +3,6 @@ import {
   StyleSheet,
   View,
   Modal,
-  Animated,
   TouchableOpacity,
   Dimensions,
 } from "react-native";
@@ -11,12 +10,13 @@ import color from "../../constants/color";
 import AText from "../utility/AText";
 import { UserContext } from "../../context/UserContext";
 import * as RootNavigation from "../../navigation/RootNavigator.js";
-import { CheckContext } from "../../context/CheckContext";
+import { ModalContext } from "../../context/ModalContext";
 
 function ANoInternetDialog({ visibleModal = false }) {
   const context = useContext(UserContext);
-  const check = useContext(CheckContext);
-  const [visible, setVisible] = React.useState(visibleModal);
+
+  const { modalState, handleOpenModal, handleCloseModal } =
+    useContext(ModalContext);
 
   React.useEffect(() => {
     toggleModal();
@@ -27,18 +27,12 @@ function ANoInternetDialog({ visibleModal = false }) {
       if (context.loading == true) {
         context.toggleLoading(false);
       }
-
-      check.setIsServerOk(true);
-
-      if (check.isUpdate == true) {
-        check.setIsUpdate(false);
-      }
-      setVisible(true);
+      handleOpenModal("superHighPriorityModal");
     }
   };
 
   const ok = () => {
-    setTimeout(() => setVisible(false), 200);
+    setTimeout(() => handleCloseModal("superHighPriorityModal"), 200);
 
     if (context.getUser() != "user") {
       RootNavigation.replace("Home");
@@ -56,7 +50,7 @@ function ANoInternetDialog({ visibleModal = false }) {
   return (
     <Modal
       animationType="fade"
-      visible={visible}
+      visible={modalState.superHighPriorityModal.visible}
       transparent={true}
       statusBarTranslucent
       deviceHeight={Dimensions.get("screen").height}

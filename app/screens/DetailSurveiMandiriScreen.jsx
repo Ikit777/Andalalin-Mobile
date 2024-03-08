@@ -120,8 +120,6 @@ function DetailSurveiMandiriScreen({ navigation, route }) {
             authRefreshToken(context, (response) => {
               if (response.status === 200) {
                 loadSurveiMandiri();
-              } else {
-                context.toggleLoading(false);
               }
             });
             break;
@@ -148,8 +146,6 @@ function DetailSurveiMandiriScreen({ navigation, route }) {
             authRefreshToken(context, (response) => {
               if (response.status === 200) {
                 terima();
-              } else {
-                context.toggleLoading(false);
               }
             });
             break;

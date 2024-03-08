@@ -14,6 +14,7 @@ import AProgressBar from "../component/utility/AProgressBar";
 import { Feather } from "@expo/vector-icons";
 import ATidakPilihan from "../component/utility/ATidakPilihan";
 import { andalalinChecklistKelengkapanAkhir } from "../api/andalalin";
+import { authRefreshToken } from "../api/auth";
 
 function CekKelengkapanAkhirScreen({ navigation }) {
   const context = useContext(UserContext);
@@ -153,8 +154,6 @@ function CekKelengkapanAkhirScreen({ navigation }) {
             authRefreshToken(context, (response) => {
               if (response.status === 200) {
                 check_kelengkapan_akhir();
-              } else {
-                context.toggleLoading(false);
               }
             });
             break;

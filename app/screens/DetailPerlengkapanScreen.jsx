@@ -113,8 +113,6 @@ function DetailPerlengkapanScreen({ navigation, route }) {
             authRefreshToken(context, (response) => {
               if (response.status === 200) {
                 GetPerlengkapan();
-              } else {
-                context.toggleLoading(false);
               }
             });
             break;

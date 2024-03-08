@@ -264,8 +264,6 @@ function PembuatanPenyusunDokumenScreen({ navigation }) {
             authRefreshToken(context, (response) => {
               if (response.status === 200) {
                 penyusun_dokumen();
-              } else {
-                context.toggleLoading(false);
               }
             });
             break;

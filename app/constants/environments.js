@@ -45,6 +45,8 @@ const environments = {
         url + "/v1/permohonan/pembuatan/keputusan",
       ANDALALIN_PEMBUATAN_PENYUSUN_DOKUMEN:
         url + "/v1/permohonan/pembuatan/penyusun",
+      ANDALALIN_PEMBUATAN_SURAT_PERMOHONAN:
+        url + "/v1/permohonan/pembuatan/surat",
       ANDALALIN_TAMBAH_PETUGAS: url + "/v1/permohonan/survey/petugas/pilih",
       ANDALALIN_TOLAK_PERMOHONAN: url + "/v1/permohonan/tolak",
       ANDALALIN_TUNDA_PERMOHONAN: url + "/v1/permohonan/tunda",

@@ -48,7 +48,6 @@ function Informasi({ navigation, onPress, kondisi }) {
       context.getUser().access_token,
       "Panduan " + bangkitan.toLowerCase(),
       (response) => {
-        console.log(response)
         switch (response.status) {
           case 200:
             (async () => {

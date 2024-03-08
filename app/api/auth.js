@@ -160,7 +160,8 @@ export const authRefreshToken = async (user, authRespone) => {
       push_token: user.getUser().push_token,
     };
     store("authState", newAuthState);
-  } else if (response.status === 424) {
+    user.setUser(newAuthState);
+  } else {
     user.setSession(true);
   }
   authRespone(response);

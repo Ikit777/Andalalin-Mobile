@@ -57,9 +57,6 @@ function Keterangan({ navigation, id, kondisi }) {
             authRefreshToken(context, (response) => {
               if (response.status === 200) {
                 simpan();
-              } else {
-                context.toggleLoading(false);
-                toggleKirimGagal();
               }
             });
             break;
@@ -98,8 +95,6 @@ function Keterangan({ navigation, id, kondisi }) {
             authRefreshToken(context, (response) => {
               if (response.status === 200) {
                 simpan_pemasangan();
-              } else {
-                context.toggleLoading(false);
               }
             });
             break;

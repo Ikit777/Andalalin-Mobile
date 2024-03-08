@@ -65,8 +65,6 @@ function NotifikasiScreen({ navigation }) {
           authRefreshToken(context, (response) => {
             if (response.status === 200) {
               loadNotif();
-            } else {
-              context.toggleLoading(false);
             }
           });
           break;
@@ -94,8 +92,6 @@ function NotifikasiScreen({ navigation }) {
           authRefreshToken(context, (response) => {
             if (response.status === 200) {
               clear();
-            } else {
-              context.toggleLoading(false);
             }
           });
           break;

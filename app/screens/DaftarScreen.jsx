@@ -158,8 +158,6 @@ function DaftarScreen({ navigation, route }) {
           authRefreshToken(context, (response) => {
             if (response.status === 200) {
               loadPermohonan();
-            } else {
-              context.toggleLoading(false);
             }
           });
           break;
@@ -190,8 +188,6 @@ function DaftarScreen({ navigation, route }) {
           authRefreshToken(context, (response) => {
             if (response.status === 200) {
               loadPermohonanFiltered();
-            } else {
-              context.toggleLoading(false);
             }
           });
           break;
@@ -218,8 +214,6 @@ function DaftarScreen({ navigation, route }) {
           authRefreshToken(context, (response) => {
             if (response.status === 200) {
               loadDaftarPermohonan();
-            } else {
-              context.toggleLoading(false);
             }
           });
           break;
@@ -246,8 +240,6 @@ function DaftarScreen({ navigation, route }) {
           authRefreshToken(context, (response) => {
             if (response.status === 200) {
               loadSurveiMandiri();
-            } else {
-              context.toggleLoading(false);
             }
           });
           break;
@@ -277,8 +269,6 @@ function DaftarScreen({ navigation, route }) {
             authRefreshToken(context, (response) => {
               if (response.status === 200) {
                 loadDaftarByTiketLevel2();
-              } else {
-                context.toggleLoading(false);
               }
             });
             break;
@@ -308,8 +298,6 @@ function DaftarScreen({ navigation, route }) {
             authRefreshToken(context, (response) => {
               if (response.status === 200) {
                 loadSurveiMandiriByPetugas();
-              } else {
-                context.toggleLoading(false);
               }
             });
             break;
@@ -339,8 +327,6 @@ function DaftarScreen({ navigation, route }) {
             authRefreshToken(context, (response) => {
               if (response.status === 200) {
                 loadDaftarPermohonanPemasangan();
-              } else {
-                context.toggleLoading(false);
               }
             });
             break;
@@ -368,8 +354,6 @@ function DaftarScreen({ navigation, route }) {
           authRefreshToken(context, (response) => {
             if (response.status === 200) {
               loadPermohonanByStatus();
-            } else {
-              context.toggleLoading(false);
             }
           });
           break;

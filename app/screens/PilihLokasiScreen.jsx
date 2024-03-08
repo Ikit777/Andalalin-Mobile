@@ -220,8 +220,6 @@ function PilihLokasiScreen({ navigation, route }) {
           authRefreshToken(context, (response) => {
             if (response.status === 200) {
               perbarui();
-            }else{
-              context.toggleLoading(false);
             }
           });
           break;

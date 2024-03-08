@@ -83,8 +83,6 @@ function DaftarPenggunaScreen({ navigation }) {
           authRefreshToken(context, (response) => {
             if (response.status === 200) {
               load_pengguna();
-            } else {
-              context.toggleLoading(false);
             }
           });
           break;
@@ -141,8 +139,6 @@ function DaftarPenggunaScreen({ navigation }) {
           authRefreshToken(context, (response) => {
             if (response.status === 200) {
               hapus();
-            } else {
-              context.toggleLoading(false);
             }
           });
           break;

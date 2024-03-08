@@ -112,8 +112,6 @@ function EditAkunScreen({ navigation }) {
           authRefreshToken(context, (response) => {
             if (response.status === 200) {
               edit();
-            } else {
-              context.toggleLoading(false);
             }
           });
           break;

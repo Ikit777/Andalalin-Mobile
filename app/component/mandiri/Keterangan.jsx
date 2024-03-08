@@ -59,8 +59,6 @@ function Keterangan({ navigation }) {
             authRefreshToken(context, (response) => {
               if (response.status === 200) {
                 simpan_mandiri();
-              } else {
-                context.toggleLoading(false);
               }
             });
             break;

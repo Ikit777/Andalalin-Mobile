@@ -146,8 +146,6 @@ function DetailScreen({ navigation, route }) {
             authRefreshToken(context, (response) => {
               if (response.status === 200) {
                 loadPermohonan();
-              } else {
-                context.toggleLoading(false);
               }
             });
             break;

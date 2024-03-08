@@ -97,8 +97,6 @@ function SurveiKepuasanScreen({ navigation }) {
           authRefreshToken(context, (response) => {
             if (response.status === 200) {
               loadKepuasan();
-            } else {
-              context.toggleLoading(false);
             }
           });
           break;
@@ -136,8 +134,6 @@ function SurveiKepuasanScreen({ navigation }) {
             authRefreshToken(context, (response) => {
               if (response.status === 200) {
                 loadKepuasanPeriode();
-              } else {
-                context.toggleLoading(false);
               }
             });
             break;

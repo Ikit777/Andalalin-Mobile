@@ -170,8 +170,6 @@ function TambahUserScreen({ navigation }) {
           authRefreshToken(context, (response) => {
             if (response.status === 200) {
               tambah_pengguna();
-            } else {
-              context.toggleLoading(false);
             }
           });
           break;

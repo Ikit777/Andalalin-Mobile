@@ -4656,8 +4656,6 @@ function DaftarProdukScreen({ navigation, route }) {
                 authRefreshToken(context, (response) => {
                   if (response.status === 200) {
                     tambah_data();
-                  } else {
-                    context.toggleLoading(false);
                   }
                 });
                 break;
@@ -4701,8 +4699,6 @@ function DaftarProdukScreen({ navigation, route }) {
                 authRefreshToken(context, (response) => {
                   if (response.status === 200) {
                     tambah_data();
-                  } else {
-                    context.toggleLoading(false);
                   }
                 });
                 break;
@@ -4756,8 +4752,6 @@ function DaftarProdukScreen({ navigation, route }) {
                 authRefreshToken(context, (response) => {
                   if (response.status === 200) {
                     tambah_data();
-                  } else {
-                    context.toggleLoading(false);
                   }
                 });
                 break;
@@ -4804,8 +4798,6 @@ function DaftarProdukScreen({ navigation, route }) {
                 authRefreshToken(context, (response) => {
                   if (response.status === 200) {
                     tambah_data();
-                  } else {
-                    context.toggleLoading(false);
                   }
                 });
                 break;
@@ -4850,8 +4842,6 @@ function DaftarProdukScreen({ navigation, route }) {
                 authRefreshToken(context, (response) => {
                   if (response.status === 200) {
                     tambah_data();
-                  } else {
-                    context.toggleLoading(false);
                   }
                 });
                 break;
@@ -4902,8 +4892,6 @@ function DaftarProdukScreen({ navigation, route }) {
                 authRefreshToken(context, (response) => {
                   if (response.status === 200) {
                     tambah_data();
-                  } else {
-                    context.toggleLoading(false);
                   }
                 });
                 break;
@@ -4957,8 +4945,6 @@ function DaftarProdukScreen({ navigation, route }) {
                 authRefreshToken(context, (response) => {
                   if (response.status === 200) {
                     tambah_data();
-                  } else {
-                    context.toggleLoading(false);
                   }
                 });
                 break;
@@ -5008,8 +4994,6 @@ function DaftarProdukScreen({ navigation, route }) {
                 authRefreshToken(context, (response) => {
                   if (response.status === 200) {
                     tambah_data();
-                  } else {
-                    context.toggleLoading(false);
                   }
                 });
                 break;
@@ -5061,8 +5045,6 @@ function DaftarProdukScreen({ navigation, route }) {
                     authRefreshToken(context, (response) => {
                       if (response.status === 200) {
                         tambah_data();
-                      } else {
-                        context.toggleLoading(false);
                       }
                     });
                     break;
@@ -5112,8 +5094,6 @@ function DaftarProdukScreen({ navigation, route }) {
                     authRefreshToken(context, (response) => {
                       if (response.status === 200) {
                         tambah_data();
-                      } else {
-                        context.toggleLoading(false);
                       }
                     });
                     break;
@@ -5163,8 +5143,6 @@ function DaftarProdukScreen({ navigation, route }) {
                     authRefreshToken(context, (response) => {
                       if (response.status === 200) {
                         tambah_data();
-                      } else {
-                        context.toggleLoading(false);
                       }
                     });
                     break;
@@ -5215,8 +5193,6 @@ function DaftarProdukScreen({ navigation, route }) {
                     authRefreshToken(context, (response) => {
                       if (response.status === 200) {
                         tambah_data();
-                      } else {
-                        context.toggleLoading(false);
                       }
                     });
                     break;
@@ -5264,8 +5240,6 @@ function DaftarProdukScreen({ navigation, route }) {
                 authRefreshToken(context, (response) => {
                   if (response.status === 200) {
                     tambah_data();
-                  } else {
-                    context.toggleLoading(false);
                   }
                 });
                 break;
@@ -5348,8 +5322,6 @@ function DaftarProdukScreen({ navigation, route }) {
                 authRefreshToken(context, (response) => {
                   if (response.status === 200) {
                     tambah_data();
-                  } else {
-                    context.toggleLoading(false);
                   }
                 });
                 break;
@@ -5407,8 +5379,6 @@ function DaftarProdukScreen({ navigation, route }) {
                 authRefreshToken(context, (response) => {
                   if (response.status === 200) {
                     tambah_data();
-                  } else {
-                    context.toggleLoading(false);
                   }
                 });
                 break;
@@ -5461,8 +5431,6 @@ function DaftarProdukScreen({ navigation, route }) {
                 authRefreshToken(context, (response) => {
                   if (response.status === 200) {
                     hapus_data();
-                  } else {
-                    context.toggleLoading(false);
                   }
                 });
                 break;
@@ -5502,8 +5470,6 @@ function DaftarProdukScreen({ navigation, route }) {
                 authRefreshToken(context, (response) => {
                   if (response.status === 200) {
                     hapus_data();
-                  } else {
-                    context.toggleLoading(false);
                   }
                 });
                 break;
@@ -5544,8 +5510,6 @@ function DaftarProdukScreen({ navigation, route }) {
                 authRefreshToken(context, (response) => {
                   if (response.status === 200) {
                     hapus_data();
-                  } else {
-                    context.toggleLoading(false);
                   }
                 });
                 break;
@@ -5585,8 +5549,6 @@ function DaftarProdukScreen({ navigation, route }) {
                 authRefreshToken(context, (response) => {
                   if (response.status === 200) {
                     hapus_data();
-                  } else {
-                    context.toggleLoading(false);
                   }
                 });
                 break;
@@ -5627,8 +5589,6 @@ function DaftarProdukScreen({ navigation, route }) {
                 authRefreshToken(context, (response) => {
                   if (response.status === 200) {
                     hapus_data();
-                  } else {
-                    context.toggleLoading(false);
                   }
                 });
                 break;
@@ -5670,8 +5630,6 @@ function DaftarProdukScreen({ navigation, route }) {
                 authRefreshToken(context, (response) => {
                   if (response.status === 200) {
                     hapus_data();
-                  } else {
-                    context.toggleLoading(false);
                   }
                 });
                 break;
@@ -5719,8 +5677,6 @@ function DaftarProdukScreen({ navigation, route }) {
                 authRefreshToken(context, (response) => {
                   if (response.status === 200) {
                     hapus_data();
-                  } else {
-                    context.toggleLoading(false);
                   }
                 });
                 break;
@@ -5768,8 +5724,6 @@ function DaftarProdukScreen({ navigation, route }) {
                 authRefreshToken(context, (response) => {
                   if (response.status === 200) {
                     hapus_data();
-                  } else {
-                    context.toggleLoading(false);
                   }
                 });
                 break;
@@ -5962,8 +5916,6 @@ function DaftarProdukScreen({ navigation, route }) {
                 authRefreshToken(context, (response) => {
                   if (response.status === 200) {
                     hapus_data();
-                  } else {
-                    context.toggleLoading(false);
                   }
                 });
                 break;
@@ -6004,8 +5956,6 @@ function DaftarProdukScreen({ navigation, route }) {
                 authRefreshToken(context, (response) => {
                   if (response.status === 200) {
                     hapus_data();
-                  } else {
-                    context.toggleLoading(false);
                   }
                 });
                 break;
@@ -6044,8 +5994,6 @@ function DaftarProdukScreen({ navigation, route }) {
                 authRefreshToken(context, (response) => {
                   if (response.status === 200) {
                     hapus_data();
-                  } else {
-                    context.toggleLoading(false);
                   }
                 });
                 break;
@@ -6089,8 +6037,6 @@ function DaftarProdukScreen({ navigation, route }) {
                 authRefreshToken(context, (response) => {
                   if (response.status === 200) {
                     edit_data();
-                  } else {
-                    context.toggleLoading(false);
                   }
                 });
                 break;
@@ -6130,8 +6076,6 @@ function DaftarProdukScreen({ navigation, route }) {
                 authRefreshToken(context, (response) => {
                   if (response.status === 200) {
                     edit_data();
-                  } else {
-                    context.toggleLoading(false);
                   }
                 });
                 break;
@@ -6178,8 +6122,6 @@ function DaftarProdukScreen({ navigation, route }) {
                 authRefreshToken(context, (response) => {
                   if (response.status === 200) {
                     edit_data();
-                  } else {
-                    context.toggleLoading(false);
                   }
                 });
                 break;
@@ -6222,8 +6164,6 @@ function DaftarProdukScreen({ navigation, route }) {
                 authRefreshToken(context, (response) => {
                   if (response.status === 200) {
                     edit_data();
-                  } else {
-                    context.toggleLoading(false);
                   }
                 });
                 break;
@@ -6264,8 +6204,6 @@ function DaftarProdukScreen({ navigation, route }) {
                 authRefreshToken(context, (response) => {
                   if (response.status === 200) {
                     edit_data();
-                  } else {
-                    context.toggleLoading(false);
                   }
                 });
                 break;
@@ -6310,8 +6248,6 @@ function DaftarProdukScreen({ navigation, route }) {
                 authRefreshToken(context, (response) => {
                   if (response.status === 200) {
                     edit_data();
-                  } else {
-                    context.toggleLoading(false);
                   }
                 });
                 break;
@@ -6358,8 +6294,6 @@ function DaftarProdukScreen({ navigation, route }) {
                 authRefreshToken(context, (response) => {
                   if (response.status === 200) {
                     tambah_data();
-                  } else {
-                    context.toggleLoading(false);
                   }
                 });
                 break;
@@ -6404,8 +6338,6 @@ function DaftarProdukScreen({ navigation, route }) {
                 authRefreshToken(context, (response) => {
                   if (response.status === 200) {
                     tambah_data();
-                  } else {
-                    context.toggleLoading(false);
                   }
                 });
                 break;
@@ -6618,8 +6550,6 @@ function DaftarProdukScreen({ navigation, route }) {
                 authRefreshToken(context, (response) => {
                   if (response.status === 200) {
                     edit_data();
-                  } else {
-                    context.toggleLoading(false);
                   }
                 });
                 break;
@@ -6686,8 +6616,6 @@ function DaftarProdukScreen({ navigation, route }) {
                 authRefreshToken(context, (response) => {
                   if (response.status === 200) {
                     edit_data();
-                  } else {
-                    context.toggleLoading(false);
                   }
                 });
                 break;
@@ -6745,8 +6673,6 @@ function DaftarProdukScreen({ navigation, route }) {
                 authRefreshToken(context, (response) => {
                   if (response.status === 200) {
                     tambah_data();
-                  } else {
-                    context.toggleLoading(false);
                   }
                 });
                 break;

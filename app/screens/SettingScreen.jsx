@@ -77,8 +77,6 @@ function SettingScreen({ navigation }) {
           authRefreshToken(context, (response) => {
             if (response.status === 200) {
               logout();
-            } else {
-              context.toggleLoading(false);
             }
           });
           break;
@@ -129,8 +127,6 @@ function SettingScreen({ navigation }) {
           authRefreshToken(context, (response) => {
             if (response.status === 200) {
               change();
-            } else {
-              context.toggleLoading(false);
             }
           });
           break;

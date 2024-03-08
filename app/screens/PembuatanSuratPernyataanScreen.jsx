@@ -67,8 +67,6 @@ function PembuatanSuratPernyataanScreen({ navigation }) {
             authRefreshToken(context, (response) => {
               if (response.status === 200) {
                 pembuatan();
-              } else {
-                context.toggleLoading(false);
               }
             });
             break;

@@ -86,6 +86,11 @@ const Navigator = ({
       {/* Auth Screen */}
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen
+        name="Back Login"
+        component={LoginScreen}
+        options={{ animation: "slide_from_left" }}
+      />
+      <Stack.Screen
         name="Register"
         component={RegisterScreen}
         initialParams={{ kondisi }}

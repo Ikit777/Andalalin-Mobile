@@ -42,8 +42,6 @@ export default function SaranKritik({ id, navigation }) {
             authRefreshToken(context, (response) => {
               if (response.status === 200) {
                 simpan();
-              } else {
-                context.toggleLoading(false);
               }
             });
             break;

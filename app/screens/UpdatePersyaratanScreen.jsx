@@ -141,8 +141,6 @@ function UpdatePersyaratanScreen({ navigation, route }) {
             authRefreshToken(context, (response) => {
               if (response.status === 200) {
                 simpan();
-              } else {
-                context.toggleLoading(false);
               }
             });
             break;

@@ -105,8 +105,6 @@ function PemeriksaanPerlengkapanScreen({ navigation }) {
             authRefreshToken(context, (response) => {
               if (response.status === 200) {
                 pengecekan();
-              } else {
-                context.toggleLoading(false);
               }
             });
             break;
