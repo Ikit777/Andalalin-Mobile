@@ -1,11 +1,5 @@
 import React, { useEffect, useContext, useState } from "react";
-import {
-  StyleSheet,
-  View,
-  BackHandler,
-  ScrollView,
-  Pressable,
-} from "react-native";
+import { StyleSheet, View, BackHandler, Pressable } from "react-native";
 import AText from "../component/utility/AText";
 import color from "../constants/color";
 import AScreen from "../component/utility/AScreen";
@@ -14,14 +8,12 @@ import { useStateToggler } from "../hooks/useUtility";
 import { UserContext } from "../context/UserContext";
 import ADialog from "../component/utility/ADialog";
 import AConfirmationDialog from "../component/utility/AConfirmationDialog";
-import ATextInput from "../component/utility/ATextInput";
-import ATextInputIcon from "../component/utility/ATextInputIcon";
-import AButton from "../component/utility/AButton";
 import { authRefreshToken } from "../api/auth";
 import { andalalinPembuatanSuratKeputusan } from "../api/andalalin";
-import ADatePicker from "../component/utility/ADatePicker";
 import KeputusanNavigator from "../component/keputusan/KeputusanNavigator";
 import { Feather } from "@expo/vector-icons";
+import { useFocusEffect } from "@react-navigation/native";
+import AProgressBar from "../component/utility/AProgressBar";
 
 function PembuatanSuratKeputusanScreen({ navigation }) {
   const [confirm, toggleComfirm] = useStateToggler();
@@ -50,7 +42,7 @@ function PembuatanSuratKeputusanScreen({ navigation }) {
     {
       kewajiban:
         context.detailPermohonan.nama_perusahaan +
-        " selaku Pembangun wajib melaksanakan penganganan dampak lalu lintas, yaitu:",
+        " selaku Pembangun wajib melaksanakan penanganan dampak lalu lintas, yaitu:",
       data_kewajiban: [
         {
           poin: "Tahap Konstruksi",
@@ -68,7 +60,7 @@ function PembuatanSuratKeputusanScreen({ navigation }) {
               data_subpoin: [
                 "Meningkatkan struktur jalan masuk kawasan pembangunan untuk mendukung mobilitas kendaraan material dan peralatan.",
                 "Pengangkutan material bangunan menghindari jam-jam sibuk dan pengangkutan dengan dimensi besar atau volume besar di lakukan di malam hari, agar tidak mengganggu arus lalu lintas pada rute yang dilalui.",
-                "Menyiram roda kendaraan proyek pada saat keluar lokasi proyek dengan sistem <i>water trap.</i>",
+                "Menyiram roda kendaraan proyek pada saat keluar lokasi proyek dengan sistem water trap.",
                 "Membersihkan jalan di sekitar lokasi proyek jika terdapat ceceran tanah/material.",
                 "Proses pengangkutan diharuskan tidak mengganggu lingkungan, kendaraan wajib dengan penutup yang memadai.",
                 "Menggunakan kendaraan angkutan barang (pengangkut material dan peralatan konstruksi) sesuai dengan daya dukung jalan terendah pada jalur pengangkutan.",
@@ -89,7 +81,7 @@ function PembuatanSuratKeputusanScreen({ navigation }) {
               subpoin:
                 "Menyediakan/memasangkan fasilitas perlengkapan jalan pada area pembangunan, meliputi:",
               data_subpoin: [
-                "Lampi peringatan (<i>warning light</i>) untuk memberi peringatan kepada pengguna jalan adanya kegiatan konstruksi.",
+                "Lampi peringatan (warning light) untuk memberi peringatan kepada pengguna jalan adanya kegiatan konstruksi.",
                 "Rambu lalu lintas sementara, meliputi: rambu peringatan hati-hati dengan papan tambahan &quot;ada pekerjaan konstruksi&quot; dan &quot;keluar masuk kendaraan material&quot; serta peringatan pekerjaan di jalan.",
                 "Lampu penerangan jalan, khusus nya pada waktu melakukan aktivitas pada malam hari.",
                 "Informasi layanan pengaduan yang di pasang di depan kawasan pembangunan, untuk segara ditindaklanjuti oleh Pembangun/Kontraktor.",
@@ -102,7 +94,7 @@ function PembuatanSuratKeputusanScreen({ navigation }) {
             },
             {
               subpoin:
-                "Memastikan bahwa kendaraan barang pengangkut bahan material tidak <i>Over Dimension Over Load</i> (ODOL)",
+                "Memastikan bahwa kendaraan barang pengangkut bahan material tidak Over Dimension Over Load (ODOL)",
               data_subpoin: [],
             },
             {
@@ -120,7 +112,11 @@ function PembuatanSuratKeputusanScreen({ navigation }) {
         {
           poin: "Tahap Operasional",
           data_poin: [
-            "Poin-poin kewajiban pengembang tahap operasional sesuai dengan ketentuan jenis rencana pembangunan dapat dilihat pada <b>Lampiran</b> dibawah ini.",
+            {
+              subpoin:
+                "Poin-poin kewajiban pengembang tahap operasional sesuai dengan ketentuan jenis rencana pembangunan dapat dilihat pada Lampiran dibawah ini.",
+              data_subpoin: [],
+            },
           ],
         },
       ],
@@ -157,6 +153,16 @@ function PembuatanSuratKeputusanScreen({ navigation }) {
     setItem(lampiran_keputusan.length + 1);
 
     context.setKeputusan({
+      nomor_keputusan: "",
+      nomor_lampiran: "",
+      nomor_kesanggupan: "",
+      tanggal_kesanggupan: "",
+      nama_kadis: "",
+      nip_kadis: "",
+      nomor_ba: "",
+      tanggal_ba: "",
+      nomor_bapl: "",
+      tanggal_bapl: "",
       keputusan: lampiran_keputusan,
     });
 
@@ -187,6 +193,35 @@ function PembuatanSuratKeputusanScreen({ navigation }) {
         index: newIndex,
       });
     }
+  };
+
+  const simpan = () => {
+    context.toggleLoading(true);
+    andalalinPembuatanSuratKeputusan(
+      context.getUser().access_token,
+      context.detailPermohonan.id_andalalin,
+      context.keputusan,
+      (response) => {
+        switch (response.status) {
+          case 200:
+            navigation.replace("Detail", {
+              id: context.detailPermohonan.id_andalalin,
+            });
+            break;
+          case 424:
+            authRefreshToken(context, (response) => {
+              if (response.status === 200) {
+                simpan();
+              }
+            });
+            break;
+          default:
+            context.toggleLoading(false);
+            toggleGagal();
+            break;
+        }
+      }
+    );
   };
 
   return (
@@ -243,6 +278,39 @@ function PembuatanSuratKeputusanScreen({ navigation }) {
         }}
         onPress={() => {
           switch (context.indexKeputusan) {
+            case 1:
+              if (
+                context.detailPermohonan.kategori_bangkitan ==
+                "Bangkitan tinggi"
+              ) {
+                if (
+                  context.keputusan.nomor_keputusan != "" &&
+                  context.keputusan.nomor_lampiran != "" &&
+                  context.keputusan.nomor_kesanggupan != "" &&
+                  context.keputusan.tanggal_kesanggupan != "" &&
+                  context.keputusan.nama_kadis != "" &&
+                  context.keputusan.nip_kadis != "" &&
+                  nomor_ba != "" &&
+                  tanggal_ba != "" &&
+                  nomor_bapl != "" &&
+                  tanggal_bapl != ""
+                ) {
+                  onGoToNext();
+                }
+              } else {
+                if (
+                  context.keputusan.nomor_keputusan != "" &&
+                  context.keputusan.nomor_lampiran != "" &&
+                  context.keputusan.nomor_kesanggupan != "" &&
+                  context.keputusan.tanggal_kesanggupan != "" &&
+                  context.keputusan.nama_kadis != "" &&
+                  context.keputusan.nip_kadis != ""
+                ) {
+                  onGoToNext();
+                }
+              }
+
+              break;
             case item:
               toggleKonfirmasi();
               break;
@@ -289,6 +357,7 @@ function PembuatanSuratKeputusanScreen({ navigation }) {
         }}
         onPressOKButton={() => {
           toggleKonfirmasi();
+          simpan();
         }}
       />
 
@@ -309,7 +378,7 @@ const styles = StyleSheet.create({
   header: {},
   content: {
     paddingHorizontal: 16,
-    paddingBottom: 16,
+    flex: 1,
   },
 });
 

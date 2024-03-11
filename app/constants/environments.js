@@ -60,6 +60,8 @@ const environments = {
       ANDALALIN_GET_STATUS: url + "/v1/permohonan/status",
       ANDALALIN_SIMPAN_PEMERIKSAAN:
         url + "/v1/permohonan/pemeriksaan/keputusan",
+      ANDALALIN_KESESUAIAN_SUBSTANSI_TEKNIS:
+        url + "/v1/permohonan/pemeriksaan/substansi",
       ANDALALIN_CHECKLIST_KELENGKAPAN_AKHIR:
         url + "/v1/permohonan/pemeriksaan/kelengkapan",
       ANDALALIN_GET_PERLENGKAPAN: url + "/v1/permohonan/perlalin/perlengkapan",
@@ -71,7 +73,7 @@ const environments = {
       ANDALALIN_PENGECEKAN_PERLENGKAPAN:
         url + "/v1/permohonan/pengecekan/perlengkapan",
       ANDALALIN_TUNDA_PEMASANGAN: url + "/v1/permohonan/pemasangan/tunda",
-      ANDALALIN_BATAL_PERMOHONAN: url + "/v1/permohonan/pemasangan/batal",
+      ANDALALIN_BATAL_PERMOHONAN: url + "/v1/permohonan/batal",
       ANDALALIN_LANJUTKAN_PEMASANGAN:
         url + "/v1/permohonan/pemasangan/lanjutkan",
 

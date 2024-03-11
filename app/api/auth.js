@@ -1,5 +1,5 @@
 import environments from "../constants/environments";
-import { store } from "../utils/local-storage";
+import { get, store } from "../utils/local-storage";
 import axiosInstance from "../utils/axiosInstance";
 
 const { ENDPOINTS } = environments;
@@ -133,8 +133,9 @@ export const authLogout = async (accessToken, authRespone) => {
 };
 
 export const authRefreshToken = async (user, authRespone) => {
+  const value = await get("authState");
   const headers = {
-    Authorization: "Bearer " + user.getUser().refresh_token,
+    Authorization: "Bearer " + value.refresh_token,
     "Content-Type": "application/json",
   };
   const body = JSON.stringify({
@@ -146,19 +147,18 @@ export const authRefreshToken = async (user, authRespone) => {
     headers: headers,
     data: body,
   });
-  console.log(response.status)
   if (response.status === 200) {
     const newAuthState = {
       access_token: response.data.data.access_token,
       refresh_token: response.data.data.refresh_token,
-      id: user.getUser().id,
-      nama: user.getUser().nama,
-      email: user.getUser().email,
-      nomor: user.getUser().nomor,
-      role: user.getUser().role,
-      photo: user.getUser().photo,
-      nip: user.getUser().nip,
-      push_token: user.getUser().push_token,
+      id: value.id,
+      nama: value.nama,
+      email: value.email,
+      nomor: value.nomor,
+      role: value.role,
+      photo: value.photo,
+      nip: value.nip,
+      push_token: value.push_token,
     };
     store("authState", newAuthState);
     user.setUser(newAuthState);

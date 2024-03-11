@@ -588,6 +588,7 @@ function HomeScreen({ navigation }) {
           <View style={{ flexDirection: "row" }}>
             {context.getUser().role == "User" ||
             context.getUser().role == "Operator" ||
+            context.getUser().role == "Admin" ||
             context.getUser().role == "Petugas" ? (
               <TouchableOpacity
                 style={{ padding: 8, flexDirection: "row" }}

@@ -47,6 +47,7 @@ import {
   DetailSurveiMandiriScreen,
   PemeriksaanPerlengkapanScreen,
   PdfScreen,
+  PemeriksaanKesesuaianSubstansiScreen,
 } from "../screens";
 
 const Stack = createNativeStackNavigator();
@@ -242,6 +243,11 @@ const Navigator = ({
       <Stack.Screen name="Pemeriksaan perlengkapan" component={PemeriksaanPerlengkapanScreen} />
 
       <Stack.Screen name="Pdf view" component={PdfScreen} initialParams={{ dokumen }}/>
+
+      <Stack.Screen
+        name="Pemeriksaan substansi"
+        component={PemeriksaanKesesuaianSubstansiScreen}
+      />
     </Stack.Navigator>
   );
 };

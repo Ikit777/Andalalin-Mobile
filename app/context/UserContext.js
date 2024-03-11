@@ -89,7 +89,7 @@ const andalalinInit = {
   jabatan_pimpinan: "",
   jenis_kelamin_pimpinan: "",
 
-  
+
   aktivitas: "",
   peruntukan: "",
   total_luas_lahan: "",
@@ -187,6 +187,11 @@ const keputusanInit = {
   keputusan: [],
 };
 
+const substansiInit = {
+  administrasi: [],
+  substansi: [],
+};
+
 export function UserProvider({ children }) {
   const [loading, toggleLoading] = useState(false);
 
@@ -233,6 +238,9 @@ export function UserProvider({ children }) {
 
   const [indexPemeriksaan, setIndexPemeriksaan] = useState(1);
   const [pemeriksaan, setPemeriksaan] = useReducer(reducer, pemeriksaanInit);
+
+  const [indexSubstansi, setIndexSubstansi] = useState(1);
+  const [substansi, setSubstansi] = useReducer(reducer, substansiInit);
 
   const [indexKeputusan, setIndexKeputusan] = useState(1);
   const [keputusan, setKeputusan] = useReducer(reducer, keputusanInit);
@@ -337,6 +345,11 @@ export function UserProvider({ children }) {
   const clearPemeriksaan = () => {
     setIndexPemeriksaan(1);
     setPemeriksaan(pemeriksaanInit);
+  };
+
+  const clearSubstansi = () => {
+    setIndexSubstansi(1);
+    setSubstansi(substansiInit);
   };
 
   const clearPemeriksaanPerlengkapan = () => {
@@ -461,6 +474,11 @@ export function UserProvider({ children }) {
         indexKeputusan,
         setIndexKeputusan,
         clearKeputusan,
+        substansi,
+        setSubstansi,
+        indexSubstansi,
+        setIndexSubstansi,
+        clearSubstansi,
       }}
     >
       {children}

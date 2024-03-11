@@ -102,6 +102,7 @@ function Pemohon({ onPress }) {
           kelurahan_pemohon: kelurahan,
           alamat_pemohon: alamat,
           nomer_pemohon: nomerSeluler,
+          jabatan_pemohon: "-",
         });
 
         dispatch({

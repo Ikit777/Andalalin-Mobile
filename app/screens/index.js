@@ -44,3 +44,4 @@ export { default as SurveiMandiriScreen } from "./SurveiMandiriScreen";
 export { default as DetailSurveiMandiriScreen } from "./DetailSurveiMandiriScreen";
 export { default as PemeriksaanPerlengkapanScreen } from "./PemeriksaanPerlengkapanScreen";
 export { default as PdfScreen } from "./PdfScreen";
+export { default as PemeriksaanKesesuaianSubstansiScreen } from "./PemeriksaanKesesuaianSubstansiScreen";

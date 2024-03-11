@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import {
   StyleSheet,
   View,
@@ -32,7 +32,7 @@ function AConfirmationDialog({
       setTimeout(() => setVisible(false), 200);
     }
   };
-
+  
   return (
     <Modal
       animationType="fade"

@@ -84,14 +84,13 @@ export function CheckProvider({ children }) {
     const value = await get("authState");
 
     if (value && net == true && isServerOk == true && isUpdate == false) {
-      userMe(context.getUser().access_token, (response) => {
-        console.log("Cek " + response.status);
+      userMe(value.access_token, (response) => {
         switch (response.status) {
           case 200:
             (async () => {
               if (isServerOk != false && isUpdate != true) {
                 const result = await response.data;
-                if (context.getUser().push_token != result.data.push_token) {
+                if (value.push_token != result.data.push_token) {
                   setIsUser(true);
                 } else {
                   setIsUser(false);

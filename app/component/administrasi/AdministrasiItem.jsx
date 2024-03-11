@@ -146,6 +146,37 @@ export default function AdministrasiItem({ navigation, route }) {
               }}
             />
 
+            <View
+              style={{
+                flexDirection: "row",
+                paddingTop: 32,
+                paddingBottom: 32,
+                alignSelf: "center",
+              }}
+            >
+              <AText color={color.neutral.neutral500} size={14} weight="normal">
+                Tinjau detail permohonan!
+              </AText>
+
+              <TouchableOpacity
+                style={{ flexDirection: "row", paddingLeft: 4 }}
+                onPress={() => {
+                  navigation.push("Lanjutan", {
+                    permohonan: context.detailPermohonan,
+                    kondisi: "Tinjau",
+                  });
+                }}
+              >
+                <AText
+                  size={14}
+                  color={color.neutral.neutral700}
+                  weight="semibold"
+                >
+                  Tinjau
+                </AText>
+              </TouchableOpacity>
+            </View>
+
             <ADatePicker
               visibleModal={dateModal}
               onPressOKButton={() => {

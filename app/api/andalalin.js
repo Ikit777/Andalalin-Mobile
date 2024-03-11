@@ -111,18 +111,24 @@ export const andalalinGetById = async (id, accessToken, andalalinRespone) => {
   andalalinRespone(response);
 };
 
-export const andalalinGetperlengkapan = async (id, id_perlengkapan, accessToken, andalalinRespone) => {
+export const andalalinGetperlengkapan = async (
+  id,
+  id_perlengkapan,
+  accessToken,
+  andalalinRespone
+) => {
   const headers = {
     Authorization: "Bearer " + accessToken,
     "Content-Type": "application/json",
   };
   const response = await axiosInstance({
     method: "get",
-    url: ENDPOINTS.ANDALALIN_GET_PERLENGKAPAN + "/" + id + "/" + id_perlengkapan,
+    url:
+      ENDPOINTS.ANDALALIN_GET_PERLENGKAPAN + "/" + id + "/" + id_perlengkapan,
     headers: headers,
   });
   andalalinRespone(response);
-}
+};
 
 export const andalalinGetDokumen = async (
   id,
@@ -284,12 +290,13 @@ export const andalalinPembuatanSuratKeputusan = async (
     "Content-Type": "application/json",
   };
   const body = JSON.stringify({
-    nomor_keputusan: data.keputusan,
-    nomor_lampiran: data.lampiran,
-    nomor_kesanggupan: data.kesanggupan,
-    tanggal_kesanggupan: data.tanggal,
-    nama_kadis: data.nama,
-    nip_kadis: data.nip,
+    nomor_keputusan: data.nomor_keputusan,
+    nomor_lampiran: data.nomor_lampiran,
+    nomor_kesanggupan: data.nomor_kesanggupan,
+    tanggal_kesanggupan: data.tanggal_kesanggupan,
+    nama_kadis: data.nama_kadis,
+    nip_kadis: data.nip_kadis,
+    data: data.keputusan,
   });
   const response = await axiosInstance({
     method: "post",
@@ -437,14 +444,24 @@ export const andalalinSurveiLapangan = async (
   andalalinRespone(response);
 };
 
-export const andalalinGetSurvei = async (accessToken, id, id_perlengkapan, andalalinRespone) => {
+export const andalalinGetSurvei = async (
+  accessToken,
+  id,
+  id_perlengkapan,
+  andalalinRespone
+) => {
   const headers = {
     Authorization: "Bearer " + accessToken,
     "Content-Type": "application/json",
   };
   const response = await axiosInstance({
     method: "get",
-    url: ENDPOINTS.ANDALALIN_GET_SURVEI_LAPANGAN + "/" + id + "/" + id_perlengkapan,
+    url:
+      ENDPOINTS.ANDALALIN_GET_SURVEI_LAPANGAN +
+      "/" +
+      id +
+      "/" +
+      id_perlengkapan,
     headers: headers,
   });
   andalalinRespone(response);
@@ -1009,6 +1026,30 @@ export const andalalinPembuatanSuratPermohonan = async (
   const response = await axiosInstance({
     method: "post",
     url: ENDPOINTS.ANDALALIN_PEMBUATAN_SURAT_PERMOHONAN,
+    headers: headers,
+    data: body,
+  });
+  andalalinRespone(response);
+};
+
+export const andalalinCekKesesuaianSubstansiTeknis = async (
+  accessToken,
+  id,
+  administrasi,
+  data,
+  andalalinRespone
+) => {
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "application/json",
+  };
+  const body = JSON.stringify({
+    administrasi: administrasi,
+    pemeriksaan: data,
+  });
+  const response = await axiosInstance({
+    method: "post",
+    url: ENDPOINTS.ANDALALIN_KESESUAIAN_SUBSTANSI_TEKNIS + "/" + id,
     headers: headers,
     data: body,
   });

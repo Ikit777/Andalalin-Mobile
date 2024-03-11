@@ -10,13 +10,10 @@ import color from "../../constants/color";
 import AText from "../utility/AText";
 import { UserContext } from "../../context/UserContext";
 import * as RootNavigation from "../../navigation/RootNavigator.js";
-import { ModalContext } from "../../context/ModalContext";
 
 function ANoInternetDialog({ visibleModal = false }) {
   const context = useContext(UserContext);
-
-  const { modalState, handleOpenModal, handleCloseModal } =
-    useContext(ModalContext);
+  const [visible, setVisible] = React.useState(visibleModal);
 
   React.useEffect(() => {
     toggleModal();
@@ -27,16 +24,16 @@ function ANoInternetDialog({ visibleModal = false }) {
       if (context.loading == true) {
         context.toggleLoading(false);
       }
-      handleOpenModal("NoInternetModal");
+      setVisible(true);
     }
   };
 
   const ok = () => {
-    setTimeout(() => handleCloseModal("NoInternetModal"), 200);
+    setTimeout(() => setVisible(false), 200);
 
-    if (context.getUser() != "user") {
-      RootNavigation.replace("Home");
-    }
+    // if (context.getUser() != "user") {
+    //   RootNavigation.replace("Home");
+    // }
   };
 
   const height = () => {
@@ -50,7 +47,7 @@ function ANoInternetDialog({ visibleModal = false }) {
   return (
     <Modal
       animationType="fade"
-      visible={modalState.NoInternetModal.visible}
+      visible={visible}
       transparent={true}
       statusBarTranslucent
       deviceHeight={Dimensions.get("screen").height}

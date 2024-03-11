@@ -386,6 +386,27 @@ function LanjutanScreen({ navigation, route }) {
             </View>
           </ADetailView>
 
+          {permohonan.pertimbangan_pembatalan != "" &&
+        permohonan.pertimbangan_pembatalan != null ? (
+          <ADetailView
+            style={{
+              marginTop: 20,
+            }}
+            title={"Pertimbangan pembatalan permohonan"}
+          >
+            <AText
+              style={{ padding: 16 }}
+              size={12}
+              color={color.neutral.neutral900}
+              weight="normal"
+            >
+              {permohonan.pertimbangan_pembatalan}
+            </AText>
+          </ADetailView>
+        ) : (
+          ""
+        )}
+
           {permohonan.pertimbangan_penolakan != "" &&
           permohonan.pertimbangan_penolakan != null ? (
             <ADetailView
@@ -1603,8 +1624,7 @@ function LanjutanScreen({ navigation, route }) {
 
           {permohonan.jenis_andalalin ==
             "Dokumen analisis dampak lalu lintas" &&
-          permohonan.jabatan_pemohon != "" &&
-          permohonan.jabatan_pemohon != null ? (
+          permohonan.kategori_bangkitan == "Non-perorangan" ? (
             <View>
               <View style={styles.separator} />
               <View
