@@ -77,6 +77,20 @@ function Kegiatan({ onPress }) {
     }, [])
   );
 
+  useEffect(() => {
+    save.current = {
+      ...andalalin,
+      aktivitas: kegiatan,
+      peruntukan: untuk,
+      kriteria_khusus: data.Kriteria,
+      total_luas_lahan: total,
+      nilai_kriteria: luas,
+      nomer_skrk: nomer,
+      tanggal_skrk: tanggal,
+      catatan: catatanTambahan,
+    };
+  }, [kegiatan, untuk, total, luas, nomer, tanggal, catatanTambahan]);
+
   const showSnackbar = () => {
     setSnackbarVisible();
     setTimeout(() => {
@@ -179,11 +193,6 @@ function Kegiatan({ onPress }) {
         tanggal != "" &&
         total != ""
       ) {
-        kegiatanError ? toggleKegiatanError() : "";
-        peruntukanError ? togglePeruntukanError() : "";
-        nomerError ? toggleNomerError() : "";
-        tanggalError ? toggleTanggalError() : "";
-        totalError ? toggleTotalError() : "";
         formError ? toggleFormError() : "";
         onPress();
       } else {
@@ -203,12 +212,6 @@ function Kegiatan({ onPress }) {
         tanggal != "" &&
         total != ""
       ) {
-        kegiatanError ? toggleKegiatanError() : "";
-        peruntukanError ? togglePeruntukanError() : "";
-        luasError ? toggleLuasError() : "";
-        nomerError ? toggleNomerError() : "";
-        tanggalError ? toggleTanggalError() : "";
-        totalError ? toggleTotalError() : "";
         formError ? toggleFormError() : "";
         onPress();
       } else {
@@ -248,18 +251,6 @@ function Kegiatan({ onPress }) {
   }, [tanggal]);
 
   const clear_error = () => {
-    save.current = {
-      ...andalalin,
-      aktivitas: kegiatan,
-      peruntukan: untuk,
-      kriteria_khusus: data.Kriteria,
-      total_luas_lahan: total,
-      nilai_kriteria: luas,
-      nomer_skrk: nomer,
-      tanggal_skrk: tanggal,
-      catatan: catatanTambahan,
-    };
-
     if (data.Kriteria == "" && data.Kriteria == null) {
       kegiatan != "" ? (kegiatanError ? toggleKegiatanError() : "") : "";
       untuk != "" ? (peruntukanError ? togglePeruntukanError() : "") : "";

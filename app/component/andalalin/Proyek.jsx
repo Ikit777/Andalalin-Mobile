@@ -65,6 +65,26 @@ function Proyek({ onPress, navigation }) {
     }, [])
   );
 
+  useEffect(() => {
+    data.current = {
+      ...andalalin,
+      nama_proyek: namaProyek,
+      jenis_proyek: jenisProyek,
+      wilayah_administratif_proyek: wilayah,
+      alamat_proyek: alamat,
+      provinsi_proyek: provinsi,
+      kabupaten_proyek: kabupaten,
+      kecamatan_proyek: kecamatan,
+      kelurahan_proyek: kelurahan,
+      nama_jalan: jalan,
+      kode: kodeJalan,
+      lokasi_bangunan: lokasi,
+      lat_bangunan: lat,
+      long_bangunan: long,
+    };
+
+  }, [namaProyek, jenisProyek, wilayah, alamat, jalan, lokasi]);
+
   let proyek = dataMaster.jenis_proyek.map((item) => {
     return { value: item };
   });
@@ -124,9 +144,7 @@ function Proyek({ onPress, navigation }) {
       lokasi != "" &&
       jalan != ""
     ) {
-      alamatError ? toggleAlamatError() : "";
-      lokasiError ? toggleLokasiError() : "";
-      formError ? toggleFormError() : "";
+      clear_error();
       onPress();
     } else {
       namaProyek == "" ? (namaProyekError ? "" : toggleNamaProyekError()) : "";
@@ -144,23 +162,6 @@ function Proyek({ onPress, navigation }) {
   };
 
   const clear_error = () => {
-    data.current = {
-      ...andalalin,
-      nama_proyek: namaProyek,
-      jenis_proyek: jenisProyek,
-      wilayah_administratif_proyek: wilayah,
-      alamat_proyek: alamat,
-      provinsi_proyek: provinsi,
-      kabupaten_proyek: kabupaten,
-      kecamatan_proyek: kecamatan,
-      kelurahan_proyek: kelurahan,
-      nama_jalan: jalan,
-      kode: kodeJalan,
-      lokasi_bangunan: lokasi,
-      lat_bangunan: lat,
-      long_bangunan: long,
-    };
-
     namaProyek != "" ? (namaProyekError ? toggleNamaProyekError() : "") : "";
     jenisProyek != "" ? (jenisProyekError ? toggleJenisProyekError() : "") : "";
     wilayah != "" ? (wilayahError ? toggleWilayahError() : "") : "";

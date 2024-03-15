@@ -100,6 +100,43 @@ function Konsultan({ onPress }) {
     }, [])
   );
 
+  useEffect(() => {
+    data.current = {
+      ...andalalin,
+      nama_konsultan: nama,
+      wilayah_administratif_konsultan: wilayah,
+      provinsi_konsultan: provinsi,
+      kabupaten_konsultan: kabupaten,
+      kecamatan_konsultan: kecamatan,
+      kelurahan_konsultan: kelurahan,
+      alamat_konsultan: alamat,
+      nomer_konsultan: nomer,
+      email_konsultan: email,
+      nama_penyusun: penyusun,
+      jenis_kelamin_penyusun: jenis,
+      wilayah_administratif_penyusun: wilayahPenyusun,
+      provinsi_penyusun: provinsiPenyusun,
+      kabupaten_penyusun: kabupatenPenyusun,
+      kecamatan_penyusun: kecamatanPenyusun,
+      kelurahan_penyusun: kelurahanPenyusun,
+      alamat_penyusun: alamatPenyusun,
+      nomer_serifikat_penyusun: nomerSertifikat,
+      klasifikasi_penyusun: klasifikasi,
+    };
+  }, [
+    nama,
+    wilayah,
+    alamat,
+    nomer,
+    email,
+    penyusun,
+    jenis,
+    wilayahPenyusun,
+    alamatPenyusun,
+    nomerSertifikat,
+    klasifikasi,
+  ]);
+
   const press = () => {
     if (
       nama != "" &&
@@ -113,16 +150,7 @@ function Konsultan({ onPress }) {
       nomerSertifikat &&
       klasifikasi
     ) {
-      namaError ? toggleNamaError() : "";
-      alamatError ? toggleAlamatError() : "";
-      wilayahError ? toggleWilayahError() : "";
-      nomerError ? toggleNomerError() : "";
-      emailError ? toggleEmailError() : "";
-      pimpinanError ? togglePimpinanError() : "";
-      alamatPimpinanError ? toggleAlamatPimpinanError() : "";
-      sertifikatError ? toggleSertifikatError() : "";
-      klasifikasiError ? toggleKlasifikasiError() : "";
-      formError ? toggleFormError() : "";
+      clear_error();
 
       onPress();
     } else {
@@ -159,41 +187,24 @@ function Konsultan({ onPress }) {
   };
 
   useEffect(() => {
-    clear_error();
+    if (jenis != "") {
+      clear_error();
+    }
   }, [jenis]);
 
   useEffect(() => {
-    clear_error();
+    if (wilayah != "") {
+      clear_error();
+    }
   }, [wilayah]);
 
   useEffect(() => {
-    clear_error();
+    if (wilayahPenyusun != "") {
+      clear_error();
+    }
   }, [wilayahPenyusun]);
 
   const clear_error = () => {
-    data.current = {
-      ...andalalin,
-      nama_konsultan: nama,
-      wilayah_administratif_konsultan: wilayah,
-      provinsi_konsultan: provinsi,
-      kabupaten_konsultan: kabupaten,
-      kecamatan_konsultan: kecamatan,
-      kelurahan_konsultan: kelurahan,
-      alamat_konsultan: alamat,
-      nomer_konsultan: nomer,
-      email_konsultan: email,
-      nama_penyusun: penyusun,
-      jenis_kelamin_penyusun: jenis,
-      wilayah_administratif_penyusun: wilayahPenyusun,
-      provinsi_penyusun: provinsiPenyusun,
-      kabupaten_penyusun: kabupatenPenyusun,
-      kecamatan_penyusun: kecamatanPenyusun,
-      kelurahan_penyusun: kelurahanPenyusun,
-      alamat_penyusun: alamatPenyusun,
-      nomer_serifikat_penyusun: nomerSertifikat,
-      klasifikasi_penyusun: klasifikasi,
-    };
-
     nama != "" ? (namaError ? toggleNamaError() : "") : "";
     alamat != "" ? (alamatError ? toggleAlamatError() : "") : "";
     wilayah != "" ? (wilayahError ? toggleWilayahError() : "") : "";

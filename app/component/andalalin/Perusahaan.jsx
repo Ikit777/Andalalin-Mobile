@@ -91,6 +91,41 @@ function Perusahaan({ onPress }) {
     }, [])
   );
 
+  useEffect(() => {
+    data.current = {
+      ...andalalin,
+      nama_perusahaan: nama,
+      alamat_perusahaan: alamat,
+      wilayah_administratif_perusahaan: wilayah,
+      provinsi_perusahaan: provinsi,
+      kabupaten_perusahaan: kabupaten,
+      kecamatan_perusahaan: kecamatan,
+      kelurahan_perusahaan: kelurahan,
+      nomer_perusahaan: nomer,
+      email_perusahaan: email,
+      nama_pimpinan: pimpinan,
+      jabatan_pimpinan: jabatan,
+      jenis_kelamin_pimpinan: jenis,
+      wilayah_administratif_pimpinan: wilayahPimpinan,
+      provinsi_pimpinan_perusahaan: provinsiPimpinan,
+      kabupaten_pimpinan_perusahaan: kabupatenPimpinan,
+      kecamatan_pimpinan_perusahaan: kecamatanPimpinan,
+      kelurahan_pimpinan_perusahaan: kelurahanPimpinan,
+      alamat_pimpinan: alamatPimpinan,
+    };
+  }, [
+    nama,
+    alamat,
+    wilayah,
+    nomer,
+    email,
+    pimpinan,
+    jabatan,
+    jenis,
+    wilayahPimpinan,
+    alamatPimpinan,
+  ]);
+
   const press = () => {
     if (
       nama != "" &&
@@ -103,16 +138,7 @@ function Perusahaan({ onPress }) {
       wilayahPimpinan != "" &&
       alamatPimpinan != ""
     ) {
-      namaError ? toggleNamaError() : "";
-      alamatError ? toggleAlamatError() : "";
-      wilayahError ? toggleWilayahError() : "";
-      nomerError ? toggleNomerError() : "";
-      emailError ? toggleEmailError() : "";
-      pimpinanError ? togglePimpinanError() : "";
-      jabatanError ? toggleJabatanError() : "";
-      alamatPimpinanError ? toggleAlamatPimpinanError() : "";
-      formError ? toggleFormError() : "";
-
+      clear_error();
       onPress();
     } else {
       nama == "" ? (namaError ? "" : toggleNamaError()) : "";
@@ -139,40 +165,24 @@ function Perusahaan({ onPress }) {
   };
 
   useEffect(() => {
-    clear_error();
+    if (jenis != "") {
+      clear_error();
+    }
   }, [jenis]);
 
   useEffect(() => {
-    clear_error();
+    if (wilayah != "") {
+      clear_error();
+    }
   }, [wilayah]);
 
   useEffect(() => {
-    clear_error();
+    if (wilayahPimpinan != "") {
+      clear_error();
+    }
   }, [wilayahPimpinan]);
 
   const clear_error = () => {
-    data.current = {
-      ...andalalin,
-      nama_perusahaan: nama,
-      alamat_perusahaan: alamat,
-      wilayah_administratif_perusahaan: wilayah,
-      provinsi_perusahaan: provinsi,
-      kabupaten_perusahaan: kabupaten,
-      kecamatan_perusahaan: kecamatan,
-      kelurahan_perusahaan: kelurahan,
-      nomer_perusahaan: nomer,
-      email_perusahaan: email,
-      nama_pimpinan: pimpinan,
-      jabatan_pimpinan: jabatan,
-      jenis_kelamin_pimpinan: jenis,
-      wilayah_administratif_pimpinan: wilayahPimpinan,
-      provinsi_pimpinan_perusahaan: provinsiPimpinan,
-      kabupaten_pimpinan_perusahaan: kabupatenPimpinan,
-      kecamatan_pimpinan_perusahaan: kecamatanPimpinan,
-      kelurahan_pimpinan_perusahaan: kelurahanPimpinan,
-      alamat_pimpinan: alamatPimpinan,
-    };
-
     nama != "" ? (namaError ? toggleNamaError() : "") : "";
     alamat != "" ? (alamatError ? toggleAlamatError() : "") : "";
     wilayah != "" ? (wilayahError ? toggleWilayahError() : "") : "";

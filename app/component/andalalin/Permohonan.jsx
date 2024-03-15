@@ -48,6 +48,21 @@ function Permohonan({ onPress }) {
     }, [])
   );
 
+  useEffect(() => {
+    data.current = {
+      ...andalalin,
+      jenis: jenisRencana,
+      rencana_pembangunan: rencanaJenisPembangunan,
+      lokasi_pengambilan: lokasiPengambilan,
+      pemohon: kategoriPemohon,
+    };
+  }, [
+    jenisRencana,
+    rencanaJenisPembangunan,
+    lokasiPengambilan,
+    kategoriPemohon,
+  ]);
+
   let lokasi = dataMaster.lokasi_pengambilan.map((item) => {
     return { value: item };
   });
@@ -116,7 +131,7 @@ function Permohonan({ onPress }) {
       rencanaJenisPembangunan != "" &&
       kategoriPemohon != ""
     ) {
-      formError ? toggleFormError() : "";
+      clear_error();
       onPress();
     } else {
       jenisRencana == "" ? (jenisError ? "" : toggleJenisError()) : "";
@@ -134,14 +149,6 @@ function Permohonan({ onPress }) {
   const kategori = [{ value: "Perorangan" }, { value: "Non-perorangan" }];
 
   const clear_error = () => {
-    data.current = {
-      ...andalalin,
-      jenis: jenisRencana,
-      rencana_pembangunan: rencanaJenisPembangunan,
-      lokasi_pengambilan: lokasiPengambilan,
-      pemohon: kategoriPemohon,
-    };
-
     jenisRencana != "" ? (jenisError ? toggleJenisError() : "") : "";
     lokasiPengambilan != "" ? (lokasiError ? toggleLokasiError() : "") : "";
     kategoriPemohon != "" ? (pemohonError ? togglePemohonError() : "") : "";

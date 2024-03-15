@@ -91,7 +91,6 @@ function HomeScreen({ navigation }) {
                 "Pengajuan permohonan pelaksanaan analisis dampak lalu lintas"
               }
               onPress={() => {
-                context.clear();
                 masterData("Andalalin");
               }}
             />

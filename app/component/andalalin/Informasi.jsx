@@ -10,11 +10,13 @@ import { masterGetPanduan } from "../../api/master";
 import AConfirmationDialog from "../utility/AConfirmationDialog";
 import { useStateToggler } from "../../hooks/useUtility";
 import * as FileSystem from "expo-file-system";
+import { useRecoilState } from "recoil";
+import PermohonanAtom from "../../atom/PermohonanAtom";
 
 function Informasi({ navigation, onPress, kondisi }) {
-  const {
-    permohonan: { bangkitan },
-  } = useContext(UserContext);
+  const { andalalinState } = PermohonanAtom;
+
+  const [andalalin, setAndalalin] = useRecoilState(andalalinState);
 
   const context = useContext(UserContext);
 
@@ -46,7 +48,7 @@ function Informasi({ navigation, onPress, kondisi }) {
     context.toggleLoading(true);
     masterGetPanduan(
       context.getUser().access_token,
-      "Panduan " + bangkitan.toLowerCase(),
+      "Panduan " + andalalin.bangkitan.toLowerCase(),
       (response) => {
         switch (response.status) {
           case 200:
@@ -55,7 +57,7 @@ function Informasi({ navigation, onPress, kondisi }) {
 
               await StorageAccessFramework.createFileAsync(
                 uri,
-                "Panduan "+bangkitan.toLowerCase()+" .pdf",
+                "Panduan " + andalalin.bangkitan.toLowerCase() + " .pdf",
                 "application/pdf"
               )
                 .then(async (uri) => {
@@ -123,7 +125,7 @@ function Informasi({ navigation, onPress, kondisi }) {
             paddingVertical: 10,
             borderColor: color.neutral.neutral300,
           }}
-          title={"Panduan " + bangkitan.toLowerCase()}
+          title={"Panduan " + andalalin.bangkitan.toLowerCase()}
           mode="text"
           onPress={() => {
             download();
@@ -175,7 +177,6 @@ function Informasi({ navigation, onPress, kondisi }) {
         }}
       />
 
-      
       {isSnackbarVisible ? (
         <ASnackBar visible={isSnackbarVisible} message={message} />
       ) : (

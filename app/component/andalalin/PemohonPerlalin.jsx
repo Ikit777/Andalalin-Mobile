@@ -71,38 +71,7 @@ function PemohonPerlalin({ onPress }) {
     }, [])
   );
 
-  const press = () => {
-    if (
-      nik != "" &&
-      jenis != "" &&
-      tempat != "" &&
-      tanggal != "" &&
-      alamat != "" &&
-      alamatModal != "" &&
-      nomer != "" &&
-      nik.length == 16
-    ) {
-      onPress();
-    } else {
-      nik == "" ? (nikError ? "" : togglenikError()) : "";
-      if (nik != "") {
-        nik.length < 16 ? (nikError ? "" : togglenikError()) : "";
-      }
-      jenis == "" ? (jenisError ? "" : togglejenisError()) : "";
-      tempat == "" ? (tempatError ? "" : toggletempatError()) : "";
-      tanggal == "" ? (tempatError ? "" : toggletanggalError()) : "";
-      alamat == "" ? (alamatError ? "" : togglealamatError()) : "";
-      alamatModal == "" ? (alamat1Error ? "" : togglealamat1Error()) : "";
-      nomer == "" ? (nomerError ? "" : togglenomerError()) : "";
-      formError ? "" : toggleFormError();
-    }
-  };
-
   useEffect(() => {
-    clear_error();
-  }, [jenis, alamatModal, tanggal]);
-
-  const clear_error = () => {
     data.current = {
       ...perlalin,
       nik_pemohon: nik,
@@ -118,7 +87,52 @@ function PemohonPerlalin({ onPress }) {
       nomer_pemohon: nomer,
       catatan: catatanTambahan,
     };
+  }, [
+    nik,
+    jenis,
+    tempat,
+    tanggal,
+    alamat,
+    alamatModal,
+    nomer,
+    catatanTambahan,
+  ]);
 
+  const press = () => {
+    if (
+      nik != "" &&
+      jenis != "" &&
+      tempat != "" &&
+      tanggal != "" &&
+      alamat != "" &&
+      alamatModal != "" &&
+      nomer != "" &&
+      nik.length == 16
+    ) {
+      clear_error();
+      onPress();
+    } else {
+      nik == "" ? (nikError ? "" : togglenikError()) : "";
+      if (nik != "") {
+        nik.length < 16 ? (nikError ? "" : togglenikError()) : "";
+      }
+      jenis == "" ? (jenisError ? "" : togglejenisError()) : "";
+      tempat == "" ? (tempatError ? "" : toggletempatError()) : "";
+      tanggal == "" ? (tanggalError ? "" : toggletanggalError()) : "";
+      alamat == "" ? (alamatError ? "" : togglealamatError()) : "";
+      alamatModal == "" ? (alamat1Error ? "" : togglealamat1Error()) : "";
+      nomer == "" ? (nomerError ? "" : togglenomerError()) : "";
+      formError ? "" : toggleFormError();
+    }
+  };
+
+  useEffect(() => {
+    if (jenis != "" || alamatModal != "" || tanggal != "") {
+      clear_error();
+    }
+  }, [jenis, alamatModal, tanggal]);
+
+  const clear_error = () => {
     jenis != "" ? (jenisError ? togglejenisError() : "") : "";
     tempat != "" ? (tempatError ? toggletempatError() : "") : "";
     tanggal != "" ? (tanggalError ? toggletanggalError() : "") : "";
@@ -310,8 +324,8 @@ function PemohonPerlalin({ onPress }) {
         padding={20}
         value={catatanTambahan}
         onChangeText={(value) => {
-          setCatatanTambahan(value);
           clear_error();
+          setCatatanTambahan(value);
         }}
       />
 

@@ -74,97 +74,7 @@ function Pemohon({ onPress }) {
     }, [])
   );
 
-  const press = () => {
-    if (andalalin.pemohon == "Perorangan") {
-      if (
-        nik != "" &&
-        jenis != "" &&
-        tempat != "" &&
-        tanggal != "" &&
-        alamat != "" &&
-        alamatModal != "" &&
-        nomerSeluler != "" &&
-        nik.length == 16
-      ) {
-        nikError ? togglenikError() : "";
-        tempatError ? toggletempatError() : "";
-        tanggalError ? toggletanggalError() : "";
-        alamatError ? togglealamatError() : "";
-        nomerSelulerError ? togglenomerSelulerError() : "";
-        alamat1Error ? togglealamat1Error() : "";
-
-        formError ? toggleFormError() : "";
-        onPress();
-      } else {
-        nik == "" ? (nikError ? "" : togglenikError()) : "";
-        if (nik != "") {
-          nik.length < 16 ? (nikError ? "" : togglenikError()) : "";
-        }
-        jenis == "" ? (jenisError ? "" : togglejenisError()) : "";
-        tempat == "" ? (tempatError ? "" : toggletempatError()) : "";
-        tanggal == "" ? (tempatError ? "" : toggletanggalError()) : "";
-        alamat == "" ? (alamatError ? "" : togglealamatError()) : "";
-        alamatModal == "" ? (alamat1Error ? "" : togglealamat1Error()) : "";
-        nomerSeluler == ""
-          ? nomerSelulerError
-            ? ""
-            : togglenomerSelulerError()
-          : "";
-
-        formError ? "" : toggleFormError();
-      }
-    } else {
-      if (
-        nik != "" &&
-        jabatan != "" &&
-        jenis != "" &&
-        tempat != "" &&
-        tanggal != "" &&
-        alamat != "" &&
-        alamatModal != "" &&
-        nomerSeluler != "" &&
-        nik.length == 16
-      ) {
-        nikError ? togglenikError() : "";
-        jabatanError ? togglejabatanError() : "";
-        tempatError ? toggletempatError() : "";
-        tanggalError ? toggletanggalError() : "";
-        alamatError ? togglealamatError() : "";
-        nomerSelulerError ? togglenomerSelulerError() : "";
-        formError ? toggleFormError() : "";
-        onPress();
-      } else {
-        nik == "" ? (nikError ? "" : togglenikError()) : "";
-        jabatan == "" ? (jabatanError ? "" : togglejabatanError()) : "";
-        jenis == "" ? (jenisError ? "" : togglejenisError()) : "";
-        tempat == "" ? (tempatError ? "" : toggletempatError()) : "";
-        tanggal == "" ? (tempatError ? "" : toggletanggalError()) : "";
-        alamat == "" ? (alamatError ? "" : togglealamatError()) : "";
-        alamatModal == "" ? (alamat1Error ? "" : togglealamat1Error()) : "";
-        nomerSeluler == ""
-          ? nomerSelulerError
-            ? ""
-            : togglenomerSelulerError()
-          : "";
-
-        formError ? "" : toggleFormError();
-      }
-    }
-  };
-
   useEffect(() => {
-    clear_error();
-  }, [jenis]);
-
-  useEffect(() => {
-    clear_error();
-  }, [tanggal]);
-
-  useEffect(() => {
-    clear_error();
-  }, [alamatModal]);
-
-  const clear_error = () => {
     if (andalalin.pemohon == "Perorangan") {
       data.current = {
         ...andalalin,
@@ -199,7 +109,110 @@ function Pemohon({ onPress }) {
         kelurahan_pimpinan_perusahaan: kelurahan,
         alamat_pimpinan: alamat,
       };
+    } else {
+      data.current = {
+        ...andalalin,
+        nik_pemohon: nik,
+        jabatan_pemohon: jabatan,
+        jenis_kelamin_pemohon: jenis,
+        tempat_lahir_pemohon: tempat,
+        tanggal_lahir_pemohon: tanggal,
+        wilayah_administratif_pemohon: alamatModal,
+        provinsi_pemohon: provinsi,
+        kabupaten_pemohon: kabupaten,
+        kecamatan_pemohon: kecamatan,
+        kelurahan_pemohon: kelurahan,
+        alamat_pemohon: alamat,
+        nomer_pemohon: nomerSeluler,
+      };
+    }
+  }, [nik, jabatan, jenis, tempat, tanggal, alamatModal, alamat, nomerSeluler]);
 
+  const press = () => {
+    if (andalalin.pemohon == "Perorangan") {
+      if (
+        nik != "" &&
+        jenis != "" &&
+        tempat != "" &&
+        tanggal != "" &&
+        alamat != "" &&
+        alamatModal != "" &&
+        nomerSeluler != "" &&
+        nik.length == 16
+      ) {
+        clear_error();
+        onPress();
+      } else {
+        nik == "" ? (nikError ? "" : togglenikError()) : "";
+        if (nik != "") {
+          nik.length < 16 ? (nikError ? "" : togglenikError()) : "";
+        }
+        jenis == "" ? (jenisError ? "" : togglejenisError()) : "";
+        tempat == "" ? (tempatError ? "" : toggletempatError()) : "";
+        tanggal == "" ? (tanggalError ? "" : toggletanggalError()) : "";
+        alamat == "" ? (alamatError ? "" : togglealamatError()) : "";
+        alamatModal == "" ? (alamat1Error ? "" : togglealamat1Error()) : "";
+        nomerSeluler == ""
+          ? nomerSelulerError
+            ? ""
+            : togglenomerSelulerError()
+          : "";
+
+        formError ? "" : toggleFormError();
+      }
+    } else {
+      if (
+        nik != "" &&
+        jabatan != "" &&
+        jenis != "" &&
+        tempat != "" &&
+        tanggal != "" &&
+        alamat != "" &&
+        alamatModal != "" &&
+        nomerSeluler != "" &&
+        nik.length == 16
+      ) {
+        clear_error();
+        onPress();
+      } else {
+        nik == "" ? (nikError ? "" : togglenikError()) : "";
+        jabatan == "" ? (jabatanError ? "" : togglejabatanError()) : "";
+        jenis == "" ? (jenisError ? "" : togglejenisError()) : "";
+        tempat == "" ? (tempatError ? "" : toggletempatError()) : "";
+        tanggal == "" ? (tempatError ? "" : toggletanggalError()) : "";
+        alamat == "" ? (alamatError ? "" : togglealamatError()) : "";
+        alamatModal == "" ? (alamat1Error ? "" : togglealamat1Error()) : "";
+        nomerSeluler == ""
+          ? nomerSelulerError
+            ? ""
+            : togglenomerSelulerError()
+          : "";
+
+        formError ? "" : toggleFormError();
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (jenis != "") {
+      clear_error();
+    }
+  }, [jenis]);
+
+  useEffect(() => {
+    if (tanggal != "") {
+      clear_error();
+    }
+  }, [tanggal]);
+
+  useEffect(() => {
+    if (alamatModal != "") {
+      clear_error();
+    }
+  }, [alamatModal]);
+
+  const clear_error = () => {
+    if (andalalin.pemohon == "Perorangan") {
       jenis != "" ? (jenisError ? togglejenisError() : "") : "";
       tempat != "" ? (tempatError ? toggletempatError() : "") : "";
       tanggal != "" ? (tanggalError ? toggletanggalError() : "") : "";
@@ -224,22 +237,6 @@ function Pemohon({ onPress }) {
           : ""
         : "";
     } else {
-      data.current = {
-        ...andalalin,
-        nik_pemohon: nik,
-        jabatan_pemohon: jabatan,
-        jenis_kelamin_pemohon: jenis,
-        tempat_lahir_pemohon: tempat,
-        tanggal_lahir_pemohon: tanggal,
-        wilayah_administratif_pemohon: alamatModal,
-        provinsi_pemohon: provinsi,
-        kabupaten_pemohon: kabupaten,
-        kecamatan_pemohon: kecamatan,
-        kelurahan_pemohon: kelurahan,
-        alamat_pemohon: alamat,
-        nomer_pemohon: nomerSeluler,
-      };
-
       jenis != "" ? (jenisError ? togglejenisError() : "") : "";
       tempat != "" ? (tempatError ? toggletempatError() : "") : "";
       tanggal != "" ? (tanggalError ? toggletanggalError() : "") : "";
