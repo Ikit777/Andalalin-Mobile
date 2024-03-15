@@ -17,7 +17,6 @@ function Konsultan({ onPress }) {
   const { dataMaster } = useContext(UserContext);
 
   const { andalalinState } = PermohonanAtom;
-
   const [andalalin, setAndalalin] = useRecoilState(andalalinState);
 
   const namaInput = React.createRef();
@@ -100,7 +99,7 @@ function Konsultan({ onPress }) {
     }, [])
   );
 
-  useEffect(() => {
+  const data_set = () => {
     data.current = {
       ...andalalin,
       nama_konsultan: nama,
@@ -123,19 +122,7 @@ function Konsultan({ onPress }) {
       nomer_serifikat_penyusun: nomerSertifikat,
       klasifikasi_penyusun: klasifikasi,
     };
-  }, [
-    nama,
-    wilayah,
-    alamat,
-    nomer,
-    email,
-    penyusun,
-    jenis,
-    wilayahPenyusun,
-    alamatPenyusun,
-    nomerSertifikat,
-    klasifikasi,
-  ]);
+  };
 
   const press = () => {
     if (
@@ -151,7 +138,6 @@ function Konsultan({ onPress }) {
       klasifikasi
     ) {
       clear_error();
-
       onPress();
     } else {
       nama == "" ? (namaError ? "" : toggleNamaError()) : "";
@@ -189,18 +175,21 @@ function Konsultan({ onPress }) {
   useEffect(() => {
     if (jenis != "") {
       clear_error();
+      data_set();
     }
   }, [jenis]);
 
   useEffect(() => {
     if (wilayah != "") {
       clear_error();
+      data_set();
     }
   }, [wilayah]);
 
   useEffect(() => {
     if (wilayahPenyusun != "") {
       clear_error();
+      data_set();
     }
   }, [wilayahPenyusun]);
 
@@ -266,9 +255,32 @@ function Konsultan({ onPress }) {
         onChangeText={(value) => {
           clear_error();
           setNama(value);
+          data.current = {
+            ...andalalin,
+            nama_konsultan: value,
+            wilayah_administratif_konsultan: wilayah,
+            provinsi_konsultan: provinsi,
+            kabupaten_konsultan: kabupaten,
+            kecamatan_konsultan: kecamatan,
+            kelurahan_konsultan: kelurahan,
+            alamat_konsultan: alamat,
+            nomer_konsultan: nomer,
+            email_konsultan: email,
+            nama_penyusun: penyusun,
+            jenis_kelamin_penyusun: jenis,
+            wilayah_administratif_penyusun: wilayahPenyusun,
+            provinsi_penyusun: provinsiPenyusun,
+            kabupaten_penyusun: kabupatenPenyusun,
+            kecamatan_penyusun: kecamatanPenyusun,
+            kelurahan_penyusun: kelurahanPenyusun,
+            alamat_penyusun: alamatPenyusun,
+            nomer_serifikat_penyusun: nomerSertifikat,
+            klasifikasi_penyusun: klasifikasi,
+          };
         }}
         submit={() => {
           clear_error();
+          data_set();
         }}
       />
 
@@ -298,6 +310,28 @@ function Konsultan({ onPress }) {
         onChangeText={(value) => {
           clear_error();
           setAlamat(value);
+          data.current = {
+            ...andalalin,
+            nama_konsultan: nama,
+            wilayah_administratif_konsultan: wilayah,
+            provinsi_konsultan: provinsi,
+            kabupaten_konsultan: kabupaten,
+            kecamatan_konsultan: kecamatan,
+            kelurahan_konsultan: kelurahan,
+            alamat_konsultan: value,
+            nomer_konsultan: nomer,
+            email_konsultan: email,
+            nama_penyusun: penyusun,
+            jenis_kelamin_penyusun: jenis,
+            wilayah_administratif_penyusun: wilayahPenyusun,
+            provinsi_penyusun: provinsiPenyusun,
+            kabupaten_penyusun: kabupatenPenyusun,
+            kecamatan_penyusun: kecamatanPenyusun,
+            kelurahan_penyusun: kelurahanPenyusun,
+            alamat_penyusun: alamatPenyusun,
+            nomer_serifikat_penyusun: nomerSertifikat,
+            klasifikasi_penyusun: klasifikasi,
+          };
         }}
       />
 
@@ -326,9 +360,32 @@ function Konsultan({ onPress }) {
         onChangeText={(value) => {
           clear_error();
           setNomer(value);
+          data.current = {
+            ...andalalin,
+            nama_konsultan: nama,
+            wilayah_administratif_konsultan: wilayah,
+            provinsi_konsultan: provinsi,
+            kabupaten_konsultan: kabupaten,
+            kecamatan_konsultan: kecamatan,
+            kelurahan_konsultan: kelurahan,
+            alamat_konsultan: alamat,
+            nomer_konsultan: value,
+            email_konsultan: email,
+            nama_penyusun: penyusun,
+            jenis_kelamin_penyusun: jenis,
+            wilayah_administratif_penyusun: wilayahPenyusun,
+            provinsi_penyusun: provinsiPenyusun,
+            kabupaten_penyusun: kabupatenPenyusun,
+            kecamatan_penyusun: kecamatanPenyusun,
+            kelurahan_penyusun: kelurahanPenyusun,
+            alamat_penyusun: alamatPenyusun,
+            nomer_serifikat_penyusun: nomerSertifikat,
+            klasifikasi_penyusun: klasifikasi,
+          };
         }}
         submit={() => {
           clear_error();
+          data_set();
           emailInput.current.focus();
         }}
       />
@@ -358,9 +415,32 @@ function Konsultan({ onPress }) {
         onChangeText={(value) => {
           clear_error();
           setEmail(value);
+          data.current = {
+            ...andalalin,
+            nama_konsultan: nama,
+            wilayah_administratif_konsultan: wilayah,
+            provinsi_konsultan: provinsi,
+            kabupaten_konsultan: kabupaten,
+            kecamatan_konsultan: kecamatan,
+            kelurahan_konsultan: kelurahan,
+            alamat_konsultan: alamat,
+            nomer_konsultan: nomer,
+            email_konsultan: value,
+            nama_penyusun: penyusun,
+            jenis_kelamin_penyusun: jenis,
+            wilayah_administratif_penyusun: wilayahPenyusun,
+            provinsi_penyusun: provinsiPenyusun,
+            kabupaten_penyusun: kabupatenPenyusun,
+            kecamatan_penyusun: kecamatanPenyusun,
+            kelurahan_penyusun: kelurahanPenyusun,
+            alamat_penyusun: alamatPenyusun,
+            nomer_serifikat_penyusun: nomerSertifikat,
+            klasifikasi_penyusun: klasifikasi,
+          };
         }}
         submit={() => {
           clear_error();
+          data_set();
           pimpinanInput.current.focus();
         }}
       />
@@ -382,9 +462,32 @@ function Konsultan({ onPress }) {
         onChangeText={(value) => {
           clear_error();
           setPenyusun(value);
+          data.current = {
+            ...andalalin,
+            nama_konsultan: nama,
+            wilayah_administratif_konsultan: wilayah,
+            provinsi_konsultan: provinsi,
+            kabupaten_konsultan: kabupaten,
+            kecamatan_konsultan: kecamatan,
+            kelurahan_konsultan: kelurahan,
+            alamat_konsultan: alamat,
+            nomer_konsultan: nomer,
+            email_konsultan: email,
+            nama_penyusun: value,
+            jenis_kelamin_penyusun: jenis,
+            wilayah_administratif_penyusun: wilayahPenyusun,
+            provinsi_penyusun: provinsiPenyusun,
+            kabupaten_penyusun: kabupatenPenyusun,
+            kecamatan_penyusun: kecamatanPenyusun,
+            kelurahan_penyusun: kelurahanPenyusun,
+            alamat_penyusun: alamatPenyusun,
+            nomer_serifikat_penyusun: nomerSertifikat,
+            klasifikasi_penyusun: klasifikasi,
+          };
         }}
         submit={() => {
           clear_error();
+          data_set();
         }}
       />
 
@@ -428,6 +531,28 @@ function Konsultan({ onPress }) {
         onChangeText={(value) => {
           clear_error();
           setAlamatPenyusun(value);
+          data.current = {
+            ...andalalin,
+            nama_konsultan: nama,
+            wilayah_administratif_konsultan: wilayah,
+            provinsi_konsultan: provinsi,
+            kabupaten_konsultan: kabupaten,
+            kecamatan_konsultan: kecamatan,
+            kelurahan_konsultan: kelurahan,
+            alamat_konsultan: alamat,
+            nomer_konsultan: nomer,
+            email_konsultan: email,
+            nama_penyusun: penyusun,
+            jenis_kelamin_penyusun: jenis,
+            wilayah_administratif_penyusun: wilayahPenyusun,
+            provinsi_penyusun: provinsiPenyusun,
+            kabupaten_penyusun: kabupatenPenyusun,
+            kecamatan_penyusun: kecamatanPenyusun,
+            kelurahan_penyusun: kelurahanPenyusun,
+            alamat_penyusun: value,
+            nomer_serifikat_penyusun: nomerSertifikat,
+            klasifikasi_penyusun: klasifikasi,
+          };
         }}
       />
 
@@ -458,9 +583,32 @@ function Konsultan({ onPress }) {
         onChangeText={(value) => {
           clear_error();
           setNomerSertifikat(value);
+          data.current = {
+            ...andalalin,
+            nama_konsultan: nama,
+            wilayah_administratif_konsultan: wilayah,
+            provinsi_konsultan: provinsi,
+            kabupaten_konsultan: kabupaten,
+            kecamatan_konsultan: kecamatan,
+            kelurahan_konsultan: kelurahan,
+            alamat_konsultan: alamat,
+            nomer_konsultan: nomer,
+            email_konsultan: email,
+            nama_penyusun: penyusun,
+            jenis_kelamin_penyusun: jenis,
+            wilayah_administratif_penyusun: wilayahPenyusun,
+            provinsi_penyusun: provinsiPenyusun,
+            kabupaten_penyusun: kabupatenPenyusun,
+            kecamatan_penyusun: kecamatanPenyusun,
+            kelurahan_penyusun: kelurahanPenyusun,
+            alamat_penyusun: alamatPenyusun,
+            nomer_serifikat_penyusun: value,
+            klasifikasi_penyusun: klasifikasi,
+          };
         }}
         submit={() => {
           clear_error();
+          data_set();
           {
             nomerSertifikat != "" ? klasifikasiInput.current.focus() : "";
           }
@@ -492,9 +640,32 @@ function Konsultan({ onPress }) {
         onChangeText={(value) => {
           clear_error();
           setKlasifikasi(value);
+          data.current = {
+            ...andalalin,
+            nama_konsultan: nama,
+            wilayah_administratif_konsultan: wilayah,
+            provinsi_konsultan: provinsi,
+            kabupaten_konsultan: kabupaten,
+            kecamatan_konsultan: kecamatan,
+            kelurahan_konsultan: kelurahan,
+            alamat_konsultan: alamat,
+            nomer_konsultan: nomer,
+            email_konsultan: email,
+            nama_penyusun: penyusun,
+            jenis_kelamin_penyusun: jenis,
+            wilayah_administratif_penyusun: wilayahPenyusun,
+            provinsi_penyusun: provinsiPenyusun,
+            kabupaten_penyusun: kabupatenPenyusun,
+            kecamatan_penyusun: kecamatanPenyusun,
+            kelurahan_penyusun: kelurahanPenyusun,
+            alamat_penyusun: alamatPenyusun,
+            nomer_serifikat_penyusun: nomerSertifikat,
+            klasifikasi_penyusun: value,
+          };
         }}
         submit={() => {
           clear_error();
+          data_set();
         }}
       />
 

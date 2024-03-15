@@ -18,7 +18,6 @@ function PemohonPerlalin({ onPress }) {
   const { dataMaster } = useContext(UserContext);
 
   const { perlalinState } = PermohonanAtom;
-
   const [perlalin, setPerlalin] = useRecoilState(perlalinState);
 
   const nikInput = React.createRef();
@@ -71,33 +70,6 @@ function PemohonPerlalin({ onPress }) {
     }, [])
   );
 
-  useEffect(() => {
-    data.current = {
-      ...perlalin,
-      nik_pemohon: nik,
-      jenis_kelamin_pemohon: jenis,
-      tempat_lahir_pemohon: tempat,
-      tanggal_lahir_pemohon: tanggal,
-      wilayah_administratif_pemohon: alamatModal,
-      provinsi_pemohon: provinsi,
-      kabupaten_pemohon: kabupaten,
-      kecamatan_pemohon: kecamatan,
-      kelurahan_pemohon: kelurahan,
-      alamat_pemohon: alamat,
-      nomer_pemohon: nomer,
-      catatan: catatanTambahan,
-    };
-  }, [
-    nik,
-    jenis,
-    tempat,
-    tanggal,
-    alamat,
-    alamatModal,
-    nomer,
-    catatanTambahan,
-  ]);
-
   const press = () => {
     if (
       nik != "" &&
@@ -129,8 +101,27 @@ function PemohonPerlalin({ onPress }) {
   useEffect(() => {
     if (jenis != "" || alamatModal != "" || tanggal != "") {
       clear_error();
+      data_set();
     }
   }, [jenis, alamatModal, tanggal]);
+
+  const data_set = () => {
+    data.current = {
+      ...perlalin,
+      nik_pemohon: nik,
+      jenis_kelamin_pemohon: jenis,
+      tempat_lahir_pemohon: tempat,
+      tanggal_lahir_pemohon: tanggal,
+      wilayah_administratif_pemohon: alamatModal,
+      provinsi_pemohon: provinsi,
+      kabupaten_pemohon: kabupaten,
+      kecamatan_pemohon: kecamatan,
+      kelurahan_pemohon: kelurahan,
+      alamat_pemohon: alamat,
+      nomer_pemohon: nomer,
+      catatan: catatanTambahan,
+    };
+  };
 
   const clear_error = () => {
     jenis != "" ? (jenisError ? togglejenisError() : "") : "";
@@ -178,6 +169,21 @@ function PemohonPerlalin({ onPress }) {
           }
           clear_error();
           setNik(value);
+          data.current = {
+            ...perlalin,
+            nik_pemohon: value,
+            jenis_kelamin_pemohon: jenis,
+            tempat_lahir_pemohon: tempat,
+            tanggal_lahir_pemohon: tanggal,
+            wilayah_administratif_pemohon: alamatModal,
+            provinsi_pemohon: provinsi,
+            kabupaten_pemohon: kabupaten,
+            kecamatan_pemohon: kecamatan,
+            kelurahan_pemohon: kelurahan,
+            alamat_pemohon: alamat,
+            nomer_pemohon: nomer,
+            catatan: catatanTambahan,
+          };
         }}
         submit={() => {
           if (nik.length > 0 && nik.length < 16) {
@@ -186,6 +192,7 @@ function PemohonPerlalin({ onPress }) {
             nikError ? togglenikError() : "";
           }
           clear_error();
+          data_set();
         }}
       />
 
@@ -227,9 +234,25 @@ function PemohonPerlalin({ onPress }) {
         onChangeText={(value) => {
           clear_error();
           setTempat(value);
+          data.current = {
+            ...perlalin,
+            nik_pemohon: nik,
+            jenis_kelamin_pemohon: jenis,
+            tempat_lahir_pemohon: value,
+            tanggal_lahir_pemohon: tanggal,
+            wilayah_administratif_pemohon: alamatModal,
+            provinsi_pemohon: provinsi,
+            kabupaten_pemohon: kabupaten,
+            kecamatan_pemohon: kecamatan,
+            kelurahan_pemohon: kelurahan,
+            alamat_pemohon: alamat,
+            nomer_pemohon: nomer,
+            catatan: catatanTambahan,
+          };
         }}
         submit={() => {
           clear_error();
+          data_set();
         }}
       />
 
@@ -273,6 +296,21 @@ function PemohonPerlalin({ onPress }) {
         onChangeText={(value) => {
           clear_error();
           setAlamat(value);
+          data.current = {
+            ...perlalin,
+            nik_pemohon: nik,
+            jenis_kelamin_pemohon: jenis,
+            tempat_lahir_pemohon: tempat,
+            tanggal_lahir_pemohon: tanggal,
+            wilayah_administratif_pemohon: alamatModal,
+            provinsi_pemohon: provinsi,
+            kabupaten_pemohon: kabupaten,
+            kecamatan_pemohon: kecamatan,
+            kelurahan_pemohon: kelurahan,
+            alamat_pemohon: value,
+            nomer_pemohon: nomer,
+            catatan: catatanTambahan,
+          };
         }}
       />
 
@@ -300,9 +338,25 @@ function PemohonPerlalin({ onPress }) {
         onChangeText={(value) => {
           clear_error();
           setNomer(value);
+          data.current = {
+            ...perlalin,
+            nik_pemohon: nik,
+            jenis_kelamin_pemohon: jenis,
+            tempat_lahir_pemohon: tempat,
+            tanggal_lahir_pemohon: tanggal,
+            wilayah_administratif_pemohon: alamatModal,
+            provinsi_pemohon: provinsi,
+            kabupaten_pemohon: kabupaten,
+            kecamatan_pemohon: kecamatan,
+            kelurahan_pemohon: kelurahan,
+            alamat_pemohon: alamat,
+            nomer_pemohon: value,
+            catatan: catatanTambahan,
+          };
         }}
         submit={() => {
           clear_error();
+          data_set();
         }}
       />
 
@@ -326,6 +380,21 @@ function PemohonPerlalin({ onPress }) {
         onChangeText={(value) => {
           clear_error();
           setCatatanTambahan(value);
+          data.current = {
+            ...perlalin,
+            nik_pemohon: nik,
+            jenis_kelamin_pemohon: jenis,
+            tempat_lahir_pemohon: tempat,
+            tanggal_lahir_pemohon: tanggal,
+            wilayah_administratif_pemohon: alamatModal,
+            provinsi_pemohon: provinsi,
+            kabupaten_pemohon: kabupaten,
+            kecamatan_pemohon: kecamatan,
+            kelurahan_pemohon: kelurahan,
+            alamat_pemohon: alamat,
+            nomer_pemohon: nomer,
+            catatan: value,
+          };
         }}
       />
 

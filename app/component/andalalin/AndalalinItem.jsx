@@ -51,7 +51,7 @@ export default function AndalalinItem({ navigation, route }) {
             case 4:
               return <Pemohon onPress={onGoToNext} />;
             case 5:
-              return <Kegiatan onPress={onGoToNext} navigation={navigation} />;
+              return <Kegiatan onPress={onGoToNext} />;
             case 6:
               return (
                 <Persyaratan onPress={onGoToNext} navigation={navigation} />
@@ -78,7 +78,7 @@ export default function AndalalinItem({ navigation, route }) {
             case 5:
               return <Perusahaan onPress={onGoToNext} />;
             case 6:
-              return <Kegiatan onPress={onGoToNext} navigation={navigation} />;
+              return <Kegiatan onPress={onGoToNext} />;
             case 7:
               return (
                 <Persyaratan onPress={onGoToNext} navigation={navigation} />
@@ -108,7 +108,7 @@ export default function AndalalinItem({ navigation, route }) {
             case 5:
               return <Konsultan onPress={onGoToNext} />;
             case 6:
-              return <Kegiatan onPress={onGoToNext} navigation={navigation} />;
+              return <Kegiatan onPress={onGoToNext} />;
             case 7:
               return (
                 <Persyaratan onPress={onGoToNext} navigation={navigation} />
@@ -137,7 +137,7 @@ export default function AndalalinItem({ navigation, route }) {
             case 6:
               return <Konsultan onPress={onGoToNext} />;
             case 7:
-              return <Kegiatan onPress={onGoToNext} navigation={navigation} />;
+              return <Kegiatan onPress={onGoToNext} />;
             case 8:
               return (
                 <Persyaratan onPress={onGoToNext} navigation={navigation} />
@@ -167,7 +167,7 @@ export default function AndalalinItem({ navigation, route }) {
             case 5:
               return <Konsultan onPress={onGoToNext} />;
             case 6:
-              return <Kegiatan onPress={onGoToNext} navigation={navigation} />;
+              return <Kegiatan onPress={onGoToNext} />;
             case 7:
               return (
                 <Persyaratan onPress={onGoToNext} navigation={navigation} />
@@ -196,7 +196,7 @@ export default function AndalalinItem({ navigation, route }) {
             case 6:
               return <Konsultan onPress={onGoToNext} />;
             case 7:
-              return <Kegiatan onPress={onGoToNext} navigation={navigation} />;
+              return <Kegiatan onPress={onGoToNext} />;
             case 8:
               return (
                 <Persyaratan onPress={onGoToNext} navigation={navigation} />

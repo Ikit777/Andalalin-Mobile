@@ -33,12 +33,11 @@ function Persyaratan({ navigation, onPress }) {
 
   useFocusEffect(
     React.useCallback(() => {
-      save.current = andalalin.persyaratan;
+      save.current = {
+        ...andalalin,
+      };
       return () => {
-        setAndalalin({
-          ...andalalin,
-          persyaratan: save.current,
-        });
+        setAndalalin(save.current);
       };
     }, [])
   );
@@ -110,7 +109,10 @@ function Persyaratan({ navigation, onPress }) {
       };
     });
 
-    save.current = tambahanItem;
+    save.current = {
+      ...andalalin,
+      persyaratan: tambahanItem,
+    };
 
     let not_empty = updateItems.filter((item) => {
       return item.fileBerkas == "" && item.kebutuhan == "Wajib";

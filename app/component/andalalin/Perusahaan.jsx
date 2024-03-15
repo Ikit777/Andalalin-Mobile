@@ -17,7 +17,6 @@ function Perusahaan({ onPress }) {
   const { dataMaster } = useContext(UserContext);
 
   const { andalalinState } = PermohonanAtom;
-
   const [andalalin, setAndalalin] = useRecoilState(andalalinState);
 
   const namaInput = React.createRef();
@@ -91,7 +90,7 @@ function Perusahaan({ onPress }) {
     }, [])
   );
 
-  useEffect(() => {
+  const data_set = () => {
     data.current = {
       ...andalalin,
       nama_perusahaan: nama,
@@ -113,18 +112,7 @@ function Perusahaan({ onPress }) {
       kelurahan_pimpinan_perusahaan: kelurahanPimpinan,
       alamat_pimpinan: alamatPimpinan,
     };
-  }, [
-    nama,
-    alamat,
-    wilayah,
-    nomer,
-    email,
-    pimpinan,
-    jabatan,
-    jenis,
-    wilayahPimpinan,
-    alamatPimpinan,
-  ]);
+  };
 
   const press = () => {
     if (
@@ -167,18 +155,21 @@ function Perusahaan({ onPress }) {
   useEffect(() => {
     if (jenis != "") {
       clear_error();
+      data_set()
     }
   }, [jenis]);
 
   useEffect(() => {
     if (wilayah != "") {
       clear_error();
+      data_set()
     }
   }, [wilayah]);
 
   useEffect(() => {
     if (wilayahPimpinan != "") {
       clear_error();
+      data_set()
     }
   }, [wilayahPimpinan]);
 
@@ -237,9 +228,31 @@ function Perusahaan({ onPress }) {
         onChangeText={(value) => {
           clear_error();
           setNama(value);
+          data.current = {
+            ...andalalin,
+            nama_perusahaan: value,
+            alamat_perusahaan: alamat,
+            wilayah_administratif_perusahaan: wilayah,
+            provinsi_perusahaan: provinsi,
+            kabupaten_perusahaan: kabupaten,
+            kecamatan_perusahaan: kecamatan,
+            kelurahan_perusahaan: kelurahan,
+            nomer_perusahaan: nomer,
+            email_perusahaan: email,
+            nama_pimpinan: pimpinan,
+            jabatan_pimpinan: jabatan,
+            jenis_kelamin_pimpinan: jenis,
+            wilayah_administratif_pimpinan: wilayahPimpinan,
+            provinsi_pimpinan_perusahaan: provinsiPimpinan,
+            kabupaten_pimpinan_perusahaan: kabupatenPimpinan,
+            kecamatan_pimpinan_perusahaan: kecamatanPimpinan,
+            kelurahan_pimpinan_perusahaan: kelurahanPimpinan,
+            alamat_pimpinan: alamatPimpinan,
+          };
         }}
         submit={() => {
           clear_error();
+          data_set()
         }}
       />
 
@@ -269,6 +282,27 @@ function Perusahaan({ onPress }) {
         onChangeText={(value) => {
           clear_error();
           setAlamat(value);
+          data.current = {
+            ...andalalin,
+            nama_perusahaan: nama,
+            alamat_perusahaan: value,
+            wilayah_administratif_perusahaan: wilayah,
+            provinsi_perusahaan: provinsi,
+            kabupaten_perusahaan: kabupaten,
+            kecamatan_perusahaan: kecamatan,
+            kelurahan_perusahaan: kelurahan,
+            nomer_perusahaan: nomer,
+            email_perusahaan: email,
+            nama_pimpinan: pimpinan,
+            jabatan_pimpinan: jabatan,
+            jenis_kelamin_pimpinan: jenis,
+            wilayah_administratif_pimpinan: wilayahPimpinan,
+            provinsi_pimpinan_perusahaan: provinsiPimpinan,
+            kabupaten_pimpinan_perusahaan: kabupatenPimpinan,
+            kecamatan_pimpinan_perusahaan: kecamatanPimpinan,
+            kelurahan_pimpinan_perusahaan: kelurahanPimpinan,
+            alamat_pimpinan: alamatPimpinan,
+          };
         }}
       />
 
@@ -297,9 +331,31 @@ function Perusahaan({ onPress }) {
         onChangeText={(value) => {
           clear_error();
           setNomer(value);
+          data.current = {
+            ...andalalin,
+            nama_perusahaan: nama,
+            alamat_perusahaan: alamat,
+            wilayah_administratif_perusahaan: wilayah,
+            provinsi_perusahaan: provinsi,
+            kabupaten_perusahaan: kabupaten,
+            kecamatan_perusahaan: kecamatan,
+            kelurahan_perusahaan: kelurahan,
+            nomer_perusahaan: value,
+            email_perusahaan: email,
+            nama_pimpinan: pimpinan,
+            jabatan_pimpinan: jabatan,
+            jenis_kelamin_pimpinan: jenis,
+            wilayah_administratif_pimpinan: wilayahPimpinan,
+            provinsi_pimpinan_perusahaan: provinsiPimpinan,
+            kabupaten_pimpinan_perusahaan: kabupatenPimpinan,
+            kecamatan_pimpinan_perusahaan: kecamatanPimpinan,
+            kelurahan_pimpinan_perusahaan: kelurahanPimpinan,
+            alamat_pimpinan: alamatPimpinan,
+          };
         }}
         submit={() => {
           clear_error();
+          data_set()
           emailInput.current.focus();
         }}
       />
@@ -329,9 +385,31 @@ function Perusahaan({ onPress }) {
         onChangeText={(value) => {
           clear_error();
           setEmail(value);
+          data.current = {
+            ...andalalin,
+            nama_perusahaan: nama,
+            alamat_perusahaan: alamat,
+            wilayah_administratif_perusahaan: wilayah,
+            provinsi_perusahaan: provinsi,
+            kabupaten_perusahaan: kabupaten,
+            kecamatan_perusahaan: kecamatan,
+            kelurahan_perusahaan: kelurahan,
+            nomer_perusahaan: nomer,
+            email_perusahaan: value,
+            nama_pimpinan: pimpinan,
+            jabatan_pimpinan: jabatan,
+            jenis_kelamin_pimpinan: jenis,
+            wilayah_administratif_pimpinan: wilayahPimpinan,
+            provinsi_pimpinan_perusahaan: provinsiPimpinan,
+            kabupaten_pimpinan_perusahaan: kabupatenPimpinan,
+            kecamatan_pimpinan_perusahaan: kecamatanPimpinan,
+            kelurahan_pimpinan_perusahaan: kelurahanPimpinan,
+            alamat_pimpinan: alamatPimpinan,
+          };
         }}
         submit={() => {
           clear_error();
+          data_set()
           pimpinanInput.current.focus();
         }}
       />
@@ -353,9 +431,31 @@ function Perusahaan({ onPress }) {
         onChangeText={(value) => {
           clear_error();
           setPimpinan(value);
+          data.current = {
+            ...andalalin,
+            nama_perusahaan: nama,
+            alamat_perusahaan: alamat,
+            wilayah_administratif_perusahaan: wilayah,
+            provinsi_perusahaan: provinsi,
+            kabupaten_perusahaan: kabupaten,
+            kecamatan_perusahaan: kecamatan,
+            kelurahan_perusahaan: kelurahan,
+            nomer_perusahaan: nomer,
+            email_perusahaan: email,
+            nama_pimpinan: value,
+            jabatan_pimpinan: jabatan,
+            jenis_kelamin_pimpinan: jenis,
+            wilayah_administratif_pimpinan: wilayahPimpinan,
+            provinsi_pimpinan_perusahaan: provinsiPimpinan,
+            kabupaten_pimpinan_perusahaan: kabupatenPimpinan,
+            kecamatan_pimpinan_perusahaan: kecamatanPimpinan,
+            kelurahan_pimpinan_perusahaan: kelurahanPimpinan,
+            alamat_pimpinan: alamatPimpinan,
+          };
         }}
         submit={() => {
           clear_error();
+          data_set()
           jabatanInput.current.focus();
         }}
       />
@@ -374,9 +474,31 @@ function Perusahaan({ onPress }) {
         onChangeText={(value) => {
           clear_error();
           setJabatan(value);
+          data.current = {
+            ...andalalin,
+            nama_perusahaan: nama,
+            alamat_perusahaan: alamat,
+            wilayah_administratif_perusahaan: wilayah,
+            provinsi_perusahaan: provinsi,
+            kabupaten_perusahaan: kabupaten,
+            kecamatan_perusahaan: kecamatan,
+            kelurahan_perusahaan: kelurahan,
+            nomer_perusahaan: nomer,
+            email_perusahaan: email,
+            nama_pimpinan: pimpinan,
+            jabatan_pimpinan: value,
+            jenis_kelamin_pimpinan: jenis,
+            wilayah_administratif_pimpinan: wilayahPimpinan,
+            provinsi_pimpinan_perusahaan: provinsiPimpinan,
+            kabupaten_pimpinan_perusahaan: kabupatenPimpinan,
+            kecamatan_pimpinan_perusahaan: kecamatanPimpinan,
+            kelurahan_pimpinan_perusahaan: kelurahanPimpinan,
+            alamat_pimpinan: alamatPimpinan,
+          };
         }}
         submit={() => {
           clear_error();
+          data_set()
         }}
       />
 
@@ -420,6 +542,27 @@ function Perusahaan({ onPress }) {
         onChangeText={(value) => {
           clear_error();
           setAlamatPimpinan(value);
+          data.current = {
+            ...andalalin,
+            nama_perusahaan: nama,
+            alamat_perusahaan: alamat,
+            wilayah_administratif_perusahaan: wilayah,
+            provinsi_perusahaan: provinsi,
+            kabupaten_perusahaan: kabupaten,
+            kecamatan_perusahaan: kecamatan,
+            kelurahan_perusahaan: kelurahan,
+            nomer_perusahaan: nomer,
+            email_perusahaan: email,
+            nama_pimpinan: pimpinan,
+            jabatan_pimpinan: jabatan,
+            jenis_kelamin_pimpinan: jenis,
+            wilayah_administratif_pimpinan: wilayahPimpinan,
+            provinsi_pimpinan_perusahaan: provinsiPimpinan,
+            kabupaten_pimpinan_perusahaan: kabupatenPimpinan,
+            kecamatan_pimpinan_perusahaan: kecamatanPimpinan,
+            kelurahan_pimpinan_perusahaan: kelurahanPimpinan,
+            alamat_pimpinan: value,
+          };
         }}
       />
 

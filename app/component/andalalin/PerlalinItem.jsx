@@ -11,7 +11,6 @@ import { useSetRecoilState } from "recoil";
 import PermohonanAtom from "../../atom/PermohonanAtom";
 
 export default function PerlalinItem({ navigation, route }) {
-  const context = useContext(UserContext);
   const index = route.params.index;
   const kondisi = route.params.kondisi;
 

@@ -18,7 +18,6 @@ function Proyek({ onPress, navigation }) {
   const { dataMaster } = useContext(UserContext);
 
   const { andalalinState } = PermohonanAtom;
-
   const [andalalin, setAndalalin] = useRecoilState(andalalinState);
 
   const alamatInput = React.createRef();
@@ -65,7 +64,7 @@ function Proyek({ onPress, navigation }) {
     }, [])
   );
 
-  useEffect(() => {
+  const data_set = () => {
     data.current = {
       ...andalalin,
       nama_proyek: namaProyek,
@@ -82,8 +81,7 @@ function Proyek({ onPress, navigation }) {
       lat_bangunan: lat,
       long_bangunan: long,
     };
-
-  }, [namaProyek, jenisProyek, wilayah, alamat, jalan, lokasi]);
+  };
 
   let proyek = dataMaster.jenis_proyek.map((item) => {
     return { value: item };
@@ -105,34 +103,43 @@ function Proyek({ onPress, navigation }) {
   };
 
   useEffect(() => {
-    clear_error();
-    if (alamatInput.current) {
-      alamatInput.current.blur();
+    if (jenisProyek != "") {
+      clear_error();
+      data_set();
+      if (alamatInput.current) {
+        alamatInput.current.blur();
+      }
     }
   }, [jenisProyek]);
 
   useEffect(() => {
-    clear_error();
-    if (alamatInput.current) {
-      alamatInput.current.blur();
+    if (jalan != "") {
+      clear_error();
+      data_set();
+      if (alamatInput.current) {
+        alamatInput.current.blur();
+      }
     }
   }, [jalan]);
 
   useEffect(() => {
-    clear_error();
-    if (alamatInput.current) {
-      alamatInput.current.blur();
-    }
-
-    if (kelurahan != kelurahan) {
-      setJalanItem("");
-    }
-
-    setTimeout(() => {
-      if (kelurahan != "") {
-        filter_jalan();
+    if (wilayah != "") {
+      clear_error();
+      data_set();
+      if (alamatInput.current) {
+        alamatInput.current.blur();
       }
-    }, 500);
+
+      if (kelurahan != kelurahan) {
+        setJalanItem("");
+      }
+
+      setTimeout(() => {
+        if (kelurahan != "") {
+          filter_jalan();
+        }
+      }, 500);
+    }
   }, [wilayah]);
 
   const press = () => {
@@ -188,6 +195,7 @@ function Proyek({ onPress, navigation }) {
         setLat(andalalin.lat_bangunan);
         setLong(andalalin.long_bangunan);
         clear_error();
+        data_set();
       }
     }, [andalalin.lokasi_bangunan])
   );
@@ -195,6 +203,7 @@ function Proyek({ onPress, navigation }) {
   useEffect(() => {
     if (lokasi != "") {
       clear_error();
+      data_set();
     }
   }, [lokasi]);
 
@@ -218,9 +227,26 @@ function Proyek({ onPress, navigation }) {
         onChangeText={(value) => {
           clear_error();
           setNamaProyek(value);
+          data.current = {
+            ...andalalin,
+            nama_proyek: value,
+            jenis_proyek: jenisProyek,
+            wilayah_administratif_proyek: wilayah,
+            alamat_proyek: alamat,
+            provinsi_proyek: provinsi,
+            kabupaten_proyek: kabupaten,
+            kecamatan_proyek: kecamatan,
+            kelurahan_proyek: kelurahan,
+            nama_jalan: jalan,
+            kode: kodeJalan,
+            lokasi_bangunan: lokasi,
+            lat_bangunan: lat,
+            long_bangunan: long,
+          };
         }}
         submit={() => {
           clear_error();
+          data_set();
         }}
       />
 
@@ -292,6 +318,22 @@ function Proyek({ onPress, navigation }) {
         onChangeText={(value) => {
           clear_error();
           setAlamat(value);
+          data.current = {
+            ...andalalin,
+            nama_proyek: namaProyek,
+            jenis_proyek: jenisProyek,
+            wilayah_administratif_proyek: wilayah,
+            alamat_proyek: value,
+            provinsi_proyek: provinsi,
+            kabupaten_proyek: kabupaten,
+            kecamatan_proyek: kecamatan,
+            kelurahan_proyek: kelurahan,
+            nama_jalan: jalan,
+            kode: kodeJalan,
+            lokasi_bangunan: lokasi,
+            lat_bangunan: lat,
+            long_bangunan: long,
+          };
         }}
       />
 

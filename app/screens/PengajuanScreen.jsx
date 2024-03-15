@@ -219,7 +219,7 @@ function PengajuanScreen({ navigation, route }) {
           } else {
             return 7;
           }
-        case "bangkitan sedang":
+        case "Bangkitan sedang":
           if (andalalin.pemohon == "Perorangan") {
             return 7;
           } else {

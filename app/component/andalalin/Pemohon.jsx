@@ -18,7 +18,6 @@ function Pemohon({ onPress }) {
   const { getUser, dataMaster } = useContext(UserContext);
 
   const { andalalinState } = PermohonanAtom;
-
   const [andalalin, setAndalalin] = useRecoilState(andalalinState);
 
   const nikInput = React.createRef();
@@ -67,14 +66,13 @@ function Pemohon({ onPress }) {
       data.current = {
         ...andalalin,
       };
-
       return () => {
         setAndalalin(data.current);
       };
     }, [])
   );
 
-  useEffect(() => {
+  const data_set = () => {
     if (andalalin.pemohon == "Perorangan") {
       data.current = {
         ...andalalin,
@@ -126,7 +124,7 @@ function Pemohon({ onPress }) {
         nomer_pemohon: nomerSeluler,
       };
     }
-  }, [nik, jabatan, jenis, tempat, tanggal, alamatModal, alamat, nomerSeluler]);
+  };
 
   const press = () => {
     if (andalalin.pemohon == "Perorangan") {
@@ -176,6 +174,9 @@ function Pemohon({ onPress }) {
         onPress();
       } else {
         nik == "" ? (nikError ? "" : togglenikError()) : "";
+        if (nik != "") {
+          nik.length < 16 ? (nikError ? "" : togglenikError()) : "";
+        }
         jabatan == "" ? (jabatanError ? "" : togglejabatanError()) : "";
         jenis == "" ? (jenisError ? "" : togglejenisError()) : "";
         tempat == "" ? (tempatError ? "" : toggletempatError()) : "";
@@ -196,18 +197,21 @@ function Pemohon({ onPress }) {
   useEffect(() => {
     if (jenis != "") {
       clear_error();
+      data_set();
     }
   }, [jenis]);
 
   useEffect(() => {
     if (tanggal != "") {
       clear_error();
+      data_set();
     }
   }, [tanggal]);
 
   useEffect(() => {
     if (alamatModal != "") {
       clear_error();
+      data_set();
     }
   }, [alamatModal]);
 
@@ -292,6 +296,57 @@ function Pemohon({ onPress }) {
           }
           clear_error();
           setNik(value);
+          if (andalalin.pemohon == "Perorangan") {
+            data.current = {
+              ...andalalin,
+              nik_pemohon: value,
+              jenis_kelamin_pemohon: jenis,
+              tempat_lahir_pemohon: tempat,
+              tanggal_lahir_pemohon: tanggal,
+              wilayah_administratif_pemohon: alamatModal,
+              provinsi_pemohon: provinsi,
+              kabupaten_pemohon: kabupaten,
+              kecamatan_pemohon: kecamatan,
+              kelurahan_pemohon: kelurahan,
+              alamat_pemohon: alamat,
+              nomer_pemohon: nomerSeluler,
+              jabatan_pemohon: "-",
+              nama_perusahaan: getUser().nama,
+              alamat_perusahaan: alamat,
+              wilayah_administratif_perusahaan: alamatModal,
+              provinsi_perusahaan: provinsi,
+              kabupaten_perusahaan: kabupaten,
+              kecamatan_perusahaan: kecamatan,
+              kelurahan_perusahaan: kelurahan,
+              nomer_perusahaan: nomerSeluler,
+              email_perusahaan: getUser().email,
+              nama_pimpinan: getUser().nama,
+              jabatan_pimpinan: "-",
+              jenis_kelamin_pimpinan: jenis,
+              wilayah_administratif_pimpinan: alamatModal,
+              provinsi_pimpinan_perusahaan: provinsi,
+              kabupaten_pimpinan_perusahaan: kabupaten,
+              kecamatan_pimpinan_perusahaan: kecamatan,
+              kelurahan_pimpinan_perusahaan: kelurahan,
+              alamat_pimpinan: alamat,
+            };
+          } else {
+            data.current = {
+              ...andalalin,
+              nik_pemohon: value,
+              jabatan_pemohon: jabatan,
+              jenis_kelamin_pemohon: jenis,
+              tempat_lahir_pemohon: tempat,
+              tanggal_lahir_pemohon: tanggal,
+              wilayah_administratif_pemohon: alamatModal,
+              provinsi_pemohon: provinsi,
+              kabupaten_pemohon: kabupaten,
+              kecamatan_pemohon: kecamatan,
+              kelurahan_pemohon: kelurahan,
+              alamat_pemohon: alamat,
+              nomer_pemohon: nomerSeluler,
+            };
+          }
         }}
         submit={() => {
           if (nik.length > 0 && nik.length < 16) {
@@ -300,6 +355,7 @@ function Pemohon({ onPress }) {
             nikError ? togglenikError() : "";
           }
           clear_error();
+          data_set()
           {
             andalalin.pemohon != "Perorangan"
               ? jabatanInput.current.focus()
@@ -339,9 +395,61 @@ function Pemohon({ onPress }) {
             onChangeText={(value) => {
               clear_error();
               setJabatan(value);
+              if (andalalin.pemohon == "Perorangan") {
+                data.current = {
+                  ...andalalin,
+                  nik_pemohon: nik,
+                  jenis_kelamin_pemohon: jenis,
+                  tempat_lahir_pemohon: tempat,
+                  tanggal_lahir_pemohon: tanggal,
+                  wilayah_administratif_pemohon: alamatModal,
+                  provinsi_pemohon: provinsi,
+                  kabupaten_pemohon: kabupaten,
+                  kecamatan_pemohon: kecamatan,
+                  kelurahan_pemohon: kelurahan,
+                  alamat_pemohon: alamat,
+                  nomer_pemohon: nomerSeluler,
+                  jabatan_pemohon: "-",
+                  nama_perusahaan: getUser().nama,
+                  alamat_perusahaan: alamat,
+                  wilayah_administratif_perusahaan: alamatModal,
+                  provinsi_perusahaan: provinsi,
+                  kabupaten_perusahaan: kabupaten,
+                  kecamatan_perusahaan: kecamatan,
+                  kelurahan_perusahaan: kelurahan,
+                  nomer_perusahaan: nomerSeluler,
+                  email_perusahaan: getUser().email,
+                  nama_pimpinan: getUser().nama,
+                  jabatan_pimpinan: "-",
+                  jenis_kelamin_pimpinan: jenis,
+                  wilayah_administratif_pimpinan: alamatModal,
+                  provinsi_pimpinan_perusahaan: provinsi,
+                  kabupaten_pimpinan_perusahaan: kabupaten,
+                  kecamatan_pimpinan_perusahaan: kecamatan,
+                  kelurahan_pimpinan_perusahaan: kelurahan,
+                  alamat_pimpinan: alamat,
+                };
+              } else {
+                data.current = {
+                  ...andalalin,
+                  nik_pemohon: nik,
+                  jabatan_pemohon: value,
+                  jenis_kelamin_pemohon: jenis,
+                  tempat_lahir_pemohon: tempat,
+                  tanggal_lahir_pemohon: tanggal,
+                  wilayah_administratif_pemohon: alamatModal,
+                  provinsi_pemohon: provinsi,
+                  kabupaten_pemohon: kabupaten,
+                  kecamatan_pemohon: kecamatan,
+                  kelurahan_pemohon: kelurahan,
+                  alamat_pemohon: alamat,
+                  nomer_pemohon: nomerSeluler,
+                };
+              }
             }}
             submit={() => {
               clear_error();
+              data_set()
             }}
           />
         </View>
@@ -374,9 +482,61 @@ function Pemohon({ onPress }) {
         onChangeText={(value) => {
           clear_error();
           setTempat(value);
+          if (andalalin.pemohon == "Perorangan") {
+            data.current = {
+              ...andalalin,
+              nik_pemohon: nik,
+              jenis_kelamin_pemohon: jenis,
+              tempat_lahir_pemohon: value,
+              tanggal_lahir_pemohon: tanggal,
+              wilayah_administratif_pemohon: alamatModal,
+              provinsi_pemohon: provinsi,
+              kabupaten_pemohon: kabupaten,
+              kecamatan_pemohon: kecamatan,
+              kelurahan_pemohon: kelurahan,
+              alamat_pemohon: alamat,
+              nomer_pemohon: nomerSeluler,
+              jabatan_pemohon: "-",
+              nama_perusahaan: getUser().nama,
+              alamat_perusahaan: alamat,
+              wilayah_administratif_perusahaan: alamatModal,
+              provinsi_perusahaan: provinsi,
+              kabupaten_perusahaan: kabupaten,
+              kecamatan_perusahaan: kecamatan,
+              kelurahan_perusahaan: kelurahan,
+              nomer_perusahaan: nomerSeluler,
+              email_perusahaan: getUser().email,
+              nama_pimpinan: getUser().nama,
+              jabatan_pimpinan: "-",
+              jenis_kelamin_pimpinan: jenis,
+              wilayah_administratif_pimpinan: alamatModal,
+              provinsi_pimpinan_perusahaan: provinsi,
+              kabupaten_pimpinan_perusahaan: kabupaten,
+              kecamatan_pimpinan_perusahaan: kecamatan,
+              kelurahan_pimpinan_perusahaan: kelurahan,
+              alamat_pimpinan: alamat,
+            };
+          } else {
+            data.current = {
+              ...andalalin,
+              nik_pemohon: nik,
+              jabatan_pemohon: jabatan,
+              jenis_kelamin_pemohon: jenis,
+              tempat_lahir_pemohon: value,
+              tanggal_lahir_pemohon: tanggal,
+              wilayah_administratif_pemohon: alamatModal,
+              provinsi_pemohon: provinsi,
+              kabupaten_pemohon: kabupaten,
+              kecamatan_pemohon: kecamatan,
+              kelurahan_pemohon: kelurahan,
+              alamat_pemohon: alamat,
+              nomer_pemohon: nomerSeluler,
+            };
+          }
         }}
         submit={() => {
           clear_error();
+          data_set()
         }}
       />
 
@@ -420,6 +580,57 @@ function Pemohon({ onPress }) {
         onChangeText={(value) => {
           clear_error();
           setAlamat(value);
+          if (andalalin.pemohon == "Perorangan") {
+            data.current = {
+              ...andalalin,
+              nik_pemohon: nik,
+              jenis_kelamin_pemohon: jenis,
+              tempat_lahir_pemohon: tempat,
+              tanggal_lahir_pemohon: tanggal,
+              wilayah_administratif_pemohon: alamatModal,
+              provinsi_pemohon: provinsi,
+              kabupaten_pemohon: kabupaten,
+              kecamatan_pemohon: kecamatan,
+              kelurahan_pemohon: kelurahan,
+              alamat_pemohon: value,
+              nomer_pemohon: nomerSeluler,
+              jabatan_pemohon: "-",
+              nama_perusahaan: getUser().nama,
+              alamat_perusahaan: value,
+              wilayah_administratif_perusahaan: alamatModal,
+              provinsi_perusahaan: provinsi,
+              kabupaten_perusahaan: kabupaten,
+              kecamatan_perusahaan: kecamatan,
+              kelurahan_perusahaan: kelurahan,
+              nomer_perusahaan: nomerSeluler,
+              email_perusahaan: getUser().email,
+              nama_pimpinan: getUser().nama,
+              jabatan_pimpinan: "-",
+              jenis_kelamin_pimpinan: jenis,
+              wilayah_administratif_pimpinan: alamatModal,
+              provinsi_pimpinan_perusahaan: provinsi,
+              kabupaten_pimpinan_perusahaan: kabupaten,
+              kecamatan_pimpinan_perusahaan: kecamatan,
+              kelurahan_pimpinan_perusahaan: kelurahan,
+              alamat_pimpinan: value,
+            };
+          } else {
+            data.current = {
+              ...andalalin,
+              nik_pemohon: nik,
+              jabatan_pemohon: jabatan,
+              jenis_kelamin_pemohon: jenis,
+              tempat_lahir_pemohon: tempat,
+              tanggal_lahir_pemohon: tanggal,
+              wilayah_administratif_pemohon: alamatModal,
+              provinsi_pemohon: provinsi,
+              kabupaten_pemohon: kabupaten,
+              kecamatan_pemohon: kecamatan,
+              kelurahan_pemohon: kelurahan,
+              alamat_pemohon: value,
+              nomer_pemohon: nomerSeluler,
+            };
+          }
         }}
       />
 
@@ -450,9 +661,61 @@ function Pemohon({ onPress }) {
         onChangeText={(value) => {
           clear_error();
           setNomerSeluler(value);
+          if (andalalin.pemohon == "Perorangan") {
+            data.current = {
+              ...andalalin,
+              nik_pemohon: nik,
+              jenis_kelamin_pemohon: jenis,
+              tempat_lahir_pemohon: tempat,
+              tanggal_lahir_pemohon: tanggal,
+              wilayah_administratif_pemohon: alamatModal,
+              provinsi_pemohon: provinsi,
+              kabupaten_pemohon: kabupaten,
+              kecamatan_pemohon: kecamatan,
+              kelurahan_pemohon: kelurahan,
+              alamat_pemohon: alamat,
+              nomer_pemohon: value,
+              jabatan_pemohon: "-",
+              nama_perusahaan: getUser().nama,
+              alamat_perusahaan: alamat,
+              wilayah_administratif_perusahaan: alamatModal,
+              provinsi_perusahaan: provinsi,
+              kabupaten_perusahaan: kabupaten,
+              kecamatan_perusahaan: kecamatan,
+              kelurahan_perusahaan: kelurahan,
+              nomer_perusahaan: value,
+              email_perusahaan: getUser().email,
+              nama_pimpinan: getUser().nama,
+              jabatan_pimpinan: "-",
+              jenis_kelamin_pimpinan: jenis,
+              wilayah_administratif_pimpinan: alamatModal,
+              provinsi_pimpinan_perusahaan: provinsi,
+              kabupaten_pimpinan_perusahaan: kabupaten,
+              kecamatan_pimpinan_perusahaan: kecamatan,
+              kelurahan_pimpinan_perusahaan: kelurahan,
+              alamat_pimpinan: alamat,
+            };
+          } else {
+            data.current = {
+              ...andalalin,
+              nik_pemohon: nik,
+              jabatan_pemohon: jabatan,
+              jenis_kelamin_pemohon: jenis,
+              tempat_lahir_pemohon: tempat,
+              tanggal_lahir_pemohon: tanggal,
+              wilayah_administratif_pemohon: alamatModal,
+              provinsi_pemohon: provinsi,
+              kabupaten_pemohon: kabupaten,
+              kecamatan_pemohon: kecamatan,
+              kelurahan_pemohon: kelurahan,
+              alamat_pemohon: alamat,
+              nomer_pemohon: value,
+            };
+          }
         }}
         submit={() => {
           clear_error();
+          data_set()
         }}
       />
 

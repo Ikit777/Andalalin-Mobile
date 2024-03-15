@@ -30,12 +30,11 @@ function PersyaratanPerlalin({ navigation, onPress }) {
 
   useFocusEffect(
     React.useCallback(() => {
-      save.current = perlalin.persyaratan;
+      save.current = {
+        ...perlalin,
+      };
       return () => {
-        setPerlalin({
-          ...perlalin,
-          persyaratan: save.current,
-        });
+        setPerlalin(save.current);
       };
     }, [])
   );
@@ -99,7 +98,10 @@ function PersyaratanPerlalin({ navigation, onPress }) {
       };
     });
 
-    save.current = tambahanItem;
+    save.current = {
+      ...perlalin,
+      persyaratan: tambahanItem,
+    };
 
     let not_empty = updateItems.filter((item) => {
       return item.fileBerkas == "" && item.kebutuhan == "Wajib";

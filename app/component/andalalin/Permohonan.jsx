@@ -14,7 +14,6 @@ function Permohonan({ onPress }) {
   const { dataMaster } = useContext(UserContext);
 
   const { andalalinState } = PermohonanAtom;
-
   const [andalalin, setAndalalin] = useRecoilState(andalalinState);
 
   const [jenisRencana, setJenisRencana] = useState(andalalin.jenis);
@@ -48,7 +47,7 @@ function Permohonan({ onPress }) {
     }, [])
   );
 
-  useEffect(() => {
+  const data_set = () => {
     data.current = {
       ...andalalin,
       jenis: jenisRencana,
@@ -56,12 +55,7 @@ function Permohonan({ onPress }) {
       lokasi_pengambilan: lokasiPengambilan,
       pemohon: kategoriPemohon,
     };
-  }, [
-    jenisRencana,
-    rencanaJenisPembangunan,
-    lokasiPengambilan,
-    kategoriPemohon,
-  ]);
+  };
 
   let lokasi = dataMaster.lokasi_pengambilan.map((item) => {
     return { value: item };
@@ -94,12 +88,11 @@ function Permohonan({ onPress }) {
   };
 
   useEffect(() => {
-    setTimeout(() => {
       if (jenisRencana != "") {
         clear_error();
         rencanaPembangunan();
+        data_set();
       }
-    }, 500);
 
     if (jenisRencana != andalalin.jenis) {
       setrencanaJenisPembangunan("");
@@ -109,18 +102,21 @@ function Permohonan({ onPress }) {
   useEffect(() => {
     if (lokasiPengambilan != "") {
       clear_error();
+      data_set();
     }
   }, [lokasiPengambilan]);
 
   useEffect(() => {
     if (kategoriPemohon != "") {
       clear_error();
+      data_set();
     }
   }, [kategoriPemohon]);
 
   useEffect(() => {
     if (rencanaJenisPembangunan != "") {
       clear_error();
+      data_set();
     }
   }, [rencanaJenisPembangunan]);
 

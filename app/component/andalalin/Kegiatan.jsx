@@ -24,7 +24,6 @@ function Kegiatan({ onPress }) {
   const context = useContext(UserContext);
 
   const { andalalinState } = PermohonanAtom;
-
   const [andalalin, setAndalalin] = useRecoilState(andalalinState);
 
   const kegiatanInput = React.createRef();
@@ -77,7 +76,7 @@ function Kegiatan({ onPress }) {
     }, [])
   );
 
-  useEffect(() => {
+  const data_set = () => {
     save.current = {
       ...andalalin,
       aktivitas: kegiatan,
@@ -89,7 +88,7 @@ function Kegiatan({ onPress }) {
       tanggal_skrk: tanggal,
       catatan: catatanTambahan,
     };
-  }, [kegiatan, untuk, total, luas, nomer, tanggal, catatanTambahan]);
+  };
 
   const showSnackbar = () => {
     setSnackbarVisible();
@@ -193,7 +192,7 @@ function Kegiatan({ onPress }) {
         tanggal != "" &&
         total != ""
       ) {
-        formError ? toggleFormError() : "";
+        clear_error();
         onPress();
       } else {
         kegiatan == "" ? (kegiatanError ? "" : toggleKegiatanError()) : "";
@@ -212,7 +211,7 @@ function Kegiatan({ onPress }) {
         tanggal != "" &&
         total != ""
       ) {
-        formError ? toggleFormError() : "";
+        clear_error();
         onPress();
       } else {
         kegiatan == "" ? (kegiatanError ? "" : toggleKegiatanError()) : "";
@@ -247,6 +246,7 @@ function Kegiatan({ onPress }) {
   useEffect(() => {
     if (tanggal != "") {
       clear_error();
+      data_set();
     }
   }, [tanggal]);
 
@@ -307,6 +307,17 @@ function Kegiatan({ onPress }) {
           onChangeText={(value) => {
             clear_error();
             setKegiatan(value);
+            save.current = {
+              ...andalalin,
+              aktivitas: value,
+              peruntukan: untuk,
+              kriteria_khusus: data.Kriteria,
+              total_luas_lahan: total,
+              nilai_kriteria: luas,
+              nomer_skrk: nomer,
+              tanggal_skrk: tanggal,
+              catatan: catatanTambahan,
+            };
           }}
         />
 
@@ -325,6 +336,17 @@ function Kegiatan({ onPress }) {
           onChangeText={(value) => {
             clear_error();
             setPeruntukan(value);
+            save.current = {
+              ...andalalin,
+              aktivitas: kegiatan,
+              peruntukan: value,
+              kriteria_khusus: data.Kriteria,
+              total_luas_lahan: total,
+              nilai_kriteria: luas,
+              nomer_skrk: nomer,
+              tanggal_skrk: tanggal,
+              catatan: catatanTambahan,
+            };
           }}
         />
 
@@ -343,9 +365,21 @@ function Kegiatan({ onPress }) {
           onChangeText={(value) => {
             clear_error();
             setTotal(value);
+            save.current = {
+              ...andalalin,
+              aktivitas: kegiatan,
+              peruntukan: untuk,
+              kriteria_khusus: data.Kriteria,
+              total_luas_lahan: value,
+              nilai_kriteria: luas,
+              nomer_skrk: nomer,
+              tanggal_skrk: tanggal,
+              catatan: catatanTambahan,
+            };
           }}
           submit={() => {
             clear_error();
+            data_set();
             if (data.Kriteria != "" && data.Kriteria != null) {
               total != "" ? luasInput.current.focus() : "";
             } else {
@@ -375,9 +409,21 @@ function Kegiatan({ onPress }) {
               onChangeText={(value) => {
                 clear_error();
                 setLuas(value);
+                save.current = {
+                  ...andalalin,
+                  aktivitas: kegiatan,
+                  peruntukan: untuk,
+                  kriteria_khusus: data.Kriteria,
+                  total_luas_lahan: total,
+                  nilai_kriteria: value,
+                  nomer_skrk: nomer,
+                  tanggal_skrk: tanggal,
+                  catatan: catatanTambahan,
+                };
               }}
               submit={() => {
                 clear_error();
+                data_set();
                 luas != "" ? nomerInput.current.focus() : "";
               }}
             />
@@ -400,9 +446,21 @@ function Kegiatan({ onPress }) {
           onChangeText={(value) => {
             clear_error();
             setNomer(value);
+            save.current = {
+              ...andalalin,
+              aktivitas: kegiatan,
+              peruntukan: untuk,
+              kriteria_khusus: data.Kriteria,
+              total_luas_lahan: total,
+              nilai_kriteria: luas,
+              nomer_skrk: value,
+              tanggal_skrk: tanggal,
+              catatan: catatanTambahan,
+            };
           }}
           submit={() => {
             clear_error();
+            data_set();
           }}
         />
 
@@ -432,6 +490,17 @@ function Kegiatan({ onPress }) {
           onChangeText={(value) => {
             setCatatanTambahan(value);
             clear_error();
+            save.current = {
+              ...andalalin,
+              aktivitas: kegiatan,
+              peruntukan: untuk,
+              kriteria_khusus: data.Kriteria,
+              total_luas_lahan: total,
+              nilai_kriteria: luas,
+              nomer_skrk: nomer,
+              tanggal_skrk: tanggal,
+              catatan: value,
+            };
           }}
         />
 
