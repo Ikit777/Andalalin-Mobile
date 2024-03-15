@@ -103,7 +103,7 @@ const pembahasanInit = {
   foto: [],
   stackholder: [],
   pembahasan: [],
-}
+};
 
 export function UserProvider({ children }) {
   const [loading, toggleLoading] = useState(false);
@@ -111,6 +111,8 @@ export function UserProvider({ children }) {
   const [user, setUser] = useState("user");
   const [session, setSession] = useState(false);
   const [detailPermohonan, setDetailPermohonan] = useState("permohonan");
+
+  const [dataKriteria, setDataKriteria] = useState("");
 
   const [indexSurvei, setIndexSurvei] = useState(1);
   const [survei, setSurvei] = useReducer(reducer, surveiInit);
@@ -388,6 +390,8 @@ export function UserProvider({ children }) {
         pembahasan,
         setPembahasan,
         clearPembahasan,
+        dataKriteria,
+        setDataKriteria,
       }}
     >
       {children}

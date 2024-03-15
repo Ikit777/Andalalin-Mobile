@@ -19,7 +19,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { useRecoilState } from "recoil";
 
 function Kegiatan({ onPress }) {
-  const { dataMaster } = useContext(UserContext);
+  const { dataMaster, dataKriteria } = useContext(UserContext);
 
   const context = useContext(UserContext);
 
@@ -50,7 +50,7 @@ function Kegiatan({ onPress }) {
   const [tanggalError, toggleTanggalError] = useStateToggler();
   const [totalError, toggleTotalError] = useStateToggler();
 
-  const [data, setData] = useState("");
+  const [data, setData] = useState(dataKriteria);
 
   const [dateModal, toggleDateModal] = useStateToggler();
 
@@ -224,24 +224,6 @@ function Kegiatan({ onPress }) {
       }
     }
   };
-
-  const dataSet = () => {
-    let findData = dataMaster.jenis_rencana.find((item) => {
-      return item.Kategori == andalalin.jenis;
-    });
-
-    if (findData != null) {
-      let rencana = findData.JenisRencana.find((item) => {
-        return item.Jenis == andalalin.rencana_pembangunan;
-      });
-
-      setData(rencana);
-    }
-  };
-
-  useEffect(() => {
-    dataSet();
-  }, []);
 
   useEffect(() => {
     if (tanggal != "") {

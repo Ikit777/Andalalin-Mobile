@@ -11,7 +11,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { useRecoilState } from "recoil";
 
 function Permohonan({ onPress }) {
-  const { dataMaster } = useContext(UserContext);
+  const { dataMaster, setDataKriteria } = useContext(UserContext);
 
   const { andalalinState } = PermohonanAtom;
   const [andalalin, setAndalalin] = useRecoilState(andalalinState);
@@ -88,11 +88,11 @@ function Permohonan({ onPress }) {
   };
 
   useEffect(() => {
-      if (jenisRencana != "") {
-        clear_error();
-        rencanaPembangunan();
-        data_set();
-      }
+    if (jenisRencana != "") {
+      clear_error();
+      rencanaPembangunan();
+      data_set();
+    }
 
     if (jenisRencana != andalalin.jenis) {
       setrencanaJenisPembangunan("");
@@ -128,6 +128,7 @@ function Permohonan({ onPress }) {
       kategoriPemohon != ""
     ) {
       clear_error();
+      dataSet();
       onPress();
     } else {
       jenisRencana == "" ? (jenisError ? "" : toggleJenisError()) : "";
@@ -162,6 +163,20 @@ function Permohonan({ onPress }) {
         ? toggleFormError()
         : ""
       : "";
+  };
+
+  const dataSet = () => {
+    let findData = dataMaster.jenis_rencana.find((item) => {
+      return item.Kategori == jenisRencana;
+    });
+
+    if (findData != null) {
+      let rencana = findData.JenisRencana.find((item) => {
+        return item.Jenis == rencanaJenisPembangunan;
+      });
+
+      setDataKriteria(rencana);
+    }
   };
 
   return (
