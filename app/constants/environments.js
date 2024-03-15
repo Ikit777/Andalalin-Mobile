@@ -58,8 +58,14 @@ const environments = {
       ANDALALIN_GET_SURVEI_LAPANGAN: url + "/v1/permohonan/survey/detail",
       ANDALALIN_GET_ALL: url + "/v1/permohonan/all",
       ANDALALIN_GET_STATUS: url + "/v1/permohonan/status",
+      ANDALALIN_PEMBUATAN_BERITA_ACARA_PEMBAHASAN:
+        url + "/v1/permohonan/pembuatan/berita/acara/pembahasan",
+      ANDALALIN_BERITA_ACARA_PENINJAUAN:
+        url + "/v1/permohonan/upload/berita/acara/peninjauan",
       ANDALALIN_SIMPAN_PEMERIKSAAN:
         url + "/v1/permohonan/pemeriksaan/keputusan",
+      ANDALALIN_KESESUAIAN_SUBSTANSI_TEKNIS:
+        url + "/v1/permohonan/pemeriksaan/substansi",
       ANDALALIN_CHECKLIST_KELENGKAPAN_AKHIR:
         url + "/v1/permohonan/pemeriksaan/kelengkapan",
       ANDALALIN_GET_PERLENGKAPAN: url + "/v1/permohonan/perlalin/perlengkapan",
@@ -71,7 +77,7 @@ const environments = {
       ANDALALIN_PENGECEKAN_PERLENGKAPAN:
         url + "/v1/permohonan/pengecekan/perlengkapan",
       ANDALALIN_TUNDA_PEMASANGAN: url + "/v1/permohonan/pemasangan/tunda",
-      ANDALALIN_BATAL_PERMOHONAN: url + "/v1/permohonan/pemasangan/batal",
+      ANDALALIN_BATAL_PERMOHONAN: url + "/v1/permohonan/batal",
       ANDALALIN_LANJUTKAN_PEMASANGAN:
         url + "/v1/permohonan/pemasangan/lanjutkan",
 
@@ -207,18 +213,27 @@ const environments = {
         url + "/v1/permohonan/pembuatan/keputusan",
       ANDALALIN_PEMBUATAN_PENYUSUN_DOKUMEN:
         url + "/v1/permohonan/pembuatan/penyusun",
+      ANDALALIN_PEMBUATAN_SURAT_PERMOHONAN:
+        url + "/v1/permohonan/pembuatan/surat",
       ANDALALIN_TAMBAH_PETUGAS: url + "/v1/permohonan/survey/petugas/pilih",
       ANDALALIN_TOLAK_PERMOHONAN: url + "/v1/permohonan/tolak",
       ANDALALIN_TUNDA_PERMOHONAN: url + "/v1/permohonan/tunda",
       ANDALALIN_LANJUTKAN_PERMOHONAN: url + "/v1/permohonan/lanjutkan",
       ANDALALIN_GANTI_PETUGAS: url + "/v1/permohonan/survey/petugas/ganti",
       ANDALALIN_GET_BY_TIKET_LEVEL_2: url + "/v1/permohonan/petugas",
+      ANDALALIN_PERBARUI_LOKASI: url + "/v1/permohonan/perbarui/lokasi",
       ANDALALIN_SURVEI_LAPANGAN: url + "/v1/permohonan/survey",
       ANDALALIN_GET_SURVEI_LAPANGAN: url + "/v1/permohonan/survey/detail",
       ANDALALIN_GET_ALL: url + "/v1/permohonan/all",
       ANDALALIN_GET_STATUS: url + "/v1/permohonan/status",
+      ANDALALIN_PEMBUATAN_BERITA_ACARA_PEMBAHASAN:
+        url + "/v1/permohonan/pembuatan/berita/acara/pembahasan",
+      ANDALALIN_BERITA_ACARA_PENINJAUAN:
+        url + "/v1/permohonan/upload/berita/acara/peninjauan",
       ANDALALIN_SIMPAN_PEMERIKSAAN:
         url + "/v1/permohonan/pemeriksaan/keputusan",
+      ANDALALIN_KESESUAIAN_SUBSTANSI_TEKNIS:
+        url + "/v1/permohonan/pemeriksaan/substansi",
       ANDALALIN_CHECKLIST_KELENGKAPAN_AKHIR:
         url + "/v1/permohonan/pemeriksaan/kelengkapan",
       ANDALALIN_GET_PERLENGKAPAN: url + "/v1/permohonan/perlalin/perlengkapan",
@@ -230,7 +245,7 @@ const environments = {
       ANDALALIN_PENGECEKAN_PERLENGKAPAN:
         url + "/v1/permohonan/pengecekan/perlengkapan",
       ANDALALIN_TUNDA_PEMASANGAN: url + "/v1/permohonan/pemasangan/tunda",
-      ANDALALIN_BATAL_PERMOHONAN: url + "/v1/permohonan/pemasangan/batal",
+      ANDALALIN_BATAL_PERMOHONAN: url + "/v1/permohonan/batal",
       ANDALALIN_LANJUTKAN_PEMASANGAN:
         url + "/v1/permohonan/pemasangan/lanjutkan",
 
@@ -366,18 +381,27 @@ const environments = {
         url + "/v1/permohonan/pembuatan/keputusan",
       ANDALALIN_PEMBUATAN_PENYUSUN_DOKUMEN:
         url + "/v1/permohonan/pembuatan/penyusun",
+      ANDALALIN_PEMBUATAN_SURAT_PERMOHONAN:
+        url + "/v1/permohonan/pembuatan/surat",
       ANDALALIN_TAMBAH_PETUGAS: url + "/v1/permohonan/survey/petugas/pilih",
       ANDALALIN_TOLAK_PERMOHONAN: url + "/v1/permohonan/tolak",
       ANDALALIN_TUNDA_PERMOHONAN: url + "/v1/permohonan/tunda",
       ANDALALIN_LANJUTKAN_PERMOHONAN: url + "/v1/permohonan/lanjutkan",
       ANDALALIN_GANTI_PETUGAS: url + "/v1/permohonan/survey/petugas/ganti",
       ANDALALIN_GET_BY_TIKET_LEVEL_2: url + "/v1/permohonan/petugas",
+      ANDALALIN_PERBARUI_LOKASI: url + "/v1/permohonan/perbarui/lokasi",
       ANDALALIN_SURVEI_LAPANGAN: url + "/v1/permohonan/survey",
       ANDALALIN_GET_SURVEI_LAPANGAN: url + "/v1/permohonan/survey/detail",
       ANDALALIN_GET_ALL: url + "/v1/permohonan/all",
       ANDALALIN_GET_STATUS: url + "/v1/permohonan/status",
+      ANDALALIN_PEMBUATAN_BERITA_ACARA_PEMBAHASAN:
+        url + "/v1/permohonan/pembuatan/berita/acara/pembahasan",
+      ANDALALIN_BERITA_ACARA_PENINJAUAN:
+        url + "/v1/permohonan/upload/berita/acara/peninjauan",
       ANDALALIN_SIMPAN_PEMERIKSAAN:
         url + "/v1/permohonan/pemeriksaan/keputusan",
+      ANDALALIN_KESESUAIAN_SUBSTANSI_TEKNIS:
+        url + "/v1/permohonan/pemeriksaan/substansi",
       ANDALALIN_CHECKLIST_KELENGKAPAN_AKHIR:
         url + "/v1/permohonan/pemeriksaan/kelengkapan",
       ANDALALIN_GET_PERLENGKAPAN: url + "/v1/permohonan/perlalin/perlengkapan",
@@ -389,7 +413,7 @@ const environments = {
       ANDALALIN_PENGECEKAN_PERLENGKAPAN:
         url + "/v1/permohonan/pengecekan/perlengkapan",
       ANDALALIN_TUNDA_PEMASANGAN: url + "/v1/permohonan/pemasangan/tunda",
-      ANDALALIN_BATAL_PERMOHONAN: url + "/v1/permohonan/pemasangan/batal",
+      ANDALALIN_BATAL_PERMOHONAN: url + "/v1/permohonan/batal",
       ANDALALIN_LANJUTKAN_PEMASANGAN:
         url + "/v1/permohonan/pemasangan/lanjutkan",
 

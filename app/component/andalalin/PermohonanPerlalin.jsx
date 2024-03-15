@@ -6,17 +6,18 @@ import AText from "../utility/AText";
 import color from "../../constants/color";
 import ACardPerlengkapan from "../utility/ACardPerlengkapan";
 import { Feather } from "@expo/vector-icons";
+import { useRecoilState } from "recoil";
+import PermohonanAtom from "../../atom/PermohonanAtom";
 
 function PermohonanPerlalin({ onPress, navigation }) {
-  const {
-    perlalin: { perlengkapan },
-    setPerlalin,
-    setLokasi,
-    setFoto,
-  } = useContext(UserContext);
+  const { setLokasi, setFoto } = useContext(UserContext);
+
+  const { perlalinState } = PermohonanAtom;
+
+  const [perlalin, setPerlalin] = useRecoilState(perlalinState);
 
   const remove_item = (id) => {
-    const updated = perlengkapan;
+    const updated = perlalin.perlengkapan;
 
     const index = updated.findIndex((value) => {
       return value.id_perlengkapan == id;
@@ -25,9 +26,7 @@ function PermohonanPerlalin({ onPress, navigation }) {
       updated.splice(index, 1);
     }
 
-    setPerlalin({
-      perlengkapan: updated,
-    });
+    setPerlalin({ ...perlalin, perlengkapan: updated });
   };
 
   return (
@@ -37,8 +36,8 @@ function PermohonanPerlalin({ onPress, navigation }) {
       persistentScrollbar={true}
       nestedScrollEnabled={true}
     >
-      {perlengkapan.length != 0
-        ? perlengkapan.map((item, index) => (
+      {perlalin.perlengkapan.length != 0
+        ? perlalin.perlengkapan.map((item, index) => (
             <ACardPerlengkapan
               jenis={item.perlengkapan}
               gambar={item.gambar}
@@ -60,7 +59,7 @@ function PermohonanPerlalin({ onPress, navigation }) {
           ))
         : ""}
 
-      {perlengkapan.length == 0 ? (
+      {perlalin.perlengkapan.length == 0 ? (
         <View
           style={{
             alignItems: "center",
@@ -99,7 +98,7 @@ function PermohonanPerlalin({ onPress, navigation }) {
         ""
       )}
 
-      {perlengkapan.length != 0 ? (
+      {perlalin.perlengkapan.length != 0 ? (
         <AButton
           style={{ marginTop: 16, marginBottom: 50 }}
           title={"Lanjut"}

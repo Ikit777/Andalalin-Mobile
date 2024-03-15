@@ -105,6 +105,17 @@ function DetailUser({ permohonan, navigation, reload }) {
         return tindakan(() => {
           navigation.push("Update", { permohonan: permohonan });
         }, "Perbarui persyaratan");
+      case "Pembayaran billing PNBP":
+        return tindakan(() => {
+          setDokumen("Bukti pembayaran");
+          uploadFile.push({
+            nama: "",
+            file: "",
+            tipe: "",
+            dokumen: "Billing PNBP dan bukti pembayaran PNBP",
+          });
+          toggleUploadModal();
+        }, "Upload bukti pembayaran");
       case "Menunggu surat pernyataan":
         return tindakan(() => {
           setDokumen("Surat pernyataan kesanggupan");
@@ -139,17 +150,6 @@ function DetailUser({ permohonan, navigation, reload }) {
           });
           toggleUploadModal();
         }, "Perbarui dokumen andalalin");
-      case "Menunggu pembayaran":
-        return tindakan(() => {
-          setDokumen("Bukti pembayaran");
-          uploadFile.push({
-            nama: "",
-            file: "",
-            tipe: "",
-            dokumen: "Billing PNBP dan bukti pembayaran PNBP",
-          });
-          toggleUploadModal();
-        }, "Upload bukti pembayaran");
       case "Kelengkapan tidak terpenuhi":
         if (permohonan.kelengkapan != null) {
           return tindakan(() => {
@@ -1714,6 +1714,27 @@ function DetailUser({ permohonan, navigation, reload }) {
               </AText>
             </ADetailView>
           </View>
+        ) : (
+          ""
+        )}
+
+        {permohonan.pertimbangan_pembatalan != "" &&
+        permohonan.pertimbangan_pembatalan != null ? (
+          <ADetailView
+            style={{
+              marginTop: 20,
+            }}
+            title={"Pertimbangan pembatalan permohonan"}
+          >
+            <AText
+              style={{ padding: 16 }}
+              size={12}
+              color={color.neutral.neutral900}
+              weight="normal"
+            >
+              {permohonan.pertimbangan_pembatalan}
+            </AText>
+          </ADetailView>
         ) : (
           ""
         )}

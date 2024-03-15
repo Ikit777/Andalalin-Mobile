@@ -23,16 +23,16 @@ import Modal from "react-native-modal";
 import ATextInputIcon from "../component/utility/ATextInputIcon";
 import { v4 as uuidv4 } from "uuid";
 import { MaterialIcons } from "@expo/vector-icons";
+import { useRecoilState } from "recoil";
+import PermohonanAtom from "../atom/PermohonanAtom";
 
 function TambahPerlengkapanScreen({ navigation, route }) {
-  const {
-    perlalin: { perlengkapan },
-    setPerlalin,
-    dataMaster,
-    lokasi,
-    foto,
-    setFoto,
-  } = useContext(UserContext);
+  const { dataMaster, lokasi, foto, setFoto, toggleLoading } =
+    useContext(UserContext);
+
+  const { perlalinState } = PermohonanAtom;
+
+  const [perlalin, setPerlalin] = useRecoilState(perlalinState);
 
   const id = route.params.id;
   const kondisi = route.params.kondisi;
@@ -80,7 +80,19 @@ function TambahPerlengkapanScreen({ navigation, route }) {
 
   useEffect(() => {
     if (kondisi == "Edit") {
-      const data = perlengkapan.find((item) => item.id_perlengkapan == id);
+      toggleLoading(true);
+
+      setTimeout(() => {
+        toggleLoading(false);
+      }, 3000);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (kondisi == "Edit") {
+      const data = perlalin.perlengkapan.find(
+        (item) => item.id_perlengkapan == id
+      );
       setKategoriUtama(data.kategori_utama);
       setKategoriPerlalin(data.kategori);
       setJenisPerlengkapan(data.perlengkapan);
@@ -107,10 +119,9 @@ function TambahPerlengkapanScreen({ navigation, route }) {
   }, []);
 
   useEffect(() => {
-    clear_error();
-
     setTimeout(() => {
       if (KategoriUtama != "") {
+        clear_error();
         let kategori = dataMaster.kategori_perlengkapan.find((item) => {
           return item.KategoriUtama == KategoriUtama;
         });
@@ -145,17 +156,18 @@ function TambahPerlengkapanScreen({ navigation, route }) {
   };
 
   useEffect(() => {
-    clear_error();
-
     setTimeout(() => {
       if (kategoriPerlalin != "") {
+        clear_error();
         perlengkapanData();
       }
     }, 300);
   }, [kategoriPerlalin]);
 
   useEffect(() => {
-    clear_error();
+    if (jenisPerlengkapan != "") {
+      clear_error();
+    }
   }, [jenisPerlengkapan]);
 
   const press_titik = () => {
@@ -165,13 +177,19 @@ function TambahPerlengkapanScreen({ navigation, route }) {
   useFocusEffect(
     React.useCallback(() => {
       if (lokasi != null) {
-        clear_error();
         setTitik(lokasi.titik_pemasangan);
         setLat(lokasi.lat_pemasangan);
         setLong(lokasi.long_pemasangan);
+        clear_error();
       }
     }, [lokasi])
   );
+
+  useEffect(() => {
+    if (titik != "") {
+      clear_error();
+    }
+  }, [titik]);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -276,21 +294,22 @@ function TambahPerlengkapanScreen({ navigation, route }) {
       alasan: kegiatan,
       foto: foto.foto,
     };
-    const updated = perlengkapan;
-    updated.push(data);
 
-    setPerlalin({ perlengkapan: updated });
+    setPerlalin({
+      ...perlalin,
+      perlengkapan: [...perlalin.perlengkapan, data],
+    });
   };
 
   const edit = () => {
-    const updated = perlengkapan;
+    const updated = perlalin.perlengkapan;
 
     const index = updated.findIndex((value) => {
       return value.id_perlengkapan == id;
     });
 
     const updatedItem = {
-      ...perlengkapan[index],
+      ...perlalin.perlengkapan[index],
       kategori_utama: KategoriUtama,
       kategori: kategoriPerlalin,
       perlengkapan: jenisPerlengkapan,
@@ -303,10 +322,11 @@ function TambahPerlengkapanScreen({ navigation, route }) {
       foto: foto.foto,
     };
 
-    const updatedItems = [...perlengkapan];
+    const updatedItems = [...perlalin.perlengkapan];
     updatedItems[index] = updatedItem;
 
     setPerlalin({
+      ...perlalin,
       perlengkapan: updatedItems,
     });
   };

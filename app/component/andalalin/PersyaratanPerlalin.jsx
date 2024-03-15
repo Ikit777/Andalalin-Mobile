@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import { StyleSheet, View, TouchableOpacity, ScrollView } from "react-native";
 import AText from "../../component/utility/AText";
 import color from "../../constants/color";
@@ -7,13 +7,16 @@ import { UserContext } from "../../context/UserContext";
 import AButton from "../utility/AButton";
 import * as DocumentPicker from "expo-document-picker";
 import { useStateToggler } from "../../hooks/useUtility";
+import { useRecoilState } from "recoil";
+import PermohonanAtom from "../../atom/PermohonanAtom";
+import { useFocusEffect } from "@react-navigation/native";
 
 function PersyaratanPerlalin({ navigation, onPress }) {
-  const {
-    perlalin: { persyaratan },
-    dataMaster,
-    setPerlalin,
-  } = useContext(UserContext);
+  const { dataMaster } = useContext(UserContext);
+
+  const { perlalinState } = PermohonanAtom;
+
+  const [perlalin, setPerlalin] = useRecoilState(perlalinState);
 
   const [data, setData] = useState();
 
@@ -22,6 +25,20 @@ function PersyaratanPerlalin({ navigation, onPress }) {
   const stateError = false;
 
   const [formError, toggleFormError] = useStateToggler();
+
+  const save = useRef();
+
+  useFocusEffect(
+    React.useCallback(() => {
+      save.current = perlalin.persyaratan;
+      return () => {
+        setPerlalin({
+          ...perlalin,
+          persyaratan: save.current,
+        });
+      };
+    }, [])
+  );
 
   useEffect(() => {
     let persyaratan = dataMaster.persyaratan.PersyaratanPerlalin.map((item) => {
@@ -40,7 +57,7 @@ function PersyaratanPerlalin({ navigation, onPress }) {
   }, []);
 
   const savedNama = (dokumen) => {
-    const updatedStateVariables = [...persyaratan];
+    const updatedStateVariables = [...perlalin.persyaratan];
     const index = updatedStateVariables.findIndex(
       (v) => v.persyaratan === dokumen
     );
@@ -52,7 +69,7 @@ function PersyaratanPerlalin({ navigation, onPress }) {
   };
 
   const savedFile = (dokumen) => {
-    const updatedStateVariables = [...persyaratan];
+    const updatedStateVariables = [...perlalin.persyaratan];
     const index = updatedStateVariables.findIndex(
       (v) => v.persyaratan === dokumen
     );
@@ -82,9 +99,7 @@ function PersyaratanPerlalin({ navigation, onPress }) {
       };
     });
 
-    setPerlalin({
-      persyaratan: tambahanItem,
-    });
+    save.current = tambahanItem;
 
     let not_empty = updateItems.filter((item) => {
       return item.fileBerkas == "" && item.kebutuhan == "Wajib";
@@ -114,18 +129,6 @@ function PersyaratanPerlalin({ navigation, onPress }) {
     });
 
     if (not_empty.length == 0) {
-      const tambahanItem = stateVariables.map((item) => {
-        return {
-          persyaratan: item.persyaratan,
-          kebutuhan: item.kebutuhan,
-          nama: item.namaFile,
-          file: item.fileBerkas,
-        };
-      });
-
-      setPerlalin({
-        persyaratan: tambahanItem,
-      });
       onPress();
     } else {
       formError ? "" : toggleFormError();
@@ -229,17 +232,6 @@ function PersyaratanPerlalin({ navigation, onPress }) {
             <TouchableOpacity
               style={{ flexDirection: "row", paddingLeft: 4 }}
               onPress={() => {
-                const tambahanItem = stateVariables.map((item) => {
-                  return {
-                    persyaratan: item.persyaratan,
-                    nama: item.namaFile,
-                    file: item.fileBerkas,
-                  };
-                });
-
-                setPerlalin({
-                  persyaratan: tambahanItem,
-                });
                 navigation.push("Ketentuan", {
                   kondisi: "Pengajuan perlalin",
                 });

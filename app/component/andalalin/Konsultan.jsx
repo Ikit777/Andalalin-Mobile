@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import { StyleSheet, ScrollView } from "react-native";
 import AText from "../../component/utility/AText";
 import color from "../../constants/color";
@@ -9,34 +9,16 @@ import AButton from "../utility/AButton";
 import ADropDownCostume from "../utility/ADropdownCostume";
 import ATextInputIcon from "../utility/ATextInputIcon";
 import AInputAlamat from "../utility/AInputAlamat";
+import PermohonanAtom from "../../atom/PermohonanAtom";
+import { useFocusEffect } from "@react-navigation/native";
+import { useRecoilState } from "recoil";
 
 function Konsultan({ onPress }) {
-  const {
-    permohonan: {
-      nama_konsultan,
-      wilayah_administratif_konsultan,
-      provinsi_konsultan,
-      kabupaten_konsultan,
-      kecamatan_konsultan,
-      kelurahan_konsultan,
-      alamat_konsultan,
-      nomer_konsultan,
-      email_konsultan,
-      nama_penyusun,
-      jenis_kelamin_penyusun,
-      wilayah_administratif_penyusun,
-      provinsi_penyusun,
-      kabupaten_penyusun,
-      kecamatan_penyusun,
-      kelurahan_penyusun,
-      alamat_penyusun,
-      nomer_serifikat_penyusun,
-      klasifikasi_penyusun,
-      bangkitan,
-    },
-    dispatch,
-    dataMaster,
-  } = useContext(UserContext);
+  const { dataMaster } = useContext(UserContext);
+
+  const { andalalinState } = PermohonanAtom;
+
+  const [andalalin, setAndalalin] = useRecoilState(andalalinState);
 
   const namaInput = React.createRef();
   const alamatInput = React.createRef();
@@ -46,33 +28,44 @@ function Konsultan({ onPress }) {
   const sertifikatInput = React.createRef();
   const klasifikasiInput = React.createRef();
 
-  const [nama, setNama] = useState(nama_konsultan);
-  const [alamat, setAlamat] = useState(alamat_konsultan);
-  const [wilayah, setWilayah] = useState(wilayah_administratif_konsultan);
-  const [provinsi, setProvinsi] = useState(provinsi_konsultan);
-  const [kabupaten, setKabupaten] = useState(kabupaten_konsultan);
-  const [kecamatan, setKecamatan] = useState(kecamatan_konsultan);
-  const [kelurahan, setKelurahan] = useState(kelurahan_konsultan);
-  const [nomer, setNomer] = useState(nomer_konsultan);
-  const [email, setEmail] = useState(email_konsultan);
-  const [penyusun, setPenyusun] = useState(nama_penyusun);
-  const [jenis, setJenis] = useState(jenis_kelamin_penyusun);
-  const [wilayahPenyusun, setWilayahPenyusun] = useState(
-    wilayah_administratif_penyusun
+  const [nama, setNama] = useState(andalalin.nama_konsultan);
+  const [alamat, setAlamat] = useState(andalalin.alamat_konsultan);
+  const [wilayah, setWilayah] = useState(
+    andalalin.wilayah_administratif_konsultan
   );
-  const [provinsiPenyusun, setProvinsiPenyusun] = useState(provinsi_penyusun);
-  const [kabupatenPenyusun, setKabupatenPenyusun] =
-    useState(kabupaten_penyusun);
-  const [kecamatanPenyusun, setKecamatanPenyusun] =
-    useState(kecamatan_penyusun);
-  const [kelurahanPenyusun, setKelurahanPenyusun] =
-    useState(kelurahan_penyusun);
-  const [alamatPenyusun, setAlamatPenyusun] = useState(alamat_penyusun);
+  const [provinsi, setProvinsi] = useState(andalalin.provinsi_konsultan);
+  const [kabupaten, setKabupaten] = useState(andalalin.kabupaten_konsultan);
+  const [kecamatan, setKecamatan] = useState(andalalin.kecamatan_konsultan);
+  const [kelurahan, setKelurahan] = useState(andalalin.kelurahan_konsultan);
+  const [nomer, setNomer] = useState(andalalin.nomer_konsultan);
+  const [email, setEmail] = useState(andalalin.email_konsultan);
+  const [penyusun, setPenyusun] = useState(andalalin.nama_penyusun);
+  const [jenis, setJenis] = useState(andalalin.jenis_kelamin_penyusun);
+  const [wilayahPenyusun, setWilayahPenyusun] = useState(
+    andalalin.wilayah_administratif_penyusun
+  );
+  const [provinsiPenyusun, setProvinsiPenyusun] = useState(
+    andalalin.provinsi_penyusun
+  );
+  const [kabupatenPenyusun, setKabupatenPenyusun] = useState(
+    andalalin.kabupaten_penyusun
+  );
+  const [kecamatanPenyusun, setKecamatanPenyusun] = useState(
+    andalalin.kecamatan_penyusun
+  );
+  const [kelurahanPenyusun, setKelurahanPenyusun] = useState(
+    andalalin.kelurahan_penyusun
+  );
+  const [alamatPenyusun, setAlamatPenyusun] = useState(
+    andalalin.alamat_penyusun
+  );
 
   const [nomerSertifikat, setNomerSertifikat] = useState(
-    nomer_serifikat_penyusun
+    andalalin.nomer_serifikat_penyusun
   );
-  const [klasifikasi, setKlasifikasi] = useState(klasifikasi_penyusun);
+  const [klasifikasi, setKlasifikasi] = useState(
+    andalalin.klasifikasi_penyusun
+  );
 
   const [namaError, toggleNamaError] = useStateToggler();
   const [alamatError, toggleAlamatError] = useStateToggler();
@@ -93,6 +86,19 @@ function Konsultan({ onPress }) {
   const [formError, toggleFormError] = useStateToggler();
 
   const jenis_kelamin = [{ value: "Laki-laki" }, { value: "Perempuan" }];
+
+  const data = useRef();
+
+  useFocusEffect(
+    React.useCallback(() => {
+      data.current = {
+        ...andalalin,
+      };
+      return () => {
+        setAndalalin(data.current);
+      };
+    }, [])
+  );
 
   const press = () => {
     if (
@@ -118,27 +124,6 @@ function Konsultan({ onPress }) {
       klasifikasiError ? toggleKlasifikasiError() : "";
       formError ? toggleFormError() : "";
 
-      dispatch({
-        nama_konsultan: nama,
-        wilayah_administratif_konsultan: wilayah,
-        provinsi_konsultan: provinsi,
-        kabupaten_konsultan: kabupaten,
-        kecamatan_konsultan: kecamatan,
-        kelurahan_konsultan: kelurahan,
-        alamat_konsultan: alamat,
-        nomer_konsultan: nomer,
-        email_konsultan: email,
-        nama_penyusun: penyusun,
-        jenis_kelamin_penyusun: jenis,
-        wilayah_administratif_penyusun: wilayahPenyusun,
-        provinsi_penyusun: provinsiPenyusun,
-        kabupaten_penyusun: kabupatenPenyusun,
-        kecamatan_penyusun: kecamatanPenyusun,
-        kelurahan_penyusun: kelurahanPenyusun,
-        alamat_penyusun: alamatPenyusun,
-        nomer_serifikat_penyusun: nomerSertifikat,
-        klasifikasi_penyusun: klasifikasi,
-      });
       onPress();
     } else {
       nama == "" ? (namaError ? "" : toggleNamaError()) : "";
@@ -186,6 +171,29 @@ function Konsultan({ onPress }) {
   }, [wilayahPenyusun]);
 
   const clear_error = () => {
+    data.current = {
+      ...andalalin,
+      nama_konsultan: nama,
+      wilayah_administratif_konsultan: wilayah,
+      provinsi_konsultan: provinsi,
+      kabupaten_konsultan: kabupaten,
+      kecamatan_konsultan: kecamatan,
+      kelurahan_konsultan: kelurahan,
+      alamat_konsultan: alamat,
+      nomer_konsultan: nomer,
+      email_konsultan: email,
+      nama_penyusun: penyusun,
+      jenis_kelamin_penyusun: jenis,
+      wilayah_administratif_penyusun: wilayahPenyusun,
+      provinsi_penyusun: provinsiPenyusun,
+      kabupaten_penyusun: kabupatenPenyusun,
+      kecamatan_penyusun: kecamatanPenyusun,
+      kelurahan_penyusun: kelurahanPenyusun,
+      alamat_penyusun: alamatPenyusun,
+      nomer_serifikat_penyusun: nomerSertifikat,
+      klasifikasi_penyusun: klasifikasi,
+    };
+
     nama != "" ? (namaError ? toggleNamaError() : "") : "";
     alamat != "" ? (alamatError ? toggleAlamatError() : "") : "";
     wilayah != "" ? (wilayahError ? toggleWilayahError() : "") : "";
@@ -281,6 +289,16 @@ function Konsultan({ onPress }) {
           setAlamat(value);
         }}
       />
+
+      <AText
+        style={{ paddingTop: 8 }}
+        color={color.neutral.neutral300}
+        size={14}
+        weight="normal"
+      >
+        Keterangan: Alamat dapat berupa Nomor Bangunan, RT, RW, atau detail
+        lainnya
+      </AText>
 
       <ATextInput
         bdColor={nomerError ? color.error.error500 : color.neutral.neutral300}
@@ -401,6 +419,16 @@ function Konsultan({ onPress }) {
           setAlamatPenyusun(value);
         }}
       />
+
+      <AText
+        style={{ paddingTop: 8 }}
+        color={color.neutral.neutral300}
+        size={14}
+        weight="normal"
+      >
+        Keterangan: Alamat dapat berupa Nomor Bangunan, RT, RW, atau detail
+        lainnya
+      </AText>
 
       <ATextInput
         bdColor={

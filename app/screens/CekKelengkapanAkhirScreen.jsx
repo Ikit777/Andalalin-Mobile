@@ -56,6 +56,123 @@ function CekKelengkapanAkhirScreen({ navigation }) {
     },
   ];
 
+  kelengkapan_bangkitan_sedang = [
+    {
+      Uraian: "Scan Surat Permohonan",
+      Role: "User",
+      Dokumen: [],
+    },
+    {
+      Uraian:
+        "Scan Lampiran Legal Administrasi (Surat/sertifikat kepemilikan lahan, Sertifikat guna lahan, foto lokasi, foto kegiatan, dll)",
+      Role: "User",
+      Dokumen: [],
+    },
+    {
+      Uraian: "Scan dan File Ms. Word Dokumen Andalalin Final (telah direvisi dan disesuaikan dengan perbaikan (BAB 1 s.d. Bab terakhir, beserta gambaran lampiran teknis, Lampiran kelengkapan administrasi / surat tanah, legalitas, dll))",
+      Role: "User",
+      Dokumen: [],
+    },
+    {
+      Uraian: "Scan Lembar Asistensi / buktu perbaikan (hasil asistensi dari perbaikan dokumen oleh Tim Teknis)",
+      Role: "Dishub",
+      Dokumen: [],
+    },
+    {
+      Uraian:
+        "Scan/Foto Surat Pernyataan Kesanggupan (pdf yang telah di tanda tangani dan File Ms. Word final, yang telah diperbaiki)",
+      Role: "User",
+      Dokumen: [],
+    },
+    {
+      Uraian:
+        "Scan/Foto Softfile Billing PNBP dan Bukti Pembayaran PNBP yang telah terbayar",
+      Role: "User",
+      Dokumen: [],
+    },
+    {
+      Uraian: "File Resume Dokumen (file word dan PDF)",
+      Role: "Dishub",
+      Dokumen: [],
+    },
+    {
+      Uraian: "Scan Sertifikat Konsultan yang masih aktif dan Sertifikat Klasifikasi (bagi yang sudah terklasifikasi)",
+      Role: "User",
+      Dokumen: [],
+    },
+    {
+      Uraian: "Scan SK Persetujuan Andalalin yang telah terbit",
+      Role: "Dishub",
+      Dokumen: [],
+    },
+  ];
+
+  kelengkapan_bangkitan_tinggi = [
+    {
+      Uraian: "Scan Surat Permohonan",
+      Role: "User",
+      Dokumen: [],
+    },
+    {
+      Uraian: "Scan Surat Kuasa, untuk Perwakilan Pihak Pemohon yang berhalangan hadir langsung saat pembahasan dokumen Bersama tim penilai (apabila ada Rapat pembahasan oleh Tim Penilai)",
+      Role: "User",
+      Dokumen: [],
+    },
+    {
+      Uraian:
+        "Scan Lampiran Legal Administrasi (Surat/sertifikat kepemilikan lahan, Sertifikat guna lahan, foto lokasi, foto kegiatan, dll)",
+      Role: "User",
+      Dokumen: [],
+    },
+    {
+      Uraian: "Scan dan File Ms. Word Dokumen Andalalin Final (telah direvisi dan disesuaikan dengan perbaikan (BAB 1 s.d. Bab terakhir, beserta gambaran lampiran teknis, Lampiran kelengkapan administrasi / surat tanah, legalitas, dll))",
+      Role: "User",
+      Dokumen: [],
+    },
+    {
+      Uraian: "Scan Surat Undangan Rapat Penilaian Dokumen Andalalin (apabila ada)",
+      Role: "Dishub",
+      Dokumen: [],
+    },
+    {
+      Uraian: "Foto dan Dokumentasi Kegiatan (pembahasan, Peninjauan lapangan kalau ada, dll)",
+      Role: "Dishub",
+      Dokumen: [],
+    },
+    {
+      Uraian: "Scan Lembar Asistensi / buktu perbaikan (hasil asistensi dari perbaikan dokumen oleh Tim Teknis)",
+      Role: "Dishub",
+      Dokumen: [],
+    },
+    {
+      Uraian:
+        "Scan/Foto Surat Pernyataan Kesanggupan (pdf yang telah di tanda tangani dan File Ms. Word final, yang telah diperbaiki)",
+      Role: "User",
+      Dokumen: [],
+    },
+    {
+      Uraian:
+        "Scan/Foto Softfile Billing PNBP dan Bukti Pembayaran PNBP yang telah terbayar",
+      Role: "User",
+      Dokumen: [],
+    },
+    {
+      Uraian: "File Resume Dokumen (file word dan PDF)",
+      Role: "Dishub",
+      Dokumen: [],
+    },
+    {
+      Uraian: "Scan Sertifikat Konsultan yang masih aktif dan Sertifikat Klasifikasi (bagi yang sudah terklasifikasi)",
+      Role: "User",
+      Dokumen: [],
+    },
+    {
+      Uraian: "Scan SK Persetujuan Andalalin yang telah terbit",
+      Role: "Dishub",
+      Dokumen: [],
+    },
+  ];
+
   useEffect(() => {
     context.toggleLoading(true);
     const kelengkapan = [];
@@ -63,6 +180,12 @@ function CekKelengkapanAkhirScreen({ navigation }) {
     switch (context.detailPermohonan.kategori_bangkitan) {
       case "Bangkitan rendah":
         kelengkapan.push(...kelengkapan_bangkitan_rendah);
+        break;
+      case "Bangkitan sedang":
+        kelengkapan.push(...kelengkapan_bangkitan_sedang);
+        break;
+      case "Bangkitan tinggi":
+        kelengkapan.push(...kelengkapan_bangkitan_tinggi);
         break;
     }
 

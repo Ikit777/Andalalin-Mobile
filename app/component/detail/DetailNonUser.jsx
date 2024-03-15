@@ -129,115 +129,335 @@ function DetailNonUser({ permohonan, navigation, reload }) {
   const buttonAndalalin = () => {
     switch (context.getUser().role) {
       case "Operator":
-        switch (permohonan.status_andalalin) {
-          case "Cek persyaratan":
-            return tindakan(() => {
-              setPersyaratanModal();
-            }, "Pilih tindakan");
-          case "Permohonan ditunda":
-            return tindakan(() => {
-              toggleLanjutkanPermohonan();
-            }, "Lanjutkan permohonan");
-          case "Persetujuan administrasi":
-            return tindakan(() => {
-              setDokumen("Checklist administrasi");
-              uploadFile.push({
-                nama: "",
-                file: "",
-                tipe: "",
-                dokumen: "Checklist administrasi",
-              });
-              toggleUploadModal();
-            }, "Upload berkas");
-          case "Persyaratan terpenuhi":
-            switch (permohonan.kategori_bangkitan) {
-              case "Bangkitan rendah":
+        switch (permohonan.kategori_bangkitan) {
+          case "Bangkitan rendah":
+            switch (permohonan.status_andalalin) {
+              case "Cek persyaratan":
+                return tindakan(() => {
+                  setPersyaratanModal();
+                }, "Pilih tindakan");
+              case "Permohonan ditunda":
+                return tindakan(() => {
+                  toggleLanjutkanPermohonan();
+                }, "Lanjutkan permohonan");
+              case "Persetujuan administrasi":
+                return tindakan(() => {
+                  setDokumen("Checklist administrasi");
+                  uploadFile.push({
+                    nama: "",
+                    file: "",
+                    tipe: "",
+                    dokumen: "Checklist administrasi",
+                  });
+                  toggleUploadModal();
+                }, "Upload berkas");
+              case "Pembuatan surat pernyataan":
                 return tindakan(() => {
                   navigation.push("Pernyataan");
                 }, "Pembuatan surat pernyataan");
-              case "Bangkitan sedang":
+              case "Pembuatan surat keputusan":
+                return tindakan(() => {
+                  context.setIndexKeputusan(1);
+                  context.clearKeputusan();
+                  navigation.push("Keputusan");
+                }, "Pembuatan surat keputusan");
+              case "Persetujuan surat keputusan":
+                return tindakan(() => {
+                  setDokumen("Surat keputusan persetujuan teknis andalalin");
+                  uploadFile.push({
+                    nama: "",
+                    file: "",
+                    tipe: "",
+                    dokumen: "Surat keputusan persetujuan teknis andalalin",
+                  });
+                  toggleUploadModal();
+                }, "Upload berkas");
+              case "Cek kelengkapan akhir":
+                return tindakan(() => {
+                  context.setIndexKelengkapan(1);
+                  context.clearKelengkapan();
+                  navigation.push("Kelengkapan");
+                }, "Cek kelengkapan akhir");
+              case "Persetujuan kelengkapan akhir":
+                return tindakan(() => {
+                  setDokumen("Checklist kelengkapan akhir");
+                  uploadFile.push({
+                    nama: "",
+                    file: "",
+                    tipe: "",
+                    dokumen: "Checklist kelengkapan akhir",
+                  });
+                  toggleUploadModal();
+                }, "Upload berkas");
+              case "Kelengkapan tidak terpenuhi":
+                if (permohonan.kelengkapan != null) {
+                  return tindakan(() => {
+                    navigation.push("Update Kelengkapan", {
+                      permohonan: permohonan,
+                    });
+                  }, "Perbarui kelengkapan");
+                }
+            }
+            break;
+          case "Bangkitan sedang":
+            switch (permohonan.status_andalalin) {
+              case "Cek persyaratan":
+                return tindakan(() => {
+                  setPersyaratanModal();
+                }, "Pilih tindakan");
+              case "Permohonan ditunda":
+                return tindakan(() => {
+                  toggleLanjutkanPermohonan();
+                }, "Lanjutkan permohonan");
+              case "Persetujuan administrasi":
+                return tindakan(() => {
+                  setDokumen("Checklist administrasi");
+                  uploadFile.push({
+                    nama: "",
+                    file: "",
+                    tipe: "",
+                    dokumen: "Checklist administrasi",
+                  });
+                  toggleUploadModal();
+                }, "Upload berkas");
+              case "Pembuatan penyusun dokumen":
                 return tindakan(() => {
                   context.setIndexPenyusun(1);
                   context.clearPenyusun();
                   navigation.push("Penyusun");
                 }, "Pembuatan penyusun dokumen");
-              case "Bangkitan tinggi":
-                break;
+              case "Persetujuan penyusun dokumen":
+                return tindakan(() => {
+                  setDokumen("Penyusun dokumen");
+                  uploadFile.push({
+                    nama: "",
+                    file: "",
+                    tipe: "",
+                    dokumen: "Penyusun dokumen",
+                  });
+                  toggleUploadModal();
+                }, "Upload berkas");
+              case "Pemeriksaan kesesuaian substansi":
+                return tindakan(() => {
+                  context.setIndexSubstansi(1);
+                  context.clearSubstansi();
+                  navigation.push("Pemeriksaan substansi");
+                }, "Cek substansi teknis");
+              case "Persetujuan substansi teknis":
+                return tindakan(() => {
+                  setDokumen("Checklist kesesuaian substansi teknis");
+                  uploadFile.push({
+                    nama: "",
+                    file: "",
+                    tipe: "",
+                    dokumen: "Checklist kesesuaian substansi teknis",
+                  });
+                  toggleUploadModal();
+                }, "Upload berkas");
+              case "Pemeriksaan dokumen andalalin":
+                return tindakan(() => {
+                  context.setIndexPemeriksaan(1);
+                  context.clearPemeriksaan();
+                  navigation.push("Pemeriksaan dokumen");
+                }, "Periksa dokumen andalalin");
+              case "Persetujuan asistensi dokumen":
+                return tindakan(() => {
+                  setDokumen("Catatan asistensi dokumen");
+                  uploadFile.push({
+                    nama: "",
+                    file: "",
+                    tipe: "",
+                    dokumen: "Catatan asistensi dokumen",
+                  });
+                  toggleUploadModal();
+                }, "Upload berkas");
+              case "Dokumen terpenuhi":
+                return tindakan(() => {
+                  navigation.push("Pernyataan");
+                }, "Pembuatan surat pernyataan");
+              case "Pembuatan surat keputusan":
+                return tindakan(() => {
+                  context.setIndexKeputusan(1);
+                  context.clearKeputusan();
+                  navigation.push("Keputusan");
+                }, "Pembuatan surat keputusan");
+              case "Persetujuan surat keputusan":
+                return tindakan(() => {
+                  setDokumen("Surat keputusan persetujuan teknis andalalin");
+                  uploadFile.push({
+                    nama: "",
+                    file: "",
+                    tipe: "",
+                    dokumen: "Surat keputusan persetujuan teknis andalalin",
+                  });
+                  toggleUploadModal();
+                }, "Upload berkas");
+              case "Cek kelengkapan akhir":
+                return tindakan(() => {
+                  context.setIndexKelengkapan(1);
+                  context.clearKelengkapan();
+                  navigation.push("Kelengkapan");
+                }, "Cek kelengkapan akhir");
+              case "Persetujuan kelengkapan akhir":
+                return tindakan(() => {
+                  setDokumen("Checklist kelengkapan akhir");
+                  uploadFile.push({
+                    nama: "",
+                    file: "",
+                    tipe: "",
+                    dokumen: "Checklist kelengkapan akhir",
+                  });
+                  toggleUploadModal();
+                }, "Upload berkas");
+              case "Kelengkapan tidak terpenuhi":
+                if (permohonan.kelengkapan != null) {
+                  return tindakan(() => {
+                    navigation.push("Update Kelengkapan", {
+                      permohonan: permohonan,
+                    });
+                  }, "Perbarui kelengkapan");
+                }
             }
-          case "Persetujuan penyusun dokumen":
-            return tindakan(() => {
-              setDokumen("Penyusun dokumen");
-              uploadFile.push({
-                nama: "",
-                file: "",
-                tipe: "",
-                dokumen: "Penyusun dokumen",
-              });
-              toggleUploadModal();
-            }, "Upload berkas");
-          case "Pemeriksaan dokumen andalalin":
-            return tindakan(() => {
-              context.setIndexPemeriksaan(1);
-              context.clearPemeriksaan();
-              navigation.push("Pemeriksaan dokumen");
-            }, "Periksa dokumen andalalin");
-          case "Persetujuan asistensi dokumen":
-            return tindakan(() => {
-              setDokumen("Catatan asistensi dokumen");
-              uploadFile.push({
-                nama: "",
-                file: "",
-                tipe: "",
-                dokumen: "Catatan asistensi dokumen",
-              });
-              toggleUploadModal();
-            }, "Upload berkas");
-          case "Dokumen terpenuhi":
-            return tindakan(() => {}, "Periksa substansi teknis");
-          case "Dokumen andalalin terpenuhi":
-            return tindakan(() => {
-              navigation.push("Pernyataan");
-            }, "Pembuatan surat pernyataan");
-          case "Pembuatan surat keputusan":
-            return tindakan(() => {
-              navigation.push("Keputusan");
-            }, "Pembuatan surat keputusan");
-          case "Persetujuan surat keputusan":
-            return tindakan(() => {
-              setDokumen("Surat keputusan persetujuan teknis andalalin");
-              uploadFile.push({
-                nama: "",
-                file: "",
-                tipe: "",
-                dokumen: "Surat keputusan persetujuan teknis andalalin",
-              });
-              toggleUploadModal();
-            }, "Upload berkas");
-          case "Cek kelengkapan akhir":
-            return tindakan(() => {
-              context.setIndexKelengkapan(1);
-              context.clearKelengkapan();
-              navigation.push("Kelengkapan");
-            }, "Cek kelengkapan akhir");
-          case "Persetujuan kelengkapan akhir":
-            return tindakan(() => {
-              setDokumen("Checklist kelengkapan akhir");
-              uploadFile.push({
-                nama: "",
-                file: "",
-                tipe: "",
-                dokumen: "Checklist kelengkapan akhir",
-              });
-              toggleUploadModal();
-            }, "Upload berkas");
-          case "Kelengkapan tidak terpenuhi":
-            if (permohonan.kelengkapan != null) {
-              return tindakan(() => {
-                navigation.push("Update Kelengkapan", {
-                  permohonan: permohonan,
-                });
-              }, "Perbarui kelengkapan");
+            break;
+          case "Bangkitan tinggi":
+            switch (permohonan.status_andalalin) {
+              case "Cek persyaratan":
+                return tindakan(() => {
+                  setPersyaratanModal();
+                }, "Pilih tindakan");
+              case "Permohonan ditunda":
+                return tindakan(() => {
+                  toggleLanjutkanPermohonan();
+                }, "Lanjutkan permohonan");
+              case "Persetujuan administrasi":
+                return tindakan(() => {
+                  setDokumen("Checklist administrasi");
+                  uploadFile.push({
+                    nama: "",
+                    file: "",
+                    tipe: "",
+                    dokumen: "Checklist administrasi",
+                  });
+                  toggleUploadModal();
+                }, "Upload berkas");
+              case "Berita acara pembahasan":
+                return tindakan(() => {
+                  context.setIndexPembahasan(1);
+                  context.clearPembahasan();
+                  navigation.push("Berita acara pembahasan");
+                }, "Pembuatan berita acara");
+              case "Persetujuan berita acara":
+                return tindakan(() => {
+                  setDokumen("Berita acara pembahasan");
+                  uploadFile.push({
+                    nama: "",
+                    file: "",
+                    tipe: "",
+                    dokumen: "Berita acara pembahasan",
+                  });
+                  toggleUploadModal();
+                }, "Upload berkas");
+              case "Pembuatan penyusun dokumen":
+                return tindakan(() => {
+                  context.setIndexPenyusun(1);
+                  context.clearPenyusun();
+                  navigation.push("Penyusun");
+                }, "Pembuatan penyusun dokumen");
+              case "Persetujuan penyusun dokumen":
+                return tindakan(() => {
+                  setDokumen("Penyusun dokumen");
+                  uploadFile.push({
+                    nama: "",
+                    file: "",
+                    tipe: "",
+                    dokumen: "Penyusun dokumen",
+                  });
+                  toggleUploadModal();
+                }, "Upload berkas");
+              case "Pemeriksaan kesesuaian substansi":
+                return tindakan(() => {
+                  context.setIndexSubstansi(1);
+                  context.clearSubstansi();
+                  navigation.push("Pemeriksaan substansi");
+                }, "Cek substansi teknis");
+              case "Persetujuan substansi teknis":
+                return tindakan(() => {
+                  setDokumen("Checklist kesesuaian substansi teknis");
+                  uploadFile.push({
+                    nama: "",
+                    file: "",
+                    tipe: "",
+                    dokumen: "Checklist kesesuaian substansi teknis",
+                  });
+                  toggleUploadModal();
+                }, "Upload berkas");
+              case "Berita acara peninjauan":
+                return tindakan(() => {navigation.push("Berita acara peninjauan");}, "Berita acara peninjauan");
+              case "Pemeriksaan dokumen andalalin":
+                return tindakan(() => {
+                  context.setIndexPemeriksaan(1);
+                  context.clearPemeriksaan();
+                  navigation.push("Pemeriksaan dokumen");
+                }, "Periksa dokumen andalalin");
+              case "Persetujuan asistensi dokumen":
+                return tindakan(() => {
+                  setDokumen("Catatan asistensi dokumen");
+                  uploadFile.push({
+                    nama: "",
+                    file: "",
+                    tipe: "",
+                    dokumen: "Catatan asistensi dokumen",
+                  });
+                  toggleUploadModal();
+                }, "Upload berkas");
+              case "Dokumen terpenuhi":
+                return tindakan(() => {
+                  navigation.push("Pernyataan");
+                }, "Pembuatan surat pernyataan");
+              case "Pembuatan surat keputusan":
+                return tindakan(() => {
+                  context.setIndexKeputusan(1);
+                  context.clearKeputusan();
+                  navigation.push("Keputusan");
+                }, "Pembuatan surat keputusan");
+              case "Persetujuan surat keputusan":
+                return tindakan(() => {
+                  setDokumen("Surat keputusan persetujuan teknis andalalin");
+                  uploadFile.push({
+                    nama: "",
+                    file: "",
+                    tipe: "",
+                    dokumen: "Surat keputusan persetujuan teknis andalalin",
+                  });
+                  toggleUploadModal();
+                }, "Upload berkas");
+              case "Cek kelengkapan akhir":
+                return tindakan(() => {
+                  context.setIndexKelengkapan(1);
+                  context.clearKelengkapan();
+                  navigation.push("Kelengkapan");
+                }, "Cek kelengkapan akhir");
+              case "Persetujuan kelengkapan akhir":
+                return tindakan(() => {
+                  setDokumen("Checklist kelengkapan akhir");
+                  uploadFile.push({
+                    nama: "",
+                    file: "",
+                    tipe: "",
+                    dokumen: "Checklist kelengkapan akhir",
+                  });
+                  toggleUploadModal();
+                }, "Upload berkas");
+              case "Kelengkapan tidak terpenuhi":
+                if (permohonan.kelengkapan != null) {
+                  return tindakan(() => {
+                    navigation.push("Update Kelengkapan", {
+                      permohonan: permohonan,
+                    });
+                  }, "Perbarui kelengkapan");
+                }
             }
+            break;
         }
         break;
       case "Admin":
@@ -249,102 +469,348 @@ function DetailNonUser({ permohonan, navigation, reload }) {
         }
         break;
       case "Super Admin":
-        switch (permohonan.status_andalalin) {
-          case "Cek persyaratan":
-            return tindakan(() => {
-              setPersyaratanModal();
-            }, "Pilih tindakan");
-          case "Permohonan ditunda":
-            return tindakan(() => {
-              toggleLanjutkanPermohonan();
-            }, "Lanjutkan permohonan");
-          case "Persetujuan administrasi":
-            return tindakan(() => {
-              setDokumen("Checklist administrasi");
-              uploadFile.push({
-                nama: "",
-                file: "",
-                tipe: "",
-                dokumen: "Checklist administrasi",
-              });
-              toggleUploadModal();
-            }, "Upload berkas");
-          case "Persyaratan terpenuhi":
-            switch (permohonan.kategori_bangkitan) {
-              case "Bangkitan rendah":
+        switch (permohonan.kategori_bangkitan) {
+          case "Bangkitan rendah":
+            switch (permohonan.status_andalalin) {
+              case "Cek persyaratan":
+                return tindakan(() => {
+                  setPersyaratanModal();
+                }, "Pilih tindakan");
+              case "Permohonan ditunda":
+                return tindakan(() => {
+                  toggleLanjutkanPermohonan();
+                }, "Lanjutkan permohonan");
+              case "Persetujuan administrasi":
+                return tindakan(() => {
+                  setDokumen("Checklist administrasi");
+                  uploadFile.push({
+                    nama: "",
+                    file: "",
+                    tipe: "",
+                    dokumen: "Checklist administrasi",
+                  });
+                  toggleUploadModal();
+                }, "Upload berkas");
+              case "Pembuatan surat pernyataan":
                 return tindakan(() => {
                   navigation.push("Pernyataan");
                 }, "Pembuatan surat pernyataan");
-              case "Bangkitan sedang":
+              case "Pembuatan surat keputusan":
+                return tindakan(() => {
+                  context.setIndexKeputusan(1);
+                  context.clearKeputusan();
+                  navigation.push("Keputusan");
+                }, "Pembuatan surat keputusan");
+              case "Pemeriksaan surat keputusan":
+                  return tindakan(() => {
+                    setPemeriksaanModal();
+                  }, "Berikan hasil pemeriksaan");
+              case "Persetujuan surat keputusan":
+                return tindakan(() => {
+                  setDokumen("Surat keputusan persetujuan teknis andalalin");
+                  uploadFile.push({
+                    nama: "",
+                    file: "",
+                    tipe: "",
+                    dokumen: "Surat keputusan persetujuan teknis andalalin",
+                  });
+                  toggleUploadModal();
+                }, "Upload berkas");
+              case "Cek kelengkapan akhir":
+                return tindakan(() => {
+                  context.setIndexKelengkapan(1);
+                  context.clearKelengkapan();
+                  navigation.push("Kelengkapan");
+                }, "Cek kelengkapan akhir");
+              case "Persetujuan kelengkapan akhir":
+                return tindakan(() => {
+                  setDokumen("Checklist kelengkapan akhir");
+                  uploadFile.push({
+                    nama: "",
+                    file: "",
+                    tipe: "",
+                    dokumen: "Checklist kelengkapan akhir",
+                  });
+                  toggleUploadModal();
+                }, "Upload berkas");
+              case "Kelengkapan tidak terpenuhi":
+                if (permohonan.kelengkapan != null) {
+                  return tindakan(() => {
+                    navigation.push("Update Kelengkapan", {
+                      permohonan: permohonan,
+                    });
+                  }, "Perbarui kelengkapan");
+                }
+            }
+            break;
+          case "Bangkitan sedang":
+            switch (permohonan.status_andalalin) {
+              case "Cek persyaratan":
+                return tindakan(() => {
+                  setPersyaratanModal();
+                }, "Pilih tindakan");
+              case "Permohonan ditunda":
+                return tindakan(() => {
+                  toggleLanjutkanPermohonan();
+                }, "Lanjutkan permohonan");
+              case "Persetujuan administrasi":
+                return tindakan(() => {
+                  setDokumen("Checklist administrasi");
+                  uploadFile.push({
+                    nama: "",
+                    file: "",
+                    tipe: "",
+                    dokumen: "Checklist administrasi",
+                  });
+                  toggleUploadModal();
+                }, "Upload berkas");
+              case "Pembuatan penyusun dokumen":
                 return tindakan(() => {
                   context.setIndexPenyusun(1);
                   context.clearPenyusun();
                   navigation.push("Penyusun");
                 }, "Pembuatan penyusun dokumen");
-              case "Bangkitan tinggi":
-                break;
+              case "Persetujuan penyusun dokumen":
+                return tindakan(() => {
+                  setDokumen("Penyusun dokumen");
+                  uploadFile.push({
+                    nama: "",
+                    file: "",
+                    tipe: "",
+                    dokumen: "Penyusun dokumen",
+                  });
+                  toggleUploadModal();
+                }, "Upload berkas");
+              case "Pemeriksaan kesesuaian substansi":
+                return tindakan(() => {
+                  context.setIndexSubstansi(1);
+                  context.clearSubstansi();
+                  navigation.push("Pemeriksaan substansi");
+                }, "Cek substansi teknis");
+              case "Persetujuan substansi teknis":
+                return tindakan(() => {
+                  setDokumen("Checklist kesesuaian substansi teknis");
+                  uploadFile.push({
+                    nama: "",
+                    file: "",
+                    tipe: "",
+                    dokumen: "Checklist kesesuaian substansi teknis",
+                  });
+                  toggleUploadModal();
+                }, "Upload berkas");
+              case "Pemeriksaan dokumen andalalin":
+                return tindakan(() => {
+                  context.setIndexPemeriksaan(1);
+                  context.clearPemeriksaan();
+                  navigation.push("Pemeriksaan dokumen");
+                }, "Periksa dokumen andalalin");
+              case "Persetujuan asistensi dokumen":
+                return tindakan(() => {
+                  setDokumen("Catatan asistensi dokumen");
+                  uploadFile.push({
+                    nama: "",
+                    file: "",
+                    tipe: "",
+                    dokumen: "Catatan asistensi dokumen",
+                  });
+                  toggleUploadModal();
+                }, "Upload berkas");
+              case "Dokumen terpenuhi":
+                return tindakan(() => {
+                  navigation.push("Pernyataan");
+                }, "Pembuatan surat pernyataan");
+              case "Pembuatan surat keputusan":
+                return tindakan(() => {
+                  context.setIndexKeputusan(1);
+                  context.clearKeputusan();
+                  navigation.push("Keputusan");
+                }, "Pembuatan surat keputusan");
+              case "Pemeriksaan surat keputusan":
+                  return tindakan(() => {
+                    setPemeriksaanModal();
+                  }, "Berikan hasil pemeriksaan");
+              case "Persetujuan surat keputusan":
+                return tindakan(() => {
+                  setDokumen("Surat keputusan persetujuan teknis andalalin");
+                  uploadFile.push({
+                    nama: "",
+                    file: "",
+                    tipe: "",
+                    dokumen: "Surat keputusan persetujuan teknis andalalin",
+                  });
+                  toggleUploadModal();
+                }, "Upload berkas");
+              case "Cek kelengkapan akhir":
+                return tindakan(() => {
+                  context.setIndexKelengkapan(1);
+                  context.clearKelengkapan();
+                  navigation.push("Kelengkapan");
+                }, "Cek kelengkapan akhir");
+              case "Persetujuan kelengkapan akhir":
+                return tindakan(() => {
+                  setDokumen("Checklist kelengkapan akhir");
+                  uploadFile.push({
+                    nama: "",
+                    file: "",
+                    tipe: "",
+                    dokumen: "Checklist kelengkapan akhir",
+                  });
+                  toggleUploadModal();
+                }, "Upload berkas");
+              case "Kelengkapan tidak terpenuhi":
+                if (permohonan.kelengkapan != null) {
+                  return tindakan(() => {
+                    navigation.push("Update Kelengkapan", {
+                      permohonan: permohonan,
+                    });
+                  }, "Perbarui kelengkapan");
+                }
             }
-          case "Persetujuan penyusun dokumen":
-            setDokumen("Penyusun dokumen");
-            uploadFile.push({
-              nama: "",
-              file: "",
-              tipe: "",
-              dokumen: "Penyusun dokumen",
-            });
-            toggleUploadModal();
-          case "Pemeriksaan dokumen andalalin":
-            return tindakan(() => {}, "Pilih tindakan");
-          case "Dokumen andalalin terpenuhi":
-            return tindakan(() => {
-              navigation.push("Pernyataan");
-            }, "Pembuatan surat pernyataan");
-          case "Pembuatan surat keputusan":
-            return tindakan(() => {
-              navigation.push("Keputusan");
-            }, "Pembuatan surat keputusan");
-          case "Pemeriksaan surat keputusan":
-            return tindakan(() => {
-              setPemeriksaanModal();
-            }, "Berikan hasil pemeriksaan");
-          case "Persetujuan surat keputusan":
-            return tindakan(() => {
-              setDokumen("Surat keputusan persetujuan teknis andalalin");
-              uploadFile.push({
-                nama: "",
-                file: "",
-                tipe: "",
-                dokumen: "Surat keputusan persetujuan teknis andalalin",
-              });
-              toggleUploadModal();
-            }, "Upload berkas");
-          case "Cek kelengkapan akhir":
-            return tindakan(() => {
-              context.setIndexKelengkapan(1);
-              context.clearKelengkapan();
-              navigation.push("Kelengkapan");
-            }, "Cek kelengkapan akhir");
-          case "Persetujuan kelengkapan akhir":
-            return tindakan(() => {
-              setDokumen("Checklist kelengkapan akhir");
-              uploadFile.push({
-                nama: "",
-                file: "",
-                tipe: "",
-                dokumen: "Checklist kelengkapan akhir",
-              });
-              toggleUploadModal();
-            }, "Upload berkas");
-          case "Kelengkapan tidak terpenuhi":
-            if (permohonan.kelengkapan != null) {
-              return tindakan(() => {
-                navigation.push("Update Kelengkapan", {
-                  permohonan: permohonan,
-                });
-              }, "Perbarui kelengkapan");
+            break;
+          case "Bangkitan tinggi":
+            switch (permohonan.status_andalalin) {
+              case "Cek persyaratan":
+                return tindakan(() => {
+                  setPersyaratanModal();
+                }, "Pilih tindakan");
+              case "Permohonan ditunda":
+                return tindakan(() => {
+                  toggleLanjutkanPermohonan();
+                }, "Lanjutkan permohonan");
+              case "Persetujuan administrasi":
+                return tindakan(() => {
+                  setDokumen("Checklist administrasi");
+                  uploadFile.push({
+                    nama: "",
+                    file: "",
+                    tipe: "",
+                    dokumen: "Checklist administrasi",
+                  });
+                  toggleUploadModal();
+                }, "Upload berkas");
+              case "Berita acara pembahasan":
+                return tindakan(() => {
+                  context.setIndexPembahasan(1);
+                  context.clearPembahasan();
+                  navigation.push("Berita acara pembahasan");
+                }, "Pembuatan berita acara");
+              case "Persetujuan berita acara":
+                return tindakan(() => {
+                  setDokumen("Berita acara pembahasan");
+                  uploadFile.push({
+                    nama: "",
+                    file: "",
+                    tipe: "",
+                    dokumen: "Berita acara pembahasan",
+                  });
+                  toggleUploadModal();
+                }, "Upload berkas");
+              case "Pembuatan penyusun dokumen":
+                return tindakan(() => {
+                  context.setIndexPenyusun(1);
+                  context.clearPenyusun();
+                  navigation.push("Penyusun");
+                }, "Pembuatan penyusun dokumen");
+              case "Persetujuan penyusun dokumen":
+                return tindakan(() => {
+                  setDokumen("Penyusun dokumen");
+                  uploadFile.push({
+                    nama: "",
+                    file: "",
+                    tipe: "",
+                    dokumen: "Penyusun dokumen",
+                  });
+                  toggleUploadModal();
+                }, "Upload berkas");
+              case "Pemeriksaan kesesuaian substansi":
+                return tindakan(() => {
+                  context.setIndexSubstansi(1);
+                  context.clearSubstansi();
+                  navigation.push("Pemeriksaan substansi");
+                }, "Cek substansi teknis");
+              case "Persetujuan substansi teknis":
+                return tindakan(() => {
+                  setDokumen("Checklist kesesuaian substansi teknis");
+                  uploadFile.push({
+                    nama: "",
+                    file: "",
+                    tipe: "",
+                    dokumen: "Checklist kesesuaian substansi teknis",
+                  });
+                  toggleUploadModal();
+                }, "Upload berkas");
+              case "Berita acara peninjauan":
+                return tindakan(() => {navigation.push("Berita acara peninjauan");}, "Berita acara peninjauan");
+              case "Pemeriksaan dokumen andalalin":
+                return tindakan(() => {
+                  context.setIndexPemeriksaan(1);
+                  context.clearPemeriksaan();
+                  navigation.push("Pemeriksaan dokumen");
+                }, "Periksa dokumen andalalin");
+              case "Persetujuan asistensi dokumen":
+                return tindakan(() => {
+                  setDokumen("Catatan asistensi dokumen");
+                  uploadFile.push({
+                    nama: "",
+                    file: "",
+                    tipe: "",
+                    dokumen: "Catatan asistensi dokumen",
+                  });
+                  toggleUploadModal();
+                }, "Upload berkas");
+              case "Dokumen terpenuhi":
+                return tindakan(() => {
+                  navigation.push("Pernyataan");
+                }, "Pembuatan surat pernyataan");
+              case "Pembuatan surat keputusan":
+                return tindakan(() => {
+                  context.setIndexKeputusan(1);
+                  context.clearKeputusan();
+                  navigation.push("Keputusan");
+                }, "Pembuatan surat keputusan");
+              case "Pemeriksaan surat keputusan":
+                  return tindakan(() => {
+                    setPemeriksaanModal();
+                  }, "Berikan hasil pemeriksaan");
+              case "Persetujuan surat keputusan":
+                return tindakan(() => {
+                  setDokumen("Surat keputusan persetujuan teknis andalalin");
+                  uploadFile.push({
+                    nama: "",
+                    file: "",
+                    tipe: "",
+                    dokumen: "Surat keputusan persetujuan teknis andalalin",
+                  });
+                  toggleUploadModal();
+                }, "Upload berkas");
+              case "Cek kelengkapan akhir":
+                return tindakan(() => {
+                  context.setIndexKelengkapan(1);
+                  context.clearKelengkapan();
+                  navigation.push("Kelengkapan");
+                }, "Cek kelengkapan akhir");
+              case "Persetujuan kelengkapan akhir":
+                return tindakan(() => {
+                  setDokumen("Checklist kelengkapan akhir");
+                  uploadFile.push({
+                    nama: "",
+                    file: "",
+                    tipe: "",
+                    dokumen: "Checklist kelengkapan akhir",
+                  });
+                  toggleUploadModal();
+                }, "Upload berkas");
+              case "Kelengkapan tidak terpenuhi":
+                if (permohonan.kelengkapan != null) {
+                  return tindakan(() => {
+                    navigation.push("Update Kelengkapan", {
+                      permohonan: permohonan,
+                    });
+                  }, "Perbarui kelengkapan");
+                }
             }
+            break;
         }
-
         break;
     }
   };
@@ -924,6 +1390,22 @@ function DetailNonUser({ permohonan, navigation, reload }) {
             />
           </View>
         );
+      case "Berita acara pembahasan":
+        return (
+          <View>
+            <ATextInputIcon
+              bdColor={color.neutral.neutral300}
+              hint={"Masukkan berkas pdf"}
+              icon={"file-plus"}
+              mult={true}
+              width={true}
+              value={uploadNamaFile}
+              onPress={() => {
+                file("Berita acara pembahasan", "Pdf");
+              }}
+            />
+          </View>
+        );
       case "Surat keputusan persetujuan teknis andalalin":
         return (
           <View>
@@ -984,6 +1466,22 @@ function DetailNonUser({ permohonan, navigation, reload }) {
               value={uploadNamaFile}
               onPress={() => {
                 file("Catatan asistensi dokumen", "Pdf");
+              }}
+            />
+          </View>
+        );
+      case "Checklist kesesuaian substansi teknis":
+        return (
+          <View>
+            <ATextInputIcon
+              bdColor={color.neutral.neutral300}
+              hint={"Masukkan berkas pdf"}
+              icon={"file-plus"}
+              mult={true}
+              width={true}
+              value={uploadNamaFile}
+              onPress={() => {
+                file("Checklist kesesuaian substansi teknis", "Pdf");
               }}
             />
           </View>
@@ -1086,7 +1584,13 @@ function DetailNonUser({ permohonan, navigation, reload }) {
       case "Checklist administrasi":
         setUploadNamaFile(nama);
         break;
+      case "Berita acara pembahasan":
+          setUploadNamaFile(nama);
+          break;
       case "Surat keputusan persetujuan teknis andalalin":
+        setUploadNamaFile(nama);
+        break;
+      case "Checklist kesesuaian substansi teknis":
         setUploadNamaFile(nama);
         break;
       case "Checklist kelengkapan akhir":
@@ -1467,7 +1971,7 @@ function DetailNonUser({ permohonan, navigation, reload }) {
     );
   };
 
-  const batalkan_perhomonan = () => {
+  const batalkan_permohonan = () => {
     return (
       <View>
         <AText
@@ -1715,7 +2219,7 @@ function DetailNonUser({ permohonan, navigation, reload }) {
           ""
         )}
 
-        {pilih === "Batal" ? batalkan_perhomonan() : ""}
+        {pilih === "Batal" ? batalkan_permohonan() : ""}
 
         {pilih === "Tunda" ? tunda_pemasangan() : ""}
 
@@ -2853,6 +3357,27 @@ function DetailNonUser({ permohonan, navigation, reload }) {
               </AText>
             </ADetailView>
           </View>
+        ) : (
+          ""
+        )}
+
+        {permohonan.pertimbangan_pembatalan != "" &&
+        permohonan.pertimbangan_pembatalan != null ? (
+          <ADetailView
+            style={{
+              marginTop: 20,
+            }}
+            title={"Pertimbangan pembatalan permohonan"}
+          >
+            <AText
+              style={{ padding: 16 }}
+              size={12}
+              color={color.neutral.neutral900}
+              weight="normal"
+            >
+              {permohonan.pertimbangan_pembatalan}
+            </AText>
+          </ADetailView>
         ) : (
           ""
         )}

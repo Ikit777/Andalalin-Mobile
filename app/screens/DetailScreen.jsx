@@ -5,6 +5,8 @@ import {
   ScrollView,
   BackHandler,
   RefreshControl,
+  TouchableOpacity,
+  Pressable,
 } from "react-native";
 import AText from "../component/utility/AText";
 import color from "../constants/color";
@@ -12,7 +14,11 @@ import AScreen from "../component/utility/AScreen";
 import ABackButton from "../component/utility/ABackButton";
 import { useStateToggler } from "../hooks/useUtility";
 import ADialog from "../component/utility/ADialog";
-import { andalalinCekSurveiKepuasan, andalalinGetById } from "../api/andalalin";
+import {
+  andalalinBatalkanPermohonan,
+  andalalinCekSurveiKepuasan,
+  andalalinGetById,
+} from "../api/andalalin";
 import { authRefreshToken } from "../api/auth";
 import { UserContext } from "../context/UserContext";
 import DetailUser from "../component/detail/DetailUser";
@@ -20,16 +26,25 @@ import DetailNonUser from "../component/detail/DetailNonUser";
 import { useFocusEffect } from "@react-navigation/native";
 import ASnackBar from "../component/utility/ASnackBar";
 import AConfirmationDialog from "../component/utility/AConfirmationDialog";
+import { Feather } from "@expo/vector-icons";
+import ABottomSheet from "../component/utility/ABottomSheet";
+import ATextInput from "../component/utility/ATextInput";
 
 function DetailScreen({ navigation, route }) {
   const context = useContext(UserContext);
   const [gagal, toggleGagal] = useStateToggler();
+  const [gagalSimpan, toggleGagalSimpan] = useStateToggler();
   const [data, setData] = useState("permohonan");
 
   const [refreshing, setRefreshing] = useState(false);
   const [progressViewOffset, setProgressViewOffset] = useState(40);
 
   const [surveiDialog, toggleSurveiDialog] = useStateToggler();
+
+  const [pilih, setPilih] = useState("");
+  const [pertimbangan, setPertimbangan] = useState("");
+  const [tindakanModal, toggleTindakanModal] = useStateToggler();
+  const [batalModal, toggleBatalModal] = useStateToggler();
 
   useFocusEffect(
     React.useCallback(() => {
@@ -237,32 +252,146 @@ function DetailScreen({ navigation, route }) {
     }, 50);
   }, []);
 
+  const batalkan_permohonan = () => {
+    return (
+      <View>
+        <AText
+          style={{ marginBottom: 16 }}
+          size={18}
+          color={color.neutral.neutral700}
+          weight="semibold"
+        >
+          Pertimbangan pembatalan permohonan
+        </AText>
+        <View>
+          <ATextInput
+            bdColor={color.neutral.neutral300}
+            ktype={"default"}
+            hint={"Masukkan pertimbangan"}
+            rtype={"done"}
+            max={4}
+            maxHeight={90}
+            multi={true}
+            value={pertimbangan}
+            onChangeText={(value) => {
+              setPertimbangan(value);
+            }}
+          />
+        </View>
+      </View>
+    );
+  };
+
+  const batalkan = () => {
+    context.toggleLoading(true);
+    andalalinBatalkanPermohonan(
+      context.getUser().access_token,
+      context.detailPermohonan.id_andalalin,
+      pertimbangan,
+      (response) => {
+        switch (response.status) {
+          case 200:
+            context.toggleLoading(false);
+            setPilih("");
+            setPertimbangan("")
+            loadPermohonan();
+            break;
+          case 424:
+            authRefreshToken(context, (response) => {
+              if (response.status === 200) {
+                batalkan();
+              }
+            });
+            break;
+          default:
+            context.toggleLoading(false);
+            setPilih("");
+            setPertimbangan("")
+            toggleGagalSimpan();
+            break;
+        }
+      }
+    );
+  };
+
+  const close_tindakan = () => {
+    setPilih("");
+    toggleTindakanModal();
+  };
+
   return (
     <AScreen>
-      <View style={styles.header}>
+      {context.getUser().role == "Operator" ||
+      context.getUser().role == "Admin" ||
+      context.getUser().role == "Super Admin" ? (
         <View
           style={{
             flexDirection: "row",
+            justifyContent: "space-between",
             alignItems: "center",
-            paddingVertical: 8,
           }}
         >
-          <ABackButton
-            onPress={() => {
-              setProgressViewOffset(-5000);
-              back();
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              paddingVertical: 8,
             }}
-          />
-          <AText
-            style={{ paddingLeft: 4 }}
-            size={20}
-            color={color.neutral.neutral900}
-            weight="normal"
           >
-            {judul()}
-          </AText>
+            <ABackButton
+              onPress={() => {
+                setProgressViewOffset(-5000);
+                back();
+              }}
+            />
+            <AText
+              style={{ paddingLeft: 4 }}
+              size={20}
+              color={color.neutral.neutral900}
+              weight="normal"
+            >
+              {judul()}
+            </AText>
+          </View>
+          <TouchableOpacity
+            style={{ paddingVertical: 12, paddingHorizontal: 16 }}
+            onPress={() => {
+              toggleTindakanModal();
+            }}
+          >
+            <Feather
+              name="more-vertical"
+              size={24}
+              color={color.neutral.neutral900}
+            />
+          </TouchableOpacity>
         </View>
-      </View>
+      ) : (
+        <View>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              paddingVertical: 8,
+            }}
+          >
+            <ABackButton
+              onPress={() => {
+                setProgressViewOffset(-5000);
+                back();
+              }}
+            />
+            <AText
+              style={{ paddingLeft: 4 }}
+              size={20}
+              color={color.neutral.neutral900}
+              weight="normal"
+            >
+              {judul()}
+            </AText>
+          </View>
+        </View>
+      )}
       <ScrollView
         style={styles.content}
         showsVerticalScrollIndicator={false}
@@ -319,6 +448,142 @@ function DetailScreen({ navigation, route }) {
           navigation.push("Survei Kepuasan", { id: route.params.id });
         }}
       />
+
+      <ADialog
+        title={"Peringatan"}
+        desc={"Terjadi kesalahan pada server, mohon coba lagi lain waktu"}
+        visibleModal={gagalSimpan}
+        toggleModal={toggleGagalSimpan}
+        btnOK={"OK"}
+        onPressOKButton={() => {
+          toggleGagalSimpan();
+        }}
+      />
+
+      <AConfirmationDialog
+        title={"Batalkan permohonan"}
+        desc={"Apakah anda yakin ingin membatalkan permohonan ini?"}
+        visibleModal={batalModal}
+        btnOK={"OK"}
+        btnBATAL={"Batal"}
+        onPressBATALButton={() => {
+          setPilih("");
+          setPertimbangan("")
+          toggleBatalModal();
+        }}
+        onPressOKButton={() => {
+          toggleBatalModal();
+          batalkan();
+        }}
+      />
+
+      <ABottomSheet visible={tindakanModal} close={close_tindakan}>
+        <View>
+          {pilih == "" ? (
+            <View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <AText
+                  size={18}
+                  color={color.neutral.neutral700}
+                  weight="semibold"
+                >
+                  Pilihan
+                </AText>
+              </View>
+              <Pressable
+                android_ripple={{
+                  color: "rgba(0, 0, 0, 0.1)",
+                  borderless: false,
+                }}
+                style={{
+                  flexDirection: "row",
+                  padding: 8,
+                  marginTop: 24,
+                  marginBottom: 32,
+                }}
+                onPress={() => {
+                  setPilih("Batal");
+                }}
+              >
+                <Feather
+                  name="x-square"
+                  size={20}
+                  color={color.neutral.neutral900}
+                />
+                <AText
+                  style={{ paddingLeft: 16 }}
+                  size={14}
+                  color={color.neutral.neutral700}
+                >
+                  Batalkan permohonan
+                </AText>
+              </Pressable>
+            </View>
+          ) : (
+            ""
+          )}
+
+          {pilih == "Batal" ? batalkan_permohonan() : ""}
+
+          <View
+            style={{
+              flexDirection: "row",
+              alignSelf: "flex-end",
+              marginTop: 32,
+              marginRight: 16,
+              marginBottom: 16,
+            }}
+          >
+            <TouchableOpacity
+              style={{ flexDirection: "row", paddingLeft: 4 }}
+              onPress={() => {
+                setPilih("");
+                setPertimbangan("")
+                toggleTindakanModal();
+              }}
+            >
+              <AText
+                size={14}
+                color={color.neutral.neutral700}
+                weight="semibold"
+              >
+                Batal
+              </AText>
+            </TouchableOpacity>
+            {pilih != "" ? (
+              <TouchableOpacity
+                style={{ flexDirection: "row", paddingLeft: 4, marginLeft: 32 }}
+                onPress={() => {
+                  switch (pilih) {
+                    case "Batal":
+                      if (pertimbangan != "") {
+                        toggleTindakanModal();
+                        toggleBatalModal();
+                      }
+                      break;
+                  }
+                }}
+              >
+                <AText
+                  size={14}
+                  color={color.neutral.neutral700}
+                  weight="semibold"
+                >
+                  Simpan
+                </AText>
+              </TouchableOpacity>
+            ) : (
+              ""
+            )}
+          </View>
+        </View>
+      </ABottomSheet>
     </AScreen>
   );
 }

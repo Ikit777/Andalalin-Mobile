@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import { StyleSheet, ScrollView } from "react-native";
 import AText from "../../component/utility/AText";
 import color from "../../constants/color";
@@ -9,32 +9,16 @@ import AButton from "../utility/AButton";
 import ADropDownCostume from "../utility/ADropdownCostume";
 import ATextInputIcon from "../utility/ATextInputIcon";
 import AInputAlamat from "../utility/AInputAlamat";
+import PermohonanAtom from "../../atom/PermohonanAtom";
+import { useFocusEffect } from "@react-navigation/native";
+import { useRecoilState } from "recoil";
 
 function Perusahaan({ onPress }) {
-  const {
-    permohonan: {
-      nama_perusahaan,
-      alamat_perusahaan,
-      wilayah_administratif_perusahaan,
-      provinsi_perusahaan,
-      kabupaten_perusahaan,
-      kecamatan_perusahaan,
-      kelurahan_perusahaan,
-      nomer_perusahaan,
-      email_perusahaan,
-      nama_pimpinan,
-      jabatan_pimpinan,
-      jenis_kelamin_pimpinan,
-      wilayah_administratif_pimpinan,
-      provinsi_pimpinan_perusahaan,
-      kabupaten_pimpinan_perusahaan,
-      kecamatan_pimpinan_perusahaan,
-      kelurahan_pimpinan_perusahaan,
-      alamat_pimpinan,
-    },
-    dispatch,
-    dataMaster,
-  } = useContext(UserContext);
+  const { dataMaster } = useContext(UserContext);
+
+  const { andalalinState } = PermohonanAtom;
+
+  const [andalalin, setAndalalin] = useRecoilState(andalalinState);
 
   const namaInput = React.createRef();
   const alamatInput = React.createRef();
@@ -43,34 +27,38 @@ function Perusahaan({ onPress }) {
   const pimpinanInput = React.createRef();
   const jabatanInput = React.createRef();
 
-  const [nama, setNama] = useState(nama_perusahaan);
-  const [alamat, setAlamat] = useState(alamat_perusahaan);
-  const [wilayah, setWilayah] = useState(wilayah_administratif_perusahaan);
-  const [provinsi, setProvinsi] = useState(provinsi_perusahaan);
-  const [kabupaten, setKabupaten] = useState(kabupaten_perusahaan);
-  const [kecamatan, setKecamatan] = useState(kecamatan_perusahaan);
-  const [kelurahan, setKelurahan] = useState(kelurahan_perusahaan);
-  const [nomer, setNomer] = useState(nomer_perusahaan);
-  const [email, setEmail] = useState(email_perusahaan);
-  const [pimpinan, setPimpinan] = useState(nama_pimpinan);
-  const [jabatan, setJabatan] = useState(jabatan_pimpinan);
-  const [jenis, setJenis] = useState(jenis_kelamin_pimpinan);
+  const [nama, setNama] = useState(andalalin.nama_perusahaan);
+  const [alamat, setAlamat] = useState(andalalin.alamat_perusahaan);
+  const [wilayah, setWilayah] = useState(
+    andalalin.wilayah_administratif_perusahaan
+  );
+  const [provinsi, setProvinsi] = useState(andalalin.provinsi_perusahaan);
+  const [kabupaten, setKabupaten] = useState(andalalin.kabupaten_perusahaan);
+  const [kecamatan, setKecamatan] = useState(andalalin.kecamatan_perusahaan);
+  const [kelurahan, setKelurahan] = useState(andalalin.kelurahan_perusahaan);
+  const [nomer, setNomer] = useState(andalalin.nomer_perusahaan);
+  const [email, setEmail] = useState(andalalin.email_perusahaan);
+  const [pimpinan, setPimpinan] = useState(andalalin.nama_pimpinan);
+  const [jabatan, setJabatan] = useState(andalalin.jabatan_pimpinan);
+  const [jenis, setJenis] = useState(andalalin.jenis_kelamin_pimpinan);
   const [wilayahPimpinan, setWilayahPimpinan] = useState(
-    wilayah_administratif_pimpinan
+    andalalin.wilayah_administratif_pimpinan
   );
   const [provinsiPimpinan, setProvinsiPimpinan] = useState(
-    provinsi_pimpinan_perusahaan
+    andalalin.provinsi_pimpinan_perusahaan
   );
   const [kabupatenPimpinan, setKabupatenPimpinan] = useState(
-    kabupaten_pimpinan_perusahaan
+    andalalin.kabupaten_pimpinan_perusahaan
   );
   const [kecamatanPimpinan, setKecamatanPimpinan] = useState(
-    kecamatan_pimpinan_perusahaan
+    andalalin.kecamatan_pimpinan_perusahaan
   );
   const [kelurahanPimpinan, setKelurahanPimpinan] = useState(
-    kelurahan_pimpinan_perusahaan
+    andalalin.kelurahan_pimpinan_perusahaan
   );
-  const [alamatPimpinan, setAlamatPimpinan] = useState(alamat_pimpinan);
+  const [alamatPimpinan, setAlamatPimpinan] = useState(
+    andalalin.alamat_pimpinan
+  );
 
   const [namaError, toggleNamaError] = useStateToggler();
   const [alamatError, toggleAlamatError] = useStateToggler();
@@ -89,6 +77,19 @@ function Perusahaan({ onPress }) {
   const [formError, toggleFormError] = useStateToggler();
 
   const jenis_kelamin = [{ value: "Laki-laki" }, { value: "Perempuan" }];
+
+  const data = useRef();
+
+  useFocusEffect(
+    React.useCallback(() => {
+      data.current = {
+        ...andalalin,
+      };
+      return () => {
+        setAndalalin(data.current);
+      };
+    }, [])
+  );
 
   const press = () => {
     if (
@@ -112,26 +113,6 @@ function Perusahaan({ onPress }) {
       alamatPimpinanError ? toggleAlamatPimpinanError() : "";
       formError ? toggleFormError() : "";
 
-      dispatch({
-        nama_perusahaan: nama,
-        alamat_perusahaan: alamat,
-        wilayah_administratif_perusahaan: wilayah,
-        provinsi_perusahaan: provinsi,
-        kabupaten_perusahaan: kabupaten,
-        kecamatan_perusahaan: kecamatan,
-        kelurahan_perusahaan: kelurahan,
-        nomer_perusahaan: nomer,
-        email_perusahaan: email,
-        nama_pimpinan: pimpinan,
-        jabatan_pimpinan: jabatan,
-        jenis_kelamin_pimpinan: jenis,
-        wilayah_administratif_pimpinan: wilayahPimpinan,
-        provinsi_pimpinan_perusahaan: provinsiPimpinan,
-        kabupaten_pimpinan_perusahaan: kabupatenPimpinan,
-        kecamatan_pimpinan_perusahaan: kecamatanPimpinan,
-        kelurahan_pimpinan_perusahaan: kelurahanPimpinan,
-        alamat_pimpinan: alamatPimpinan,
-      });
       onPress();
     } else {
       nama == "" ? (namaError ? "" : toggleNamaError()) : "";
@@ -170,6 +151,28 @@ function Perusahaan({ onPress }) {
   }, [wilayahPimpinan]);
 
   const clear_error = () => {
+    data.current = {
+      ...andalalin,
+      nama_perusahaan: nama,
+      alamat_perusahaan: alamat,
+      wilayah_administratif_perusahaan: wilayah,
+      provinsi_perusahaan: provinsi,
+      kabupaten_perusahaan: kabupaten,
+      kecamatan_perusahaan: kecamatan,
+      kelurahan_perusahaan: kelurahan,
+      nomer_perusahaan: nomer,
+      email_perusahaan: email,
+      nama_pimpinan: pimpinan,
+      jabatan_pimpinan: jabatan,
+      jenis_kelamin_pimpinan: jenis,
+      wilayah_administratif_pimpinan: wilayahPimpinan,
+      provinsi_pimpinan_perusahaan: provinsiPimpinan,
+      kabupaten_pimpinan_perusahaan: kabupatenPimpinan,
+      kecamatan_pimpinan_perusahaan: kecamatanPimpinan,
+      kelurahan_pimpinan_perusahaan: kelurahanPimpinan,
+      alamat_pimpinan: alamatPimpinan,
+    };
+
     nama != "" ? (namaError ? toggleNamaError() : "") : "";
     alamat != "" ? (alamatError ? toggleAlamatError() : "") : "";
     wilayah != "" ? (wilayahError ? toggleWilayahError() : "") : "";
@@ -258,6 +261,16 @@ function Perusahaan({ onPress }) {
           setAlamat(value);
         }}
       />
+
+      <AText
+        style={{ paddingTop: 8 }}
+        color={color.neutral.neutral300}
+        size={14}
+        weight="normal"
+      >
+        Keterangan: Alamat dapat berupa Nomor Bangunan, RT, RW, atau detail
+        lainnya
+      </AText>
 
       <ATextInput
         bdColor={nomerError ? color.error.error500 : color.neutral.neutral300}
@@ -399,6 +412,16 @@ function Perusahaan({ onPress }) {
           setAlamatPimpinan(value);
         }}
       />
+
+      <AText
+        style={{ paddingTop: 8 }}
+        color={color.neutral.neutral300}
+        size={14}
+        weight="normal"
+      >
+        Keterangan: Alamat dapat berupa Nomor Bangunan, RT, RW, atau detail
+        lainnya
+      </AText>
 
       {formError ? (
         <AText

@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import { StyleSheet, ScrollView } from "react-native";
 import AText from "../utility/AText";
 import color from "../../constants/color";
@@ -9,28 +9,17 @@ import ATextInputIcon from "../utility/ATextInputIcon";
 import AButton from "../utility/AButton";
 import ADropDownCostume from "../utility/ADropdownCostume";
 import AInputAlamat from "../utility/AInputAlamat";
-
 import ADatePicker from "../utility/ADatePicker";
+import { useRecoilState } from "recoil";
+import PermohonanAtom from "../../atom/PermohonanAtom";
+import { useFocusEffect } from "@react-navigation/native";
 
 function PemohonPerlalin({ onPress }) {
-  const {
-    perlalin: {
-      nik_pemohon,
-      jenis_kelamin_pemohon,
-      tempat_lahir_pemohon,
-      tanggal_lahir_pemohon,
-      wilayah_administratif_pemohon,
-      provinsi_pemohon,
-      kabupaten_pemohon,
-      kecamatan_pemohon,
-      kelurahan_pemohon,
-      alamat_pemohon,
-      nomer_pemohon,
-      catatan,
-    },
-    dataMaster,
-    setPerlalin,
-  } = useContext(UserContext);
+  const { dataMaster } = useContext(UserContext);
+
+  const { perlalinState } = PermohonanAtom;
+
+  const [perlalin, setPerlalin] = useRecoilState(perlalinState);
 
   const nikInput = React.createRef();
   const tempatLahirInput = React.createRef();
@@ -38,18 +27,20 @@ function PemohonPerlalin({ onPress }) {
   const alamatInput = React.createRef();
   const nomerInput = React.createRef();
 
-  const [nik, setNik] = useState(nik_pemohon);
-  const [tempat, setTempat] = useState(tempat_lahir_pemohon);
-  const [tanggal, setTanggal] = useState(tanggal_lahir_pemohon);
-  const [jenis, setJenis] = useState(jenis_kelamin_pemohon);
-  const [alamatModal, setAlamatModal] = useState(wilayah_administratif_pemohon);
-  const [provinsi, setProvinsi] = useState(provinsi_pemohon);
-  const [kabupaten, setKabupaten] = useState(kabupaten_pemohon);
-  const [kecamatan, setKecamatan] = useState(kecamatan_pemohon);
-  const [kelurahan, setKelurahan] = useState(kelurahan_pemohon);
-  const [alamat, setAlamat] = useState(alamat_pemohon);
-  const [nomer, setNomer] = useState(nomer_pemohon);
-  const [catatanTambahan, setCatatanTambahan] = useState(catatan);
+  const [nik, setNik] = useState(perlalin.nik_pemohon);
+  const [tempat, setTempat] = useState(perlalin.tempat_lahir_pemohon);
+  const [tanggal, setTanggal] = useState(perlalin.tanggal_lahir_pemohon);
+  const [jenis, setJenis] = useState(perlalin.jenis_kelamin_pemohon);
+  const [alamatModal, setAlamatModal] = useState(
+    perlalin.wilayah_administratif_pemohon
+  );
+  const [provinsi, setProvinsi] = useState(perlalin.provinsi_pemohon);
+  const [kabupaten, setKabupaten] = useState(perlalin.kabupaten_pemohon);
+  const [kecamatan, setKecamatan] = useState(perlalin.kecamatan_pemohon);
+  const [kelurahan, setKelurahan] = useState(perlalin.kelurahan_pemohon);
+  const [alamat, setAlamat] = useState(perlalin.alamat_pemohon);
+  const [nomer, setNomer] = useState(perlalin.nomer_pemohon);
+  const [catatanTambahan, setCatatanTambahan] = useState(perlalin.catatan);
 
   const [nikError, togglenikError] = useStateToggler();
   const [tempatError, toggletempatError] = useStateToggler();
@@ -67,6 +58,19 @@ function PemohonPerlalin({ onPress }) {
 
   const jenis_kelamin = [{ value: "Laki-laki" }, { value: "Perempuan" }];
 
+  const data = useRef();
+
+  useFocusEffect(
+    React.useCallback(() => {
+      data.current = {
+        ...perlalin,
+      };
+      return () => {
+        setPerlalin(data.current);
+      };
+    }, [])
+  );
+
   const press = () => {
     if (
       nik != "" &&
@@ -78,23 +82,12 @@ function PemohonPerlalin({ onPress }) {
       nomer != "" &&
       nik.length == 16
     ) {
-      setPerlalin({
-        nik_pemohon: nik,
-        jenis_kelamin_pemohon: jenis,
-        tempat_lahir_pemohon: tempat,
-        tanggal_lahir_pemohon: tanggal,
-        wilayah_administratif_pemohon: alamatModal,
-        provinsi_pemohon: provinsi,
-        kabupaten_pemohon: kabupaten,
-        kecamatan_pemohon: kecamatan,
-        kelurahan_pemohon: kelurahan,
-        alamat_pemohon: alamat,
-        nomer_pemohon: nomer,
-        catatan: catatanTambahan,
-      });
       onPress();
     } else {
       nik == "" ? (nikError ? "" : togglenikError()) : "";
+      if (nik != "") {
+        nik.length < 16 ? (nikError ? "" : togglenikError()) : "";
+      }
       jenis == "" ? (jenisError ? "" : togglejenisError()) : "";
       tempat == "" ? (tempatError ? "" : toggletempatError()) : "";
       tanggal == "" ? (tempatError ? "" : toggletanggalError()) : "";
@@ -107,10 +100,11 @@ function PemohonPerlalin({ onPress }) {
 
   useEffect(() => {
     clear_error();
-  }, [jenis, alamatModal, tanggal, alamatModal]);
+  }, [jenis, alamatModal, tanggal]);
 
   const clear_error = () => {
-    setPerlalin({
+    data.current = {
+      ...perlalin,
       nik_pemohon: nik,
       jenis_kelamin_pemohon: jenis,
       tempat_lahir_pemohon: tempat,
@@ -123,8 +117,8 @@ function PemohonPerlalin({ onPress }) {
       alamat_pemohon: alamat,
       nomer_pemohon: nomer,
       catatan: catatanTambahan,
-    });
-    
+    };
+
     jenis != "" ? (jenisError ? togglejenisError() : "") : "";
     tempat != "" ? (tempatError ? toggletempatError() : "") : "";
     tanggal != "" ? (tanggalError ? toggletanggalError() : "") : "";
@@ -268,6 +262,16 @@ function PemohonPerlalin({ onPress }) {
         }}
       />
 
+      <AText
+        style={{ paddingTop: 8 }}
+        color={color.neutral.neutral300}
+        size={14}
+        weight="normal"
+      >
+        Keterangan: Alamat dapat berupa Nomor Bangunan, RT, RW, atau detail
+        lainnya
+      </AText>
+
       <ATextInput
         bdColor={nomerError ? color.error.error500 : color.neutral.neutral300}
         ktype={"number-pad"}
@@ -307,6 +311,7 @@ function PemohonPerlalin({ onPress }) {
         value={catatanTambahan}
         onChangeText={(value) => {
           setCatatanTambahan(value);
+          clear_error();
         }}
       />
 

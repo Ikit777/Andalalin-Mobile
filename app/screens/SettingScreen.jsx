@@ -307,22 +307,23 @@ function SettingScreen({ navigation }) {
               />
 
               <ASettingItem
-                icon={"shield"}
-                title={"Kebijakan privasi"}
-                onPress={() => {
-                  Linking.openURL(
-                    process.env.APP_WEB ??
-                      "https://andalalin.me" + "/kebijakan-privasi"
-                  );
-                }}
-              />
-              <ASettingItem
                 icon={"book-open"}
                 title={"Syarat dan ketentuan"}
                 onPress={() => {
                   Linking.openURL(
-                    process.env.APP_WEB ??
+                    process.env.APP_TERMS ??
                       "https://andalalin.me" + "/syarat-ketentuan"
+                  );
+                }}
+              />
+
+              <ASettingItem
+                icon={"shield"}
+                title={"Kebijakan privasi"}
+                onPress={() => {
+                  Linking.openURL(
+                    process.env.APP_PRIVACY_POLICY ??
+                      "https://andalalin.me" + "/kebijakan-privasi"
                   );
                 }}
               />

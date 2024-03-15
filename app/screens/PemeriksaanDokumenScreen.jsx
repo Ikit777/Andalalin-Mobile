@@ -26,23 +26,62 @@ function PemeriksaanDokumenScreen({ navigation }) {
 
   pemeriksaan_bangkitan_sedang = [
     {
-      substansi: "BAB 1",
+      substansi: "Bab I",
       catatan: [],
     },
     {
-      substansi: "BAB 2",
+      substansi: "Bab II",
       catatan: [],
     },
     {
-      substansi: "BAB 3",
+      substansi: "Bab III",
       catatan: [],
     },
     {
-      substansi: "BAB 4",
+      substansi: "Bab IV",
       catatan: [],
     },
     {
-      substansi: "BAB 5",
+      substansi: "BAB V",
+      catatan: [],
+    },
+    {
+      substansi: "LAMPIRAN GAMBAR TEKNIS",
+      catatan: [],
+    },
+    {
+      substansi: "CATATAN DAN KETERANGAN TAMBAHAN",
+      catatan: [],
+    },
+  ];
+
+  pemeriksaan_bangkitan_tinggi = [
+    {
+      substansi: "Bab I",
+      catatan: [],
+    },
+    {
+      substansi: "Bab II",
+      catatan: [],
+    },
+    {
+      substansi: "Bab III",
+      catatan: [],
+    },
+    {
+      substansi: "Bab IV",
+      catatan: [],
+    },
+    {
+      substansi: "Bab V",
+      catatan: [],
+    },
+    {
+      substansi: "Bab VI",
+      catatan: [],
+    },
+    {
+      substansi: "Bab VII",
       catatan: [],
     },
     {
@@ -60,27 +99,40 @@ function PemeriksaanDokumenScreen({ navigation }) {
 
     switch (context.detailPermohonan.kategori_bangkitan) {
       case "Bangkitan sedang":
-        const status =
+        const status_sedang =
           context.detailPermohonan.hasil_asistensi == null
             ? ""
             : context.detailPermohonan.hasil_asistensi;
 
-        const deepCopiedObject = JSON.parse(
-          JSON.stringify(context.detailPermohonan.catatan_asistensi)
-        );
-
-        let pemeriksaan =
+        let pemeriksaan_sedang =
           context.detailPermohonan.catatan_asistensi == null
             ? pemeriksaan_bangkitan_sedang
-            : deepCopiedObject;
+            : context.detailPermohonan.catatan_asistensi;
 
         setItem(pemeriksaan.length + 1);
 
         context.setPemeriksaan({
-          status: status,
-          pemeriksaan: pemeriksaan,
+          status: status_sedang,
+          pemeriksaan: pemeriksaan_sedang,
         });
+        break;
+      case "Bangkitan tinggi":
+        const status_tinggi =
+          context.detailPermohonan.hasil_asistensi == null
+            ? ""
+            : context.detailPermohonan.hasil_asistensi;
 
+        let pemeriksaan_tinggi =
+          context.detailPermohonan.catatan_asistensi == null
+            ? pemeriksaan_bangkitan_tinggi
+            : context.detailPermohonan.catatan_asistensi;
+
+        setItem(pemeriksaan.length + 1);
+
+        context.setPemeriksaan({
+          status: status_tinggi,
+          pemeriksaan: pemeriksaan_tinggi,
+        });
         break;
     }
 

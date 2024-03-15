@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { StyleSheet, View } from "react-native";
 import { UserContext } from "../../context/UserContext";
 import color from "../../constants/color";
@@ -7,22 +7,25 @@ import Informasi from "./Informasi";
 import PermohonanPerlalin from "./PermohonanPerlalin";
 import PemohonPerlalin from "./PemohonPerlalin";
 import PersyaratanPerlalin from "./PersyaratanPerlalin";
+import { useSetRecoilState } from "recoil";
+import PermohonanAtom from "../../atom/PermohonanAtom";
 
 export default function PerlalinItem({ navigation, route }) {
   const context = useContext(UserContext);
   const index = route.params.index;
   const kondisi = route.params.kondisi;
 
+  const { indexPermohonan } = PermohonanAtom;
+  const setIndex = useSetRecoilState(indexPermohonan);
+
   const onGoToNext = () => {
-    if (index < 5) {
-      const newIndex = index + 1;
+    const newIndex = index + 1;
 
-      context.setIndex(newIndex);
+    setIndex(newIndex);
 
-      navigation.push("PerlalinItem", {
-        index: newIndex,
-      });
-    }
+    navigation.push("PerlalinItem", {
+      index: newIndex,
+    });
   };
 
   const renderItem = () => {
@@ -36,9 +39,11 @@ export default function PerlalinItem({ navigation, route }) {
           />
         );
       case 2:
-        return <PermohonanPerlalin onPress={onGoToNext} navigation={navigation} />;
+        return (
+          <PermohonanPerlalin onPress={onGoToNext} navigation={navigation} />
+        );
       case 3:
-        return <PemohonPerlalin onPress={onGoToNext} />;
+        return <PemohonPerlalin onPress={onGoToNext} navigation={navigation} />;
       case 4:
         return (
           <PersyaratanPerlalin onPress={onGoToNext} navigation={navigation} />

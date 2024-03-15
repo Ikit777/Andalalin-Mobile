@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
 import { StyleSheet, ScrollView, View, TouchableOpacity } from "react-native";
 import AText from "../utility/AText";
 import color from "../../constants/color";
@@ -14,41 +14,18 @@ import { StorageAccessFramework } from "expo-file-system";
 import AConfirmationDialog from "../utility/AConfirmationDialog";
 import * as FileSystem from "expo-file-system";
 import ASnackBar from "../utility/ASnackBar";
+import PermohonanAtom from "../../atom/PermohonanAtom";
+import { useFocusEffect } from "@react-navigation/native";
+import { useRecoilState } from "recoil";
 
-function Kegiatan({ onPress, navigation }) {
-  const {
-    permohonan: {
-      aktivitas,
-      peruntukan,
-      total_luas_lahan,
-      nilai_kriteria,
-
-      nomer_skrk,
-      tanggal_skrk,
-
-      jenis,
-      rencana_pembangunan,
-      catatan,
-
-      kode,
-      bangkitan,
-      pemohon,
-      jabatan_pemohon,
-      jenis_proyek,
-      nama_proyek,
-      provinsi_proyek,
-      kabupaten_proyek,
-      kecamatan_proyek,
-      kelurahan_proyek,
-      nama_jalan,
-      nama_perusahaan,
-      nama_konsultan,
-    },
-    dispatch,
-    dataMaster,
-  } = useContext(UserContext);
+function Kegiatan({ onPress }) {
+  const { dataMaster } = useContext(UserContext);
 
   const context = useContext(UserContext);
+
+  const { andalalinState } = PermohonanAtom;
+
+  const [andalalin, setAndalalin] = useRecoilState(andalalinState);
 
   const kegiatanInput = React.createRef();
   const peruntukanInput = React.createRef();
@@ -56,15 +33,15 @@ function Kegiatan({ onPress, navigation }) {
   const luasInput = React.createRef();
   const nomerInput = React.createRef();
 
-  const [kegiatan, setKegiatan] = useState(aktivitas);
-  const [untuk, setPeruntukan] = useState(peruntukan);
-  const [total, setTotal] = useState(total_luas_lahan);
-  const [luas, setLuas] = useState(nilai_kriteria);
+  const [kegiatan, setKegiatan] = useState(andalalin.aktivitas);
+  const [untuk, setPeruntukan] = useState(andalalin.peruntukan);
+  const [total, setTotal] = useState(andalalin.total_luas_lahan);
+  const [luas, setLuas] = useState(andalalin.nilai_kriteria);
 
-  const [nomer, setNomer] = useState(nomer_skrk);
-  const [tanggal, setTanggal] = useState(tanggal_skrk);
+  const [nomer, setNomer] = useState(andalalin.nomer_skrk);
+  const [tanggal, setTanggal] = useState(andalalin.tanggal_skrk);
 
-  const [catatanTambahan, setCatatanTambahan] = useState(catatan);
+  const [catatanTambahan, setCatatanTambahan] = useState(andalalin.catatan);
 
   const [kegiatanError, toggleKegiatanError] = useStateToggler();
   const [peruntukanError, togglePeruntukanError] = useStateToggler();
@@ -85,6 +62,20 @@ function Kegiatan({ onPress, navigation }) {
 
   const [message, setMessage] = useState();
   const [isSnackbarVisible, setSnackbarVisible] = useStateToggler();
+
+  const save = useRef();
+
+  useFocusEffect(
+    React.useCallback(() => {
+      save.current = {
+        ...andalalin,
+      };
+
+      return () => {
+        setAndalalin(save.current);
+      };
+    }, [])
+  );
 
   const showSnackbar = () => {
     setSnackbarVisible();
@@ -108,24 +99,26 @@ function Kegiatan({ onPress, navigation }) {
     context.toggleLoading(true);
 
     let jalan = context.dataMaster.jalan.find((item) => {
-      return item.KodeJalan == kode && item.Nama == nama_jalan;
+      return (
+        item.KodeJalan == andalalin.kode && item.Nama == andalalin.nama_jalan
+      );
     });
 
     const data = {
-      bangkitan: bangkitan,
-      pemohon: pemohon,
+      bangkitan: andalalin.bangkitan,
+      pemohon: andalalin.pemohon,
       nama: context.getUser().nama,
-      jabatan: jabatan_pemohon,
-      jenis: jenis_proyek,
-      proyek: nama_proyek,
-      jalan: nama_jalan,
-      kelurahan: kelurahan_proyek,
-      kecamatan: kecamatan_proyek,
-      kabupaten: kabupaten_proyek,
-      provinsi: provinsi_proyek,
+      jabatan: andalalin.jabatan_pemohon,
+      jenis: andalalin.jenis_proyek,
+      proyek: andalalin.nama_proyek,
+      jalan: andalalin.nama_jalan,
+      kelurahan: andalalin.kelurahan_proyek,
+      kecamatan: andalalin.kecamatan_proyek,
+      kabupaten: andalalin.kabupaten_proyek,
+      provinsi: andalalin.provinsi_proyek,
       status: jalan.Status,
-      pengembang: nama_perusahaan,
-      konsultan: nama_konsultan,
+      pengembang: andalalin.nama_perusahaan,
+      konsultan: andalalin.nama_konsultan,
     };
 
     andalalinPembuatanSuratPermohonan(
@@ -192,16 +185,6 @@ function Kegiatan({ onPress, navigation }) {
         tanggalError ? toggleTanggalError() : "";
         totalError ? toggleTotalError() : "";
         formError ? toggleFormError() : "";
-        dispatch({
-          aktivitas: kegiatan,
-          peruntukan: untuk,
-          total_luas_lahan: total,
-
-          nomer_skrk: nomer,
-          tanggal_skrk: tanggal,
-
-          catatan: catatanTambahan,
-        });
         onPress();
       } else {
         kegiatan == "" ? (kegiatanError ? "" : toggleKegiatanError()) : "";
@@ -227,16 +210,6 @@ function Kegiatan({ onPress, navigation }) {
         tanggalError ? toggleTanggalError() : "";
         totalError ? toggleTotalError() : "";
         formError ? toggleFormError() : "";
-        dispatch({
-          aktivitas: kegiatan,
-          peruntukan: untuk,
-          kriteria_khusus: data.Kriteria,
-          total_luas_lahan: total,
-          nilai_kriteria: luas,
-          nomer_skrk: nomer,
-          tanggal_skrk: tanggal,
-          catatan: catatanTambahan,
-        });
         onPress();
       } else {
         kegiatan == "" ? (kegiatanError ? "" : toggleKegiatanError()) : "";
@@ -252,12 +225,12 @@ function Kegiatan({ onPress, navigation }) {
 
   const dataSet = () => {
     let findData = dataMaster.jenis_rencana.find((item) => {
-      return item.Kategori == jenis;
+      return item.Kategori == andalalin.jenis;
     });
 
     if (findData != null) {
       let rencana = findData.JenisRencana.find((item) => {
-        return item.Jenis == rencana_pembangunan;
+        return item.Jenis == andalalin.rencana_pembangunan;
       });
 
       setData(rencana);
@@ -269,10 +242,24 @@ function Kegiatan({ onPress, navigation }) {
   }, []);
 
   useEffect(() => {
-    clear_error();
+    if (tanggal != "") {
+      clear_error();
+    }
   }, [tanggal]);
 
   const clear_error = () => {
+    save.current = {
+      ...andalalin,
+      aktivitas: kegiatan,
+      peruntukan: untuk,
+      kriteria_khusus: data.Kriteria,
+      total_luas_lahan: total,
+      nilai_kriteria: luas,
+      nomer_skrk: nomer,
+      tanggal_skrk: tanggal,
+      catatan: catatanTambahan,
+    };
+
     if (data.Kriteria == "" && data.Kriteria == null) {
       kegiatan != "" ? (kegiatanError ? toggleKegiatanError() : "") : "";
       untuk != "" ? (peruntukanError ? togglePeruntukanError() : "") : "";
@@ -453,6 +440,7 @@ function Kegiatan({ onPress, navigation }) {
           value={catatanTambahan}
           onChangeText={(value) => {
             setCatatanTambahan(value);
+            clear_error();
           }}
         />
 

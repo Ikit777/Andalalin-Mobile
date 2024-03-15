@@ -47,6 +47,10 @@ import {
   DetailSurveiMandiriScreen,
   PemeriksaanPerlengkapanScreen,
   PdfScreen,
+  PemeriksaanKesesuaianSubstansiScreen,
+  PembuatanPembahasanScreen,
+  TambahStackholderScreen,
+  BeritaAcaraPeninjauanScreen,
 } from "../screens";
 
 const Stack = createNativeStackNavigator();
@@ -237,11 +241,42 @@ const Navigator = ({
       />
       <Stack.Screen name="Survei mandiri" component={SurveiMandiriScreen} />
 
-      <Stack.Screen name="Detail mandiri" component={DetailSurveiMandiriScreen} initialParams={{ id }}/>
+      <Stack.Screen
+        name="Detail mandiri"
+        component={DetailSurveiMandiriScreen}
+        initialParams={{ id }}
+      />
 
-      <Stack.Screen name="Pemeriksaan perlengkapan" component={PemeriksaanPerlengkapanScreen} />
+      <Stack.Screen
+        name="Pemeriksaan perlengkapan"
+        component={PemeriksaanPerlengkapanScreen}
+      />
 
-      <Stack.Screen name="Pdf view" component={PdfScreen} initialParams={{ dokumen }}/>
+      <Stack.Screen
+        name="Pdf view"
+        component={PdfScreen}
+        initialParams={{ dokumen }}
+      />
+
+      <Stack.Screen
+        name="Pemeriksaan substansi"
+        component={PemeriksaanKesesuaianSubstansiScreen}
+      />
+
+      <Stack.Screen
+        name="Berita acara pembahasan"
+        component={PembuatanPembahasanScreen}
+      />
+
+      <Stack.Screen
+        name="Tambah stackholder"
+        component={TambahStackholderScreen}
+      />
+
+      <Stack.Screen
+        name="Berita acara peninjauan"
+        component={BeritaAcaraPeninjauanScreen}
+      />
     </Stack.Navigator>
   );
 };

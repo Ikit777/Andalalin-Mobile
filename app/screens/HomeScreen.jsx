@@ -25,6 +25,8 @@ import * as FileSystem from "expo-file-system";
 import { inflate } from "react-native-gzip";
 import { Buffer } from "buffer";
 import { CheckContext } from "../context/CheckContext";
+import { useResetRecoilState } from "recoil";
+import PermohonanAtom from "../atom/PermohonanAtom";
 
 function HomeScreen({ navigation }) {
   const context = useContext(UserContext);
@@ -32,6 +34,11 @@ function HomeScreen({ navigation }) {
   const [confirm, toggleComfirm] = useStateToggler();
   const [gagal, toggleGagal] = useStateToggler();
   const [kategoriBangkitan, toggleKategoriBangkitan] = useStateToggler();
+
+  const { andalalinState, perlalinState, indexPermohonan } = PermohonanAtom;
+  const resetAndalalin = useResetRecoilState(andalalinState);
+  const resetPerlalin = useResetRecoilState(perlalinState);
+  const resetIndexPermohonan = useResetRecoilState(indexPermohonan);
 
   useEffect(() => {
     navigation.addListener("beforeRemove", (e) => {
@@ -429,17 +436,16 @@ function HomeScreen({ navigation }) {
                     switch (kondisi) {
                       case "Andalalin":
                         context.toggleLoading(false);
+                        resetAndalalin();
                         toggleKategoriBangkitan();
                         break;
                       case "Perlalin":
                         context.toggleLoading(false);
-                        context.setIndex(1);
-                        context.clear();
-                        context.setPerlalin({ perlengkapan: [] });
+                        resetIndexPermohonan();
+                        resetPerlalin();
                         navigation.push("Andalalin", {
                           kondisi: "Perlalin",
                         });
-
                         break;
                       case "Daftar User":
                         navigation.push("Daftar", { kondisi: "Diajukan" });
@@ -492,20 +498,21 @@ function HomeScreen({ navigation }) {
                             switch (kondisi) {
                               case "Andalalin":
                                 context.toggleLoading(false);
+                                resetAndalalin();
                                 toggleKategoriBangkitan();
                                 break;
                               case "Perlalin":
                                 context.toggleLoading(false);
-                                context.setIndex(1);
-                                context.clear();
-                                context.setPerlalin({ perlengkapan: [] });
+                                resetIndexPermohonan();
+                                resetPerlalin();
                                 navigation.push("Andalalin", {
                                   kondisi: "Perlalin",
                                 });
-
                                 break;
                               case "Daftar User":
-                                navigation.push("Daftar", { kondisi: "Diajukan" });
+                                navigation.push("Daftar", {
+                                  kondisi: "Diajukan",
+                                });
                                 break;
                               case "Daftar Non User":
                                 navigation.push("Daftar", {
@@ -541,13 +548,13 @@ function HomeScreen({ navigation }) {
               switch (kondisi) {
                 case "Andalalin":
                   context.toggleLoading(false);
+                  resetAndalalin();
                   toggleKategoriBangkitan();
                   break;
                 case "Perlalin":
                   context.toggleLoading(false);
-                  context.setIndex(1);
-                  context.clear();
-                  context.setPerlalin({ perlengkapan: [] });
+                  resetIndexPermohonan();
+                  resetPerlalin();
                   navigation.push("Andalalin", {
                     kondisi: "Perlalin",
                   });
@@ -588,6 +595,7 @@ function HomeScreen({ navigation }) {
           <View style={{ flexDirection: "row" }}>
             {context.getUser().role == "User" ||
             context.getUser().role == "Operator" ||
+            context.getUser().role == "Admin" ||
             context.getUser().role == "Petugas" ? (
               <TouchableOpacity
                 style={{ padding: 8, flexDirection: "row" }}
@@ -709,7 +717,7 @@ function HomeScreen({ navigation }) {
         }}
         onPressOKButton={() => {
           navigation.push("Andalalin", { kondisi: "Andalalin" });
-          context.setIndex(1);
+          resetIndexPermohonan();
           toggleKategoriBangkitan();
         }}
       />

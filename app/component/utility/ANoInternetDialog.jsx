@@ -10,13 +10,10 @@ import color from "../../constants/color";
 import AText from "../utility/AText";
 import { UserContext } from "../../context/UserContext";
 import * as RootNavigation from "../../navigation/RootNavigator.js";
-import { ModalContext } from "../../context/ModalContext";
 
 function ANoInternetDialog({ visibleModal = false }) {
   const context = useContext(UserContext);
-
-  const { modalState, handleOpenModal, handleCloseModal } =
-    useContext(ModalContext);
+  const [visible, setVisible] = React.useState(visibleModal);
 
   React.useEffect(() => {
     toggleModal();
@@ -27,30 +24,31 @@ function ANoInternetDialog({ visibleModal = false }) {
       if (context.loading == true) {
         context.toggleLoading(false);
       }
-      handleOpenModal("NoInternetModal");
+      setVisible(true);
+    } else {
+      setTimeout(() => setVisible(false), 200);
     }
   };
 
-  const ok = () => {
-    setTimeout(() => handleCloseModal("NoInternetModal"), 200);
-
-    if (context.getUser() != "user") {
-      RootNavigation.replace("Home");
-    }
-  };
+  // const ok = () => {
+  //   if (context.getUser() != "user") {
+  //     RootNavigation.replace("Home");
+  //   }
+  // };
 
   const height = () => {
-    if (visibleModal) {
-      return 82;
-    } else {
-      return 24;
-    }
+    return 52;
+    // if (visibleModal) {
+    //   return 82;
+    // } else {
+    //   return 24;
+    // }
   };
 
   return (
     <Modal
       animationType="fade"
-      visible={modalState.NoInternetModal.visible}
+      visible={visible}
       transparent={true}
       statusBarTranslucent
       deviceHeight={Dimensions.get("screen").height}
@@ -67,7 +65,7 @@ function ANoInternetDialog({ visibleModal = false }) {
           >
             Harap periksa koneksi internet Anda untuk melanjutkan aktivitas
           </AText>
-          {visibleModal == false ? (
+          {/* {visibleModal == false ? (
             <TouchableOpacity
               style={{ alignItems: "flex-end", marginBottom: 24 }}
               onPress={() => {
@@ -85,7 +83,7 @@ function ANoInternetDialog({ visibleModal = false }) {
             </TouchableOpacity>
           ) : (
             ""
-          )}
+          )} */}
         </View>
       </View>
     </Modal>

@@ -21,10 +21,16 @@ import ADialog from "../component/utility/ADialog";
 import AButton from "../component/utility/AButton";
 import { andalalinPerbaruiLokasi } from "../api/andalalin";
 import { authRefreshToken } from "../api/auth";
+import { useRecoilState } from "recoil";
+import PermohonanAtom from "../atom/PermohonanAtom";
 
 function PilihLokasiScreen({ navigation, route }) {
   const context = useContext(UserContext);
   const kondisi = route.params.kondisi;
+
+  const { andalalinState } = PermohonanAtom;
+
+  const [andalalin, setAndalalin] = useRecoilState(andalalinState);
 
   const [maps, setMaps] = useState("");
   const [alamatLengkap, setAlamatLengkap] = useState("");
@@ -104,13 +110,15 @@ function PilihLokasiScreen({ navigation, route }) {
             });
 
             for (let item of response) {
-              let street = item.street != null ? (item.street + ", ") : ("");
-              let name = item.name != null ? (item.name + ", ") : ("");
-              let district = item.district != null ? (item.district + ", ") : ("");
-              let postalCode = item.postalCode != null ? (item.postalCode + ", ") : ("");
-              let city = item.city != null ? (item.city + ", ") : ("");
-              let subregion = item.subregion != null ? (item.subregion + ", ") :("");
-              let region = item.region != null ? (item.region + ", ") : ("");
+              let street = item.street != null ? item.street + ", " : "";
+              let name = item.name != null ? item.name + ", " : "";
+              let district = item.district != null ? item.district + ", " : "";
+              let postalCode =
+                item.postalCode != null ? item.postalCode + ", " : "";
+              let city = item.city != null ? item.city + ", " : "";
+              let subregion =
+                item.subregion != null ? item.subregion + ", " : "";
+              let region = item.region != null ? item.region + ", " : "";
               let addressLengkap = `${street}${name}${district}${postalCode}${city}${subregion}${region}${"Indonesia"}`;
 
               setAlamatLengkap(addressLengkap);
@@ -180,13 +188,15 @@ function PilihLokasiScreen({ navigation, route }) {
             });
 
             for (let item of response) {
-              let street = item.street != null ? (item.street + ", ") : ("");
-              let name = item.name != null ? (item.name + ", ") : ("");
-              let district = item.district != null ? (item.district + ", ") : ("");
-              let postalCode = item.postalCode != null ? (item.postalCode + ", ") : ("");
-              let city = item.city != null ? (item.city + ", ") : ("");
-              let subregion = item.subregion != null ? (item.subregion + ", ") :("");
-              let region = item.region != null ? (item.region + ", ") : ("");
+              let street = item.street != null ? item.street + ", " : "";
+              let name = item.name != null ? item.name + ", " : "";
+              let district = item.district != null ? item.district + ", " : "";
+              let postalCode =
+                item.postalCode != null ? item.postalCode + ", " : "";
+              let city = item.city != null ? item.city + ", " : "";
+              let subregion =
+                item.subregion != null ? item.subregion + ", " : "";
+              let region = item.region != null ? item.region + ", " : "";
               let addressLengkap = `${street}${name}${district}${postalCode}${city}${subregion}${region}${"Indonesia"}`;
 
               setAlamatLengkap(addressLengkap);
@@ -209,32 +219,40 @@ function PilihLokasiScreen({ navigation, route }) {
   }
 
   const perbarui = () => {
-    andalalinPerbaruiLokasi(context.getUser().access_token, context.detailPermohonan.id_andalalin, alamatLengkap, location.coords.latitude, location.coords.longitude, (response) => {
-      switch (response.status) {
-        case 200:
-          navigation.replace("Detail", {
-            id: context.detailPermohonan.id_andalalin,
-          });
-          break;
-        case 424:
-          authRefreshToken(context, (response) => {
-            if (response.status === 200) {
-              perbarui();
-            }
-          });
-          break;
-        default:
-          context.toggleLoading(false);
-          togglePerbaruiGagal();
-          break;
+    andalalinPerbaruiLokasi(
+      context.getUser().access_token,
+      context.detailPermohonan.id_andalalin,
+      alamatLengkap,
+      location.coords.latitude,
+      location.coords.longitude,
+      (response) => {
+        switch (response.status) {
+          case 200:
+            navigation.replace("Detail", {
+              id: context.detailPermohonan.id_andalalin,
+            });
+            break;
+          case 424:
+            authRefreshToken(context, (response) => {
+              if (response.status === 200) {
+                perbarui();
+              }
+            });
+            break;
+          default:
+            context.toggleLoading(false);
+            togglePerbaruiGagal();
+            break;
+        }
       }
-    });
-  }
+    );
+  };
 
   const pilih_lokasi = () => {
     if (alamatLengkap != "") {
       if (kondisi == "Pengajuan andalalin") {
-        context.dispatch({
+        setAndalalin({
+          ...andalalin,
           lokasi_bangunan: alamatLengkap,
           lat_bangunan: location.coords.latitude,
           long_bangunan: location.coords.longitude,
@@ -247,7 +265,7 @@ function PilihLokasiScreen({ navigation, route }) {
           long_pemasangan: location.coords.longitude,
         });
         navigation.goBack();
-      } else if (kondisi == "Perbarui lokasi"){
+      } else if (kondisi == "Perbarui lokasi") {
         context.toggleLoading(true);
         perbarui();
       }
@@ -290,8 +308,8 @@ function PilihLokasiScreen({ navigation, route }) {
               navigation.goBack();
             }}
           />
-         <AText
-            style={{ paddingLeft: 4}}
+          <AText
+            style={{ paddingLeft: 4 }}
             size={20}
             color={color.neutral.neutral900}
             weight="normal"
@@ -461,9 +479,7 @@ function PilihLokasiScreen({ navigation, route }) {
 
         <ADialog
           title={"Lokasi gagal dimuat"}
-          desc={
-            "Terjadi kesalahan pada server, mohon coba lagi lain waktu"
-          }
+          desc={"Terjadi kesalahan pada server, mohon coba lagi lain waktu"}
           visibleModal={gagal}
           btnOK={"OK"}
           onPressOKButton={() => {
@@ -474,9 +490,7 @@ function PilihLokasiScreen({ navigation, route }) {
 
         <ADialog
           title={"Perbarui gagal"}
-          desc={
-            "Terjadi kesalahan pada server, mohon coba lagi lain waktu"
-          }
+          desc={"Terjadi kesalahan pada server, mohon coba lagi lain waktu"}
           visibleModal={perbaruiGagal}
           btnOK={"OK"}
           onPressOKButton={() => {

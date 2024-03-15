@@ -6,18 +6,22 @@ import color from "../../constants/color";
 import AText from "../utility/AText";
 import { UserContext } from "../../context/UserContext";
 import ADropDownCostume from "../utility/ADropdownCostume";
+import PermohonanAtom from "../../atom/PermohonanAtom";
+import { useFocusEffect } from "@react-navigation/native";
+import { useRecoilState } from "recoil";
 
 function Permohonan({ onPress }) {
-  const {
-    permohonan: { jenis, rencana_pembangunan, lokasi_pengambilan, pemohon },
-    dispatch,
-    dataMaster,
-  } = useContext(UserContext);
+  const { dataMaster } = useContext(UserContext);
 
-  const [jenisRencana, setJenisRencana] = useState(jenis);
-  const [lokasiPengambilan, setLokasi] = useState(lokasi_pengambilan);
-  const [rencanaJenisPembangunan, setrencanaJenisPembangunan] =
-    useState(rencana_pembangunan);
+  const { andalalinState } = PermohonanAtom;
+
+  const [andalalin, setAndalalin] = useRecoilState(andalalinState);
+
+  const [jenisRencana, setJenisRencana] = useState(andalalin.jenis);
+  const [lokasiPengambilan, setLokasi] = useState(andalalin.lokasi_pengambilan);
+  const [rencanaJenisPembangunan, setrencanaJenisPembangunan] = useState(
+    andalalin.rencana_pembangunan
+  );
 
   const [rencana, setRencana] = useState("");
   const [jenis_rencana, setjenis_rencana] = useState("");
@@ -26,10 +30,23 @@ function Permohonan({ onPress }) {
   const [lokasiError, toggleLokasiError] = useStateToggler();
   const [rencanaError, toggleRencanaError] = useStateToggler();
 
-  const [kategoriPemohon, setKategoriPemohon] = useState(pemohon);
+  const [kategoriPemohon, setKategoriPemohon] = useState(andalalin.pemohon);
   const [pemohonError, togglePemohonError] = useStateToggler();
 
   const [formError, toggleFormError] = useStateToggler();
+
+  const data = useRef();
+
+  useFocusEffect(
+    React.useCallback(() => {
+      data.current = {
+        ...andalalin,
+      };
+      return () => {
+        setAndalalin(data.current);
+      };
+    }, [])
+  );
 
   let lokasi = dataMaster.lokasi_pengambilan.map((item) => {
     return { value: item };
@@ -62,28 +79,34 @@ function Permohonan({ onPress }) {
   };
 
   useEffect(() => {
-    clear_error();
     setTimeout(() => {
       if (jenisRencana != "") {
+        clear_error();
         rencanaPembangunan();
       }
     }, 500);
 
-    if (jenisRencana != jenis) {
+    if (jenisRencana != andalalin.jenis) {
       setrencanaJenisPembangunan("");
     }
   }, [jenisRencana]);
 
   useEffect(() => {
-    clear_error();
+    if (lokasiPengambilan != "") {
+      clear_error();
+    }
   }, [lokasiPengambilan]);
 
   useEffect(() => {
-    clear_error();
+    if (kategoriPemohon != "") {
+      clear_error();
+    }
   }, [kategoriPemohon]);
 
   useEffect(() => {
-    clear_error();
+    if (rencanaJenisPembangunan != "") {
+      clear_error();
+    }
   }, [rencanaJenisPembangunan]);
 
   const press = () => {
@@ -94,13 +117,6 @@ function Permohonan({ onPress }) {
       kategoriPemohon != ""
     ) {
       formError ? toggleFormError() : "";
-
-      dispatch({
-        jenis: jenisRencana,
-        rencana_pembangunan: rencanaJenisPembangunan,
-        lokasi_pengambilan: lokasiPengambilan,
-        pemohon: kategoriPemohon,
-      });
       onPress();
     } else {
       jenisRencana == "" ? (jenisError ? "" : toggleJenisError()) : "";
@@ -118,6 +134,14 @@ function Permohonan({ onPress }) {
   const kategori = [{ value: "Perorangan" }, { value: "Non-perorangan" }];
 
   const clear_error = () => {
+    data.current = {
+      ...andalalin,
+      jenis: jenisRencana,
+      rencana_pembangunan: rencanaJenisPembangunan,
+      lokasi_pengambilan: lokasiPengambilan,
+      pemohon: kategoriPemohon,
+    };
+
     jenisRencana != "" ? (jenisError ? toggleJenisError() : "") : "";
     lokasiPengambilan != "" ? (lokasiError ? toggleLokasiError() : "") : "";
     kategoriPemohon != "" ? (pemohonError ? togglePemohonError() : "") : "";

@@ -12,16 +12,23 @@ import { UserContext } from "../context/UserContext";
 import PerlalinNavigator from "../component/andalalin/PerlalinNavigator";
 import { useFocusEffect } from "@react-navigation/native";
 import { Feather } from "@expo/vector-icons";
+import { useRecoilState, useResetRecoilState } from "recoil";
+import PermohonanAtom from "../atom/PermohonanAtom";
 
 function PengajuanScreen({ navigation, route }) {
   const [confirm, toggleComfirm] = useStateToggler();
   const context = useContext(UserContext);
   const kondisi = route.params.kondisi;
 
-  const {
-    setLokasi,
-    setFoto,
-  } = useContext(UserContext);
+  const { setLokasi, setFoto } = useContext(UserContext);
+
+  const { andalalinState, perlalinState, indexPermohonan } = PermohonanAtom;
+  const [index, setIndex] = useRecoilState(indexPermohonan);
+  const [andalalin, setAndalalin] = useRecoilState(andalalinState);
+
+  const resetAndalalin = useResetRecoilState(andalalinState);
+  const resetPerlalin = useResetRecoilState(perlalinState);
+  const resetIndexPermohonan = useResetRecoilState(indexPermohonan);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -34,15 +41,15 @@ function PengajuanScreen({ navigation, route }) {
         back();
         return true;
       });
-    }, [context.index])
+    }, [index])
   );
 
   const back = () => {
-    if (context.index == 1) {
+    if (index == 1) {
       toggleComfirm();
     } else {
-      const newIndex = context.index - 1;
-      context.setIndex(newIndex);
+      const newIndex = index - 1;
+      setIndex(newIndex);
 
       navigation.replace("Back", {
         index: newIndex,
@@ -52,10 +59,10 @@ function PengajuanScreen({ navigation, route }) {
 
   const judul = () => {
     if (kondisi == "Andalalin") {
-      switch (context.permohonan.bangkitan) {
+      switch (andalalin.bangkitan) {
         case "Bangkitan rendah":
-          if (context.permohonan.pemohon == "Perorangan") {
-            switch (context.index) {
+          if (andalalin.pemohon == "Perorangan") {
+            switch (index) {
               case 1:
                 return "Permohonan";
               case 2:
@@ -72,7 +79,7 @@ function PengajuanScreen({ navigation, route }) {
                 return "Konfirmasi";
             }
           } else {
-            switch (context.index) {
+            switch (index) {
               case 1:
                 return "Permohonan";
               case 2:
@@ -93,8 +100,8 @@ function PengajuanScreen({ navigation, route }) {
           }
           break;
         case "Bangkitan sedang":
-          if (context.permohonan.pemohon == "Perorangan") {
-            switch (context.index) {
+          if (andalalin.pemohon == "Perorangan") {
+            switch (index) {
               case 1:
                 return "Permohonan";
               case 2:
@@ -113,7 +120,7 @@ function PengajuanScreen({ navigation, route }) {
                 return "Konfirmasi";
             }
           } else {
-            switch (context.index) {
+            switch (index) {
               case 1:
                 return "Permohonan";
               case 2:
@@ -136,8 +143,8 @@ function PengajuanScreen({ navigation, route }) {
           }
           break;
         case "Bangkitan tinggi":
-          if (context.permohonan.pemohon == "Perorangan") {
-            switch (context.index) {
+          if (andalalin.pemohon == "Perorangan") {
+            switch (index) {
               case 1:
                 return "Permohonan";
               case 2:
@@ -156,7 +163,7 @@ function PengajuanScreen({ navigation, route }) {
                 return "Konfirmasi";
             }
           } else {
-            switch (context.index) {
+            switch (index) {
               case 1:
                 return "Permohonan";
               case 2:
@@ -180,7 +187,7 @@ function PengajuanScreen({ navigation, route }) {
           break;
       }
     } else {
-      switch (context.index) {
+      switch (index) {
         case 1:
           return "Permohonan";
         case 2:
@@ -197,29 +204,29 @@ function PengajuanScreen({ navigation, route }) {
 
   const content = () => {
     if (kondisi == "Andalalin") {
-      return <AndalalinNavigator index={context.index} kondisi={kondisi} />;
+      return <AndalalinNavigator index={index} kondisi={kondisi} />;
     } else {
-      return <PerlalinNavigator index={context.index} kondisi={kondisi} />;
+      return <PerlalinNavigator index={index} kondisi={kondisi} />;
     }
   };
 
   const item = () => {
     if (kondisi == "Andalalin") {
-      switch (context.permohonan.bangkitan) {
+      switch (andalalin.bangkitan) {
         case "Bangkitan rendah":
-          if (context.permohonan.pemohon == "Perorangan") {
+          if (andalalin.pemohon == "Perorangan") {
             return 6;
           } else {
             return 7;
           }
         case "bangkitan sedang":
-          if (context.permohonan.pemohon == "Perorangan") {
+          if (andalalin.pemohon == "Perorangan") {
             return 7;
           } else {
             return 8;
           }
         case "Bangkitan tinggi":
-          if (context.permohonan.pemohon == "Perorangan") {
+          if (andalalin.pemohon == "Perorangan") {
             return 7;
           } else {
             return 8;
@@ -274,11 +281,11 @@ function PengajuanScreen({ navigation, route }) {
         >
           <ABackButton
             onPress={() => {
-              if (context.index == 1) {
+              if (index == 1) {
                 toggleComfirm();
               } else {
-                const newIndex = context.index - 1;
-                context.setIndex(newIndex);
+                const newIndex = index - 1;
+                setIndex(newIndex);
 
                 navigation.replace("Back", {
                   index: newIndex,
@@ -295,18 +302,16 @@ function PengajuanScreen({ navigation, route }) {
             {judul()}
           </AText>
         </View>
-        {context.index == 1 ? (
+        {index == 1 ? (
           <View style={{ height: 6 }} />
         ) : (
-          <AProgressBar
-            progress={Math.floor(((context.index - 1) * 100) / item())}
-          />
+          <AProgressBar progress={Math.floor(((index - 1) * 100) / item())} />
         )}
       </View>
 
       <View style={styles.content}>{content()}</View>
 
-      {kondisi == "Perlalin" && context.index == 2 ? tambah() : ""}
+      {kondisi == "Perlalin" && index == 2 ? tambah() : ""}
 
       <AConfirmationDialog
         title={"Peringatan"}
@@ -320,8 +325,9 @@ function PengajuanScreen({ navigation, route }) {
         }}
         onPressOKButton={() => {
           navigation.goBack();
-          context.setIndex(1);
-          context.clear();
+          resetAndalalin();
+          resetPerlalin();
+          resetIndexPermohonan();
           toggleComfirm();
         }}
       />

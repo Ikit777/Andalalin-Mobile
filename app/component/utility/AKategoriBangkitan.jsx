@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import {
   StyleSheet,
   View,
@@ -11,7 +11,8 @@ import {
 import color from "../../constants/color";
 import AText from "../utility/AText";
 import { RadioButton } from "react-native-paper";
-import { UserContext } from "../../context/UserContext";
+import PermohonanAtom from "../../atom/PermohonanAtom";
+import { useRecoilState } from "recoil";
 
 function AKategoriBangkitan({
   visibleModal = false,
@@ -23,7 +24,9 @@ function AKategoriBangkitan({
   const [visible, setVisible] = React.useState(visibleModal);
   const [checked, setChecked] = React.useState("");
 
-  const { dispatch } = useContext(UserContext);
+  const { andalalinState } = PermohonanAtom;
+
+  const [andalalin, setAndalalin] = useRecoilState(andalalinState);
 
   
   React.useEffect(() => {
@@ -49,7 +52,8 @@ function AKategoriBangkitan({
 
   const okPress = () => {
     if (checked != "") {
-      dispatch({
+      setAndalalin({
+        ...andalalin,
         bangkitan: checked,
       });
       onPressOKButton();

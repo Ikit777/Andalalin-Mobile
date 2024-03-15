@@ -6,12 +6,18 @@ import AScreen from "../component/utility/AScreen";
 import ABackButton from "../component/utility/ABackButton";
 import { UserContext } from "../context/UserContext";
 import AKetentuanDropdown from "../component/utility/AKetentuanDropdown";
+import { useRecoilState } from "recoil";
+import PermohonanAtom from "../atom/PermohonanAtom";
 
 function KetentuanScreen({ navigation, route }) {
   const context = useContext(UserContext);
   const kondisi = route.params.kondisi;
   const kategori = route.params.kategori;
   const [data, setData] = useState();
+
+  const { andalalinState } = PermohonanAtom;
+
+  const [andalalin, setAndalalin] = useRecoilState(andalalinState);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
@@ -27,7 +33,7 @@ function KetentuanScreen({ navigation, route }) {
 
         setTimeout(() => {
           const persyaratan = context.dataMaster.persyaratan.PersyaratanAndalalin.filter((bangkitan) => {
-            return bangkitan.bangkitan == context.permohonan.bangkitan;
+            return bangkitan.bangkitan == andalalin.bangkitan;
           })
 
           setData(persyaratan);

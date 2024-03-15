@@ -12,6 +12,8 @@ import {
 } from "../../api/andalalin";
 import { authRefreshToken } from "../../api/auth";
 import ADialog from "../utility/ADialog";
+import { useRecoilState } from "recoil";
+import PermohonanAtom from "../../atom/PermohonanAtom";
 
 function Konfirmasi({ navigation, kondisi }) {
   const [confirm, toggleComfirm] = useStateToggler();
@@ -19,94 +21,23 @@ function Konfirmasi({ navigation, kondisi }) {
   const [data, setData] = useState("");
   const [jalan, setJalan] = useState("");
 
-  const {
-    permohonan: {
-      nama_proyek,
-      jenis_proyek,
-      provinsi_proyek,
-      kabupaten_proyek,
-      kecamatan_proyek,
-      kelurahan_proyek,
-      nama_jalan,
-      kode,
-      alamat_proyek,
-      bangkitan,
-      pemohon,
-      jenis,
-      rencana_pembangunan,
-      lokasi_pengambilan,
-      nik_pemohon,
-      tempat_lahir_pemohon,
-      tanggal_lahir_pemohon,
-      provinsi_pemohon,
-      kabupaten_pemohon,
-      kecamatan_pemohon,
-      kelurahan_pemohon,
-      alamat_pemohon,
-      jenis_kelamin_pemohon,
-      nomer_pemohon,
-      jabatan_pemohon,
-      nama_perusahaan,
-      provinsi_perusahaan,
-      kabupaten_perusahaan,
-      kecamatan_perusahaan,
-      kelurahan_perusahaan,
-      alamat_perusahaan,
-      nomer_perusahaan,
-      email_perusahaan,
-      nama_pimpinan,
-      jabatan_pimpinan,
-      jenis_kelamin_pimpinan,
-      provinsi_pimpinan_perusahaan,
-      kabupaten_pimpinan_perusahaan,
-      kecamatan_pimpinan_perusahaan,
-      kelurahan_pimpinan_perusahaan,
-      alamat_pimpinan,
-      aktivitas,
-      peruntukan,
-      total_luas_lahan,
-      kriteria_khusus,
-      nilai_kriteria,
-      lokasi_bangunan,
-      lat_bangunan,
-      long_bangunan,
-      nomer_skrk,
-      tanggal_skrk,
-      catatan,
-      persyaratan,
-      nama_konsultan,
-      provinsi_konsultan,
-      kabupaten_konsultan,
-      kecamatan_konsultan,
-      kelurahan_konsultan,
-      alamat_konsultan,
-      nomer_konsultan,
-      email_konsultan,
-      nama_penyusun,
-      jenis_kelamin_penyusun,
-      provinsi_penyusun,
-      kabupaten_penyusun,
-      kecamatan_penyusun,
-      kelurahan_penyusun,
-      alamat_penyusun,
-      nomer_serifikat_penyusun,
-      klasifikasi_penyusun,
-    },
-    perlalin,
-    user,
-    dataMaster,
-  } = useContext(UserContext);
+  const { andalalinState, perlalinState } = PermohonanAtom;
+
+  const [andalalin, setAndalalin] = useRecoilState(andalalinState);
+  const [perlalin, setPerlalin] = useRecoilState(perlalinState);
+
+  const { user, dataMaster } = useContext(UserContext);
 
   const context = useContext(UserContext);
 
   const dataSet = () => {
     let findData = dataMaster.jenis_rencana.find((item) => {
-      return item.Kategori == jenis;
+      return item.Kategori == andalalin.jenis;
     });
 
     if (findData != null) {
       let rencana = findData.JenisRencana.find((item) => {
-        return item.Jenis == rencana_pembangunan;
+        return item.Jenis == andalalin.rencana_pembangunan;
       });
 
       setData(rencana);
@@ -115,7 +46,9 @@ function Konfirmasi({ navigation, kondisi }) {
 
   const jalanSet = () => {
     let jalan_item = context.dataMaster.jalan.find((item) => {
-      return item.KodeJalan == kode && item.Nama == nama_jalan;
+      return (
+        item.KodeJalan == andalalin.kode && item.Nama == andalalin.nama_jalan
+      );
     });
 
     setJalan(jalan_item);
@@ -136,20 +69,20 @@ function Konfirmasi({ navigation, kondisi }) {
   const kirim = () => {
     const pengajuan = {
       //Data Permohonan
-      kategori_bangkitan: bangkitan,
-      kategori_pemohon: pemohon,
-      kategori: jenis,
-      jenis_rencana_pembangunan: rencana_pembangunan,
-      lokasi_pengambilan: lokasi_pengambilan,
+      kategori_bangkitan: andalalin.bangkitan,
+      kategori_pemohon: andalalin.pemohon,
+      kategori: andalalin.jenis,
+      jenis_rencana_pembangunan: andalalin.rencana_pembangunan,
+      lokasi_pengambilan: andalalin.lokasi_pengambilan,
 
       //Data Proyek
-      nama_proyek: nama_proyek,
-      jenis_proyek: jenis_proyek,
-      provinsi_proyek: provinsi_proyek,
-      kabupaten_proyek: kabupaten_proyek,
-      kecamatan_proyek: kecamatan_proyek,
-      kelurahan_proyek: kelurahan_proyek,
-      alamat_proyek: alamat_proyek,
+      nama_proyek: andalalin.nama_proyek,
+      jenis_proyek: andalalin.jenis_proyek,
+      provinsi_proyek: andalalin.provinsi_proyek,
+      kabupaten_proyek: andalalin.kabupaten_proyek,
+      kecamatan_proyek: andalalin.kecamatan_proyek,
+      kelurahan_proyek: andalalin.kelurahan_proyek,
+      alamat_proyek: andalalin.alamat_proyek,
       kode_jalan: jalan.KodeJalan,
       kode_jalan_merge:
         jalan.KodeProvinsi +
@@ -171,74 +104,75 @@ function Konfirmasi({ navigation, kondisi }) {
       status_jalan: jalan.Status,
 
       //Data Pemohon
-      nik_pemohon: nik_pemohon,
-      tempat_lahir_pemohon: tempat_lahir_pemohon,
-      tanggal_lahir_pemohon: tanggal_lahir_pemohon,
-      provinsi_pemohon: provinsi_pemohon,
-      kabupaten_pemohon: kabupaten_pemohon,
-      kecamatan_pemohon: kecamatan_pemohon,
-      kelurahan_pemohon: kelurahan_pemohon,
-      alamat_pemohon: alamat_pemohon,
-      jenis_kelamin_pemohon: jenis_kelamin_pemohon,
-      nomer_pemohon: nomer_pemohon,
-      jabatan_pemohon: jabatan_pemohon,
+      nik_pemohon: andalalin.nik_pemohon,
+      tempat_lahir_pemohon: andalalin.tempat_lahir_pemohon,
+      tanggal_lahir_pemohon: andalalin.tanggal_lahir_pemohon,
+      provinsi_pemohon: andalalin.provinsi_pemohon,
+      kabupaten_pemohon: andalalin.kabupaten_pemohon,
+      kecamatan_pemohon: andalalin.kecamatan_pemohon,
+      kelurahan_pemohon: andalalin.kelurahan_pemohon,
+      alamat_pemohon: andalalin.alamat_pemohon,
+      jenis_kelamin_pemohon: andalalin.jenis_kelamin_pemohon,
+      nomer_pemohon: andalalin.nomer_pemohon,
+      jabatan_pemohon: andalalin.jabatan_pemohon,
 
       //Data Perusahaan
-      nama_perusahaan: nama_perusahaan,
-      provinsi_perusahaan: provinsi_perusahaan,
-      kabupaten_perusahaan: kabupaten_perusahaan,
-      kecamatan_perusahaan: kecamatan_perusahaan,
-      kelurahan_perusahaan: kelurahan_perusahaan,
-      alamat_perusahaan: alamat_perusahaan,
-      nomer_perusahaan: nomer_perusahaan,
-      email_perusahaan: email_perusahaan,
-      nama_pimpinan: nama_pimpinan,
-      jabatan_pimpinan: jabatan_pimpinan,
-      jenis_kelamin_pimpinan: jenis_kelamin_pimpinan,
-      provinsi_pimpinan_perusahaan: provinsi_pimpinan_perusahaan,
-      kabupaten_pimpinan_perusahaan: kabupaten_pimpinan_perusahaan,
-      kecamatan_pimpinan_perusahaan: kecamatan_pimpinan_perusahaan,
-      kelurahan_pimpinan_perusahaan: kelurahan_pimpinan_perusahaan,
-      alamat_pimpinan_perusahaan: alamat_pimpinan,
+      nama_perusahaan: andalalin.nama_perusahaan,
+      provinsi_perusahaan: andalalin.provinsi_perusahaan,
+      kabupaten_perusahaan: andalalin.kabupaten_perusahaan,
+      kecamatan_perusahaan: andalalin.kecamatan_perusahaan,
+      kelurahan_perusahaan: andalalin.kelurahan_perusahaan,
+      alamat_perusahaan: andalalin.alamat_perusahaan,
+      nomer_perusahaan: andalalin.nomer_perusahaan,
+      email_perusahaan: andalalin.email_perusahaan,
+      nama_pimpinan: andalalin.nama_pimpinan,
+      jabatan_pimpinan: andalalin.jabatan_pimpinan,
+      jenis_kelamin_pimpinan: andalalin.jenis_kelamin_pimpinan,
+      provinsi_pimpinan_perusahaan: andalalin.provinsi_pimpinan_perusahaan,
+      kabupaten_pimpinan_perusahaan: andalalin.kabupaten_pimpinan_perusahaan,
+      kecamatan_pimpinan_perusahaan: andalalin.kecamatan_pimpinan_perusahaan,
+      kelurahan_pimpinan_perusahaan: andalalin.kelurahan_pimpinan_perusahaan,
+      alamat_pimpinan_perusahaan: andalalin.alamat_pimpinan,
 
       //Data Konsultan
-      nama_konsultan: nama_konsultan,
-      provinsi_konsultan: provinsi_konsultan,
-      kabupaten_konsultan: kabupaten_konsultan,
-      kecamatan_konsultan: kecamatan_konsultan,
-      kelurahan_konsultan: kelurahan_konsultan,
-      alamat_konsultan: alamat_konsultan,
-      nomer_konsultan: nomer_konsultan,
-      email_konsultan: email_konsultan,
-      nama_penyusun_dokumen: nama_penyusun,
-      jenis_kelamin_penyusun_dokumen: jenis_kelamin_penyusun,
-      provinsi_penyusun_dokumen: provinsi_penyusun,
-      kabupaten_penyusun_dokumen: kabupaten_penyusun,
-      kecamatan_penyusun_dokumen: kecamatan_penyusun,
-      kelurahan_penyusun_dokumen: kelurahan_penyusun,
-      alamat_penyusun_dokumen: alamat_penyusun,
-      nomer_sertifikat_penyusun_dokumen: nomer_serifikat_penyusun,
-      klasifikasi_penyusun_dokumen: klasifikasi_penyusun,
+      nama_konsultan: andalalin.nama_konsultan,
+      provinsi_konsultan: andalalin.provinsi_konsultan,
+      kabupaten_konsultan: andalalin.kabupaten_konsultan,
+      kecamatan_konsultan: andalalin.kecamatan_konsultan,
+      kelurahan_konsultan: andalalin.kelurahan_konsultan,
+      alamat_konsultan: andalalin.alamat_konsultan,
+      nomer_konsultan: andalalin.nomer_konsultan,
+      email_konsultan: andalalin.email_konsultan,
+      nama_penyusun_dokumen: andalalin.nama_penyusun,
+      jenis_kelamin_penyusun_dokumen: andalalin.jenis_kelamin_penyusun,
+      provinsi_penyusun_dokumen: andalalin.provinsi_penyusun,
+      kabupaten_penyusun_dokumen: andalalin.kabupaten_penyusun,
+      kecamatan_penyusun_dokumen: andalalin.kecamatan_penyusun,
+      kelurahan_penyusun_dokumen: andalalin.kelurahan_penyusun,
+      alamat_penyusun_dokumen: andalalin.alamat_penyusun,
+      nomer_sertifikat_penyusun_dokumen: andalalin.nomer_serifikat_penyusun,
+      klasifikasi_penyusun_dokumen: andalalin.klasifikasi_penyusun,
 
       //Data Lain nya
-      aktivitas: aktivitas,
-      peruntukan: peruntukan,
-      total_luas: total_luas_lahan,
-      kriteria_khusus: kriteria_khusus,
-      nilai_kriteria: nilai_kriteria + " " + data.Satuan.toLowerCase(),
+      aktivitas: andalalin.aktivitas,
+      peruntukan: andalalin.peruntukan,
+      total_luas: andalalin.total_luas_lahan,
+      kriteria_khusus: andalalin.kriteria_khusus,
+      nilai_kriteria:
+        andalalin.nilai_kriteria + " " + data.Satuan.toLowerCase(),
       terbilang: data.Terbilang.toLowerCase(),
-      latitude: lat_bangunan,
-      longtitude: long_bangunan,
-      lokasi_bangunan: lokasi_bangunan,
-      nomer_skrk: nomer_skrk,
-      tanggal_skrk: tanggal_skrk,
-      catatan: catatan,
+      latitude: andalalin.lat_bangunan,
+      longtitude: andalalin.long_bangunan,
+      lokasi_bangunan: andalalin.lokasi_bangunan,
+      nomer_skrk: andalalin.nomer_skrk,
+      tanggal_skrk: andalalin.tanggal_skrk,
+      catatan: andalalin.catatan,
     };
 
     andalalinPengajuan(
       user.access_token,
       pengajuan,
-      persyaratan,
+      andalalin.persyaratan,
       (response) => {
         switch (response.status) {
           case 200:
@@ -343,7 +277,7 @@ function Konfirmasi({ navigation, kondisi }) {
         Apakah Anda yakin telah selesai mengisi form pengajuan.{"\n"}
         {"\n"}Data permohonan dan persyaratan yang tidak lengkap dapat
         memperlambat proses pengajuan permohonan.{"\n"}
-        {"\n"}Anda bisa kembali untuk memeriksa data yang telah dimasukkan
+        {"\n"}Anda dapat kembali untuk memeriksa data yang telah dimasukkan
       </AText>
 
       <AButton

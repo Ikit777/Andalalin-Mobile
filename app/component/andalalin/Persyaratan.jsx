@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import { StyleSheet, View, TouchableOpacity, ScrollView } from "react-native";
 import AText from "../../component/utility/AText";
 import color from "../../constants/color";
@@ -8,12 +8,12 @@ import AButton from "../utility/AButton";
 import * as DocumentPicker from "expo-document-picker";
 import { useStateToggler } from "../../hooks/useUtility";
 
+import PermohonanAtom from "../../atom/PermohonanAtom";
+import { useFocusEffect } from "@react-navigation/native";
+import { useRecoilState } from "recoil";
+
 function Persyaratan({ navigation, onPress }) {
-  const {
-    permohonan: { persyaratan, bangkitan },
-    dispatch,
-    dataMaster,
-  } = useContext(UserContext);
+  const { dataMaster } = useContext(UserContext);
 
   const [data, setData] = useState();
 
@@ -22,6 +22,26 @@ function Persyaratan({ navigation, onPress }) {
   const [formError, toggleFormError] = useStateToggler();
 
   const stateError = false;
+
+  const { andalalinState } = PermohonanAtom;
+
+  const [andalalin, setAndalalin] = useRecoilState(andalalinState);
+
+  const [bangkitan, setBangkitan] = useState(andalalin.bangkitan);
+
+  const save = useRef();
+
+  useFocusEffect(
+    React.useCallback(() => {
+      save.current = andalalin.persyaratan;
+      return () => {
+        setAndalalin({
+          ...andalalin,
+          persyaratan: save.current,
+        });
+      };
+    }, [])
+  );
 
   useEffect(() => {
     const andalalin = dataMaster.persyaratan.PersyaratanAndalalin.filter(
@@ -48,7 +68,7 @@ function Persyaratan({ navigation, onPress }) {
   }, []);
 
   const savedNama = (dokumen) => {
-    const updatedStateVariables = [...persyaratan];
+    const updatedStateVariables = [...andalalin.persyaratan];
     const index = updatedStateVariables.findIndex(
       (v) => v.persyaratan === dokumen
     );
@@ -60,7 +80,7 @@ function Persyaratan({ navigation, onPress }) {
   };
 
   const savedFile = (dokumen) => {
-    const updatedStateVariables = [...persyaratan];
+    const updatedStateVariables = [...andalalin.persyaratan];
     const index = updatedStateVariables.findIndex(
       (v) => v.persyaratan === dokumen
     );
@@ -80,6 +100,17 @@ function Persyaratan({ navigation, onPress }) {
     });
 
     setStateVariables(updateItems);
+
+    const tambahanItem = updateItems.map((item) => {
+      return {
+        persyaratan: item.persyaratan,
+        kebutuhan: item.kebutuhan,
+        nama: item.namaFile,
+        file: item.fileBerkas,
+      };
+    });
+
+    save.current = tambahanItem;
 
     let not_empty = updateItems.filter((item) => {
       return item.fileBerkas == "" && item.kebutuhan == "Wajib";
@@ -109,18 +140,6 @@ function Persyaratan({ navigation, onPress }) {
     });
 
     if (not_empty.length == 0) {
-      const tambahanItem = stateVariables.map((item) => {
-        return {
-          persyaratan: item.persyaratan,
-          kebutuhan: item.kebutuhan,
-          nama: item.namaFile,
-          file: item.fileBerkas,
-        };
-      });
-
-      dispatch({
-        persyaratan: tambahanItem,
-      });
       onPress();
     } else {
       formError ? "" : toggleFormError();
@@ -224,17 +243,6 @@ function Persyaratan({ navigation, onPress }) {
             <TouchableOpacity
               style={{ flexDirection: "row", paddingLeft: 4 }}
               onPress={() => {
-                const tambahanItem = stateVariables.map((item) => {
-                  return {
-                    persyaratan: item.persyaratan,
-                    nama: item.namaFile,
-                    file: item.fileBerkas,
-                  };
-                });
-
-                dispatch({
-                  persyaratan: tambahanItem,
-                });
                 navigation.push("Ketentuan", {
                   kondisi: "Pengajuan andalalin",
                 });

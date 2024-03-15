@@ -49,9 +49,153 @@ export default function KelengkapanItem({ navigation, route }) {
     },
   ];
 
+  kelengkapan_bangkitan_sedang = [
+    {
+      Uraian: "Scan Surat Permohonan",
+      Role: "User",
+      Dokumen: [],
+    },
+    {
+      Uraian:
+        "Scan Lampiran Legal Administrasi (Surat/sertifikat kepemilikan lahan, Sertifikat guna lahan, foto lokasi, foto kegiatan, dll)",
+      Role: "User",
+      Dokumen: [],
+    },
+    {
+      Uraian:
+        "Scan dan File Ms. Word Dokumen Andalalin Final (telah direvisi dan disesuaikan dengan perbaikan (BAB 1 s.d. Bab terakhir, beserta gambaran lampiran teknis, Lampiran kelengkapan administrasi / surat tanah, legalitas, dll))",
+      Role: "User",
+      Dokumen: [],
+    },
+    {
+      Uraian:
+        "Scan Lembar Asistensi / buktu perbaikan (hasil asistensi dari perbaikan dokumen oleh Tim Teknis)",
+      Role: "Dishub",
+      Dokumen: [],
+    },
+    {
+      Uraian:
+        "Scan/Foto Surat Pernyataan Kesanggupan (pdf yang telah di tanda tangani dan File Ms. Word final, yang telah diperbaiki)",
+      Role: "User",
+      Dokumen: [],
+    },
+    {
+      Uraian:
+        "Scan/Foto Softfile Billing PNBP dan Bukti Pembayaran PNBP yang telah terbayar",
+      Role: "User",
+      Dokumen: [],
+    },
+    {
+      Uraian: "File Resume Dokumen (file word dan PDF)",
+      Role: "Dishub",
+      Dokumen: [],
+    },
+    {
+      Uraian:
+        "Scan Sertifikat Konsultan yang masih aktif dan Sertifikat Klasifikasi (bagi yang sudah terklasifikasi)",
+      Role: "User",
+      Dokumen: [],
+    },
+    {
+      Uraian: "Scan SK Persetujuan Andalalin yang telah terbit",
+      Role: "Dishub",
+      Dokumen: [],
+    },
+  ];
+
+  kelengkapan_bangkitan_tinggi = [
+    {
+      Uraian: "Scan Surat Permohonan",
+      Role: "User",
+      Dokumen: [],
+    },
+    {
+      Uraian:
+        "Scan Surat Kuasa, untuk Perwakilan Pihak Pemohon yang berhalangan hadir langsung saat pembahasan dokumen Bersama tim penilai (apabila ada Rapat pembahasan oleh Tim Penilai)",
+      Role: "User",
+      Dokumen: [],
+    },
+    {
+      Uraian:
+        "Scan Lampiran Legal Administrasi (Surat/sertifikat kepemilikan lahan, Sertifikat guna lahan, foto lokasi, foto kegiatan, dll)",
+      Role: "User",
+      Dokumen: [],
+    },
+    {
+      Uraian:
+        "Scan dan File Ms. Word Dokumen Andalalin Final (telah direvisi dan disesuaikan dengan perbaikan (BAB 1 s.d. Bab terakhir, beserta gambaran lampiran teknis, Lampiran kelengkapan administrasi / surat tanah, legalitas, dll))",
+      Role: "User",
+      Dokumen: [],
+    },
+    {
+      Uraian:
+        "Scan Surat Undangan Rapat Penilaian Dokumen Andalalin (apabila ada)",
+      Role: "Dishub",
+      Dokumen: [],
+    },
+    {
+      Uraian:
+        "Foto dan Dokumentasi Kegiatan (pembahasan, Peninjauan lapangan kalau ada, dll)",
+      Role: "Dishub",
+      Dokumen: [],
+    },
+    {
+      Uraian:
+        "Scan Lembar Asistensi / buktu perbaikan (hasil asistensi dari perbaikan dokumen oleh Tim Teknis)",
+      Role: "Dishub",
+      Dokumen: [],
+    },
+    {
+      Uraian:
+        "Scan/Foto Surat Pernyataan Kesanggupan (pdf yang telah di tanda tangani dan File Ms. Word final, yang telah diperbaiki)",
+      Role: "User",
+      Dokumen: [],
+    },
+    {
+      Uraian:
+        "Scan/Foto Softfile Billing PNBP dan Bukti Pembayaran PNBP yang telah terbayar",
+      Role: "User",
+      Dokumen: [],
+    },
+    {
+      Uraian: "File Resume Dokumen (file word dan PDF)",
+      Role: "Dishub",
+      Dokumen: [],
+    },
+    {
+      Uraian:
+        "Scan Sertifikat Konsultan yang masih aktif dan Sertifikat Klasifikasi (bagi yang sudah terklasifikasi)",
+      Role: "User",
+      Dokumen: [],
+    },
+    {
+      Uraian: "Scan SK Persetujuan Andalalin yang telah terbit",
+      Role: "Dishub",
+      Dokumen: [],
+    },
+  ];
+
   surat_pernyataan = [
-    {dokumen: "Surat pernyataan kesanggupan (word)", tipe: "Word"},
-    {dokumen: "Surat pernyataan kesanggupan (pdf)", tipe: "Pdf"},
+    { dokumen: "Surat pernyataan kesanggupan (word)", tipe: "Word" },
+    { dokumen: "Surat pernyataan kesanggupan (pdf)", tipe: "Pdf" },
+  ];
+
+  dokumen_andalalin = [
+    {
+      dokumen: "Dokumen hasil analisis dampak lalu lintas (word)",
+      tipe: "Word",
+    },
+    { dokumen: "Dokumen hasil analisis dampak lalu lintas (pdf)", tipe: "Pdf" },
+  ];
+
+  file_resume = [
+    { dokumen: "File resume dokumen (word)", tipe: "Word" },
+    { dokumen: "File resume dokumen (pdf)", tipe: "Pdf" },
+  ];
+
+  bap = [
+    { dokumen: "Berita acara pembahasan", tipe: "Pdf" },
+    { dokumen: "Berita acara peninjauan lapangan", tipe: "Pdf" },
   ];
 
   useEffect(() => {
@@ -60,6 +204,12 @@ export default function KelengkapanItem({ navigation, route }) {
     switch (context.detailPermohonan.kategori_bangkitan) {
       case "Bangkitan rendah":
         kelengkapan.push(...kelengkapan_bangkitan_rendah);
+        break;
+      case "Bangkitan sedang":
+        kelengkapan.push(...kelengkapan_bangkitan_sedang);
+        break;
+      case "Bangkitan tinggi":
+        kelengkapan.push(...kelengkapan_bangkitan_tinggi);
         break;
     }
 
@@ -127,36 +277,10 @@ export default function KelengkapanItem({ navigation, route }) {
       case "Bangkitan rendah":
         switch (uraian) {
           case "Scan Surat Permohonan":
-            context.kelengkapan.kelengkapan[itemIndeks].dokumen.push(
-              {dokumen: "Surat permohonan persetujuan andalalin", tipe: "Pdf"}
-            );
-            break;
-          case "Scan/Foto Surat Pernyataan Kesanggupan (pdf yang telah di tanda tangani dan File Ms. Word final, yang telah diperbaiki)":
-            surat_pernyataan.map((item) => {
-              itemIndeks = kelengkapan.kelengkapan.findIndex(
-                (item) => item.uraian == uraian
-              );
-              const index =
-                context.kelengkapan.kelengkapan[itemIndeks].dokumen.findIndex(
-                  (dokumen) => dokumen.dokumen == item.dokumen
-                );
-              if (index > -1) {
-                data.push({
-                  dokumen: item.dokumen,
-                  tipe: item.tipe,
-                  state: true,
-                });
-              } else {
-                data.push({
-                  dokumen: item.dokumen,
-                  tipe: item.tipe,
-                  state: false,
-                });
-              }
+            context.kelengkapan.kelengkapan[itemIndeks].dokumen.push({
+              dokumen: "Surat permohonan persetujuan andalalin",
+              tipe: "Pdf",
             });
-            context.setUraian(uraian);
-            context.setDataDokumen(data);
-            context.togglePilihModal(true);
             break;
           case "Scan Lampiran Legal Administrasi (Surat/sertifikat kepemilikan lahan, Sertifikat guna lahan, foto lokasi, foto kegiatan, dll)":
             const dokumen =
@@ -173,10 +297,11 @@ export default function KelengkapanItem({ navigation, route }) {
               itemIndeks = kelengkapan.kelengkapan.findIndex(
                 (item) => item.uraian == uraian
               );
-              const index =
-                context.kelengkapan.kelengkapan[itemIndeks].dokumen.findIndex(
-                  (dokumen) => dokumen.dokumen == item.persyaratan
-                );
+              const index = context.kelengkapan.kelengkapan[
+                itemIndeks
+              ].dokumen.findIndex(
+                (dokumen) => dokumen.dokumen == item.persyaratan
+              );
               if (index > -1) {
                 data.push({
                   dokumen: item.persyaratan,
@@ -195,15 +320,397 @@ export default function KelengkapanItem({ navigation, route }) {
             context.setDataDokumen(data);
             context.togglePilihModal(true);
             break;
+          case "Scan/Foto Surat Pernyataan Kesanggupan (pdf yang telah di tanda tangani dan File Ms. Word final, yang telah diperbaiki)":
+            surat_pernyataan.map((item) => {
+              itemIndeks = kelengkapan.kelengkapan.findIndex(
+                (item) => item.uraian == uraian
+              );
+              const index = context.kelengkapan.kelengkapan[
+                itemIndeks
+              ].dokumen.findIndex((dokumen) => dokumen.dokumen == item.dokumen);
+              if (index > -1) {
+                data.push({
+                  dokumen: item.dokumen,
+                  tipe: item.tipe,
+                  state: true,
+                });
+              } else {
+                data.push({
+                  dokumen: item.dokumen,
+                  tipe: item.tipe,
+                  state: false,
+                });
+              }
+            });
+            context.setUraian(uraian);
+            context.setDataDokumen(data);
+            context.togglePilihModal(true);
+            break;
           case "Scan/Foto Softfile Billing PNBP dan Bukti Pembayaran PNBP yang telah terbayar":
-            context.kelengkapan.kelengkapan[itemIndeks].dokumen.push(
-              {dokumen: "Billing PNBP dan bukti pembayaran PNBP", tipe: "Pdf"}
-            );
+            context.kelengkapan.kelengkapan[itemIndeks].dokumen.push({
+              dokumen: "Billing PNBP dan bukti pembayaran PNBP",
+              tipe: "Pdf",
+            });
             break;
           case "Scan SK Persetujuan Andalalin yang telah terbit":
-            context.kelengkapan.kelengkapan[itemIndeks].dokumen.push(
-              {dokumen: "Surat keputusan persetujuan teknis andalalin", tipe: "Pdf"}
-            );
+            context.kelengkapan.kelengkapan[itemIndeks].dokumen.push({
+              dokumen: "Surat keputusan persetujuan teknis andalalin",
+              tipe: "Pdf",
+            });
+            break;
+        }
+        break;
+      case "Bangkitan sedang":
+        switch (uraian) {
+          case "Scan Surat Permohonan":
+            context.kelengkapan.kelengkapan[itemIndeks].dokumen.push({
+              dokumen: "Surat permohonan persetujuan andalalin",
+              tipe: "Pdf",
+            });
+            break;
+          case "Scan Lampiran Legal Administrasi (Surat/sertifikat kepemilikan lahan, Sertifikat guna lahan, foto lokasi, foto kegiatan, dll)":
+            const dokumen =
+              context.dataMaster.persyaratan.PersyaratanAndalalin.filter(
+                (item) => {
+                  return (
+                    item.bangkitan ==
+                      context.detailPermohonan.kategori_bangkitan &&
+                    item.persyaratan !=
+                      "Surat permohonan persetujuan andalalin" &&
+                    item.persyaratan !=
+                      "Dokumen hasil analisis dampak lalu lintas (pdf)" &&
+                    item.persyaratan !=
+                      "Dokumen hasil analisis dampak lalu lintas (word)" &&
+                    item.persyaratan !=
+                      "Sertifikat konsultan atau tenaga ahli penyusun andalalin sesuai klasifikasi"
+                  );
+                }
+              );
+            dokumen.map((item) => {
+              itemIndeks = kelengkapan.kelengkapan.findIndex(
+                (item) => item.uraian == uraian
+              );
+              const index = context.kelengkapan.kelengkapan[
+                itemIndeks
+              ].dokumen.findIndex(
+                (dokumen) => dokumen.dokumen == item.persyaratan
+              );
+              if (index > -1) {
+                data.push({
+                  dokumen: item.persyaratan,
+                  tipe: "Pdf",
+                  state: true,
+                });
+              } else {
+                data.push({
+                  dokumen: item.persyaratan,
+                  tipe: "Pdf",
+                  state: false,
+                });
+              }
+            });
+            context.setUraian(uraian);
+            context.setDataDokumen(data);
+            context.togglePilihModal(true);
+            break;
+          case "Scan dan File Ms. Word Dokumen Andalalin Final (telah direvisi dan disesuaikan dengan perbaikan (BAB 1 s.d. Bab terakhir, beserta gambaran lampiran teknis, Lampiran kelengkapan administrasi / surat tanah, legalitas, dll))":
+            dokumen_andalalin.map((item) => {
+              itemIndeks = kelengkapan.kelengkapan.findIndex(
+                (item) => item.uraian == uraian
+              );
+              const index = context.kelengkapan.kelengkapan[
+                itemIndeks
+              ].dokumen.findIndex((dokumen) => dokumen.dokumen == item.dokumen);
+              if (index > -1) {
+                data.push({
+                  dokumen: item.dokumen,
+                  tipe: item.tipe,
+                  state: true,
+                });
+              } else {
+                data.push({
+                  dokumen: item.dokumen,
+                  tipe: item.tipe,
+                  state: false,
+                });
+              }
+            });
+            context.setUraian(uraian);
+            context.setDataDokumen(data);
+            context.togglePilihModal(true);
+            break;
+          case "Scan Lembar Asistensi / buktu perbaikan (hasil asistensi dari perbaikan dokumen oleh Tim Teknis)":
+            context.kelengkapan.kelengkapan[itemIndeks].dokumen.push({
+              dokumen: "Catatan asistensi dokumen analisis dampak lalu lintas",
+              tipe: "Pdf",
+            });
+            break;
+          case "Scan/Foto Surat Pernyataan Kesanggupan (pdf yang telah di tanda tangani dan File Ms. Word final, yang telah diperbaiki)":
+            surat_pernyataan.map((item) => {
+              itemIndeks = kelengkapan.kelengkapan.findIndex(
+                (item) => item.uraian == uraian
+              );
+              const index = context.kelengkapan.kelengkapan[
+                itemIndeks
+              ].dokumen.findIndex((dokumen) => dokumen.dokumen == item.dokumen);
+              if (index > -1) {
+                data.push({
+                  dokumen: item.dokumen,
+                  tipe: item.tipe,
+                  state: true,
+                });
+              } else {
+                data.push({
+                  dokumen: item.dokumen,
+                  tipe: item.tipe,
+                  state: false,
+                });
+              }
+            });
+            context.setUraian(uraian);
+            context.setDataDokumen(data);
+            context.togglePilihModal(true);
+            break;
+          case "Scan/Foto Softfile Billing PNBP dan Bukti Pembayaran PNBP yang telah terbayar":
+            context.kelengkapan.kelengkapan[itemIndeks].dokumen.push({
+              dokumen: "Billing PNBP dan bukti pembayaran PNBP",
+              tipe: "Pdf",
+            });
+            break;
+          case "File Resume Dokumen (file word dan PDF)":
+            file_resume.map((item) => {
+              itemIndeks = kelengkapan.kelengkapan.findIndex(
+                (item) => item.uraian == uraian
+              );
+              const index = context.kelengkapan.kelengkapan[
+                itemIndeks
+              ].dokumen.findIndex((dokumen) => dokumen.dokumen == item.dokumen);
+              if (index > -1) {
+                data.push({
+                  dokumen: item.dokumen,
+                  tipe: item.tipe,
+                  state: true,
+                });
+              } else {
+                data.push({
+                  dokumen: item.dokumen,
+                  tipe: item.tipe,
+                  state: false,
+                });
+              }
+            });
+            context.setUraian(uraian);
+            context.setDataDokumen(data);
+            context.togglePilihModal(true);
+            break;
+          case "Scan Sertifikat Konsultan yang masih aktif dan Sertifikat Klasifikasi (bagi yang sudah terklasifikasi)":
+            context.kelengkapan.kelengkapan[itemIndeks].dokumen.push({
+              dokumen:
+                "Sertifikat konsultan atau tenaga ahli penyusun andalalin sesuai klasifikasi",
+              tipe: "Pdf",
+            });
+            break;
+          case "Scan SK Persetujuan Andalalin yang telah terbit":
+            context.kelengkapan.kelengkapan[itemIndeks].dokumen.push({
+              dokumen: "Surat keputusan persetujuan teknis andalalin",
+              tipe: "Pdf",
+            });
+            break;
+        }
+        break;
+      case "Bangkitan tinggi":
+        switch (uraian) {
+          case "Scan Surat Permohonan":
+            context.kelengkapan.kelengkapan[itemIndeks].dokumen.push({
+              dokumen: "Surat permohonan persetujuan andalalin",
+              tipe: "Pdf",
+            });
+            break;
+          case "Scan Surat Kuasa, untuk Perwakilan Pihak Pemohon yang berhalangan hadir langsung saat pembahasan dokumen Bersama tim penilai (apabila ada Rapat pembahasan oleh Tim Penilai)":
+            context.kelengkapan.kelengkapan[itemIndeks].dokumen.push({
+              dokumen: "Surat kuasa",
+              tipe: "Pdf",
+            });
+            break;
+          case "Scan Lampiran Legal Administrasi (Surat/sertifikat kepemilikan lahan, Sertifikat guna lahan, foto lokasi, foto kegiatan, dll)":
+            const dokumen =
+              context.dataMaster.persyaratan.PersyaratanAndalalin.filter(
+                (item) => {
+                  return (
+                    item.bangkitan ==
+                      context.detailPermohonan.kategori_bangkitan &&
+                    item.persyaratan !=
+                      "Surat permohonan persetujuan andalalin" &&
+                    item.persyaratan !=
+                      "Dokumen hasil analisis dampak lalu lintas (pdf)" &&
+                    item.persyaratan !=
+                      "Dokumen hasil analisis dampak lalu lintas (word)" &&
+                    item.persyaratan !=
+                      "Sertifikat konsultan atau tenaga ahli penyusun andalalin sesuai klasifikasi"
+                  );
+                }
+              );
+            dokumen.map((item) => {
+              itemIndeks = kelengkapan.kelengkapan.findIndex(
+                (item) => item.uraian == uraian
+              );
+              const index = context.kelengkapan.kelengkapan[
+                itemIndeks
+              ].dokumen.findIndex(
+                (dokumen) => dokumen.dokumen == item.persyaratan
+              );
+              if (index > -1) {
+                data.push({
+                  dokumen: item.persyaratan,
+                  tipe: "Pdf",
+                  state: true,
+                });
+              } else {
+                data.push({
+                  dokumen: item.persyaratan,
+                  tipe: "Pdf",
+                  state: false,
+                });
+              }
+            });
+            context.setUraian(uraian);
+            context.setDataDokumen(data);
+            context.togglePilihModal(true);
+            break;
+          case "Scan dan File Ms. Word Dokumen Andalalin Final (telah direvisi dan disesuaikan dengan perbaikan (BAB 1 s.d. Bab terakhir, beserta gambaran lampiran teknis, Lampiran kelengkapan administrasi / surat tanah, legalitas, dll))":
+            dokumen_andalalin.map((item) => {
+              itemIndeks = kelengkapan.kelengkapan.findIndex(
+                (item) => item.uraian == uraian
+              );
+              const index = context.kelengkapan.kelengkapan[
+                itemIndeks
+              ].dokumen.findIndex((dokumen) => dokumen.dokumen == item.dokumen);
+              if (index > -1) {
+                data.push({
+                  dokumen: item.dokumen,
+                  tipe: item.tipe,
+                  state: true,
+                });
+              } else {
+                data.push({
+                  dokumen: item.dokumen,
+                  tipe: item.tipe,
+                  state: false,
+                });
+              }
+            });
+            context.setUraian(uraian);
+            context.setDataDokumen(data);
+            context.togglePilihModal(true);
+            break;
+          case "Scan Surat Undangan Rapat Penilaian Dokumen Andalalin (apabila ada)":
+            context.kelengkapan.kelengkapan[itemIndeks].dokumen.push({
+              dokumen: "Surat undangan rapat penilaian dokumen andalalin",
+              tipe: "Pdf",
+            });
+            break;
+          case "Foto dan Dokumentasi Kegiatan (pembahasan, Peninjauan lapangan kalau ada, dll)":
+            bap.map((item) => {
+              itemIndeks = kelengkapan.kelengkapan.findIndex(
+                (item) => item.uraian == uraian
+              );
+              const index = context.kelengkapan.kelengkapan[
+                itemIndeks
+              ].dokumen.findIndex((dokumen) => dokumen.dokumen == item.dokumen);
+              if (index > -1) {
+                data.push({
+                  dokumen: item.dokumen,
+                  tipe: item.tipe,
+                  state: true,
+                });
+              } else {
+                data.push({
+                  dokumen: item.dokumen,
+                  tipe: item.tipe,
+                  state: false,
+                });
+              }
+            });
+            context.setUraian(uraian);
+            context.setDataDokumen(data);
+            context.togglePilihModal(true);
+            break;
+          case "Scan Lembar Asistensi / buktu perbaikan (hasil asistensi dari perbaikan dokumen oleh Tim Teknis)":
+            context.kelengkapan.kelengkapan[itemIndeks].dokumen.push({
+              dokumen: "Catatan asistensi dokumen analisis dampak lalu lintas",
+              tipe: "Pdf",
+            });
+            break;
+          case "Scan/Foto Surat Pernyataan Kesanggupan (pdf yang telah di tanda tangani dan File Ms. Word final, yang telah diperbaiki)":
+            surat_pernyataan.map((item) => {
+              itemIndeks = kelengkapan.kelengkapan.findIndex(
+                (item) => item.uraian == uraian
+              );
+              const index = context.kelengkapan.kelengkapan[
+                itemIndeks
+              ].dokumen.findIndex((dokumen) => dokumen.dokumen == item.dokumen);
+              if (index > -1) {
+                data.push({
+                  dokumen: item.dokumen,
+                  tipe: item.tipe,
+                  state: true,
+                });
+              } else {
+                data.push({
+                  dokumen: item.dokumen,
+                  tipe: item.tipe,
+                  state: false,
+                });
+              }
+            });
+            context.setUraian(uraian);
+            context.setDataDokumen(data);
+            context.togglePilihModal(true);
+            break;
+          case "Scan/Foto Softfile Billing PNBP dan Bukti Pembayaran PNBP yang telah terbayar":
+            context.kelengkapan.kelengkapan[itemIndeks].dokumen.push({
+              dokumen: "Billing PNBP dan bukti pembayaran PNBP",
+              tipe: "Pdf",
+            });
+            break;
+          case "File Resume Dokumen (file word dan PDF)":
+            file_resume.map((item) => {
+              itemIndeks = kelengkapan.kelengkapan.findIndex(
+                (item) => item.uraian == uraian
+              );
+              const index = context.kelengkapan.kelengkapan[
+                itemIndeks
+              ].dokumen.findIndex((dokumen) => dokumen.dokumen == item.dokumen);
+              if (index > -1) {
+                data.push({
+                  dokumen: item.dokumen,
+                  tipe: item.tipe,
+                  state: true,
+                });
+              } else {
+                data.push({
+                  dokumen: item.dokumen,
+                  tipe: item.tipe,
+                  state: false,
+                });
+              }
+            });
+            context.setUraian(uraian);
+            context.setDataDokumen(data);
+            context.togglePilihModal(true);
+            break;
+          case "Scan Sertifikat Konsultan yang masih aktif dan Sertifikat Klasifikasi (bagi yang sudah terklasifikasi)":
+            context.kelengkapan.kelengkapan[itemIndeks].dokumen.push({
+              dokumen:
+                "Sertifikat konsultan atau tenaga ahli penyusun andalalin sesuai klasifikasi",
+              tipe: "Pdf",
+            });
+            break;
+          case "Scan SK Persetujuan Andalalin yang telah terbit":
+            context.kelengkapan.kelengkapan[itemIndeks].dokumen.push({
+              dokumen: "Surat keputusan persetujuan teknis andalalin",
+              tipe: "Pdf",
+            });
             break;
         }
         break;

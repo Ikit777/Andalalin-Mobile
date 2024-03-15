@@ -53,6 +53,7 @@
     "react-native-tab-view": "^3.5.2",
     "react-native-version-check": "^3.4.7",
     "react-native-webview": "13.2.2",
+    "recoil": "^0.7.7",
     "typescript": "^5.3.3"
   },
   "devDependencies": {

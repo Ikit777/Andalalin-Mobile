@@ -28,24 +28,62 @@ export default function PemeriksaanItem({ navigation, route }) {
 
   pemeriksaan_bangkitan_sedang = [
     {
-      substansi: "BAB 1",
+      substansi: "Bab I",
       catatan: [],
     },
     {
-      substansi: "BAB 2",
+      substansi: "Bab II",
       catatan: [],
     },
     {
-      substansi: "BAB 3",
+      substansi: "Bab III",
       catatan: [],
     },
     {
-      substansi: "BAB 4",
+      substansi: "Bab IV",
       catatan: [],
     },
+    {
+      substansi: "BAB V",
+      catatan: [],
+    },
+    {
+      substansi: "LAMPIRAN GAMBAR TEKNIS",
+      catatan: [],
+    },
+    {
+      substansi: "CATATAN DAN KETERANGAN TAMBAHAN",
+      catatan: [],
+    },
+  ];
 
+  pemeriksaan_bangkitan_tinggi = [
     {
-      substansi: "BAB 5",
+      substansi: "Bab I",
+      catatan: [],
+    },
+    {
+      substansi: "Bab II",
+      catatan: [],
+    },
+    {
+      substansi: "Bab III",
+      catatan: [],
+    },
+    {
+      substansi: "Bab IV",
+      catatan: [],
+    },
+    {
+      substansi: "Bab V",
+      catatan: [],
+    },
+    {
+      substansi: "Bab VI",
+      catatan: [],
+    },
+    {
+      substansi: "Bab VII",
       catatan: [],
     },
     {
@@ -61,12 +99,20 @@ export default function PemeriksaanItem({ navigation, route }) {
   useEffect(() => {
     switch (context.detailPermohonan.kategori_bangkitan) {
       case "Bangkitan sedang":
-        let substansi = pemeriksaan_bangkitan_sedang.map((item) => {
+        let substansi_sedang = pemeriksaan_bangkitan_sedang.map((item) => {
           return item.substansi;
         });
 
-        setSubstansi(substansi);
+        setSubstansi(substansi_sedang);
         setItem(pemeriksaan_bangkitan_sedang.length + 1);
+        break;
+      case "Bangkitan tinggi":
+        let substansi_tinggi = pemeriksaan_bangkitan_tinggi.map((item) => {
+          return item.substansi;
+        });
+
+        setSubstansi(substansi_tinggi);
+        setItem(pemeriksaan_bangkitan_tinggi.length + 1);
         break;
     }
   }, []);

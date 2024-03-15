@@ -89,7 +89,7 @@ const andalalinInit = {
   jabatan_pimpinan: "",
   jenis_kelamin_pimpinan: "",
 
-  
+
   aktivitas: "",
   peruntukan: "",
   total_luas_lahan: "",
@@ -187,6 +187,29 @@ const keputusanInit = {
   keputusan: [],
 };
 
+const substansiInit = {
+  administrasi: [],
+  substansi: [],
+};
+
+const pembahasanInit = {
+  nomor_berita_acara: "",
+  nama_perwakilan: "",
+  jenis_perwakilan: "",
+  jabatan_perwakilan: "",
+  nomor_surat_kuasa: "",
+  nama_ketua: "",
+  nip_ketua: "",
+  nama_sekertaris: "",
+  nip_sekertaris: "",
+  nama_anggota: "",
+  nip_anggota: "",
+  instansi: [],
+  foto: [],
+  stackholder: [],
+  pembahasan: [],
+}
+
 export function UserProvider({ children }) {
   const [loading, toggleLoading] = useState(false);
 
@@ -234,6 +257,9 @@ export function UserProvider({ children }) {
   const [indexPemeriksaan, setIndexPemeriksaan] = useState(1);
   const [pemeriksaan, setPemeriksaan] = useReducer(reducer, pemeriksaanInit);
 
+  const [indexSubstansi, setIndexSubstansi] = useState(1);
+  const [substansi, setSubstansi] = useReducer(reducer, substansiInit);
+
   const [indexKeputusan, setIndexKeputusan] = useState(1);
   const [keputusan, setKeputusan] = useReducer(reducer, keputusanInit);
 
@@ -250,6 +276,9 @@ export function UserProvider({ children }) {
     reducer,
     pemeriksaanPerlengkapanInit
   );
+
+  const [indexPembahasan, setIndexPembahasan] = useState(1);
+  const [pembahasan, setPembahasan] = useReducer(reducer, pembahasanInit);
 
   const checkUser = async () => {
     const value = await get("authState");
@@ -339,6 +368,11 @@ export function UserProvider({ children }) {
     setPemeriksaan(pemeriksaanInit);
   };
 
+  const clearSubstansi = () => {
+    setIndexSubstansi(1);
+    setSubstansi(substansiInit);
+  };
+
   const clearPemeriksaanPerlengkapan = () => {
     setIndexPemeriksaanPerlengkapan(1);
     setPemeriksaanPerlengkapan(pemeriksaanPerlengkapanInit);
@@ -347,6 +381,11 @@ export function UserProvider({ children }) {
   const clearKeputusan = () => {
     setIndexKeputusan(1);
     setKepuasan(keputusanInit);
+  };
+
+  const clearPembahasan = () => {
+    setIndexPembahasan(1);
+    setPembahasan(pembahasanInit);
   };
 
   const getUser = () => {
@@ -461,6 +500,16 @@ export function UserProvider({ children }) {
         indexKeputusan,
         setIndexKeputusan,
         clearKeputusan,
+        substansi,
+        setSubstansi,
+        indexSubstansi,
+        setIndexSubstansi,
+        clearSubstansi,
+        indexPembahasan,
+        setIndexPembahasan,
+        pembahasan,
+        setPembahasan,
+        clearPembahasan,
       }}
     >
       {children}

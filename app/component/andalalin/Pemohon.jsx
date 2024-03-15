@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import { StyleSheet, ScrollView, View } from "react-native";
 import AText from "../../component/utility/AText";
 import color from "../../constants/color";
@@ -10,28 +10,16 @@ import AButton from "../utility/AButton";
 import ADropDownCostume from "../utility/ADropdownCostume";
 import AInputAlamat from "../utility/AInputAlamat";
 import ADatePicker from "../utility/ADatePicker";
+import PermohonanAtom from "../../atom/PermohonanAtom";
+import { useFocusEffect } from "@react-navigation/native";
+import { useRecoilState } from "recoil";
 
 function Pemohon({ onPress }) {
-  const {
-    permohonan: {
-      nik_pemohon,
-      jabatan_pemohon,
-      jenis_kelamin_pemohon,
-      tempat_lahir_pemohon,
-      tanggal_lahir_pemohon,
-      wilayah_administratif_pemohon,
-      provinsi_pemohon,
-      kabupaten_pemohon,
-      kecamatan_pemohon,
-      kelurahan_pemohon,
-      alamat_pemohon,
-      nomer_pemohon,
-      pemohon,
-    },
-    getUser,
-    dispatch,
-    dataMaster,
-  } = useContext(UserContext);
+  const { getUser, dataMaster } = useContext(UserContext);
+
+  const { andalalinState } = PermohonanAtom;
+
+  const [andalalin, setAndalalin] = useRecoilState(andalalinState);
 
   const nikInput = React.createRef();
   const tempatLahirInput = React.createRef();
@@ -40,18 +28,20 @@ function Pemohon({ onPress }) {
   const alamatInput = React.createRef();
   const nomerSelulerInput = React.createRef();
 
-  const [nik, setNik] = useState(nik_pemohon);
-  const [tempat, setTempat] = useState(tempat_lahir_pemohon);
-  const [tanggal, setTanggal] = useState(tanggal_lahir_pemohon);
-  const [jabatan, setJabatan] = useState(jabatan_pemohon);
-  const [jenis, setJenis] = useState(jenis_kelamin_pemohon);
-  const [alamat, setAlamat] = useState(alamat_pemohon);
-  const [alamatModal, setAlamatModal] = useState(wilayah_administratif_pemohon);
-  const [provinsi, setProvinsi] = useState(provinsi_pemohon);
-  const [kabupaten, setKabupaten] = useState(kabupaten_pemohon);
-  const [kecamatan, setKecamatan] = useState(kecamatan_pemohon);
-  const [kelurahan, setKelurahan] = useState(kelurahan_pemohon);
-  const [nomerSeluler, setNomerSeluler] = useState(nomer_pemohon);
+  const [nik, setNik] = useState(andalalin.nik_pemohon);
+  const [tempat, setTempat] = useState(andalalin.tempat_lahir_pemohon);
+  const [tanggal, setTanggal] = useState(andalalin.tanggal_lahir_pemohon);
+  const [jabatan, setJabatan] = useState(andalalin.jabatan_pemohon);
+  const [jenis, setJenis] = useState(andalalin.jenis_kelamin_pemohon);
+  const [alamat, setAlamat] = useState(andalalin.alamat_pemohon);
+  const [alamatModal, setAlamatModal] = useState(
+    andalalin.wilayah_administratif_pemohon
+  );
+  const [provinsi, setProvinsi] = useState(andalalin.provinsi_pemohon);
+  const [kabupaten, setKabupaten] = useState(andalalin.kabupaten_pemohon);
+  const [kecamatan, setKecamatan] = useState(andalalin.kecamatan_pemohon);
+  const [kelurahan, setKelurahan] = useState(andalalin.kelurahan_pemohon);
+  const [nomerSeluler, setNomerSeluler] = useState(andalalin.nomer_pemohon);
 
   const [nikError, togglenikError] = useStateToggler();
   const [tempatError, toggletempatError] = useStateToggler();
@@ -70,8 +60,22 @@ function Pemohon({ onPress }) {
 
   const [formError, toggleFormError] = useStateToggler();
 
+  const data = useRef();
+
+  useFocusEffect(
+    React.useCallback(() => {
+      data.current = {
+        ...andalalin,
+      };
+
+      return () => {
+        setAndalalin(data.current);
+      };
+    }, [])
+  );
+
   const press = () => {
-    if (pemohon == "Perorangan") {
+    if (andalalin.pemohon == "Perorangan") {
       if (
         nik != "" &&
         jenis != "" &&
@@ -90,43 +94,12 @@ function Pemohon({ onPress }) {
         alamat1Error ? togglealamat1Error() : "";
 
         formError ? toggleFormError() : "";
-        dispatch({
-          nik_pemohon: nik,
-          jenis_kelamin_pemohon: jenis,
-          tempat_lahir_pemohon: tempat,
-          tanggal_lahir_pemohon: tanggal,
-          wilayah_administratif_pemohon: alamatModal,
-          provinsi_pemohon: provinsi,
-          kabupaten_pemohon: kabupaten,
-          kecamatan_pemohon: kecamatan,
-          kelurahan_pemohon: kelurahan,
-          alamat_pemohon: alamat,
-          nomer_pemohon: nomerSeluler,
-        });
-
-        dispatch({
-          nama_perusahaan: getUser().nama,
-          alamat_perusahaan: alamat,
-          wilayah_administratif_perusahaan: alamatModal,
-          provinsi_perusahaan: provinsi,
-          kabupaten_perusahaan: kabupaten,
-          kecamatan_perusahaan: kecamatan,
-          kelurahan_perusahaan: kelurahan,
-          nomer_perusahaan: nomerSeluler,
-          email_perusahaan: getUser().email,
-          nama_pimpinan: getUser().nama,
-          jabatan_pimpinan: "-",
-          jenis_kelamin_pimpinan: jenis,
-          wilayah_administratif_pimpinan: alamatModal,
-          provinsi_pimpinan_perusahaan: provinsi,
-          kabupaten_pimpinan_perusahaan: kabupaten,
-          kecamatan_pimpinan_perusahaan: kecamatan,
-          kelurahan_pimpinan_perusahaan: kelurahan,
-          alamat_pimpinan: alamat,
-        });
         onPress();
       } else {
         nik == "" ? (nikError ? "" : togglenikError()) : "";
+        if (nik != "") {
+          nik.length < 16 ? (nikError ? "" : togglenikError()) : "";
+        }
         jenis == "" ? (jenisError ? "" : togglejenisError()) : "";
         tempat == "" ? (tempatError ? "" : toggletempatError()) : "";
         tanggal == "" ? (tempatError ? "" : toggletanggalError()) : "";
@@ -159,20 +132,6 @@ function Pemohon({ onPress }) {
         alamatError ? togglealamatError() : "";
         nomerSelulerError ? togglenomerSelulerError() : "";
         formError ? toggleFormError() : "";
-        dispatch({
-          nik_pemohon: nik,
-          jabatan_pemohon: jabatan,
-          jenis_kelamin_pemohon: jenis,
-          tempat_lahir_pemohon: tempat,
-          tanggal_lahir_pemohon: tanggal,
-          wilayah_administratif_pemohon: alamatModal,
-          provinsi_pemohon: provinsi,
-          kabupaten_pemohon: kabupaten,
-          kecamatan_pemohon: kecamatan,
-          kelurahan_pemohon: kelurahan,
-          alamat_pemohon: alamat,
-          nomer_pemohon: nomerSeluler,
-        });
         onPress();
       } else {
         nik == "" ? (nikError ? "" : togglenikError()) : "";
@@ -206,7 +165,41 @@ function Pemohon({ onPress }) {
   }, [alamatModal]);
 
   const clear_error = () => {
-    if (pemohon == "Perorangan") {
+    if (andalalin.pemohon == "Perorangan") {
+      data.current = {
+        ...andalalin,
+        nik_pemohon: nik,
+        jenis_kelamin_pemohon: jenis,
+        tempat_lahir_pemohon: tempat,
+        tanggal_lahir_pemohon: tanggal,
+        wilayah_administratif_pemohon: alamatModal,
+        provinsi_pemohon: provinsi,
+        kabupaten_pemohon: kabupaten,
+        kecamatan_pemohon: kecamatan,
+        kelurahan_pemohon: kelurahan,
+        alamat_pemohon: alamat,
+        nomer_pemohon: nomerSeluler,
+        jabatan_pemohon: "-",
+        nama_perusahaan: getUser().nama,
+        alamat_perusahaan: alamat,
+        wilayah_administratif_perusahaan: alamatModal,
+        provinsi_perusahaan: provinsi,
+        kabupaten_perusahaan: kabupaten,
+        kecamatan_perusahaan: kecamatan,
+        kelurahan_perusahaan: kelurahan,
+        nomer_perusahaan: nomerSeluler,
+        email_perusahaan: getUser().email,
+        nama_pimpinan: getUser().nama,
+        jabatan_pimpinan: "-",
+        jenis_kelamin_pimpinan: jenis,
+        wilayah_administratif_pimpinan: alamatModal,
+        provinsi_pimpinan_perusahaan: provinsi,
+        kabupaten_pimpinan_perusahaan: kabupaten,
+        kecamatan_pimpinan_perusahaan: kecamatan,
+        kelurahan_pimpinan_perusahaan: kelurahan,
+        alamat_pimpinan: alamat,
+      };
+
       jenis != "" ? (jenisError ? togglejenisError() : "") : "";
       tempat != "" ? (tempatError ? toggletempatError() : "") : "";
       tanggal != "" ? (tanggalError ? toggletanggalError() : "") : "";
@@ -231,6 +224,22 @@ function Pemohon({ onPress }) {
           : ""
         : "";
     } else {
+      data.current = {
+        ...andalalin,
+        nik_pemohon: nik,
+        jabatan_pemohon: jabatan,
+        jenis_kelamin_pemohon: jenis,
+        tempat_lahir_pemohon: tempat,
+        tanggal_lahir_pemohon: tanggal,
+        wilayah_administratif_pemohon: alamatModal,
+        provinsi_pemohon: provinsi,
+        kabupaten_pemohon: kabupaten,
+        kecamatan_pemohon: kecamatan,
+        kelurahan_pemohon: kelurahan,
+        alamat_pemohon: alamat,
+        nomer_pemohon: nomerSeluler,
+      };
+
       jenis != "" ? (jenisError ? togglejenisError() : "") : "";
       tempat != "" ? (tempatError ? toggletempatError() : "") : "";
       tanggal != "" ? (tanggalError ? toggletanggalError() : "") : "";
@@ -272,9 +281,9 @@ function Pemohon({ onPress }) {
         hint={"Masukkan nik anda"}
         title={"NIK"}
         wajib={"*"}
-        rtype={pemohon != "Perorangan" ? "next" : "done"}
+        rtype={andalalin.pemohon != "Perorangan" ? "next" : "done"}
         maksimal={16}
-        blur={pemohon != "Perorangan" ? false : true}
+        blur={andalalin.pemohon != "Perorangan" ? false : true}
         multi={false}
         value={nik}
         ref={nikInput}
@@ -295,7 +304,9 @@ function Pemohon({ onPress }) {
           }
           clear_error();
           {
-            pemohon != "Perorangan" ? jabatanInput.current.focus() : "";
+            andalalin.pemohon != "Perorangan"
+              ? jabatanInput.current.focus()
+              : "";
           }
         }}
       />
@@ -313,7 +324,7 @@ function Pemohon({ onPress }) {
         ""
       )}
 
-      {pemohon != "Perorangan" ? (
+      {andalalin.pemohon != "Perorangan" ? (
         <View>
           <ATextInput
             bdColor={
@@ -414,6 +425,16 @@ function Pemohon({ onPress }) {
           setAlamat(value);
         }}
       />
+
+      <AText
+        style={{ paddingTop: 8 }}
+        color={color.neutral.neutral300}
+        size={14}
+        weight="normal"
+      >
+        Keterangan: Alamat dapat berupa Nomor Bangunan, RT, RW, atau detail
+        lainnya
+      </AText>
 
       <ATextInput
         bdColor={

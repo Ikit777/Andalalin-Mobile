@@ -16,7 +16,7 @@ import AServer from "./app/component/utility/AServer";
 import SplashScreen from "./app/screens/SplashScreen";
 import { CheckContext, CheckProvider } from "./app/context/CheckContext";
 import ADialogAkun from "./app/component/utility/ADialogAkun";
-import { ModalProvider } from "./app/context/ModalContext";
+import { RecoilRoot } from "recoil";
 
 export default function App() {
   const [isAppReady, setIsAppReady] = useState(false);
@@ -73,7 +73,7 @@ export default function App() {
           <NetProvider>
             <UserProvider>
               <CheckProvider>
-                <ModalProvider>
+                <RecoilRoot>
                   <NavigationContainer ref={navigationRef}>
                     <NetContext.Consumer>
                       {(isAvailable) => (
@@ -109,7 +109,7 @@ export default function App() {
 
                     <Navigator isLogged={isLogged} />
                   </NavigationContainer>
-                </ModalProvider>
+                </RecoilRoot>
               </CheckProvider>
             </UserProvider>
           </NetProvider>

@@ -10,44 +10,34 @@ import ADropDownCostume from "../utility/ADropdownCostume";
 import ATextInputIcon from "../utility/ATextInputIcon";
 import ADropdownJalan from "../utility/ADropdownJalan";
 import AWilayahProyek from "../utility/AWilayahProyek";
+import PermohonanAtom from "../../atom/PermohonanAtom";
 import { useFocusEffect } from "@react-navigation/native";
+import { useRecoilState } from "recoil";
 
 function Proyek({ onPress, navigation }) {
-  const {
-    permohonan: {
-      nama_proyek,
-      jenis_proyek,
-      wilayah_administratif_proyek,
-      nama_jalan,
-      alamat_proyek,
-      provinsi_proyek,
-      kabupaten_proyek,
-      kecamatan_proyek,
-      kelurahan_proyek,
-      kode,
-      lat_bangunan,
-      long_bangunan,
-      lokasi_bangunan,
-    },
-    dispatch,
-    dataMaster,
-  } = useContext(UserContext);
+  const { dataMaster } = useContext(UserContext);
+
+  const { andalalinState } = PermohonanAtom;
+
+  const [andalalin, setAndalalin] = useRecoilState(andalalinState);
 
   const alamatInput = React.createRef();
 
-  const [namaProyek, setNamaProyek] = useState(nama_proyek);
-  const [jenisProyek, setJenisProyek] = useState(jenis_proyek);
-  const [wilayah, setWilayah] = useState(wilayah_administratif_proyek);
-  const [alamat, setAlamat] = useState(alamat_proyek);
-  const [jalan, setJalan] = useState(nama_jalan);
-  const [kodeJalan, setKodeJalan] = useState(kode);
-  const [provinsi, setProvinsi] = useState(provinsi_proyek);
-  const [kabupaten, setKabupaten] = useState(kabupaten_proyek);
-  const [kecamatan, setKecamatan] = useState(kecamatan_proyek);
-  const [kelurahan, setKelurahan] = useState(kelurahan_proyek);
-  const [lokasi, setLokasi] = useState(lokasi_bangunan);
-  const [lat, setLat] = useState(lat_bangunan);
-  const [long, setLong] = useState(long_bangunan);
+  const [namaProyek, setNamaProyek] = useState(andalalin.nama_proyek);
+  const [jenisProyek, setJenisProyek] = useState(andalalin.jenis_proyek);
+  const [wilayah, setWilayah] = useState(
+    andalalin.wilayah_administratif_proyek
+  );
+  const [alamat, setAlamat] = useState(andalalin.alamat_proyek);
+  const [jalan, setJalan] = useState(andalalin.nama_jalan);
+  const [kodeJalan, setKodeJalan] = useState(andalalin.kode);
+  const [provinsi, setProvinsi] = useState(andalalin.provinsi_proyek);
+  const [kabupaten, setKabupaten] = useState(andalalin.kabupaten_proyek);
+  const [kecamatan, setKecamatan] = useState(andalalin.kecamatan_proyek);
+  const [kelurahan, setKelurahan] = useState(andalalin.kelurahan_proyek);
+  const [lokasi, setLokasi] = useState(andalalin.lokasi_bangunan);
+  const [lat, setLat] = useState(andalalin.lat_bangunan);
+  const [long, setLong] = useState(andalalin.long_bangunan);
 
   const [jalanItem, setJalanItem] = useState("");
   const [jalanItemDefault, setJalanItemDefault] = useState("");
@@ -62,6 +52,18 @@ function Proyek({ onPress, navigation }) {
   const [wilayahModal, toggleWilayahModal] = useStateToggler();
 
   const [formError, toggleFormError] = useStateToggler();
+  const data = useRef();
+
+  useFocusEffect(
+    React.useCallback(() => {
+      data.current = {
+        ...andalalin,
+      };
+      return () => {
+        setAndalalin(data.current);
+      };
+    }, [])
+  );
 
   let proyek = dataMaster.jenis_proyek.map((item) => {
     return { value: item };
@@ -125,22 +127,6 @@ function Proyek({ onPress, navigation }) {
       alamatError ? toggleAlamatError() : "";
       lokasiError ? toggleLokasiError() : "";
       formError ? toggleFormError() : "";
-
-      dispatch({
-        nama_proyek: namaProyek,
-        jenis_proyek: jenisProyek,
-        wilayah_administratif_proyek: wilayah,
-        alamat_proyek: alamat,
-        provinsi_proyek: provinsi,
-        kabupaten_proyek: kabupaten,
-        kecamatan_proyek: kecamatan,
-        kelurahan_proyek: kelurahan,
-        nama_jalan: jalan,
-        kode: kodeJalan,
-        lokasi_bangunan: lokasi,
-        lat_bangunan: lat,
-        long_bangunan: long,
-      });
       onPress();
     } else {
       namaProyek == "" ? (namaProyekError ? "" : toggleNamaProyekError()) : "";
@@ -158,6 +144,23 @@ function Proyek({ onPress, navigation }) {
   };
 
   const clear_error = () => {
+    data.current = {
+      ...andalalin,
+      nama_proyek: namaProyek,
+      jenis_proyek: jenisProyek,
+      wilayah_administratif_proyek: wilayah,
+      alamat_proyek: alamat,
+      provinsi_proyek: provinsi,
+      kabupaten_proyek: kabupaten,
+      kecamatan_proyek: kecamatan,
+      kelurahan_proyek: kelurahan,
+      nama_jalan: jalan,
+      kode: kodeJalan,
+      lokasi_bangunan: lokasi,
+      lat_bangunan: lat,
+      long_bangunan: long,
+    };
+
     namaProyek != "" ? (namaProyekError ? toggleNamaProyekError() : "") : "";
     jenisProyek != "" ? (jenisProyekError ? toggleJenisProyekError() : "") : "";
     wilayah != "" ? (wilayahError ? toggleWilayahError() : "") : "";
@@ -179,12 +182,20 @@ function Proyek({ onPress, navigation }) {
 
   useFocusEffect(
     React.useCallback(() => {
-      setLokasi(lokasi_bangunan);
-      setLat(lat_bangunan);
-      setLong(long_bangunan);
-      clear_error();
-    }, [lokasi_bangunan])
+      if (andalalin.lokasi_bangunan != "") {
+        setLokasi(andalalin.lokasi_bangunan);
+        setLat(andalalin.lat_bangunan);
+        setLong(andalalin.long_bangunan);
+        clear_error();
+      }
+    }, [andalalin.lokasi_bangunan])
   );
+
+  useEffect(() => {
+    if (lokasi != "") {
+      clear_error();
+    }
+  }, [lokasi]);
 
   return (
     <ScrollView
@@ -283,6 +294,16 @@ function Proyek({ onPress, navigation }) {
         }}
       />
 
+      <AText
+        style={{ paddingTop: 8 }}
+        color={color.neutral.neutral300}
+        size={14}
+        weight="normal"
+      >
+        Keterangan: Alamat dapat berupa Nomor Bangunan, RT, RW, atau detail
+        lainnya
+      </AText>
+
       <ATextInputIcon
         bdColor={lokasiError ? color.error.error500 : color.neutral.neutral300}
         hint={"Pilih lokasi proyek"}
@@ -294,21 +315,6 @@ function Proyek({ onPress, navigation }) {
         icon={"map-pin"}
         value={lokasi}
         onPress={() => {
-          dispatch({
-            nama_proyek: namaProyek,
-            jenis_proyek: jenisProyek,
-            wilayah_administratif_proyek: wilayah,
-            alamat_proyek: alamat,
-            provinsi_proyek: provinsi,
-            kabupaten_proyek: kabupaten,
-            kecamatan_proyek: kecamatan,
-            kelurahan_proyek: kelurahan,
-            nama_jalan: jalan,
-            kode: kodeJalan,
-            lokasi_bangunan: lokasi,
-            lat_bangunan: lat,
-            long_bangunan: long,
-          });
           navigation.push("Pilih Lokasi", { kondisi: "Pengajuan andalalin" });
         }}
       />
