@@ -11,8 +11,6 @@ import color from "../../constants/color";
 import AText from "../utility/AText";
 import ATextInput from "../utility/ATextInput";
 import { RadioButton } from "react-native-paper";
-import ATidakPilihan from "../utility/ATidakPilihan";
-import { useStateToggler } from "../../hooks/useUtility";
 
 export default function SubstansiItem({ navigation, route }) {
   const { substansi, setSubstansi } = useContext(UserContext);
