@@ -59,21 +59,57 @@ function AFilterModal({
 
   const sort = [
     { sort: "Cek persyaratan", value: "Cek persyaratan" },
-    { sort: "Persetujuan administrasi", value: "Persetujuan administrasi" },
     { sort: "Persyaratan terpenuhi", value: "Persyaratan terpenuhi" },
     {
       sort: "Persyaratan tidak terpenuhi",
       value: "Persyaratan tidak terpenuhi",
     },
+    { sort: "Persetujuan administrasi", value: "Persetujuan administrasi" },
+    { sort: "Pembayaran billing PNBP", value: "Pembayaran billing PNBP" },
     { sort: "Pembuatan surat pernyataan", value: "Pembuatan surat pernyataan" },
     { sort: "Menunggu surat pernyataan", value: "Menunggu surat pernyataan" },
-    { sort: "Menunggu pembayaran", value: "Menunggu pembayaran" },
+    { sort: "Berita acara pembahasan", value: "Berita acara pembahasan" },
+    {
+      sort: "Persetujuan berita acara",
+      value: "Persetujuan berita acara",
+    },
     { sort: "Pembuatan penyusun dokumen", value: "Pembuatan penyusun dokumen" },
     {
       sort: "Persetujuan penyusun dokumen",
       value: "Persetujuan penyusun dokumen",
     },
-    { sort: "Pembuatan surat keputusan", value: "Pembuatan surat keputusan" },
+    {
+      sort: "Pemeriksaan kesesuaian substansi",
+      value: "Pemeriksaan kesesuaian substansi",
+    },
+    {
+      sort: "Persetujuan substansi teknis",
+      value: "Persetujuan substansi teknis",
+    },
+    {
+      sort: "Berita acara peninjauan",
+      value: "Berita acara peninjauan",
+    },
+    {
+      sort: "Pemeriksaan dokumen andalalin",
+      value: "Pemeriksaan dokumen andalalin",
+    },
+    {
+      sort: "Persetujuan asistensi dokumen",
+      value: "Persetujuan asistensi dokumen",
+    },
+    {
+      sort: "Dokumen terpenuhi",
+      value: "Dokumen terpenuhi",
+    },
+    {
+      sort: "Dokumen tidak terpenuhi",
+      value: "Dokumen tidak terpenuhi",
+    },
+    {
+      sort: "Pembuatan surat keputusan",
+      value: "Pembuatan surat keputusan",
+    },
     {
       sort: "Pemeriksaan surat keputusan",
       value: "Pemeriksaan surat keputusan",
@@ -82,7 +118,10 @@ function AFilterModal({
       sort: "Persetujuan surat keputusan",
       value: "Persetujuan surat keputusan",
     },
-    { sort: "Cek kelengkapan akhir", value: "Cek kelengkapan akhir" },
+    {
+      sort: "Cek kelengkapan akhir",
+      value: "Cek kelengkapan akhir",
+    },
     {
       sort: "Persetujuan kelengkapan akhir",
       value: "Persetujuan kelengkapan akhir",
@@ -92,39 +131,71 @@ function AFilterModal({
       value: "Kelengkapan tidak terpenuhi",
     },
     { sort: "Survei lapangan", value: "Survei lapangan" },
-    { sort: "Laporan survei", value: "Laporan survei" },
-    { sort: "Survei ditunda", value: "Survei ditunda" },
-    { sort: "Survei dibatalkan", value: "Survei dibatalkan" },
-    { sort: "Menunggu hasil keputusan", value: "Menunggu hasil keputusan" },
-    { sort: "Pemasangan ditunda", value: "Pemasangan ditunda" },
-    {
-      sort: "Pemasangan sedang dilakukan",
-      value: "Pemasangan sedang dilakukan",
-    },
+    { sort: "Pengecekan perlengkapan", value: "Pengecekan perlengkapan" },
+    { sort: "Pemasangan perlengkapan", value: "Pemasangan perlengkapan" },
     { sort: "Permohonan ditunda", value: "Permohonan ditunda" },
     { sort: "Permohonan ditolak", value: "Permohonan ditolak" },
     { sort: "Permohonan dibatalkan", value: "Permohonan dibatalkan" },
     { sort: "Permohonan selesai", value: "Permohonan selesai" },
+    {
+      sort: "Pemasangan ditunda",
+      value: "Pemasangan ditunda",
+    },
     { sort: "Pemasangan selesai", value: "Pemasangan selesai" },
   ];
 
   const sort_andalalin = [
     { sort: "Cek persyaratan", value: "Cek persyaratan" },
     { sort: "Persetujuan administrasi", value: "Persetujuan administrasi" },
-    { sort: "Persyaratan terpenuhi", value: "Persyaratan terpenuhi" },
     {
       sort: "Persyaratan tidak terpenuhi",
       value: "Persyaratan tidak terpenuhi",
     },
+    { sort: "Pembayaran billing PNBP", value: "Pembayaran billing PNBP" },
     { sort: "Pembuatan surat pernyataan", value: "Pembuatan surat pernyataan" },
     { sort: "Menunggu surat pernyataan", value: "Menunggu surat pernyataan" },
-    { sort: "Menunggu pembayaran", value: "Menunggu pembayaran" },
+    { sort: "Berita acara pembahasan", value: "Berita acara pembahasan" },
+    {
+      sort: "Persetujuan berita acara",
+      value: "Persetujuan berita acara",
+    },
     { sort: "Pembuatan penyusun dokumen", value: "Pembuatan penyusun dokumen" },
     {
       sort: "Persetujuan penyusun dokumen",
       value: "Persetujuan penyusun dokumen",
     },
-    { sort: "Pembuatan surat keputusan", value: "Pembuatan surat keputusan" },
+    {
+      sort: "Pemeriksaan kesesuaian substansi",
+      value: "Pemeriksaan kesesuaian substansi",
+    },
+    {
+      sort: "Persetujuan substansi teknis",
+      value: "Persetujuan substansi teknis",
+    },
+    {
+      sort: "Berita acara peninjauan",
+      value: "Berita acara peninjauan",
+    },
+    {
+      sort: "Pemeriksaan dokumen andalalin",
+      value: "Pemeriksaan dokumen andalalin",
+    },
+    {
+      sort: "Persetujuan asistensi dokumen",
+      value: "Persetujuan asistensi dokumen",
+    },
+    {
+      sort: "Dokumen terpenuhi",
+      value: "Dokumen terpenuhi",
+    },
+    {
+      sort: "Dokumen tidak terpenuhi",
+      value: "Dokumen tidak terpenuhi",
+    },
+    {
+      sort: "Pembuatan surat keputusan",
+      value: "Pembuatan surat keputusan",
+    },
     {
       sort: "Pemeriksaan surat keputusan",
       value: "Pemeriksaan surat keputusan",
@@ -133,7 +204,10 @@ function AFilterModal({
       sort: "Persetujuan surat keputusan",
       value: "Persetujuan surat keputusan",
     },
-    { sort: "Cek kelengkapan akhir", value: "Cek kelengkapan akhir" },
+    {
+      sort: "Cek kelengkapan akhir",
+      value: "Cek kelengkapan akhir",
+    },
     {
       sort: "Persetujuan kelengkapan akhir",
       value: "Persetujuan kelengkapan akhir",
@@ -142,8 +216,9 @@ function AFilterModal({
       sort: "Kelengkapan tidak terpenuhi",
       value: "Kelengkapan tidak terpenuhi",
     },
-    { sort: "Permohonan ditolak", value: "Permohonan ditolak" },
     { sort: "Permohonan ditunda", value: "Permohonan ditunda" },
+    { sort: "Permohonan ditolak", value: "Permohonan ditolak" },
+    { sort: "Permohonan dibatalkan", value: "Permohonan dibatalkan" },
     { sort: "Permohonan selesai", value: "Permohonan selesai" },
   ];
 
@@ -209,41 +284,6 @@ function AFilterModal({
           <View>
             <RadioButton.Group onValueChange={(value) => setChecked2(value)}>
               {sort_perlalin.map((item, index) => (
-                <Pressable
-                  key={index}
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    paddingTop: index == 0 ? 0 : 8,
-                  }}
-                  onPress={() => {
-                    setChecked2(item.value);
-                  }}
-                >
-                  <RadioButton
-                    label={item.value}
-                    value={item.value}
-                    uncheckedColor={color.neutral.neutral300}
-                    color={color.primary.primary600}
-                    status={checked2 === item.value ? "checked" : "unchecked"}
-                  />
-                  <AText
-                    style={{ paddingLeft: 4 }}
-                    size={14}
-                    color={color.neutral.neutral900}
-                  >
-                    {item.sort}
-                  </AText>
-                </Pressable>
-              ))}
-            </RadioButton.Group>
-          </View>
-        );
-      default:
-        return (
-          <View>
-            <RadioButton.Group onValueChange={(value) => setChecked2(value)}>
-              {sort.map((item, index) => (
                 <Pressable
                   key={index}
                   style={{
@@ -368,16 +408,22 @@ function AFilterModal({
                 ))}
               </RadioButton.Group>
 
-              <AText
-                style={{ paddingTop: 8 }}
-                color={color.neutral.neutral500}
-                size={14}
-                weight="normal"
-              >
-                Status permohonan
-              </AText>
+              {checked != null && checked != "" ? (
+                <View>
+                  <AText
+                    style={{ paddingTop: 8 }}
+                    color={color.neutral.neutral500}
+                    size={14}
+                    weight="normal"
+                  >
+                    Status permohonan
+                  </AText>
 
-              {condition_sort()}
+                  {condition_sort()}
+                </View>
+              ) : (
+                ""
+              )}
             </ScrollView>
 
             <View

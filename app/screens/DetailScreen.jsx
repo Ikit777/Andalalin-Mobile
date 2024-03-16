@@ -293,7 +293,7 @@ function DetailScreen({ navigation, route }) {
           case 200:
             context.toggleLoading(false);
             setPilih("");
-            setPertimbangan("")
+            setPertimbangan("");
             loadPermohonan();
             break;
           case 424:
@@ -306,7 +306,7 @@ function DetailScreen({ navigation, route }) {
           default:
             context.toggleLoading(false);
             setPilih("");
-            setPertimbangan("")
+            setPertimbangan("");
             toggleGagalSimpan();
             break;
         }
@@ -324,48 +324,78 @@ function DetailScreen({ navigation, route }) {
       {context.getUser().role == "Operator" ||
       context.getUser().role == "Admin" ||
       context.getUser().role == "Super Admin" ? (
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
+        data.status_andalalin != "Permohonan selesai" &&
+        data.status_andalalin != "Pemasangan selesai" &&
+        data.status_andalalin != "Permohonan ditolak" &&
+        data.status_andalalin != "Permohonan dibatalkan" ? (
           <View
             style={{
               flexDirection: "row",
+              justifyContent: "space-between",
               alignItems: "center",
-              paddingVertical: 8,
             }}
           >
-            <ABackButton
-              onPress={() => {
-                setProgressViewOffset(-5000);
-                back();
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                paddingVertical: 8,
               }}
-            />
-            <AText
-              style={{ paddingLeft: 4 }}
-              size={20}
-              color={color.neutral.neutral900}
-              weight="normal"
             >
-              {judul()}
-            </AText>
+              <ABackButton
+                onPress={() => {
+                  setProgressViewOffset(-5000);
+                  back();
+                }}
+              />
+              <AText
+                style={{ paddingLeft: 4 }}
+                size={20}
+                color={color.neutral.neutral900}
+                weight="normal"
+              >
+                {judul()}
+              </AText>
+            </View>
+            <TouchableOpacity
+              style={{ paddingVertical: 12, paddingHorizontal: 16 }}
+              onPress={() => {
+                toggleTindakanModal();
+              }}
+            >
+              <Feather
+                name="more-vertical"
+                size={24}
+                color={color.neutral.neutral900}
+              />
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity
-            style={{ paddingVertical: 12, paddingHorizontal: 16 }}
-            onPress={() => {
-              toggleTindakanModal();
-            }}
-          >
-            <Feather
-              name="more-vertical"
-              size={24}
-              color={color.neutral.neutral900}
-            />
-          </TouchableOpacity>
-        </View>
+        ) : (
+          <View>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                paddingVertical: 8,
+              }}
+            >
+              <ABackButton
+                onPress={() => {
+                  setProgressViewOffset(-5000);
+                  back();
+                }}
+              />
+              <AText
+                style={{ paddingLeft: 4 }}
+                size={20}
+                color={color.neutral.neutral900}
+                weight="normal"
+              >
+                {judul()}
+              </AText>
+            </View>
+          </View>
+        )
       ) : (
         <View>
           <View
@@ -468,7 +498,7 @@ function DetailScreen({ navigation, route }) {
         btnBATAL={"Batal"}
         onPressBATALButton={() => {
           setPilih("");
-          setPertimbangan("")
+          setPertimbangan("");
           toggleBatalModal();
         }}
         onPressOKButton={() => {
@@ -544,7 +574,7 @@ function DetailScreen({ navigation, route }) {
               style={{ flexDirection: "row", paddingLeft: 4 }}
               onPress={() => {
                 setPilih("");
-                setPertimbangan("")
+                setPertimbangan("");
                 toggleTindakanModal();
               }}
             >
