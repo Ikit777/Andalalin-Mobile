@@ -136,7 +136,7 @@ function ForgotPasswordScreen({ navigation }) {
           size={16}
           weight="normal"
         >
-          Jangan khawatir, kami akan memberikan intruksi reset kata sandi ke
+          Jangan khawatir, kami akan memberikan intruksi untuk mebuat kata sandi baru ke
           email Anda
         </AText>
 
