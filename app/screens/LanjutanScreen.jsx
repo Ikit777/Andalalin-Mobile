@@ -387,25 +387,25 @@ function LanjutanScreen({ navigation, route }) {
           </ADetailView>
 
           {permohonan.pertimbangan_pembatalan != "" &&
-        permohonan.pertimbangan_pembatalan != null ? (
-          <ADetailView
-            style={{
-              marginTop: 20,
-            }}
-            title={"Pertimbangan pembatalan permohonan"}
-          >
-            <AText
-              style={{ padding: 16 }}
-              size={12}
-              color={color.neutral.neutral900}
-              weight="normal"
+          permohonan.pertimbangan_pembatalan != null ? (
+            <ADetailView
+              style={{
+                marginTop: 20,
+              }}
+              title={"Pertimbangan pembatalan permohonan"}
             >
-              {permohonan.pertimbangan_pembatalan}
-            </AText>
-          </ADetailView>
-        ) : (
-          ""
-        )}
+              <AText
+                style={{ padding: 16 }}
+                size={12}
+                color={color.neutral.neutral900}
+                weight="normal"
+              >
+                {permohonan.pertimbangan_pembatalan}
+              </AText>
+            </ADetailView>
+          ) : (
+            ""
+          )}
 
           {permohonan.pertimbangan_penolakan != "" &&
           permohonan.pertimbangan_penolakan != null ? (
@@ -1322,39 +1322,49 @@ function LanjutanScreen({ navigation, route }) {
               </AText>
             </TouchableOpacity>
           </View>
-
-          <View style={styles.separator} />
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              padding: 14,
-            }}
-          >
-            <AText
-              style={{ maxWidth: "50%" }}
-              size={12}
-              color={color.neutral.neutral900}
-              weight="normal"
-            >
-              Perbarui lokasi
-            </AText>
-            <TouchableOpacity
-              style={{ flexDirection: "row", paddingLeft: 4 }}
-              onPress={() => {
-                navigation.push("Pilih Lokasi", { kondisi: "Perbarui lokasi" });
-              }}
-            >
-              <AText
-                size={14}
-                color={color.neutral.neutral700}
-                weight="semibold"
+          
+          {context.getUser().role == "Super Admin" ||
+          context.getUser().role == "Admin" ||
+          context.getUser().role == "Operator" ? (
+            <View>
+              <View style={styles.separator} />
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  padding: 14,
+                }}
               >
-                Perbarui
-              </AText>
-            </TouchableOpacity>
-          </View>
+                <AText
+                  style={{ maxWidth: "50%" }}
+                  size={12}
+                  color={color.neutral.neutral900}
+                  weight="normal"
+                >
+                  Perbarui lokasi
+                </AText>
+                <TouchableOpacity
+                  style={{ flexDirection: "row", paddingLeft: 4 }}
+                  onPress={() => {
+                    navigation.push("Pilih Lokasi", {
+                      kondisi: "Perbarui lokasi",
+                    });
+                  }}
+                >
+                  <AText
+                    size={14}
+                    color={color.neutral.neutral700}
+                    weight="semibold"
+                  >
+                    Perbarui
+                  </AText>
+                </TouchableOpacity>
+              </View>
+            </View>
+          ) : (
+            ""
+          )}
         </ADetailView>
 
         <View style={{ paddingBottom: 36 }} />
@@ -2932,7 +2942,7 @@ function LanjutanScreen({ navigation, route }) {
             </AText>
           </ADetailView>
 
-          <ADetailView style={{ paddingTop: 20 }}  title={"Informasi kegiatan"}>
+          <ADetailView style={{ paddingTop: 20 }} title={"Informasi kegiatan"}>
             <View
               style={{
                 flexDirection: "row",
@@ -3648,9 +3658,7 @@ function LanjutanScreen({ navigation, route }) {
                     options={{ tabBarLabel: "Konsultan" }}
                     initialParams={{ permohonan: data }}
                   />
-                ) : (
-                  null
-                )}
+                ) : null}
 
                 <Tab.Screen
                   name="Kegiatan"
@@ -3720,7 +3728,6 @@ function LanjutanScreen({ navigation, route }) {
                   initialParams={{ permohonan: data }}
                 />
 
-
                 {data.nama_konsultan != "" && data.nama_konsultan != null ? (
                   <Tab.Screen
                     name="Konsultan"
@@ -3728,9 +3735,7 @@ function LanjutanScreen({ navigation, route }) {
                     options={{ tabBarLabel: "Konsultan" }}
                     initialParams={{ permohonan: data }}
                   />
-                ) : (
-                  null
-                )}
+                ) : null}
 
                 <Tab.Screen
                   name="Kegiatan"
